@@ -146,6 +146,7 @@ const ScheduledTaskBlock = memo(function ScheduledTaskBlock({
   task: Task;
   onUnschedule: (id: Id<"tasks">) => void;
   onComplete:   (id: Id<"tasks">) => void;
+  onUndone:     (id: Id<"tasks">) => void;
 }) {
   const done     = task.status === "done";
   const start    = task.scheduledStart!;
@@ -182,9 +183,18 @@ const ScheduledTaskBlock = memo(function ScheduledTaskBlock({
         {fmtTime(start)} – {fmtTime(end)}
       </p>
 
-      {/* Action buttons */}
+      {/* Action buttons — visible on hover */}
       <div className="absolute top-1 right-1 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all">
-        {!done && (
+        {done ? (
+          <button
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={() => onUndone(task._id)}
+            className="text-[#4CAF6B] hover:text-[#3A3A3E] transition-colors"
+            title="Mark undone"
+          >
+            <Check size={9} />
+          </button>
+        ) : (
           <button
             onPointerDown={(e) => e.stopPropagation()}
             onClick={() => onComplete(task._id)}
@@ -204,9 +214,9 @@ const ScheduledTaskBlock = memo(function ScheduledTaskBlock({
         </button>
       </div>
 
-      {/* Done checkmark — always visible when done */}
+      {/* Done checkmark — always visible when done, hidden on hover (replaced by toggle) */}
       {done && (
-        <div className="absolute top-1 right-1">
+        <div className="absolute top-1 right-1 group-hover:opacity-0 transition-all">
           <Check size={9} className="text-[#4CAF6B]" />
         </div>
       )}
@@ -511,6 +521,10 @@ export default function SchedulePage() {
     updateStatus({ id, status: "done" });
   }, [updateStatus]);
 
+  const handleUndone = useCallback((id: Id<"tasks">) => {
+    updateStatus({ id, status: "todo" });
+  }, [updateStatus]);
+
   const handleDeleteGcalEvent = useCallback((eventId: string) => {
     setGcalEvents((prev) => prev.filter((ev) => ev.id !== eventId));
     fetch("/api/calendar/events", {
@@ -729,6 +743,7 @@ export default function SchedulePage() {
                         task={t}
                         onUnschedule={handleUnschedule}
                         onComplete={handleComplete}
+                        onUndone={handleUndone}
                       />
                     ))}
 
