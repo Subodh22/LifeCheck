@@ -28,6 +28,8 @@ import {
   Trash2,
   ChevronDown,
   Check,
+  X,
+  Clock,
 } from "lucide-react";
 
 // ── Constants ──────────────────────────────────────────────────────────────────
@@ -46,6 +48,7 @@ type Task = {
   status: string;
   priority: string;
   areaId: Id<"areas">;
+  description?: string;
   dueDate?: number;
   scheduledStart?: number;
   scheduledEnd?: number;
@@ -141,12 +144,13 @@ const TimeSlotCell = memo(function TimeSlotCell({
 });
 
 const ScheduledTaskBlock = memo(function ScheduledTaskBlock({
-  task, onUnschedule, onComplete, onUndone,
+  task, onUnschedule, onComplete, onUndone, onSelect,
 }: {
   task: Task;
   onUnschedule: (id: Id<"tasks">) => void;
   onComplete:   (id: Id<"tasks">) => void;
   onUndone:     (id: Id<"tasks">) => void;
+  onSelect:     (task: Task) => void;
 }) {
   const done     = task.status === "done";
   const start    = task.scheduledStart!;
@@ -165,6 +169,7 @@ const ScheduledTaskBlock = memo(function ScheduledTaskBlock({
       ref={setNodeRef}
       {...listeners}
       {...attributes}
+      onClick={() => onSelect(task)}
       style={{ transform: CSS.Translate.toString(transform), top: topPx, height: heightPx, opacity: isDragging ? 0.5 : 1 }}
       className={cn(
         "absolute left-0.5 right-0.5 rounded px-2 py-1 z-10 group overflow-hidden",
@@ -188,7 +193,7 @@ const ScheduledTaskBlock = memo(function ScheduledTaskBlock({
         {done ? (
           <button
             onPointerDown={(e) => e.stopPropagation()}
-            onClick={() => onUndone(task._id)}
+            onClick={(e) => { e.stopPropagation(); onUndone(task._id); }}
             className="text-[#4CAF6B] hover:text-[#3A3A3E] transition-colors"
             title="Mark undone"
           >
@@ -197,7 +202,7 @@ const ScheduledTaskBlock = memo(function ScheduledTaskBlock({
         ) : (
           <button
             onPointerDown={(e) => e.stopPropagation()}
-            onClick={() => onComplete(task._id)}
+            onClick={(e) => { e.stopPropagation(); onComplete(task._id); }}
             className="text-[#3A3A3E] hover:text-[#4CAF6B] transition-colors"
             title="Mark done"
           >
@@ -206,7 +211,7 @@ const ScheduledTaskBlock = memo(function ScheduledTaskBlock({
         )}
         <button
           onPointerDown={(e) => e.stopPropagation()}
-          onClick={() => onUnschedule(task._id)}
+          onClick={(e) => { e.stopPropagation(); onUnschedule(task._id); }}
           className="text-[#3A3A3E] hover:text-[#E85538] transition-colors"
           title="Remove from calendar"
         >
@@ -299,6 +304,199 @@ const DayColumnGrid = memo(function DayColumnGrid({ dayIdx }: { dayIdx: number }
   );
 });
 
+// ── Task Edit Panel ────────────────────────────────────────────────────────────
+
+const DURATION_PRESETS = [
+  { label: "15m", mins: 15 },
+  { label: "30m", mins: 30 },
+  { label: "45m", mins: 45 },
+  { label: "1h",  mins: 60 },
+  { label: "1.5h", mins: 90 },
+  { label: "2h",  mins: 120 },
+  { label: "3h",  mins: 180 },
+];
+
+const PRIORITY_OPTIONS = [
+  { value: "urgent", label: "Urgent", color: "#E85538" },
+  { value: "high",   label: "High",   color: "#E8A838" },
+  { value: "medium", label: "Medium", color: "#4A9EE0" },
+  { value: "low",    label: "Low",    color: "#3A3A3E" },
+] as const;
+
+function tsToTimeStr(ts: number) {
+  return format(new Date(ts), "HH:mm");
+}
+
+function TaskEditPanel({
+  task,
+  onClose,
+  onSchedule,
+  onUpdate,
+}: {
+  task: Task;
+  onClose: () => void;
+  onSchedule: (id: Id<"tasks">, start: number, end: number) => void;
+  onUpdate: (id: Id<"tasks">, fields: { title?: string; priority?: string; description?: string }) => void;
+}) {
+  const start = task.scheduledStart!;
+  const end   = task.scheduledEnd!;
+
+  const [title,       setTitle]       = useState(task.title);
+  const [startStr,    setStartStr]    = useState(tsToTimeStr(start));
+  const [endStr,      setEndStr]      = useState(tsToTimeStr(end));
+  const [priority,    setPriority]    = useState(task.priority);
+  const [description, setDescription] = useState((task as Task & { description?: string }).description ?? "");
+
+  // Keep local state in sync if task prop changes (e.g. optimistic update settles)
+  useEffect(() => {
+    setTitle(task.title);
+    setStartStr(tsToTimeStr(task.scheduledStart!));
+    setEndStr(tsToTimeStr(task.scheduledEnd!));
+    setPriority(task.priority);
+    setDescription((task as Task & { description?: string }).description ?? "");
+  }, [task._id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  function applyTime(newStartStr: string, newEndStr: string) {
+    const base = new Date(start);
+    const [sh, sm] = newStartStr.split(":").map(Number);
+    const [eh, em] = newEndStr.split(":").map(Number);
+    const s = new Date(base); s.setHours(sh, sm, 0, 0);
+    const e = new Date(base); e.setHours(eh, em, 0, 0);
+    if (e > s) onSchedule(task._id, s.getTime(), e.getTime());
+  }
+
+  function applyDuration(mins: number) {
+    const base = new Date(start);
+    const [sh, sm] = startStr.split(":").map(Number);
+    const s = new Date(base); s.setHours(sh, sm, 0, 0);
+    const e = new Date(s.getTime() + mins * 60000);
+    const newEnd = format(e, "HH:mm");
+    setEndStr(newEnd);
+    onSchedule(task._id, s.getTime(), e.getTime());
+  }
+
+  function save() {
+    applyTime(startStr, endStr);
+    onUpdate(task._id, { title, priority, description });
+    onClose();
+  }
+
+  const currentDurationMins = Math.round((end - start) / 60000);
+
+  return (
+    <div className="w-[280px] shrink-0 border-l border-[#2A2A2E] flex flex-col bg-[#0A0A0B] overflow-y-auto">
+      {/* Panel header */}
+      <div className="px-4 py-3 border-b border-[#2A2A2E] flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-2">
+          <Clock size={13} className="text-[#6B6760]" />
+          <span className="font-ui text-[12px] text-[#6B6760]">Edit Task</span>
+        </div>
+        <button onClick={onClose} className="text-[#3A3A3E] hover:text-[#F2EEE8] transition-colors">
+          <X size={14} />
+        </button>
+      </div>
+
+      <div className="flex-1 p-4 space-y-5">
+
+        {/* Title */}
+        <div className="space-y-1.5">
+          <label className="font-ui text-[10px] uppercase tracking-[0.12em] text-[#3A3A3E]">Title</label>
+          <input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="w-full bg-[#111113] border border-[#2A2A2E] rounded px-3 py-2 font-ui text-[13px] text-[#F2EEE8] placeholder-[#3A3A3E] focus:outline-none focus:border-[#4A9EE0] transition-colors"
+          />
+        </div>
+
+        {/* Time */}
+        <div className="space-y-1.5">
+          <label className="font-ui text-[10px] uppercase tracking-[0.12em] text-[#3A3A3E]">Time</label>
+          <div className="flex items-center gap-2">
+            <input
+              type="time"
+              value={startStr}
+              onChange={(e) => setStartStr(e.target.value)}
+              onBlur={() => applyTime(startStr, endStr)}
+              className="flex-1 bg-[#111113] border border-[#2A2A2E] rounded px-2 py-1.5 font-ui text-[12px] text-[#F2EEE8] focus:outline-none focus:border-[#4A9EE0] transition-colors tabular-nums"
+            />
+            <span className="font-ui text-[11px] text-[#3A3A3E]">→</span>
+            <input
+              type="time"
+              value={endStr}
+              onChange={(e) => setEndStr(e.target.value)}
+              onBlur={() => applyTime(startStr, endStr)}
+              className="flex-1 bg-[#111113] border border-[#2A2A2E] rounded px-2 py-1.5 font-ui text-[12px] text-[#F2EEE8] focus:outline-none focus:border-[#4A9EE0] transition-colors tabular-nums"
+            />
+          </div>
+        </div>
+
+        {/* Duration presets */}
+        <div className="space-y-1.5">
+          <label className="font-ui text-[10px] uppercase tracking-[0.12em] text-[#3A3A3E]">Duration</label>
+          <div className="flex flex-wrap gap-1.5">
+            {DURATION_PRESETS.map(({ label, mins }) => (
+              <button
+                key={mins}
+                onClick={() => applyDuration(mins)}
+                className={cn(
+                  "px-2.5 py-1 rounded border font-ui text-[11px] transition-colors",
+                  currentDurationMins === mins
+                    ? "border-[#4A9EE0] text-[#4A9EE0] bg-[#4A9EE018]"
+                    : "border-[#2A2A2E] text-[#6B6760] hover:border-[#4A9EE040] hover:text-[#F2EEE8]"
+                )}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Priority */}
+        <div className="space-y-1.5">
+          <label className="font-ui text-[10px] uppercase tracking-[0.12em] text-[#3A3A3E]">Priority</label>
+          <div className="flex gap-1.5">
+            {PRIORITY_OPTIONS.map(({ value, label, color }) => (
+              <button
+                key={value}
+                onClick={() => setPriority(value)}
+                style={priority === value ? { borderColor: color, color, backgroundColor: `${color}18` } : {}}
+                className={cn(
+                  "flex-1 py-1 rounded border font-ui text-[11px] transition-colors",
+                  priority === value ? "" : "border-[#2A2A2E] text-[#3A3A3E] hover:text-[#6B6760]"
+                )}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Description */}
+        <div className="space-y-1.5">
+          <label className="font-ui text-[10px] uppercase tracking-[0.12em] text-[#3A3A3E]">Notes</label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows={3}
+            placeholder="Add notes…"
+            className="w-full bg-[#111113] border border-[#2A2A2E] rounded px-3 py-2 font-ui text-[12px] text-[#F2EEE8] placeholder-[#3A3A3E] focus:outline-none focus:border-[#4A9EE0] transition-colors resize-none"
+          />
+        </div>
+      </div>
+
+      {/* Save */}
+      <div className="px-4 py-3 border-t border-[#2A2A2E] shrink-0">
+        <button
+          onClick={save}
+          className="w-full py-2 rounded bg-[#4A9EE0] hover:bg-[#3A8ED0] font-ui text-[12px] text-[#0A0A0B] font-semibold transition-colors"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ── Schedule page ──────────────────────────────────────────────────────────────
 
 export default function SchedulePage() {
@@ -312,6 +510,7 @@ export default function SchedulePage() {
   const [connectingGcal, setConnectingGcal] = useState(false);
   const [backlogOpen,    setBacklogOpen]    = useState(false);
   const [completedOpen,  setCompletedOpen]  = useState(false);
+  const [selectedTask,   setSelectedTask]   = useState<Task | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
   // Optimistic moves: taskId → pending {scheduledStart, scheduledEnd}
@@ -321,6 +520,7 @@ export default function SchedulePage() {
   const scheduleTask   = useMutation(api.tasks.scheduleTask);
   const unscheduleTask = useMutation(api.tasks.unscheduleTask);
   const updateStatus   = useMutation(api.tasks.updateStatus);
+  const updateTask     = useMutation(api.tasks.update);
 
   const weekStart = useMemo(() => startOfWeek(weekDate, { weekStartsOn: 1 }), [weekDate]);
   const weekEnd   = useMemo(() => endOfWeek(weekDate,   { weekStartsOn: 1 }), [weekDate]);
@@ -549,6 +749,20 @@ export default function SchedulePage() {
     // Set back to todo — task is already unscheduled so it returns to sidebar
     updateStatus({ id, status: "todo" });
   }, [updateStatus]);
+
+  const handleSelectTask = useCallback((task: Task) => {
+    setSelectedTask(task);
+  }, []);
+
+  const handlePanelSchedule = useCallback((id: Id<"tasks">, start: number, end: number) => {
+    scheduleTask({ id, scheduledStart: start, scheduledEnd: end });
+    setSelectedTask((prev) => prev && prev._id === id ? { ...prev, scheduledStart: start, scheduledEnd: end } : prev);
+  }, [scheduleTask]);
+
+  const handlePanelUpdate = useCallback((id: Id<"tasks">, fields: { title?: string; priority?: string; description?: string }) => {
+    updateTask({ id, ...fields as { priority?: "urgent" | "high" | "medium" | "low" } });
+    setSelectedTask((prev) => prev && prev._id === id ? { ...prev, ...fields } : prev);
+  }, [updateTask]);
 
   const handleDeleteGcalEvent = useCallback((eventId: string) => {
     setGcalEvents((prev) => prev.filter((ev) => ev.id !== eventId));
@@ -814,6 +1028,7 @@ export default function SchedulePage() {
                         onUnschedule={handleUnschedule}
                         onComplete={handleComplete}
                         onUndone={handleUndone}
+                        onSelect={handleSelectTask}
                       />
                     ))}
 
@@ -837,6 +1052,16 @@ export default function SchedulePage() {
               })}
             </div>
           </div>
+
+          {/* Task edit panel */}
+          {selectedTask && (
+            <TaskEditPanel
+              task={selectedTask}
+              onClose={() => setSelectedTask(null)}
+              onSchedule={handlePanelSchedule}
+              onUpdate={handlePanelUpdate}
+            />
+          )}
         </div>
       </div>
 
