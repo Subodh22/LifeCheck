@@ -141,7 +141,7 @@ const TimeSlotCell = memo(function TimeSlotCell({
 });
 
 const ScheduledTaskBlock = memo(function ScheduledTaskBlock({
-  task, onUnschedule, onComplete,
+  task, onUnschedule, onComplete, onUndone,
 }: {
   task: Task;
   onUnschedule: (id: Id<"tasks">) => void;
