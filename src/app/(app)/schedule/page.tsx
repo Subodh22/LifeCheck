@@ -100,8 +100,8 @@ function tsToOffset(ts: number): number {
 // ── Sub-components (memo'd to prevent unnecessary re-renders) ─────────────────
 
 const UnscheduledChip = memo(function UnscheduledChip({
-  task, areaColor,
-}: { task: Task; areaColor?: string }) {
+  task, areaColor, onDelete,
+}: { task: Task; areaColor?: string; onDelete: (id: Id<"tasks">) => void }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: `unscheduled-${task._id}`,
     data: { taskId: task._id, type: "unscheduled" },
@@ -121,6 +121,14 @@ const UnscheduledChip = memo(function UnscheduledChip({
       <span className="font-ui text-[12px] text-[#C4C0BA] leading-snug flex-1 min-w-0 truncate">
         {task.title}
       </span>
+      <button
+        onPointerDown={(e) => e.stopPropagation()}
+        onClick={(e) => { e.stopPropagation(); onDelete(task._id); }}
+        className="opacity-0 group-hover:opacity-100 text-[#3A3A3E] hover:text-[#E85538] transition-all shrink-0"
+        title="Delete task"
+      >
+        <Trash2 size={10} />
+      </button>
     </div>
   );
 });
@@ -332,11 +340,13 @@ function TaskEditPanel({
   onClose,
   onSchedule,
   onUpdate,
+  onDelete,
 }: {
   task: Task;
   onClose: () => void;
   onSchedule: (id: Id<"tasks">, start: number, end: number) => void;
   onUpdate: (id: Id<"tasks">, fields: { title?: string; priority?: string; description?: string }) => void;
+  onDelete: (id: Id<"tasks">) => void;
 }) {
   const start = task.scheduledStart!;
   const end   = task.scheduledEnd!;
@@ -484,13 +494,19 @@ function TaskEditPanel({
         </div>
       </div>
 
-      {/* Save */}
-      <div className="px-4 py-3 border-t border-[#2A2A2E] shrink-0">
+      {/* Save + Delete */}
+      <div className="px-4 py-3 border-t border-[#2A2A2E] shrink-0 space-y-2">
         <button
           onClick={save}
           className="w-full py-2 rounded bg-[#4A9EE0] hover:bg-[#3A8ED0] font-ui text-[12px] text-[#0A0A0B] font-semibold transition-colors"
         >
           Save
+        </button>
+        <button
+          onClick={() => { onDelete(task._id); onClose(); }}
+          className="w-full py-1.5 rounded border border-[#2A2A2E] font-ui text-[11px] text-[#3A3A3E] hover:border-[#E85538] hover:text-[#E85538] transition-colors"
+        >
+          Delete task
         </button>
       </div>
     </div>
@@ -521,6 +537,7 @@ export default function SchedulePage() {
   const unscheduleTask = useMutation(api.tasks.unscheduleTask);
   const updateStatus   = useMutation(api.tasks.updateStatus);
   const updateTask     = useMutation(api.tasks.update);
+  const archiveTask    = useMutation(api.tasks.archive);
 
   const weekStart = useMemo(() => startOfWeek(weekDate, { weekStartsOn: 1 }), [weekDate]);
   const weekEnd   = useMemo(() => endOfWeek(weekDate,   { weekStartsOn: 1 }), [weekDate]);
@@ -764,6 +781,11 @@ export default function SchedulePage() {
     setSelectedTask((prev) => prev && prev._id === id ? { ...prev, ...fields } : prev);
   }, [updateTask]);
 
+  const handleDeleteTask = useCallback((id: Id<"tasks">) => {
+    archiveTask({ id });
+    setSelectedTask((prev) => prev?._id === id ? null : prev);
+  }, [archiveTask]);
+
   const handleDeleteGcalEvent = useCallback((eventId: string) => {
     setGcalEvents((prev) => prev.filter((ev) => ev.id !== eventId));
     fetch("/api/calendar/events", {
@@ -882,7 +904,7 @@ export default function SchedulePage() {
                   </div>
                 ) : (
                   thisWeekTasks.map((t) => (
-                    <UnscheduledChip key={t._id} task={t} areaColor={areaMap[t.areaId]?.color} />
+                    <UnscheduledChip key={t._id} task={t} areaColor={areaMap[t.areaId]?.color} onDelete={handleDeleteTask} />
                   ))
                 )}
               </div>
@@ -910,7 +932,7 @@ export default function SchedulePage() {
                   {backlogOpen && (
                     <div className="px-2 pb-2 space-y-1.5">
                       {backlogTasks.map((t) => (
-                        <UnscheduledChip key={t._id} task={t} areaColor={areaMap[t.areaId]?.color} />
+                        <UnscheduledChip key={t._id} task={t} areaColor={areaMap[t.areaId]?.color} onDelete={handleDeleteTask} />
                       ))}
                     </div>
                   )}
@@ -1060,6 +1082,7 @@ export default function SchedulePage() {
               onClose={() => setSelectedTask(null)}
               onSchedule={handlePanelSchedule}
               onUpdate={handlePanelUpdate}
+              onDelete={handleDeleteTask}
             />
           )}
         </div>
