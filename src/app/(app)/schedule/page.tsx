@@ -518,10 +518,21 @@ export default function SchedulePage() {
   }, [scheduledTasks, unscheduledTasks, gcalConnected, unscheduleTask]);
 
   const handleComplete = useCallback((id: Id<"tasks">) => {
+    // Mark done + remove from calendar so it disappears cleanly
+    const task = [...scheduledTasks, ...unscheduledTasks].find((t) => t._id === id);
     updateStatus({ id, status: "done" });
-  }, [updateStatus]);
+    unscheduleTask({ id });
+    if (task?.gcalEventId && gcalConnected) {
+      fetch("/api/calendar/events", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({ action: "delete", gcalEventId: task.gcalEventId }),
+      }).catch(() => {});
+    }
+  }, [scheduledTasks, unscheduledTasks, updateStatus, unscheduleTask, gcalConnected]);
 
   const handleUndone = useCallback((id: Id<"tasks">) => {
+    // Set back to todo — task is already unscheduled so it returns to sidebar
     updateStatus({ id, status: "todo" });
   }, [updateStatus]);
 
