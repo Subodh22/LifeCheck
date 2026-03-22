@@ -3,7 +3,7 @@ import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
-import { useState, useCallback, useEffect, useMemo, memo } from "react";
+import { useState, useCallback, useEffect, useMemo, memo, useRef } from "react";
 import { format, startOfWeek, endOfWeek, addWeeks, subWeeks, addDays, setHours, setMinutes } from "date-fns";
 import {
   DndContext,
@@ -312,6 +312,7 @@ export default function SchedulePage() {
   const [connectingGcal, setConnectingGcal] = useState(false);
   const [backlogOpen,    setBacklogOpen]    = useState(false);
   const [completedOpen,  setCompletedOpen]  = useState(false);
+  const gridRef = useRef<HTMLDivElement>(null);
 
   // Optimistic moves: taskId → pending {scheduledStart, scheduledEnd}
   // Applied immediately on drop so the block moves without waiting for Convex
@@ -422,6 +423,13 @@ export default function SchedulePage() {
   }, [userId, weekStartMs, weekEndMs]);
 
   useEffect(() => { loadGcalEvents(); }, [loadGcalEvents]);
+
+  // Scroll to 8am on mount and whenever the week changes
+  useEffect(() => {
+    if (!gridRef.current) return;
+    const scrollTarget = (8 - HOUR_START) * CELL_HEIGHT;
+    gridRef.current.scrollTo({ top: scrollTarget, behavior: "smooth" });
+  }, [weekStartMs]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -744,7 +752,7 @@ export default function SchedulePage() {
           </div>
 
           {/* Week grid */}
-          <div className="flex-1 overflow-auto min-h-0">
+          <div ref={gridRef} className="flex-1 overflow-auto min-h-0">
 
             {/* Day headers */}
             <div className="sticky top-0 z-20 bg-[#0A0A0B] border-b border-[#2A2A2E] flex">
