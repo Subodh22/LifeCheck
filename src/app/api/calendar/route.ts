@@ -16,11 +16,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Google Calendar not configured" }, { status: 500 });
   }
 
-  // Use x-forwarded-host if available (Vercel sets this to the public domain),
-  // falling back to the host header, then request.nextUrl.origin.
-  const host = request.headers.get("x-forwarded-host") ?? request.headers.get("host") ?? request.nextUrl.host;
-  const proto = request.headers.get("x-forwarded-proto") ?? "https";
-  const origin = `${proto}://${host}`;
+  // Use explicit APP_URL in production, derive from request in local dev
+  const origin = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") ?? request.nextUrl.origin;
   const redirectUri = `${origin}/api/calendar/callback`;
 
   const params = new URLSearchParams({

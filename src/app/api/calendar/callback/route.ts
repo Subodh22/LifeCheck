@@ -11,10 +11,8 @@ export async function GET(request: NextRequest) {
   const clerkId = searchParams.get("state");
   const error   = searchParams.get("error");
 
-  // Use x-forwarded-host if available (Vercel sets this to the public domain)
-  const host = request.headers.get("x-forwarded-host") ?? request.headers.get("host") ?? request.nextUrl.host;
-  const proto = request.headers.get("x-forwarded-proto") ?? "https";
-  const origin = `${proto}://${host}`;
+  // Use explicit APP_URL in production, derive from request in local dev
+  const origin = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") ?? request.nextUrl.origin;
 
   if (error || !code || !clerkId) {
     return NextResponse.redirect(`${origin}/schedule?gcal=error`);
