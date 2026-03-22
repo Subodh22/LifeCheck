@@ -2,79 +2,44 @@
 import { useState } from "react";
 import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import { X, Check } from "lucide-react";
+import {
+  X, Check,
+  Briefcase, Activity, Palette, TrendingUp,
+  BookOpen, Plane, Heart, Home,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
-const TEMPLATES = [
-  {
-    id: "work",
-    name: "Work & Career",
-    description: "Projects, tasks, career goals",
-    icon: "💼",
-    color: "#4A9EE0",
-    category: "Work",
-  },
-  {
-    id: "health",
-    name: "Health & Fitness",
-    description: "Workouts, habits, wellness",
-    icon: "🏃",
-    color: "#4CAF6B",
-    category: "Health",
-  },
-  {
-    id: "creative",
-    name: "Creative",
-    description: "Music, art, writing, hobbies",
-    icon: "🎸",
-    color: "#8B5CF6",
-    category: "Creative",
-  },
-  {
-    id: "finance",
-    name: "Finance",
-    description: "Budget, savings, investments",
-    icon: "💰",
-    color: "#E8A838",
-    category: "Finance",
-  },
-  {
-    id: "learning",
-    name: "Learning",
-    description: "Courses, books, skill-building",
-    icon: "📚",
-    color: "#9B59B6",
-    category: "Learning",
-  },
-  {
-    id: "travel",
-    name: "Travel",
-    description: "Trips, adventures, planning",
-    icon: "✈️",
-    color: "#E85538",
-    category: "Travel",
-  },
-  {
-    id: "relationships",
-    name: "Relationships",
-    description: "Family, friends, social goals",
-    icon: "🤝",
-    color: "#E8538A",
-    category: "Relationships",
-  },
-  {
-    id: "home",
-    name: "Home & Life",
-    description: "Household, admin, personal",
-    icon: "🏠",
-    color: "#6B7280",
-    category: "Home",
-  },
+const INK       = "#0D0D0D";
+const INK_LIGHT = "#555550";
+const INK_FAINT = "#999990";
+const RED       = "#C41E3A";
+const RULE_L    = "#CCCCBC";
+const NEWSPRINT = "#FAFAF5";
+const WHITE     = "#FFFFFF";
+
+type Template = {
+  id: string;
+  name: string;
+  description: string;
+  Icon: LucideIcon;
+  color: string;
+  category: string;
+};
+
+const TEMPLATES: Template[] = [
+  { id: "work",          name: "Work & Career",   description: "Projects, tasks, career goals",   Icon: Briefcase,   color: "#0D0D0D", category: "Work"          },
+  { id: "health",        name: "Health & Fitness", description: "Workouts, habits, wellness",      Icon: Activity,    color: "#3A7D44", category: "Health"        },
+  { id: "creative",      name: "Creative",         description: "Music, art, writing, hobbies",    Icon: Palette,     color: "#C41E3A", category: "Creative"      },
+  { id: "finance",       name: "Finance",          description: "Budget, savings, investments",    Icon: TrendingUp,  color: "#B08A4E", category: "Finance"       },
+  { id: "learning",      name: "Learning",         description: "Courses, books, skill-building",  Icon: BookOpen,    color: "#555550", category: "Learning"      },
+  { id: "travel",        name: "Travel",           description: "Trips, adventures, planning",     Icon: Plane,       color: "#2A5F8F", category: "Travel"        },
+  { id: "relationships", name: "Relationships",    description: "Family, friends, social goals",   Icon: Heart,       color: "#8F3A2A", category: "Relationships" },
+  { id: "home",          name: "Home & Life",      description: "Household, admin, personal",      Icon: Home,        color: "#2A7A7A", category: "Home"          },
 ];
 
 const COLORS = [
-  "#4A9EE0", "#4CAF6B", "#8B5CF6", "#E8A838",
-  "#E85538", "#9B59B6", "#E8538A", "#6B7280",
-  "#2ECC71", "#3498DB", "#E67E22", "#1ABC9C",
+  "#0D0D0D", "#3A7D44", "#C41E3A", "#B08A4E",
+  "#2A5F8F", "#555550", "#8F3A2A", "#2A7A7A",
 ];
 
 interface Props {
@@ -86,31 +51,25 @@ interface Props {
 export default function CreateAreaModal({ open, onClose, userId }: Props) {
   const createArea = useMutation(api.areas.create);
 
-  const [step, setStep] = useState<"template" | "configure">("template");
-  const [name, setName] = useState("");
+  const [step,        setStep]        = useState<"template" | "configure">("template");
+  const [name,        setName]        = useState("");
   const [description, setDescription] = useState("");
-  const [color, setColor] = useState(COLORS[0]);
-  const [icon, setIcon] = useState("");
-  const [category, setCategory] = useState("");
-  const [saving, setSaving] = useState(false);
+  const [color,       setColor]       = useState(COLORS[0]);
+  const [category,    setCategory]    = useState("");
+  const [saving,      setSaving]      = useState(false);
 
   if (!open) return null;
 
-  const selectTemplate = (t: typeof TEMPLATES[0]) => {
+  const selectTemplate = (t: Template) => {
     setName(t.name);
     setColor(t.color);
-    setIcon(t.icon);
     setCategory(t.category);
     setDescription(t.description);
     setStep("configure");
   };
 
   const startBlank = () => {
-    setName("");
-    setColor(COLORS[0]);
-    setIcon("");
-    setCategory("");
-    setDescription("");
+    setName(""); setColor(COLORS[0]); setCategory(""); setDescription("");
     setStep("configure");
   };
 
@@ -121,100 +80,114 @@ export default function CreateAreaModal({ open, onClose, userId }: Props) {
     try {
       await createArea({
         userId,
-        name: name.trim(),
+        name:        name.trim(),
         color,
-        icon: icon || undefined,
+        icon:        undefined,
         description: description.trim() || undefined,
-        category: category || undefined,
+        category:    category || undefined,
       });
       onClose();
       setStep("template");
-      setName(""); setDescription(""); setColor(COLORS[0]); setIcon(""); setCategory("");
-    } finally {
-      setSaving(false);
-    }
+      setName(""); setDescription(""); setColor(COLORS[0]); setCategory("");
+    } finally { setSaving(false); }
   };
 
   const areaKey = name.slice(0, 3).toUpperCase().replace(/[^A-Z]/g, "X") || "KEY";
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/60" onClick={onClose} />
+    <div style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.6)" }} onClick={onClose} />
 
-      <div className="relative w-[580px] bg-[#FFFFFF] border border-[#E2E8F0] rounded-md shadow-2xl overflow-hidden">
+      <div style={{ position: "relative", width: "540px", background: WHITE, border: `1px solid ${INK}`, overflow: "hidden" }}>
+
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#E2E8F0]">
-          <div className="flex items-center gap-3">
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 20px", borderBottom: `1px solid ${RULE_L}` }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
             {step === "configure" && (
               <button
                 type="button"
                 onClick={() => setStep("template")}
-                className="font-ui text-[12px] text-[#6B7280] hover:text-[#111827] transition-colors"
+                style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "12px", color: INK_LIGHT, background: "none", border: "none", cursor: "pointer" }}
               >
                 ← Back
               </button>
             )}
-            <span className="font-ui text-[13px] font-medium text-[#111827]">
+            <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "16px", fontWeight: 700, color: INK }}>
               {step === "template" ? "Create area" : "Configure area"}
             </span>
           </div>
-          <button type="button" onClick={onClose} className="text-[#6B7280] hover:text-[#111827] transition-colors">
+          <button type="button" onClick={onClose} style={{ color: INK_LIGHT, background: "none", border: "none", cursor: "pointer" }}>
             <X size={16} />
           </button>
         </div>
 
-        {/* Template picker */}
+        {/* ── Template picker ── */}
         {step === "template" && (
-          <div className="p-5">
-            <p className="font-ui text-[12px] text-[#6B7280] mb-4">
+          <div style={{ padding: "20px" }}>
+            <p style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "11px", color: INK_LIGHT, marginBottom: "16px", letterSpacing: "0.3px" }}>
               Choose a template to get started, or create a blank area.
             </p>
-            <div className="grid grid-cols-2 gap-2 mb-4">
-              {TEMPLATES.map((t) => (
-                <button
-                  key={t.id}
-                  onClick={() => selectTemplate(t)}
-                  className="flex items-start gap-3 p-3 rounded border border-[#E2E8F0] bg-[#FFFFFF] hover:bg-[#F1F5F9] hover:border-[#D1D5DB] transition-colors text-left"
-                >
-                  <span className="text-[18px] shrink-0 mt-0.5">{t.icon}</span>
-                  <div className="min-w-0">
-                    <p className="font-ui text-[13px] font-medium text-[#111827]">{t.name}</p>
-                    <p className="font-ui text-[11px] text-[#6B7280] mt-0.5">{t.description}</p>
-                  </div>
-                  <span
-                    className="ml-auto w-2 h-2 rounded-full shrink-0 mt-1"
-                    style={{ backgroundColor: t.color }}
-                  />
-                </button>
-              ))}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", marginBottom: "12px" }}>
+              {TEMPLATES.map((t) => {
+                const Icon = t.Icon;
+                return (
+                  <button
+                    key={t.id}
+                    onClick={() => selectTemplate(t)}
+                    style={{
+                      display: "flex", alignItems: "flex-start", gap: "12px",
+                      padding: "12px 14px", border: `1px solid ${RULE_L}`,
+                      background: WHITE, cursor: "pointer", textAlign: "left",
+                      transition: "all 0.1s",
+                    }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = INK; (e.currentTarget as HTMLElement).style.background = NEWSPRINT; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = RULE_L; (e.currentTarget as HTMLElement).style.background = WHITE; }}
+                  >
+                    <div style={{ width: "32px", height: "32px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, border: `1px solid ${RULE_L}` }}>
+                      <Icon size={15} color={t.color} strokeWidth={1.5} />
+                    </div>
+                    <div style={{ minWidth: 0 }}>
+                      <p style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "13px", fontWeight: 600, color: INK, marginBottom: "2px" }}>{t.name}</p>
+                      <p style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "10px", color: INK_FAINT, lineHeight: 1.4 }}>{t.description}</p>
+                    </div>
+                    <span style={{ width: "6px", height: "6px", flexShrink: 0, marginTop: "4px", backgroundColor: t.color }} />
+                  </button>
+                );
+              })}
             </div>
             <button
               onClick={startBlank}
-              className="w-full py-2 border border-dashed border-[#E2E8F0] rounded font-ui text-[12px] text-[#6B7280] hover:text-[#111827] hover:border-[#D1D5DB] transition-colors"
+              style={{
+                width: "100%", padding: "10px",
+                border: `1px dashed ${RULE_L}`, background: "none",
+                fontFamily: "'Inter', system-ui, sans-serif", fontSize: "11px",
+                fontWeight: 600, letterSpacing: "1px", textTransform: "uppercase",
+                color: INK_FAINT, cursor: "pointer", transition: "all 0.1s",
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = INK; (e.currentTarget as HTMLElement).style.color = INK; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = RULE_L; (e.currentTarget as HTMLElement).style.color = INK_FAINT; }}
             >
-              Start blank
+              + Start blank
             </button>
           </div>
         )}
 
-        {/* Configure form */}
+        {/* ── Configure form ── */}
         {step === "configure" && (
           <form onSubmit={handleSubmit}>
-            <div className="p-5 space-y-4">
+            <div style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "16px" }}>
+
               {/* Preview */}
-              <div className="flex items-center gap-3 p-3 bg-[#F1F5F9] border border-[#E2E8F0] rounded">
-                <div
-                  className="w-8 h-8 rounded flex items-center justify-center text-[18px] shrink-0"
-                  style={{ backgroundColor: `${color}22` }}
-                >
-                  {icon || <span className="font-ui text-[11px] font-bold" style={{ color }}>{areaKey.slice(0,2)}</span>}
+              <div style={{ display: "flex", alignItems: "center", gap: "12px", padding: "12px 14px", background: NEWSPRINT, border: `1px solid ${RULE_L}` }}>
+                <div style={{ width: "32px", height: "32px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, border: `1px solid ${RULE_L}`, backgroundColor: `${color}18` }}>
+                  <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "11px", fontWeight: 700, color }}>{areaKey.slice(0, 2)}</span>
                 </div>
                 <div>
-                  <p className="font-ui text-[13px] font-medium text-[#111827]">{name || "Area name"}</p>
-                  <p className="font-ui text-[11px] text-[#9CA3AF]">Key: {areaKey}</p>
+                  <p style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "14px", fontWeight: 700, color: INK }}>{name || "Area name"}</p>
+                  <p style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "10px", color: INK_FAINT, letterSpacing: "1px", textTransform: "uppercase" }}>Key: {areaKey}</p>
                 </div>
                 {category && (
-                  <span className="ml-auto font-ui text-[11px] text-[#6B7280] bg-[#F1F5F9] border border-[#E2E8F0] px-2 py-0.5 rounded">
+                  <span style={{ marginLeft: "auto", fontFamily: "'Inter', system-ui, sans-serif", fontSize: "10px", color: INK_LIGHT, border: `1px solid ${RULE_L}`, padding: "2px 8px", letterSpacing: "0.5px" }}>
                     {category}
                   </span>
                 )}
@@ -222,8 +195,8 @@ export default function CreateAreaModal({ open, onClose, userId }: Props) {
 
               {/* Name */}
               <div>
-                <label className="block font-ui text-[11px] tracking-[0.12em] uppercase text-[#6B7280] mb-1.5">
-                  Area name <span className="text-[#E85538]">*</span>
+                <label style={{ display: "block", fontFamily: "'Inter', system-ui, sans-serif", fontSize: "10px", letterSpacing: "1.5px", textTransform: "uppercase", color: INK_LIGHT, marginBottom: "6px" }}>
+                  Area name <span style={{ color: RED }}>*</span>
                 </label>
                 <input
                   autoFocus
@@ -231,69 +204,64 @@ export default function CreateAreaModal({ open, onClose, userId }: Props) {
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Work & Career"
                   required
-                  className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded px-3 py-2 font-ui text-[13px] text-[#111827] placeholder:text-[#9CA3AF] outline-none focus:border-[#8B5CF6] transition-colors"
+                  style={{ width: "100%", background: NEWSPRINT, border: `1px solid ${RULE_L}`, padding: "8px 12px", fontFamily: "'Inter', system-ui, sans-serif", fontSize: "13px", color: INK, outline: "none", boxSizing: "border-box" }}
+                  onFocus={e => (e.target as HTMLElement).style.borderColor = INK}
+                  onBlur={e => (e.target as HTMLElement).style.borderColor = RULE_L}
                 />
               </div>
 
               {/* Description */}
               <div>
-                <label className="block font-ui text-[11px] tracking-[0.12em] uppercase text-[#6B7280] mb-1.5">
+                <label style={{ display: "block", fontFamily: "'Inter', system-ui, sans-serif", fontSize: "10px", letterSpacing: "1.5px", textTransform: "uppercase", color: INK_LIGHT, marginBottom: "6px" }}>
                   Description
                 </label>
                 <input
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="What does this area track?"
-                  className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded px-3 py-2 font-ui text-[13px] text-[#111827] placeholder:text-[#9CA3AF] outline-none focus:border-[#D1D5DB] transition-colors"
+                  style={{ width: "100%", background: NEWSPRINT, border: `1px solid ${RULE_L}`, padding: "8px 12px", fontFamily: "'Inter', system-ui, sans-serif", fontSize: "13px", color: INK, outline: "none", boxSizing: "border-box" }}
+                  onFocus={e => (e.target as HTMLElement).style.borderColor = INK}
+                  onBlur={e => (e.target as HTMLElement).style.borderColor = RULE_L}
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                {/* Category */}
-                <div>
-                  <label className="block font-ui text-[11px] tracking-[0.12em] uppercase text-[#6B7280] mb-1.5">
-                    Category
-                  </label>
-                  <input
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    placeholder="e.g. Work, Health…"
-                    className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded px-3 py-2 font-ui text-[13px] text-[#111827] placeholder:text-[#9CA3AF] outline-none focus:border-[#D1D5DB] transition-colors"
-                  />
-                </div>
-
-                {/* Icon */}
-                <div>
-                  <label className="block font-ui text-[11px] tracking-[0.12em] uppercase text-[#6B7280] mb-1.5">
-                    Icon (emoji)
-                  </label>
-                  <input
-                    value={icon}
-                    onChange={(e) => setIcon(e.target.value)}
-                    placeholder="💼"
-                    className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded px-3 py-2 font-ui text-[13px] text-[#111827] placeholder:text-[#9CA3AF] outline-none focus:border-[#D1D5DB] transition-colors"
-                  />
-                </div>
+              {/* Category */}
+              <div>
+                <label style={{ display: "block", fontFamily: "'Inter', system-ui, sans-serif", fontSize: "10px", letterSpacing: "1.5px", textTransform: "uppercase", color: INK_LIGHT, marginBottom: "6px" }}>
+                  Category
+                </label>
+                <input
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  placeholder="e.g. Work, Health…"
+                  style={{ width: "100%", background: NEWSPRINT, border: `1px solid ${RULE_L}`, padding: "8px 12px", fontFamily: "'Inter', system-ui, sans-serif", fontSize: "13px", color: INK, outline: "none", boxSizing: "border-box" }}
+                  onFocus={e => (e.target as HTMLElement).style.borderColor = INK}
+                  onBlur={e => (e.target as HTMLElement).style.borderColor = RULE_L}
+                />
               </div>
 
               {/* Color */}
               <div>
-                <label className="block font-ui text-[11px] tracking-[0.12em] uppercase text-[#6B7280] mb-1.5">
-                  Color
+                <label style={{ display: "block", fontFamily: "'Inter', system-ui, sans-serif", fontSize: "10px", letterSpacing: "1.5px", textTransform: "uppercase", color: INK_LIGHT, marginBottom: "8px" }}>
+                  Accent color
                 </label>
-                <div className="flex gap-2 flex-wrap">
+                <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                   {COLORS.map((c) => (
                     <button
                       key={c}
                       type="button"
                       onClick={() => setColor(c)}
-                      className="w-6 h-6 rounded-sm border-2 transition-all flex items-center justify-center"
                       style={{
+                        width: "28px", height: "28px",
                         backgroundColor: c,
-                        borderColor: color === c ? "#111827" : "transparent",
+                        border: color === c ? `2px solid ${INK}` : "2px solid transparent",
+                        outline: color === c ? `1px solid ${RULE_L}` : "none",
+                        cursor: "pointer",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        transition: "all 0.1s",
                       }}
                     >
-                      {color === c && <Check size={10} className="text-white" />}
+                      {color === c && <Check size={11} color={c === "#0D0D0D" ? WHITE : WHITE} strokeWidth={2.5} />}
                     </button>
                   ))}
                 </div>
@@ -301,18 +269,26 @@ export default function CreateAreaModal({ open, onClose, userId }: Props) {
             </div>
 
             {/* Footer */}
-            <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-[#E2E8F0]">
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "8px", padding: "12px 20px", borderTop: `1px solid ${RULE_L}` }}>
               <button
                 type="button"
                 onClick={onClose}
-                className="px-3 py-1.5 font-ui text-[13px] text-[#6B7280] hover:text-[#111827] transition-colors"
+                style={{ padding: "7px 16px", fontFamily: "'Inter', system-ui, sans-serif", fontSize: "12px", fontWeight: 600, letterSpacing: "1px", textTransform: "uppercase", color: INK_LIGHT, background: "none", border: `1px solid ${RULE_L}`, cursor: "pointer" }}
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={!name.trim() || saving}
-                className="px-4 py-1.5 bg-[#8B5CF6] rounded font-ui text-[13px] font-medium text-[#FFFFFF] hover:bg-[#7C3AED] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                style={{
+                  padding: "7px 16px",
+                  fontFamily: "'Inter', system-ui, sans-serif", fontSize: "12px", fontWeight: 600, letterSpacing: "1px", textTransform: "uppercase",
+                  color: WHITE, background: saving || !name.trim() ? INK_FAINT : INK,
+                  border: "none", cursor: !name.trim() || saving ? "not-allowed" : "pointer",
+                  transition: "background 0.15s",
+                }}
+                onMouseEnter={e => { if (name.trim() && !saving) (e.currentTarget as HTMLElement).style.background = RED; }}
+                onMouseLeave={e => { if (name.trim() && !saving) (e.currentTarget as HTMLElement).style.background = INK; }}
               >
                 {saving ? "Creating…" : "Create area"}
               </button>

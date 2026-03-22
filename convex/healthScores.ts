@@ -15,6 +15,40 @@ export const getByUser = query({
   },
 });
 
+// Returns map of areaId → days since last completed task (for decay indicator)
+export const getLastActivityByUser = query({
+  args: { userId: v.string() },
+  handler: async (ctx, args) => {
+    const tasks = await ctx.db
+      .query("tasks")
+      .withIndex("by_user_status", (q) => q.eq("userId", args.userId).eq("status", "done"))
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("archivedAt"), undefined),
+          q.neq(q.field("completedAt"), undefined)
+        )
+      )
+      .collect();
+
+    // Most recent completedAt per area
+    const latestByArea: Record<string, number> = {};
+    for (const t of tasks) {
+      if (t.completedAt) {
+        const cur = latestByArea[t.areaId];
+        if (!cur || t.completedAt > cur) latestByArea[t.areaId] = t.completedAt;
+      }
+    }
+
+    // Convert to days since last activity
+    const now = Date.now();
+    const result: Record<string, number> = {};
+    for (const [areaId, ts] of Object.entries(latestByArea)) {
+      result[areaId] = Math.floor((now - ts) / (1000 * 60 * 60 * 24));
+    }
+    return result;
+  },
+});
+
 export const recalculate = internalMutation({
   args: { userId: v.string(), areaId: v.id("areas") },
   handler: async (ctx, args) => {

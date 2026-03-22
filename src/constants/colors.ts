@@ -1,42 +1,36 @@
+// Newspaper editorial palette — option-16 theme
 export const P = {
-  bg: "#F9F9F7",
-  s1: "#FFFFFF",
-  s2: "#F1F5F9",
-  s3: "#F5F3FF",
-  border: "#E2E8F0",
-  borderLight: "#D1D5DB",
-  gold: "#8B5CF6",
-  goldDim: "rgba(37,99,235,0.12)",
-  goldMid: "rgba(37,99,235,0.30)",
-  ink: "#111827",
-  mid: "#6B7280",
-  dim: "#9CA3AF",
-  // Status colors
-  success: "#4CAF6B",
-  warning: "#E8A838",
-  error: "#E85538",
-  info: "#5B8FE8",
-  // Priority colors
-  urgent: "#E85538",
-  high: "#E8A838",
-  medium: "#8B5CF6",
-  low: "#6B7280",
+  newsprint:  "#FAFAF5",
+  white:      "#FFFFFF",
+  ink:        "#0D0D0D",
+  inkMid:     "#2A2A2A",
+  inkLight:   "#555550",
+  inkFaint:   "#999990",
+  red:        "#C41E3A",
+  redPale:    "rgba(196,30,58,0.07)",
+  rule:       "#0D0D0D",
+  ruleLight:  "#CCCCBC",
+  // Status
+  success:    "#3A7D44",
+  warning:    "#B08A4E",
+  error:      "#C41E3A",
+  // Area color palette
 } as const;
 
-// Area colors (one per domain)
+// Area colors
 export const AREA_COLORS = [
-  "#8B5CF6", // blue
-  "#5B8FE8", // blue
-  "#4CAF6B", // green
-  "#E8A838", // amber
-  "#C45BE8", // purple
-  "#E85B8F", // pink
-  "#5BE8D4", // teal
+  "#2A5F8F",
+  "#3A7D44",
+  "#B08A4E",
+  "#7A3D6B",
+  "#5A6E2A",
+  "#8F3A2A",
+  "#2A7A7A",
 ] as const;
 
-// Health score color
+// Health score → color (newspaper greens/ambers/reds)
 export function healthColor(score: number): string {
-  if (score >= 70) return "#4CAF6B";
-  if (score >= 40) return "#E8A838";
-  return "#E85538";
+  if (score >= 70) return "#3A7D44";
+  if (score >= 40) return "#B08A4E";
+  return "#C41E3A";
 }

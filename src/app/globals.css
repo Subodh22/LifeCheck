@@ -1,47 +1,54 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700&family=Playfair+Display+SC:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @import "tailwindcss";
 
 @theme inline {
-  --color-bg:         #F9F9F7;
+  /* ── Newspaper palette ── */
+  --color-newsprint:  #FAFAF5;
+  --color-white:      #FFFFFF;
+  --color-ink:        #0D0D0D;
+  --color-ink-mid:    #2A2A2A;
+  --color-ink-light:  #555550;
+  --color-ink-faint:  #999990;
+  --color-red:        #C41E3A;
+  --color-red-pale:   rgba(196,30,58,0.07);
+  --color-rule:       #0D0D0D;
+  --color-rule-light: #CCCCBC;
+
+  /* ── Legacy aliases (keep pages from breaking) ── */
+  --color-bg:         #FAFAF5;
   --color-s1:         #FFFFFF;
-  --color-s2:         #F3F4F6;
-  --color-s3:         #E5E7EB;
-  --color-border:     #E5E7EB;
-  --color-accent:     #8B5CF6;
-  --color-ink:        #111827;
-  --color-mid:        #6B7280;
-  --color-dim:        #9CA3AF;
-  --color-background: #F9F9F7;
-  --color-foreground: #111827;
-  --font-display: 'Inter', sans-serif;
-  --font-ui:      'Outfit', sans-serif;
+  --color-border:     #CCCCBC;
+  --color-accent:     #C41E3A;
+  --color-foreground: #0D0D0D;
+  --color-background: #FAFAF5;
+
+  /* ── Fonts ── */
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-sc:      'Playfair Display SC', Georgia, serif;
+  --font-ui:      'Inter', system-ui, sans-serif;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
-html {
-  color-scheme: light;
-}
+html { color-scheme: light; }
 
 body {
-  background: #F9F9F7;
-  color: #111827;
-  font-family: var(--font-ui);
+  background: #FAFAF5;
+  color: #0D0D0D;
+  font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: #F9F9F7; }
-::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: #D1D5DB; }
+::-webkit-scrollbar-track { background: #FAFAF5; }
+::-webkit-scrollbar-thumb { background: #CCCCBC; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #AEADB0; }
 
 /* Focus ring */
 :focus-visible {
-  outline: 2px solid #8B5CF6;
+  outline: 2px solid #C41E3A;
   outline-offset: 2px;
 }

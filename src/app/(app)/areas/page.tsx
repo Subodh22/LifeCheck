@@ -11,18 +11,25 @@ import {
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
 import CreateAreaModal from "@/components/CreateAreaModal";
 
+const INK       = "#0D0D0D";
+const INK_LIGHT = "#555550";
+const INK_FAINT = "#999990";
+const RED       = "#C41E3A";
+const RULE_L    = "#CCCCBC";
+const NEWSPRINT = "#FAFAF5";
+const WHITE     = "#FFFFFF";
+
 const TEMPLATES = [
-  { id: "work",          icon: "💼", name: "Work & Career",   description: "Projects and career goals",   color: "#4A9EE0" },
-  { id: "health",        icon: "🏃", name: "Health & Fitness", description: "Workouts, habits, wellness", color: "#4CAF6B" },
-  { id: "creative",      icon: "🎸", name: "Creative",         description: "Music, art, writing",        color: "#8B5CF6" },
-  { id: "finance",       icon: "💰", name: "Finance",          description: "Budget and investments",     color: "#E8A838" },
-  { id: "learning",      icon: "📚", name: "Learning",         description: "Courses and skills",         color: "#9B59B6" },
-  { id: "travel",        icon: "✈️", name: "Travel",           description: "Trips and adventures",      color: "#E85538" },
-  { id: "relationships", icon: "🤝", name: "Relationships",    description: "Family and friends",         color: "#E8538A" },
-  { id: "home",          icon: "🏠", name: "Home & Life",      description: "Household and admin",        color: "#6B7280" },
+  { id: "work",          icon: "💼", name: "Work & Career",   description: "Projects and career goals",   color: "#2A5F8F" },
+  { id: "health",        icon: "🏃", name: "Health & Fitness", description: "Workouts, habits, wellness", color: "#3A7D44" },
+  { id: "creative",      icon: "🎸", name: "Creative",         description: "Music, art, writing",        color: "#C41E3A" },
+  { id: "finance",       icon: "💰", name: "Finance",          description: "Budget and investments",     color: "#B08A4E" },
+  { id: "learning",      icon: "📚", name: "Learning",         description: "Courses and skills",         color: "#7A3D6B" },
+  { id: "travel",        icon: "✈️", name: "Travel",           description: "Trips and adventures",      color: "#8F3A2A" },
+  { id: "relationships", icon: "🤝", name: "Relationships",    description: "Family and friends",         color: "#2A7A7A" },
+  { id: "home",          icon: "🏠", name: "Home & Life",      description: "Household and admin",        color: "#555550" },
 ];
 
 function areaKey(name: string) {
@@ -38,13 +45,12 @@ export default function AreasPage() {
 
   const seedDemo  = useMutation(api.seed.seedDemoData);
 
-  const [search,         setSearch]         = useState("");
-  const [showTemplates,  setShowTemplates]  = useState(false);
-  const [createOpen,     setCreateOpen]     = useState(false);
-  const [starredSet,     setStarredSet]     = useState<Set<string>>(new Set());
-  const [seeding,        setSeeding]        = useState(false);
+  const [search,        setSearch]        = useState("");
+  const [showTemplates, setShowTemplates] = useState(false);
+  const [createOpen,    setCreateOpen]    = useState(false);
+  const [starredSet,    setStarredSet]    = useState<Set<string>>(new Set());
+  const [seeding,       setSeeding]       = useState(false);
 
-  // Redirect new users to onboarding
   useEffect(() => {
     if (areas !== undefined && areas.length === 0 && userId) {
       const onboarded = localStorage.getItem("onboarded");
@@ -78,99 +84,165 @@ export default function AreasPage() {
   };
 
   return (
-    <div className="h-full flex flex-col bg-[#FFFFFF]">
-      {/* Page header */}
-      <div className="px-7 py-5 border-b border-[#E2E8F0] shrink-0">
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="font-ui text-[22px] font-semibold text-[#111827]">Spaces</h1>
-          <div className="flex items-center gap-2">
+    <div style={{ minHeight: "calc(100vh - 72px)", background: NEWSPRINT, display: "flex", flexDirection: "column" }}>
+
+      {/* ── Page Hero ── */}
+      <div style={{ padding: "36px 64px 24px", borderBottom: `2px solid ${INK}` }}>
+        <div style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "10px", fontWeight: 700, letterSpacing: "3px", textTransform: "uppercase", color: RED, marginBottom: "8px" }}>
+          Life Spaces
+        </div>
+        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
+          <h1 style={{
+            fontFamily: "'Playfair Display', Georgia, serif",
+            fontWeight: 900,
+            fontSize: "64px",
+            lineHeight: 0.95,
+            letterSpacing: "-2px",
+            textTransform: "uppercase",
+            color: INK,
+          }}>
+            Areas
+          </h1>
+          <div style={{ display: "flex", gap: "32px", alignItems: "flex-end", paddingBottom: "4px" }}>
+            {[
+              { label: "Spaces", value: areas.length },
+              { label: "Active Tasks", value: Object.values(taskCountByArea).reduce((a, b) => a + b, 0) },
+            ].map(s => (
+              <div key={s.label} style={{ textAlign: "right" }}>
+                <div style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "24px", fontWeight: 700, color: INK, lineHeight: 1 }}>
+                  {s.value}
+                </div>
+                <div style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "9px", fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", color: INK_FAINT, marginTop: "2px" }}>
+                  {s.label}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Controls row */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "20px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            {/* Search */}
+            <div style={{ display: "flex", alignItems: "center", gap: "6px", border: `1px solid ${RULE_L}`, background: WHITE, padding: "6px 12px", width: "240px" }}>
+              <Search size={12} color={INK_FAINT} />
+              <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search spaces…"
+                style={{
+                  fontFamily: "'Inter', system-ui, sans-serif",
+                  fontSize: "11px", color: INK,
+                  background: "transparent", border: "none", outline: "none", width: "100%",
+                }}
+              />
+            </div>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <button
               onClick={() => setShowTemplates((v) => !v)}
-              className={cn(
-                "flex items-center gap-1.5 px-3 py-1.5 border rounded font-ui text-[13px] transition-colors",
-                showTemplates
-                  ? "border-[#8B5CF6] text-[#8B5CF6] bg-[#8B5CF610]"
-                  : "border-[#E2E8F0] text-[#6B7280] hover:text-[#111827] hover:border-[#D1D5DB]"
-              )}
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: "11px", fontWeight: 600, letterSpacing: "1px",
+                textTransform: "uppercase",
+                display: "flex", alignItems: "center", gap: "6px",
+                padding: "7px 14px",
+                border: `1px solid ${showTemplates ? INK : RULE_L}`,
+                background: showTemplates ? INK : "transparent",
+                color: showTemplates ? WHITE : INK_FAINT,
+                cursor: "pointer", transition: "all 0.15s",
+              }}
             >
-              <LayoutGrid size={13} />
+              <LayoutGrid size={11} />
               Templates
             </button>
             <button
               onClick={() => setCreateOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#4A9EE0] rounded font-ui text-[13px] font-medium text-white hover:bg-[#5AAFF0] transition-colors"
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: "11px", fontWeight: 600, letterSpacing: "1px",
+                textTransform: "uppercase",
+                display: "flex", alignItems: "center", gap: "6px",
+                padding: "7px 14px",
+                background: INK, border: "none", color: WHITE,
+                cursor: "pointer", transition: "background 0.15s",
+              }}
+              onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = RED}
+              onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = INK}
             >
-              <Plus size={13} />
-              Create space
+              <Plus size={11} />
+              New Space
             </button>
           </div>
-        </div>
-
-        {/* Search */}
-        <div className="flex items-center gap-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded px-3 py-2 w-80 mb-3">
-          <Search size={13} className="text-[#9CA3AF] shrink-0" />
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search spaces"
-            className="bg-transparent font-ui text-[13px] text-[#111827] placeholder:text-[#9CA3AF] outline-none w-full"
-          />
-        </div>
-
-        {/* Filter row */}
-        <div className="relative inline-block">
-          <select className="appearance-none bg-[#FFFFFF] border border-[#E2E8F0] rounded px-3 py-1.5 font-ui text-[12px] text-[#6B7280] outline-none cursor-pointer pr-7">
-            <option>Filter by category</option>
-            {[...new Set(areas.map((a) => a.category).filter(Boolean))].map((cat) => (
-              <option key={cat}>{cat}</option>
-            ))}
-          </select>
-          <ChevronDown size={11} className="absolute right-2 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none" />
         </div>
       </div>
 
-      <div className={cn("flex-1 flex overflow-hidden")}>
+      <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
         {/* Main content */}
-        <div className="flex-1 overflow-y-auto">
+        <div style={{ flex: 1, overflowY: "auto" }}>
           {/* Table header */}
-          <div className="grid grid-cols-[32px_1fr_80px_120px_80px_80px_80px_40px] gap-4 px-7 py-2 border-b border-[#E2E8F0] bg-[#FFFFFF] sticky top-0 z-10">
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "32px 1fr 80px 120px 100px 80px 90px 40px",
+            gap: "16px",
+            padding: "10px 64px",
+            borderBottom: `1px solid ${RULE_L}`,
+            background: NEWSPRINT,
+            position: "sticky", top: 0, zIndex: 10,
+          }}>
             <div />
-            <button className="flex items-center gap-1 font-ui text-[11px] tracking-[0.12em] uppercase text-[#6B7280] hover:text-[#374151] transition-colors text-left">
-              Name <ChevronDown size={10} className="ml-0.5" />
-            </button>
-            <span className="font-ui text-[11px] tracking-[0.12em] uppercase text-[#9CA3AF]">Key</span>
-            <span className="font-ui text-[11px] tracking-[0.12em] uppercase text-[#9CA3AF]">Category</span>
-            <span className="font-ui text-[11px] tracking-[0.12em] uppercase text-[#9CA3AF]">Health</span>
-            <span className="font-ui text-[11px] tracking-[0.12em] uppercase text-[#9CA3AF]">Tasks</span>
-            <span className="font-ui text-[11px] tracking-[0.12em] uppercase text-[#9CA3AF]">Created</span>
-            <div />
+            {["Name", "Key", "Category", "Health", "Tasks", "Created", ""].map((col) => (
+              <span key={col} style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: "9px", fontWeight: 700, letterSpacing: "2px",
+                textTransform: "uppercase", color: INK_FAINT,
+              }}>
+                {col}
+              </span>
+            ))}
           </div>
 
           {filtered.length === 0 && (
-            <div className="px-7 py-20 text-center">
-              <LayoutGrid size={28} className="text-[#9CA3AF] mx-auto mb-4" />
-              <p className="font-ui text-[15px] text-[#6B7280] mb-1">
+            <div style={{ padding: "64px", textAlign: "center" }}>
+              <LayoutGrid size={28} color={INK_FAINT} style={{ margin: "0 auto 16px" }} />
+              <p style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", fontSize: "18px", color: INK_LIGHT, marginBottom: "6px" }}>
                 {search ? "No spaces match your search." : "No spaces yet."}
               </p>
               {!search && (
                 <>
-                  <p className="font-ui text-[12px] text-[#9CA3AF] mb-6">
+                  <p style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "11px", color: INK_FAINT, marginBottom: "24px" }}>
                     Create your first space or load demo data to explore the app.
                   </p>
-                  <div className="flex items-center justify-center gap-3">
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "12px" }}>
                     <button
                       onClick={() => setCreateOpen(true)}
-                      className="flex items-center gap-2 px-4 py-2 bg-[#4A9EE0] rounded font-ui text-[13px] font-medium text-white hover:bg-[#5AAFF0] transition-colors"
+                      style={{
+                        fontFamily: "'Inter', system-ui, sans-serif",
+                        fontSize: "11px", fontWeight: 600, letterSpacing: "1px",
+                        textTransform: "uppercase",
+                        display: "flex", alignItems: "center", gap: "6px",
+                        padding: "8px 16px", background: INK, border: "none",
+                        color: WHITE, cursor: "pointer",
+                      }}
                     >
-                      <Plus size={13} />
-                      Create first space
+                      <Plus size={11} /> Create first space
                     </button>
                     <button
                       onClick={handleSeed}
                       disabled={seeding}
-                      className="flex items-center gap-2 px-4 py-2 border border-[#E2E8F0] rounded font-ui text-[13px] text-[#6B7280] hover:text-[#111827] hover:border-[#D1D5DB] disabled:opacity-40 transition-colors"
+                      style={{
+                        fontFamily: "'Inter', system-ui, sans-serif",
+                        fontSize: "11px", fontWeight: 600, letterSpacing: "1px",
+                        textTransform: "uppercase",
+                        display: "flex", alignItems: "center", gap: "6px",
+                        padding: "8px 16px", border: `1px solid ${RULE_L}`,
+                        background: "transparent", color: INK_LIGHT,
+                        cursor: seeding ? "not-allowed" : "pointer",
+                        opacity: seeding ? 0.5 : 1,
+                      }}
                     >
-                      <Sparkles size={13} />
+                      <Sparkles size={11} />
                       {seeding ? "Loading demo…" : "Load demo data"}
                     </button>
                   </div>
@@ -180,87 +252,115 @@ export default function AreasPage() {
           )}
 
           {filtered.map((area) => {
-            const score      = (healthScores as Record<string, number>)[area._id] ?? 50;
-            const hColor     = healthColor(score);
-            const taskCount  = taskCountByArea[area._id] ?? 0;
-            const isStarred  = starredSet.has(area._id);
+            const score     = (healthScores as Record<string, number>)[area._id] ?? 50;
+            const hColor    = healthColor(score);
+            const taskCount = taskCountByArea[area._id] ?? 0;
+            const isStarred = starredSet.has(area._id);
 
             return (
               <div
                 key={area._id}
-                className="grid grid-cols-[32px_1fr_80px_120px_80px_80px_80px_40px] gap-4 px-7 py-3 border-b border-[#E2E8F0] hover:bg-[#FFFFFF] transition-colors items-center group"
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "32px 1fr 80px 120px 100px 80px 90px 40px",
+                  gap: "16px",
+                  padding: "13px 64px",
+                  borderBottom: `1px solid ${RULE_L}`,
+                  alignItems: "center",
+                  cursor: "pointer",
+                  transition: "background 0.08s",
+                }}
+                onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = "rgba(0,0,0,0.02)"}
+                onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = "transparent"}
               >
                 {/* Star */}
                 <button
                   onClick={() => toggleStar(area._id)}
-                  className={cn(
-                    "flex items-center justify-center transition-colors",
-                    isStarred ? "text-[#8B5CF6]" : "text-[#E2E8F0] hover:text-[#9CA3AF]"
-                  )}
+                  style={{
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    background: "none", border: "none", cursor: "pointer",
+                    color: isStarred ? RED : RULE_L,
+                    transition: "color 0.15s",
+                  }}
                 >
                   <Star size={14} fill={isStarred ? "currentColor" : "none"} />
                 </button>
 
                 {/* Name */}
-                <Link href={`/area/${area._id}`} className="flex items-center gap-3 min-w-0 group/link">
+                <Link href={`/area/${area._id}`} style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0, textDecoration: "none" }}>
                   <div
-                    className="w-7 h-7 rounded flex items-center justify-center shrink-0 text-[15px]"
-                    style={{ backgroundColor: `${area.color}22` }}
+                    style={{
+                      width: "28px", height: "28px",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      flexShrink: 0, fontSize: "15px",
+                      backgroundColor: `${area.color}22`,
+                    }}
                   >
                     {area.icon || (
-                      <span className="font-ui text-[11px] font-bold" style={{ color: area.color }}>
+                      <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "11px", fontWeight: 700, color: area.color }}>
                         {areaKey(area.name).slice(0, 2)}
                       </span>
                     )}
                   </div>
-                  <div className="min-w-0">
-                    <p className="font-ui text-[13px] font-medium text-[#4A9EE0] group-hover/link:underline truncate">
+                  <div style={{ minWidth: 0 }}>
+                    <p style={{
+                      fontFamily: "'Playfair Display', Georgia, serif",
+                      fontSize: "14px", fontWeight: 700, color: INK,
+                      overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                      marginBottom: area.description ? "1px" : 0,
+                    }}>
                       {area.name}
                     </p>
                     {area.description && (
-                      <p className="font-ui text-[11px] text-[#6B7280] truncate">{area.description}</p>
+                      <p style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "10px", color: INK_FAINT, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        {area.description}
+                      </p>
                     )}
                   </div>
                 </Link>
 
                 {/* Key */}
-                <span className="font-ui text-[12px] text-[#6B7280] tracking-[0.05em]">
+                <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "11px", color: INK_FAINT, letterSpacing: "0.05em" }}>
                   {areaKey(area.name)}
                 </span>
 
                 {/* Category */}
                 {area.category ? (
-                  <span className="font-ui text-[11px] text-[#6B7280] bg-[#F1F5F9] border border-[#E2E8F0] px-2 py-0.5 rounded truncate">
+                  <span style={{
+                    fontFamily: "'Inter', system-ui, sans-serif",
+                    fontSize: "10px", fontWeight: 600, letterSpacing: "1px",
+                    textTransform: "uppercase", color: INK_LIGHT,
+                    border: `1px solid ${RULE_L}`, padding: "2px 7px",
+                    overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                    display: "inline-block",
+                  }}>
                     {area.category}
                   </span>
                 ) : (
-                  <span className="font-ui text-[11px] text-[#9CA3AF]">—</span>
+                  <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "11px", color: INK_FAINT }}>—</span>
                 )}
 
                 {/* Health score */}
-                <div className="flex items-center gap-2">
-                  <div className="w-10 h-1.5 bg-[#E2E8F0] rounded-full overflow-hidden">
-                    <div
-                      className="h-full rounded-full transition-all"
-                      style={{ width: `${score}%`, backgroundColor: hColor }}
-                    />
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <div style={{ width: "36px", height: "4px", background: RULE_L, overflow: "hidden" }}>
+                    <div style={{ height: "100%", width: `${score}%`, background: hColor, transition: "width 0.3s" }} />
                   </div>
-                  <span className="font-ui text-[11px] tabular-nums" style={{ color: hColor }}>{score}</span>
+                  <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "11px", color: hColor, fontVariantNumeric: "tabular-nums" }}>{score}</span>
                 </div>
 
                 {/* Task count */}
-                <div className="flex items-center gap-1.5">
-                  <CheckSquare size={12} className="text-[#9CA3AF]" />
-                  <span className="font-ui text-[12px] text-[#6B7280]">{taskCount}</span>
+                <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                  <CheckSquare size={11} color={INK_FAINT} />
+                  <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "12px", color: INK_LIGHT }}>{taskCount}</span>
                 </div>
 
                 {/* Created */}
-                <span className="font-ui text-[11px] text-[#9CA3AF]">
+                <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "11px", color: INK_FAINT }}>
                   {format(new Date(area.createdAt), "d MMM yy")}
                 </span>
 
                 {/* Actions */}
-                <button className="opacity-0 group-hover:opacity-100 flex items-center justify-center text-[#6B7280] hover:text-[#111827] transition-all">
+                <button style={{ background: "none", border: "none", cursor: "pointer", color: INK_FAINT, display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <MoreHorizontal size={14} />
                 </button>
               </div>
@@ -270,44 +370,47 @@ export default function AreasPage() {
 
         {/* Templates panel */}
         {showTemplates && (
-          <div className="w-[300px] border-l border-[#E2E8F0] bg-[#FFFFFF] flex flex-col shrink-0">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-[#E2E8F0]">
+          <div style={{ width: "280px", borderLeft: `1px solid ${RULE_L}`, background: WHITE, display: "flex", flexDirection: "column", flexShrink: 0 }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 20px", borderBottom: `1px solid ${RULE_L}` }}>
               <div>
-                <p className="font-ui text-[13px] font-medium text-[#111827]">Templates</p>
-                <p className="font-ui text-[11px] text-[#6B7280] mt-0.5">Pick a template for your next space</p>
+                <p style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "16px", fontWeight: 700, color: INK }}>Templates</p>
+                <p style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "10px", color: INK_FAINT, marginTop: "2px" }}>Pick a template to get started</p>
               </div>
               <button
                 onClick={() => setShowTemplates(false)}
-                className="text-[#6B7280] hover:text-[#111827] transition-colors"
+                style={{ background: "none", border: "none", cursor: "pointer", color: INK_FAINT }}
               >
                 <X size={14} />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto py-2">
+            <div style={{ flex: 1, overflowY: "auto", padding: "8px 0" }}>
               {TEMPLATES.map((t) => (
                 <button
                   key={t.id}
                   onClick={() => { setCreateOpen(true); setShowTemplates(false); }}
-                  className="w-full flex items-start gap-3 px-5 py-3 hover:bg-[#FFFFFF] transition-colors text-left"
+                  style={{
+                    width: "100%", display: "flex", alignItems: "flex-start", gap: "12px",
+                    padding: "10px 20px", background: "none", border: "none", cursor: "pointer",
+                    textAlign: "left", transition: "background 0.08s",
+                  }}
+                  onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = NEWSPRINT}
+                  onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = "transparent"}
                 >
-                  <div
-                    className="w-8 h-8 rounded flex items-center justify-center text-[16px] shrink-0"
-                    style={{ backgroundColor: `${t.color}22` }}
-                  >
+                  <div style={{ width: "30px", height: "30px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "15px", flexShrink: 0, backgroundColor: `${t.color}22` }}>
                     {t.icon}
                   </div>
-                  <div className="min-w-0">
-                    <p className="font-ui text-[13px] text-[#111827]">{t.name}</p>
-                    <p className="font-ui text-[11px] text-[#6B7280] mt-0.5">{t.description}</p>
+                  <div style={{ minWidth: 0 }}>
+                    <p style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "12px", fontWeight: 600, color: INK }}>{t.name}</p>
+                    <p style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "10px", color: INK_FAINT, marginTop: "2px" }}>{t.description}</p>
                   </div>
                 </button>
               ))}
 
-              <div className="px-5 pt-3 border-t border-[#E2E8F0] mt-1">
+              <div style={{ padding: "12px 20px", borderTop: `1px solid ${RULE_L}`, marginTop: "4px" }}>
                 <button
                   onClick={() => { setCreateOpen(true); setShowTemplates(false); }}
-                  className="font-ui text-[12px] text-[#4A9EE0] hover:text-[#5AAFF0] transition-colors"
+                  style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "11px", fontWeight: 600, letterSpacing: "1px", textTransform: "uppercase", color: RED, background: "none", border: "none", cursor: "pointer" }}
                 >
                   + Create blank space
                 </button>

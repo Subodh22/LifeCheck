@@ -18,8 +18,8 @@ interface Props {
 const PRIORITIES = [
   { value: "urgent", label: "Urgent", color: "#E85538" },
   { value: "high", label: "High", color: "#E8A838" },
-  { value: "medium", label: "Medium", color: "#8B5CF6" },
-  { value: "low", label: "Low", color: "#6B7280" },
+  { value: "medium", label: "Medium", color: "#C41E3A" },
+  { value: "low", label: "Low", color: "#555550" },
 ] as const;
 
 const STATUSES = [
@@ -77,15 +77,15 @@ export default function CreateTaskModal({ open, onClose, userId, areas, defaultA
       {/* Modal */}
       <form
         onSubmit={handleSubmit}
-        className="relative w-[520px] bg-[#FFFFFF] border border-[#E2E8F0] rounded-md shadow-2xl overflow-hidden"
+        className="relative w-[520px] bg-[#FFFFFF] border border-[#0D0D0D] overflow-hidden"
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#E2E8F0]">
-          <span className="font-ui text-[13px] font-medium text-[#111827]">Create task</span>
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#CCCCBC]">
+          <span className="font-ui text-[13px] font-medium text-[#0D0D0D]">Create task</span>
           <button
             type="button"
             onClick={onClose}
-            className="text-[#6B7280] hover:text-[#111827] transition-colors"
+            className="text-[#555550] hover:text-[#0D0D0D] transition-colors"
           >
             <X size={16} />
           </button>
@@ -99,7 +99,7 @@ export default function CreateTaskModal({ open, onClose, userId, areas, defaultA
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Task title"
             required
-            className="w-full bg-transparent font-ui text-[15px] text-[#111827] placeholder:text-[#9CA3AF] outline-none border-b border-[#E2E8F0] pb-2 focus:border-[#8B5CF6] transition-colors"
+            className="w-full bg-transparent font-ui text-[15px] text-[#0D0D0D] placeholder:text-[#999990] outline-none border-b border-[#CCCCBC] pb-2 focus:border-[#0D0D0D] transition-colors"
           />
 
           {/* Description */}
@@ -108,18 +108,18 @@ export default function CreateTaskModal({ open, onClose, userId, areas, defaultA
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Add a description…"
             rows={2}
-            className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded px-3 py-2 font-ui text-[13px] text-[#111827] placeholder:text-[#9CA3AF] outline-none focus:border-[#D1D5DB] transition-colors resize-none"
+            className="w-full bg-[#FAFAF5] border border-[#CCCCBC] px-3 py-2 font-ui text-[13px] text-[#0D0D0D] placeholder:text-[#999990] outline-none focus:border-[#0D0D0D] transition-colors resize-none"
           />
 
           {/* Meta row */}
           <div className="grid grid-cols-2 gap-3">
             {/* Area */}
             <div>
-              <label className="block text-[#6B7280] font-ui text-[11px] tracking-[0.12em] uppercase mb-1.5">Area</label>
+              <label className="block text-[#555550] font-ui text-[11px] tracking-[0.12em] uppercase mb-1.5">Area</label>
               <select
                 value={areaId}
                 onChange={(e) => setAreaId(e.target.value as Id<"areas">)}
-                className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded px-2.5 py-1.5 font-ui text-[13px] text-[#111827] outline-none appearance-none cursor-pointer"
+                className="w-full bg-[#FAFAF5] border border-[#CCCCBC] px-2.5 py-1.5 font-ui text-[13px] text-[#0D0D0D] outline-none appearance-none cursor-pointer"
               >
                 {areas.map((a) => (
                   <option key={a._id} value={a._id}>{a.name}</option>
@@ -129,17 +129,17 @@ export default function CreateTaskModal({ open, onClose, userId, areas, defaultA
 
             {/* Priority */}
             <div>
-              <label className="block text-[#6B7280] font-ui text-[11px] tracking-[0.12em] uppercase mb-1.5">Priority</label>
+              <label className="block text-[#555550] font-ui text-[11px] tracking-[0.12em] uppercase mb-1.5">Priority</label>
               <div className="flex gap-1.5">
                 {PRIORITIES.map((p) => (
                   <button
                     key={p.value}
                     type="button"
                     onClick={() => setPriority(p.value)}
-                    className="flex-1 py-1.5 rounded border font-ui text-[11px] transition-colors"
+                    className="flex-1 py-1.5 border font-ui text-[11px] transition-colors"
                     style={{
-                      borderColor: priority === p.value ? p.color : "#E2E8F0",
-                      color: priority === p.value ? p.color : "#6B7280",
+                      borderColor: priority === p.value ? p.color : "#CCCCBC",
+                      color: priority === p.value ? p.color : "#555550",
                       backgroundColor: priority === p.value ? `${p.color}18` : "transparent",
                     }}
                   >
@@ -153,11 +153,11 @@ export default function CreateTaskModal({ open, onClose, userId, areas, defaultA
           <div className="grid grid-cols-2 gap-3">
             {/* Status */}
             <div>
-              <label className="block text-[#6B7280] font-ui text-[11px] tracking-[0.12em] uppercase mb-1.5">Status</label>
+              <label className="block text-[#555550] font-ui text-[11px] tracking-[0.12em] uppercase mb-1.5">Status</label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as typeof status)}
-                className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded px-2.5 py-1.5 font-ui text-[13px] text-[#111827] outline-none appearance-none cursor-pointer"
+                className="w-full bg-[#FAFAF5] border border-[#CCCCBC] px-2.5 py-1.5 font-ui text-[13px] text-[#0D0D0D] outline-none appearance-none cursor-pointer"
               >
                 {STATUSES.map((s) => (
                   <option key={s.value} value={s.value}>{s.label}</option>
@@ -167,30 +167,30 @@ export default function CreateTaskModal({ open, onClose, userId, areas, defaultA
 
             {/* Due date */}
             <div>
-              <label className="block text-[#6B7280] font-ui text-[11px] tracking-[0.12em] uppercase mb-1.5">Due date</label>
+              <label className="block text-[#555550] font-ui text-[11px] tracking-[0.12em] uppercase mb-1.5">Due date</label>
               <input
                 type="date"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
-                className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded px-2.5 py-1.5 font-ui text-[13px] text-[#111827] outline-none [color-scheme:light] cursor-pointer"
+                className="w-full bg-[#FAFAF5] border border-[#CCCCBC] px-2.5 py-1.5 font-ui text-[13px] text-[#0D0D0D] outline-none [color-scheme:light] cursor-pointer"
               />
             </div>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-[#E2E8F0]">
+        <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-[#CCCCBC]">
           <button
             type="button"
             onClick={onClose}
-            className="px-3 py-1.5 font-ui text-[13px] text-[#6B7280] hover:text-[#111827] transition-colors"
+            className="px-3 py-1.5 font-ui text-[13px] text-[#555550] hover:text-[#0D0D0D] transition-colors"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={!title.trim() || !areaId || saving}
-            className="px-4 py-1.5 bg-[#8B5CF6] rounded font-ui text-[13px] font-medium text-[#FFFFFF] hover:bg-[#7C3AED] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="px-4 py-1.5 bg-[#0D0D0D] hover:bg-[#C41E3A] font-ui text-[13px] font-medium text-[#FFFFFF] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >
             {saving ? "Creating…" : "Create task"}
           </button>

@@ -12,7 +12,6 @@ import {
   CalendarDays,
   Plus,
   Settings,
-  ChevronDown,
 } from "lucide-react";
 import { useState } from "react";
 import CreateTaskModal from "@/components/CreateTaskModal";
@@ -36,111 +35,144 @@ export default function Sidebar({ userId }: { userId: string }) {
 
   return (
     <>
-      <aside className="w-[220px] h-full bg-[#18181B] flex flex-col shrink-0 select-none">
-
+      <aside
+        className="w-[220px] h-full flex flex-col shrink-0 select-none"
+        style={{ background: "#F5F5F7", borderRight: "1px solid #E5E5EA" }}
+      >
         {/* Logo */}
-        <div className="px-4 h-12 flex items-center gap-2.5 shrink-0">
-          <div className="w-6 h-6 rounded-md bg-[#8B5CF6] flex items-center justify-center shrink-0">
-            <span className="font-ui font-bold text-[10px] text-white tracking-tight">LO</span>
+        <div className="px-4 h-14 flex items-center gap-2 shrink-0">
+          <div
+            className="w-5 h-5 rounded flex items-center justify-center shrink-0"
+            style={{ background: "#1C72C4" }}
+          >
+            <span style={{ color: "#fff", fontSize: "9px", fontWeight: 700, letterSpacing: "-0.02em" }}>LO</span>
           </div>
-          <span className="font-ui text-[14px] font-semibold text-[#FAFAFA]">Life OS</span>
+          <span style={{ fontSize: "14px", fontWeight: 600, color: "#1C1C1E", letterSpacing: "-0.01em" }}>
+            Life OS
+          </span>
         </div>
 
-        {/* Create button */}
+        {/* New task button */}
         <div className="px-3 pb-3 shrink-0">
           <button
             onClick={() => setCreateOpen(true)}
-            className="w-full flex items-center gap-2 h-8 px-3 rounded-md bg-[#27272A] text-[#A1A1AA] font-ui text-[13px] hover:bg-[#3F3F46] hover:text-[#D4D4D8] transition-colors"
+            className="w-full flex items-center gap-2 h-8 px-3 rounded transition-colors"
+            style={{ background: "#EBEBF0", color: "#6B6B6B", fontSize: "13px" }}
+            onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = "#E0E0E5"}
+            onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = "#EBEBF0"}
           >
-            <Plus size={13} />
+            <Plus size={13} strokeWidth={2} />
             New task
           </button>
         </div>
 
         {/* Nav */}
-        <nav className="px-2 space-y-0.5 shrink-0">
-          {NAV_ITEMS.map(({ href, label, icon: Icon }) => (
-            <Link
-              key={href}
-              href={href}
-              className={cn(
-                "flex items-center gap-2.5 px-2.5 py-2 rounded-md text-[13px] font-ui transition-colors",
-                pathname === href
-                  ? "bg-[#3F3F46] text-[#FAFAFA]"
-                  : "text-[#71717A] hover:bg-[#27272A] hover:text-[#D4D4D8]"
-              )}
-            >
-              <Icon size={14} strokeWidth={1.5} />
-              {label}
-            </Link>
-          ))}
+        <nav className="px-2 flex flex-col gap-px shrink-0">
+          {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+            const active = pathname === href;
+            return (
+              <Link
+                key={href}
+                href={href}
+                className="flex items-center gap-2.5 px-3 h-9 rounded transition-colors"
+                style={active
+                  ? { background: "#E8F0FA", color: "#1C72C4", fontSize: "13px", fontWeight: 500 }
+                  : { color: "#6B6B6B", fontSize: "13px", fontWeight: 400 }
+                }
+                onMouseEnter={e => {
+                  if (!active) (e.currentTarget as HTMLElement).style.background = "#EBEBF0";
+                }}
+                onMouseLeave={e => {
+                  if (!active) (e.currentTarget as HTMLElement).style.background = "";
+                }}
+              >
+                <Icon
+                  size={14}
+                  strokeWidth={active ? 2 : 1.5}
+                  style={{ color: active ? "#1C72C4" : "#8E8E93" }}
+                />
+                {label}
+              </Link>
+            );
+          })}
         </nav>
 
-        <div className="border-t border-[#27272A] mx-3 my-2 shrink-0" />
+        <div className="mx-3 my-3 shrink-0" style={{ borderTop: "1px solid #E5E5EA" }} />
 
         {/* Areas */}
         <div className="flex-1 overflow-y-auto min-h-0">
-          <button
-            onClick={() => setAreasOpen((v) => !v)}
-            className="flex items-center gap-1.5 px-4 py-1.5 w-full text-left"
-          >
-            <ChevronDown
-              size={10}
-              className={cn("text-[#52525B] transition-transform", !areasOpen && "-rotate-90")}
-            />
-            <span className="text-[#52525B] text-[10px] font-ui tracking-[0.14em] uppercase font-semibold">
+          <div className="px-5 mb-1">
+            <span style={{ fontSize: "10px", fontWeight: 600, color: "#AEAEB2", letterSpacing: "0.08em", textTransform: "uppercase" }}>
               Areas
             </span>
-          </button>
+          </div>
 
-          {areasOpen && (
-            <div className="px-2 pb-2 space-y-0.5">
-              {areas.map((area) => {
-                const score    = (healthScores as Record<string, number>)[area._id] ?? 50;
-                const isActive = pathname.startsWith(`/area/${area._id}`);
-                return (
-                  <Link
-                    key={area._id}
-                    href={`/area/${area._id}`}
-                    className={cn(
-                      "flex items-center gap-2.5 px-2.5 py-2 rounded-md text-[13px] font-ui transition-colors",
-                      isActive
-                        ? "bg-[#3F3F46] text-[#FAFAFA]"
-                        : "text-[#71717A] hover:bg-[#27272A] hover:text-[#D4D4D8]"
-                    )}
-                  >
-                    {area.icon ? (
-                      <span className="text-[13px] shrink-0 leading-none">{area.icon}</span>
-                    ) : (
-                      <span className="w-2 h-2 rounded-sm shrink-0" style={{ backgroundColor: area.color }} />
-                    )}
-                    <span className="flex-1 truncate">{area.name}</span>
+          <div className="px-2 flex flex-col gap-px">
+            {areas.map((area) => {
+              const score    = (healthScores as Record<string, number>)[area._id] ?? 50;
+              const isActive = pathname.startsWith(`/area/${area._id}`);
+              return (
+                <Link
+                  key={area._id}
+                  href={`/area/${area._id}`}
+                  className="flex items-center gap-2.5 px-3 h-9 rounded transition-colors"
+                  style={isActive
+                    ? { background: "#E8F0FA", color: "#1C72C4", fontSize: "13px", fontWeight: 500 }
+                    : { color: "#6B6B6B", fontSize: "13px", fontWeight: 400 }
+                  }
+                  onMouseEnter={e => {
+                    if (!isActive) (e.currentTarget as HTMLElement).style.background = "#EBEBF0";
+                  }}
+                  onMouseLeave={e => {
+                    if (!isActive) (e.currentTarget as HTMLElement).style.background = "";
+                  }}
+                >
+                  {area.icon ? (
+                    <span style={{ fontSize: "13px", lineHeight: 1, flexShrink: 0 }}>{area.icon}</span>
+                  ) : (
                     <span
-                      className="w-1.5 h-1.5 rounded-full shrink-0"
-                      style={{ backgroundColor: healthColor(score) }}
-                      title={`Health: ${score}`}
+                      className="shrink-0"
+                      style={{ width: "8px", height: "8px", borderRadius: "50%", background: area.color }}
                     />
-                  </Link>
-                );
-              })}
-              <button
-                onClick={() => setAreaOpen(true)}
-                className="flex items-center gap-2.5 px-2.5 py-2 rounded-md text-[12px] font-ui text-[#52525B] hover:text-[#71717A] hover:bg-[#27272A] w-full transition-colors"
-              >
-                <Plus size={12} />
-                Add area
-              </button>
-            </div>
-          )}
+                  )}
+                  <span className="flex-1 truncate">{area.name}</span>
+                  <span
+                    style={{ width: "6px", height: "6px", borderRadius: "50%", background: healthColor(score), flexShrink: 0 }}
+                    title={`Health: ${score}`}
+                  />
+                </Link>
+              );
+            })}
+
+            <button
+              onClick={() => setAreaOpen(true)}
+              className="flex items-center gap-2.5 px-3 h-9 rounded w-full transition-colors"
+              style={{ color: "#AEAEB2", fontSize: "13px", fontWeight: 400 }}
+              onMouseEnter={e => {
+                (e.currentTarget as HTMLElement).style.background = "#EBEBF0";
+                (e.currentTarget as HTMLElement).style.color = "#6B6B6B";
+              }}
+              onMouseLeave={e => {
+                (e.currentTarget as HTMLElement).style.background = "";
+                (e.currentTarget as HTMLElement).style.color = "#AEAEB2";
+              }}
+            >
+              <Plus size={13} strokeWidth={1.5} />
+              Add area
+            </button>
+          </div>
         </div>
 
         {/* Settings */}
-        <div className="border-t border-[#27272A] px-2 py-2 shrink-0">
+        <div className="px-2 py-2 shrink-0" style={{ borderTop: "1px solid #E5E5EA" }}>
           <Link
             href="/settings"
-            className="flex items-center gap-2.5 px-2.5 py-2 rounded-md text-[13px] font-ui text-[#71717A] hover:bg-[#27272A] hover:text-[#D4D4D8] transition-colors"
+            className="flex items-center gap-2.5 px-3 h-9 rounded transition-colors"
+            style={{ color: "#6B6B6B", fontSize: "13px" }}
+            onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = "#EBEBF0"}
+            onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = ""}
           >
-            <Settings size={14} strokeWidth={1.5} />
+            <Settings size={14} strokeWidth={1.5} style={{ color: "#8E8E93" }} />
             Settings
           </Link>
         </div>

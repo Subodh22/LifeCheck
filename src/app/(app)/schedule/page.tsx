@@ -37,7 +37,7 @@ import {
 const HOUR_START  = 6;
 const HOUR_END    = 22;
 const HOURS       = Array.from({ length: HOUR_END - HOUR_START }, (_, i) => HOUR_START + i);
-const CELL_HEIGHT = 64; // px per hour
+const CELL_HEIGHT = 80; // px per hour
 const SNAP_MINS   = 15;
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -77,10 +77,10 @@ function durationMins(start: number, end: number) {
 }
 
 function priorityColor(p: string) {
-  if (p === "urgent") return "#E85538";
-  if (p === "high")   return "#E8A838";
-  if (p === "medium") return "#4A9EE0";
-  return "#9CA3AF";
+  if (p === "urgent") return "#C41E3A";
+  if (p === "high")   return "#B08A4E";
+  if (p === "medium") return "#0D0D0D";
+  return "#999990";
 }
 
 function gcalColor(colorId?: string) {
@@ -113,18 +113,18 @@ const UnscheduledChip = memo(function UnscheduledChip({
       {...listeners}
       {...attributes}
       style={{ transform: CSS.Translate.toString(transform), opacity: isDragging ? 0.4 : 1 }}
-      className="flex items-center gap-2 px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded cursor-grab hover:border-[#D1D5DB] transition-colors group"
+      className="flex items-center gap-2 px-3 py-2 bg-[#FAFAF5] border border-[#CCCCBC] cursor-grab hover:border-[#999990] transition-colors group"
     >
-      <GripVertical size={11} className="text-[#9CA3AF] shrink-0" />
+      <GripVertical size={11} className="text-[#999990] shrink-0" />
       <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: priorityColor(task.priority) }} />
-      {areaColor && <span className="w-1.5 h-1.5 rounded-sm shrink-0" style={{ backgroundColor: areaColor }} />}
-      <span className="font-ui text-[12px] text-[#374151] leading-snug flex-1 min-w-0 truncate">
+      {areaColor && <span className="w-1.5 h-1.5 shrink-0" style={{ backgroundColor: areaColor }} />}
+      <span className="font-ui text-[12px] text-[#2A2A2A] leading-snug flex-1 min-w-0 truncate">
         {task.title}
       </span>
       <button
         onPointerDown={(e) => e.stopPropagation()}
         onClick={(e) => { e.stopPropagation(); onDelete(task._id); }}
-        className="opacity-0 group-hover:opacity-100 text-[#9CA3AF] hover:text-[#E85538] transition-all shrink-0"
+        className="opacity-0 group-hover:opacity-100 text-[#999990] hover:text-[#C41E3A] transition-all shrink-0"
         title="Delete task"
       >
         <Trash2 size={10} />
@@ -142,7 +142,7 @@ const TimeSlotCell = memo(function TimeSlotCell({
   return (
     <div
       ref={setNodeRef}
-      className={cn("absolute w-full", isOver && "bg-[#8B5CF60A]")}
+      className={cn("absolute w-full", isOver && "bg-[#C41E3A0A]")}
       style={{
         top:    (hour - HOUR_START + minute / 60) * CELL_HEIGHT,
         height: (SNAP_MINS / 60) * CELL_HEIGHT,
@@ -178,21 +178,24 @@ const ScheduledTaskBlock = memo(function ScheduledTaskBlock({
       {...listeners}
       {...attributes}
       onClick={() => onSelect(task)}
-      style={{ transform: CSS.Translate.toString(transform), top: topPx, height: heightPx, opacity: isDragging ? 0.5 : 1 }}
+      style={{
+        transform: CSS.Translate.toString(transform),
+        top: topPx, height: heightPx, opacity: isDragging ? 0.5 : 1,
+        borderLeft: done ? `3px solid #CCCCBC` : `3px solid #0D0D0D`,
+        backgroundColor: done ? "#F5F5F0" : "#FFFFFF",
+      }}
       className={cn(
-        "absolute left-0.5 right-0.5 rounded px-2 py-1 z-10 group overflow-hidden",
-        done
-          ? "bg-[#1A1A1D] border border-[#E2E8F0] cursor-default"
-          : "bg-[#4A9EE018] border border-[#4A9EE040] cursor-grab"
+        "absolute left-1 right-1 px-2 py-1 z-10 group overflow-hidden border border-[#CCCCBC]",
+        done ? "cursor-default" : "cursor-grab"
       )}
     >
       <p className={cn(
-        "font-ui text-[11px] font-medium leading-tight truncate pr-8",
-        done ? "line-through text-[#9CA3AF]" : "text-[#4A9EE0]"
+        "font-display text-[12px] font-bold leading-tight truncate pr-8",
+        done ? "line-through text-[#999990]" : "text-[#0D0D0D]"
       )}>
         {task.title}
       </p>
-      <p className={cn("font-ui text-[10px] tabular-nums", done ? "text-[#E2E8F0]" : "text-[#4A9EE060]")}>
+      <p className={cn("font-ui text-[10px] tabular-nums mt-0.5", done ? "text-[#CCCCBC]" : "text-[#555550]")}>
         {fmtTime(start)} – {fmtTime(end)}
       </p>
 
@@ -202,7 +205,7 @@ const ScheduledTaskBlock = memo(function ScheduledTaskBlock({
           <button
             onPointerDown={(e) => e.stopPropagation()}
             onClick={(e) => { e.stopPropagation(); onUndone(task._id); }}
-            className="text-[#4CAF6B] hover:text-[#9CA3AF] transition-colors"
+            className="text-[#4CAF6B] hover:text-[#999990] transition-colors"
             title="Mark undone"
           >
             <Check size={9} />
@@ -211,7 +214,7 @@ const ScheduledTaskBlock = memo(function ScheduledTaskBlock({
           <button
             onPointerDown={(e) => e.stopPropagation()}
             onClick={(e) => { e.stopPropagation(); onComplete(task._id); }}
-            className="text-[#9CA3AF] hover:text-[#4CAF6B] transition-colors"
+            className="text-[#999990] hover:text-[#4CAF6B] transition-colors"
             title="Mark done"
           >
             <Check size={9} />
@@ -220,7 +223,7 @@ const ScheduledTaskBlock = memo(function ScheduledTaskBlock({
         <button
           onPointerDown={(e) => e.stopPropagation()}
           onClick={(e) => { e.stopPropagation(); onUnschedule(task._id); }}
-          className="text-[#9CA3AF] hover:text-[#E85538] transition-colors"
+          className="text-[#999990] hover:text-[#C41E3A] transition-colors"
           title="Remove from calendar"
         >
           <Unlink size={9} />
@@ -252,11 +255,11 @@ const GCalEventBlock = memo(function GCalEventBlock({
 
   return (
     <div
-      style={{ top: topPx, height: heightPx, borderLeftColor: color, backgroundColor: `${color}12` }}
-      className="absolute left-0.5 right-0.5 rounded border-l-2 border border-transparent px-2 py-0.5 overflow-hidden pointer-events-auto group z-5"
+      style={{ top: topPx, height: heightPx, borderLeftColor: color, backgroundColor: `${color}0F` }}
+      className="absolute left-1 right-1 border-l-[3px] border border-[#CCCCBC] px-2 py-1 overflow-hidden pointer-events-auto group z-5"
     >
-      <p className="font-ui text-[11px] leading-tight truncate pr-8" style={{ color }}>{event.summary}</p>
-      <p className="font-ui text-[10px] tabular-nums" style={{ color: `${color}80` }}>
+      <p className="font-display text-[12px] font-bold leading-tight truncate pr-8" style={{ color }}>{event.summary}</p>
+      <p className="font-ui text-[10px] tabular-nums mt-0.5" style={{ color: `${color}99` }}>
         {fmtTime(start)} – {fmtTime(end)}
       </p>
       <div className="absolute top-0.5 right-0.5 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -266,7 +269,7 @@ const GCalEventBlock = memo(function GCalEventBlock({
             target="_blank"
             rel="noreferrer"
             onPointerDown={(e) => e.stopPropagation()}
-            className="p-0.5 rounded hover:bg-white/10 transition-colors"
+            className="p-0.5 hover:bg-white/10 transition-colors"
             style={{ color }}
           >
             <ExternalLink size={9} />
@@ -275,7 +278,7 @@ const GCalEventBlock = memo(function GCalEventBlock({
         <button
           onPointerDown={(e) => e.stopPropagation()}
           onClick={() => onDelete(event.id)}
-          className="p-0.5 rounded hover:bg-white/10 transition-colors text-[#E85538]"
+          className="p-0.5 hover:bg-white/10 transition-colors text-[#C41E3A]"
         >
           <Trash2 size={9} />
         </button>
@@ -286,9 +289,9 @@ const GCalEventBlock = memo(function GCalEventBlock({
 
 function DragOverlayChip({ title }: { title: string }) {
   return (
-    <div className="flex items-center gap-2 px-3 py-2 bg-[#F5F3FF] border border-[#8B5CF6] rounded shadow-xl cursor-grabbing">
-      <GripVertical size={11} className="text-[#8B5CF6]" />
-      <span className="font-ui text-[12px] text-[#111827]">{title}</span>
+    <div className="flex items-center gap-2 px-3 py-2 bg-[#FAFAF5] border border-[#C41E3A] cursor-grabbing">
+      <GripVertical size={11} className="text-[#C41E3A]" />
+      <span className="font-ui text-[12px] text-[#0D0D0D]">{title}</span>
     </div>
   );
 }
@@ -298,10 +301,10 @@ const DayColumnGrid = memo(function DayColumnGrid({ dayIdx }: { dayIdx: number }
   return (
     <>
       {HOURS.map((h) => (
-        <div key={h} className="absolute w-full border-t border-[#1A1A1D]" style={{ top: (h - HOUR_START) * CELL_HEIGHT }} />
+        <div key={h} className="absolute w-full border-t border-[#CCCCBC]" style={{ top: (h - HOUR_START) * CELL_HEIGHT }} />
       ))}
       {HOURS.map((h) => (
-        <div key={`${h}-h`} className="absolute w-full border-t border-dashed border-[#16161A]" style={{ top: (h - HOUR_START + 0.5) * CELL_HEIGHT }} />
+        <div key={`${h}-h`} className="absolute w-full border-t border-dotted border-[#E8E8E0]" style={{ top: (h - HOUR_START + 0.5) * CELL_HEIGHT }} />
       ))}
       {HOURS.flatMap((h) =>
         [0, 15, 30, 45].map((m) => (
@@ -325,10 +328,10 @@ const DURATION_PRESETS = [
 ];
 
 const PRIORITY_OPTIONS = [
-  { value: "urgent", label: "Urgent", color: "#E85538" },
-  { value: "high",   label: "High",   color: "#E8A838" },
-  { value: "medium", label: "Medium", color: "#4A9EE0" },
-  { value: "low",    label: "Low",    color: "#9CA3AF" },
+  { value: "urgent", label: "Urgent", color: "#C41E3A" },
+  { value: "high",   label: "High",   color: "#B08A4E" },
+  { value: "medium", label: "Medium", color: "#0D0D0D" },
+  { value: "low",    label: "Low",    color: "#999990" },
 ] as const;
 
 function tsToTimeStr(ts: number) {
@@ -394,14 +397,14 @@ function TaskEditPanel({
   const currentDurationMins = Math.round((end - start) / 60000);
 
   return (
-    <div className="w-[280px] shrink-0 border-l border-[#E2E8F0] flex flex-col bg-[#FFFFFF] overflow-y-auto">
+    <div className="w-[280px] shrink-0 border-l border-[#CCCCBC] flex flex-col bg-[#FAFAF5] overflow-y-auto">
       {/* Panel header */}
-      <div className="px-4 py-3 border-b border-[#E2E8F0] flex items-center justify-between shrink-0">
+      <div className="px-4 py-3 border-b border-[#CCCCBC] flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2">
-          <Clock size={13} className="text-[#6B7280]" />
-          <span className="font-ui text-[12px] text-[#6B7280]">Edit Task</span>
+          <Clock size={13} className="text-[#555550]" />
+          <span className="font-ui text-[12px] text-[#555550]">Edit Task</span>
         </div>
-        <button onClick={onClose} className="text-[#9CA3AF] hover:text-[#111827] transition-colors">
+        <button onClick={onClose} className="text-[#999990] hover:text-[#0D0D0D] transition-colors">
           <X size={14} />
         </button>
       </div>
@@ -410,49 +413,49 @@ function TaskEditPanel({
 
         {/* Title */}
         <div className="space-y-1.5">
-          <label className="font-ui text-[10px] uppercase tracking-[0.12em] text-[#9CA3AF]">Title</label>
+          <label className="font-ui text-[10px] uppercase tracking-[0.12em] text-[#999990]">Title</label>
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded px-3 py-2 font-ui text-[13px] text-[#111827] placeholder-[#9CA3AF] focus:outline-none focus:border-[#4A9EE0] transition-colors"
+            className="w-full bg-[#FAFAF5] border border-[#CCCCBC] px-3 py-2 font-ui text-[13px] text-[#0D0D0D] placeholder-[#999990] focus:outline-none focus:border-[#0D0D0D] transition-colors"
           />
         </div>
 
         {/* Time */}
         <div className="space-y-1.5">
-          <label className="font-ui text-[10px] uppercase tracking-[0.12em] text-[#9CA3AF]">Time</label>
+          <label className="font-ui text-[10px] uppercase tracking-[0.12em] text-[#999990]">Time</label>
           <div className="flex items-center gap-2">
             <input
               type="time"
               value={startStr}
               onChange={(e) => setStartStr(e.target.value)}
               onBlur={() => applyTime(startStr, endStr)}
-              className="flex-1 bg-[#FFFFFF] border border-[#E2E8F0] rounded px-2 py-1.5 font-ui text-[12px] text-[#111827] focus:outline-none focus:border-[#4A9EE0] transition-colors tabular-nums"
+              className="flex-1 bg-[#FAFAF5] border border-[#CCCCBC] px-2 py-1.5 font-ui text-[12px] text-[#0D0D0D] focus:outline-none focus:border-[#0D0D0D] transition-colors tabular-nums"
             />
-            <span className="font-ui text-[11px] text-[#9CA3AF]">→</span>
+            <span className="font-ui text-[11px] text-[#999990]">→</span>
             <input
               type="time"
               value={endStr}
               onChange={(e) => setEndStr(e.target.value)}
               onBlur={() => applyTime(startStr, endStr)}
-              className="flex-1 bg-[#FFFFFF] border border-[#E2E8F0] rounded px-2 py-1.5 font-ui text-[12px] text-[#111827] focus:outline-none focus:border-[#4A9EE0] transition-colors tabular-nums"
+              className="flex-1 bg-[#FAFAF5] border border-[#CCCCBC] px-2 py-1.5 font-ui text-[12px] text-[#0D0D0D] focus:outline-none focus:border-[#0D0D0D] transition-colors tabular-nums"
             />
           </div>
         </div>
 
         {/* Duration presets */}
         <div className="space-y-1.5">
-          <label className="font-ui text-[10px] uppercase tracking-[0.12em] text-[#9CA3AF]">Duration</label>
+          <label className="font-ui text-[10px] uppercase tracking-[0.12em] text-[#999990]">Duration</label>
           <div className="flex flex-wrap gap-1.5">
             {DURATION_PRESETS.map(({ label, mins }) => (
               <button
                 key={mins}
                 onClick={() => applyDuration(mins)}
                 className={cn(
-                  "px-2.5 py-1 rounded border font-ui text-[11px] transition-colors",
+                  "px-2.5 py-1 border font-ui text-[11px] transition-colors",
                   currentDurationMins === mins
-                    ? "border-[#4A9EE0] text-[#4A9EE0] bg-[#4A9EE018]"
-                    : "border-[#E2E8F0] text-[#6B7280] hover:border-[#4A9EE040] hover:text-[#111827]"
+                    ? "border-[#0D0D0D] text-[#0D0D0D] bg-[#0D0D0D18]"
+                    : "border-[#CCCCBC] text-[#555550] hover:border-[#0D0D0D40] hover:text-[#0D0D0D]"
                 )}
               >
                 {label}
@@ -463,7 +466,7 @@ function TaskEditPanel({
 
         {/* Priority */}
         <div className="space-y-1.5">
-          <label className="font-ui text-[10px] uppercase tracking-[0.12em] text-[#9CA3AF]">Priority</label>
+          <label className="font-ui text-[10px] uppercase tracking-[0.12em] text-[#999990]">Priority</label>
           <div className="flex gap-1.5">
             {PRIORITY_OPTIONS.map(({ value, label, color }) => (
               <button
@@ -471,8 +474,8 @@ function TaskEditPanel({
                 onClick={() => setPriority(value)}
                 style={priority === value ? { borderColor: color, color, backgroundColor: `${color}18` } : {}}
                 className={cn(
-                  "flex-1 py-1 rounded border font-ui text-[11px] transition-colors",
-                  priority === value ? "" : "border-[#E2E8F0] text-[#9CA3AF] hover:text-[#6B7280]"
+                  "flex-1 py-1 border font-ui text-[11px] transition-colors",
+                  priority === value ? "" : "border-[#CCCCBC] text-[#999990] hover:text-[#555550]"
                 )}
               >
                 {label}
@@ -483,28 +486,28 @@ function TaskEditPanel({
 
         {/* Description */}
         <div className="space-y-1.5">
-          <label className="font-ui text-[10px] uppercase tracking-[0.12em] text-[#9CA3AF]">Notes</label>
+          <label className="font-ui text-[10px] uppercase tracking-[0.12em] text-[#999990]">Notes</label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={3}
             placeholder="Add notes…"
-            className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded px-3 py-2 font-ui text-[12px] text-[#111827] placeholder-[#9CA3AF] focus:outline-none focus:border-[#4A9EE0] transition-colors resize-none"
+            className="w-full bg-[#FAFAF5] border border-[#CCCCBC] px-3 py-2 font-ui text-[12px] text-[#0D0D0D] placeholder-[#999990] focus:outline-none focus:border-[#0D0D0D] transition-colors resize-none"
           />
         </div>
       </div>
 
       {/* Save + Delete */}
-      <div className="px-4 py-3 border-t border-[#E2E8F0] shrink-0 space-y-2">
+      <div className="px-4 py-3 border-t border-[#CCCCBC] shrink-0 space-y-2">
         <button
           onClick={save}
-          className="w-full py-2 rounded bg-[#4A9EE0] hover:bg-[#3A8ED0] font-ui text-[12px] text-[#FFFFFF] font-semibold transition-colors"
+          className="w-full py-2 bg-[#0D0D0D] hover:bg-[#C41E3A] font-ui text-[12px] text-[#FFFFFF] font-semibold transition-colors"
         >
           Save
         </button>
         <button
           onClick={() => { onDelete(task._id); onClose(); }}
-          className="w-full py-1.5 rounded border border-[#E2E8F0] font-ui text-[11px] text-[#9CA3AF] hover:border-[#E85538] hover:text-[#E85538] transition-colors"
+          className="w-full py-1.5 border border-[#CCCCBC] font-ui text-[11px] text-[#999990] hover:border-[#C41E3A] hover:text-[#C41E3A] transition-colors"
         >
           Delete task
         </button>
@@ -831,38 +834,40 @@ export default function SchedulePage() {
 
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-      <div className="h-full flex flex-col bg-[#F9F9F7]">
+      <div className="h-full flex flex-col" style={{ background: "#FAFAF5" }}>
 
-        {/* Header */}
-        <div className="px-6 py-4 border-b border-[#E2E8F0] shrink-0 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <h1 className="font-ui text-[20px] font-semibold text-[#111827]">Schedule</h1>
+        {/* Header — newspaper style */}
+        <div style={{ padding: "24px 64px 20px", borderBottom: "2px solid #0D0D0D", display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
+          <div>
+            <div style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "10px", fontWeight: 700, letterSpacing: "3px", textTransform: "uppercase", color: "#C41E3A", marginBottom: "6px" }}>Weekly Planner</div>
+            <h1 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 900, fontSize: "48px", lineHeight: 0.95, letterSpacing: "-1.5px", textTransform: "uppercase", color: "#0D0D0D" }}>Schedule</h1>
+          </div>
+          <div className="flex items-center gap-4" style={{ paddingBottom: "6px" }}>
             <div className="flex items-center gap-1">
               <button
                 onClick={() => setWeekDate((d) => subWeeks(d, 1))}
-                className="p-1.5 rounded text-[#9CA3AF] hover:text-[#111827] hover:bg-[#F1F5F9] transition-colors"
+                style={{ padding: "4px", cursor: "pointer", background: "transparent", border: "1px solid #CCCCBC", color: "#999990" }}
               >
                 <ChevronLeft size={14} />
               </button>
               <button
                 onClick={() => setWeekDate(new Date())}
-                className="px-3 py-1 rounded font-ui text-[12px] text-[#6B7280] hover:text-[#111827] hover:bg-[#F1F5F9] transition-colors"
+                style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "10px", fontWeight: 600, letterSpacing: "1px", textTransform: "uppercase", padding: "4px 12px", border: "1px solid #CCCCBC", background: "transparent", color: "#555550", cursor: "pointer" }}
               >
                 Today
               </button>
               <button
                 onClick={() => setWeekDate((d) => addWeeks(d, 1))}
-                className="p-1.5 rounded text-[#9CA3AF] hover:text-[#111827] hover:bg-[#F1F5F9] transition-colors"
+                style={{ padding: "4px", cursor: "pointer", background: "transparent", border: "1px solid #CCCCBC", color: "#999990" }}
               >
                 <ChevronRight size={14} />
               </button>
             </div>
-            <span className="font-ui text-[13px] text-[#6B7280]">
+            <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "12px", color: "#555550" }}>
               {format(weekStart, "d MMM")} – {format(weekEnd, "d MMM yyyy")}
             </span>
           </div>
-
-          <div className="flex items-center gap-2">
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", paddingBottom: "6px" }}>
             {gcalConnected === true && (
               <span className="flex items-center gap-1.5 font-ui text-[11px] text-[#4CAF6B]">
                 <CalendarCheck2 size={12} />
@@ -873,7 +878,7 @@ export default function SchedulePage() {
               <button
                 onClick={() => { setConnectingGcal(true); window.location.href = "/api/calendar"; }}
                 disabled={connectingGcal}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded border border-[#E2E8F0] font-ui text-[12px] text-[#6B7280] hover:text-[#111827] hover:border-[#D1D5DB] transition-colors disabled:opacity-40"
+                className="flex items-center gap-1.5 px-3 py-1.5 border border-[#CCCCBC] font-ui text-[12px] text-[#555550] hover:text-[#0D0D0D] hover:border-[#999990] transition-colors disabled:opacity-40"
               >
                 <CalendarCheck2 size={12} />
                 {connectingGcal ? "Connecting…" : "Connect Google Calendar"}
@@ -886,12 +891,12 @@ export default function SchedulePage() {
         <div className="flex-1 flex min-h-0 overflow-hidden">
 
           {/* Sidebar */}
-          <div className="w-[220px] shrink-0 border-r border-[#E2E8F0] flex flex-col overflow-hidden">
+          <div className="w-[200px] shrink-0 border-r border-[#CCCCBC] flex flex-col overflow-hidden">
 
             {/* Header */}
-            <div className="px-3 py-2.5 border-b border-[#E2E8F0] shrink-0">
-              <p className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9CA3AF] font-medium">This Week</p>
-              <p className="font-ui text-[10px] text-[#9CA3AF] mt-0.5">Drag tasks onto the grid</p>
+            <div className="px-3 py-3 border-b-2 border-[#0D0D0D] shrink-0">
+              <p className="font-display text-[14px] font-bold text-[#0D0D0D] uppercase" style={{ letterSpacing: "0.5px" }}>This Week</p>
+              <p className="font-ui text-[10px] text-[#999990] mt-0.5">Drag tasks onto the grid</p>
             </div>
 
             <div className="flex-1 overflow-y-auto min-h-0">
@@ -900,7 +905,7 @@ export default function SchedulePage() {
               <div className="p-2 space-y-1.5">
                 {thisWeekTasks.length === 0 ? (
                   <div className="px-2 py-5 text-center">
-                    <p className="font-ui text-[11px] text-[#9CA3AF]">Nothing due this week</p>
+                    <p className="font-ui text-[11px] text-[#999990]">Nothing due this week</p>
                   </div>
                 ) : (
                   thisWeekTasks.map((t) => (
@@ -911,22 +916,22 @@ export default function SchedulePage() {
 
               {/* ── Backlog (collapsible) ── */}
               {backlogTasks.length > 0 && (
-                <div className="border-t border-[#E2E8F0]">
+                <div className="border-t border-[#CCCCBC]">
                   <button
                     onClick={() => setBacklogOpen((v) => !v)}
-                    className="w-full flex items-center justify-between px-3 py-2 hover:bg-[#FFFFFF] transition-colors group"
+                    className="w-full flex items-center justify-between px-3 py-2 hover:bg-[#FAFAF5] transition-colors group"
                   >
                     <div className="flex items-center gap-2">
-                      <span className="font-ui text-[10px] uppercase tracking-[0.12em] text-[#9CA3AF] font-medium">
+                      <span className="font-ui text-[10px] uppercase tracking-[0.12em] text-[#999990] font-medium">
                         Backlog
                       </span>
-                      <span className="font-ui text-[10px] text-[#9CA3AF] tabular-nums">
+                      <span className="font-ui text-[10px] text-[#999990] tabular-nums">
                         {backlogTasks.length}
                       </span>
                     </div>
                     <ChevronDown
                       size={11}
-                      className={cn("text-[#9CA3AF] transition-transform", backlogOpen && "rotate-180")}
+                      className={cn("text-[#999990] transition-transform", backlogOpen && "rotate-180")}
                     />
                   </button>
                   {backlogOpen && (
@@ -941,22 +946,22 @@ export default function SchedulePage() {
 
               {/* ── Completed this week (collapsible) ── */}
               {doneTasks.length > 0 && (
-                <div className="border-t border-[#E2E8F0]">
+                <div className="border-t border-[#CCCCBC]">
                   <button
                     onClick={() => setCompletedOpen((v) => !v)}
-                    className="w-full flex items-center justify-between px-3 py-2 hover:bg-[#FFFFFF] transition-colors group"
+                    className="w-full flex items-center justify-between px-3 py-2 hover:bg-[#FAFAF5] transition-colors group"
                   >
                     <div className="flex items-center gap-2">
-                      <span className="font-ui text-[10px] uppercase tracking-[0.12em] text-[#9CA3AF] font-medium">
+                      <span className="font-ui text-[10px] uppercase tracking-[0.12em] text-[#999990] font-medium">
                         Done
                       </span>
-                      <span className="font-ui text-[10px] text-[#9CA3AF] tabular-nums">
+                      <span className="font-ui text-[10px] text-[#999990] tabular-nums">
                         {doneTasks.length}
                       </span>
                     </div>
                     <ChevronDown
                       size={11}
-                      className={cn("text-[#9CA3AF] transition-transform", completedOpen && "rotate-180")}
+                      className={cn("text-[#999990] transition-transform", completedOpen && "rotate-180")}
                     />
                   </button>
                   {completedOpen && (
@@ -964,15 +969,15 @@ export default function SchedulePage() {
                       {doneTasks.map((t) => (
                         <div
                           key={t._id}
-                          className="flex items-center gap-2 px-2 py-1.5 rounded border border-[#E2E8F0] bg-[#FFFFFF]"
+                          className="flex items-center gap-2 px-2 py-1.5 border border-[#CCCCBC] bg-[#FAFAF5]"
                         >
                           <Check size={10} className="text-[#3A7D44] shrink-0" />
-                          <span className="font-ui text-[11px] text-[#9CA3AF] line-through truncate flex-1">
+                          <span className="font-ui text-[11px] text-[#999990] line-through truncate flex-1">
                             {t.title}
                           </span>
                           <button
                             onClick={() => updateStatus({ id: t._id, status: "todo" })}
-                            className="font-ui text-[10px] text-[#9CA3AF] hover:text-[#6B7280] shrink-0 transition-colors"
+                            className="font-ui text-[10px] text-[#999990] hover:text-[#555550] shrink-0 transition-colors"
                             title="Mark as todo"
                           >
                             Undo
@@ -991,16 +996,16 @@ export default function SchedulePage() {
           <div ref={gridRef} className="flex-1 overflow-auto min-h-0">
 
             {/* Day headers */}
-            <div className="sticky top-0 z-20 bg-[#FFFFFF] border-b border-[#E2E8F0] flex">
-              <div className="w-12 shrink-0" />
+            <div className="sticky top-0 z-20 bg-[#FAFAF5] border-b-2 border-[#0D0D0D] flex">
+              <div className="w-14 shrink-0" />
               {weekDays.map((day, i) => {
                 const isToday = format(day, "yyyy-MM-dd") === format(today, "yyyy-MM-dd");
                 return (
-                  <div key={i} className="flex-1 min-w-[100px] px-2 py-2.5 border-l border-[#E2E8F0] text-center">
-                    <p className={cn("font-ui text-[11px] uppercase tracking-[0.1em]", isToday ? "text-[#8B5CF6]" : "text-[#9CA3AF]")}>
+                  <div key={i} className="flex-1 min-w-[100px] px-2 py-3 border-l border-[#CCCCBC] text-center">
+                    <p className={cn("font-ui text-[9px] uppercase tracking-[0.18em] font-semibold", isToday ? "text-[#C41E3A]" : "text-[#999990]")}>
                       {format(day, "EEE")}
                     </p>
-                    <p className={cn("font-ui text-[16px] font-semibold mt-0.5 tabular-nums", isToday ? "text-[#8B5CF6]" : "text-[#6B7280]")}>
+                    <p className={cn("font-display text-[22px] font-bold mt-0.5 tabular-nums leading-none", isToday ? "text-[#C41E3A]" : "text-[#0D0D0D]")}>
                       {format(day, "d")}
                     </p>
                   </div>
@@ -1011,11 +1016,14 @@ export default function SchedulePage() {
             {/* Grid body */}
             <div className="flex">
               {/* Hour labels */}
-              <div className="w-12 shrink-0">
+              <div className="w-14 shrink-0">
                 {HOURS.map((h) => (
-                  <div key={h} className="flex items-start justify-end pr-2" style={{ height: CELL_HEIGHT }}>
-                    <span className="font-ui text-[10px] text-[#9CA3AF] tabular-nums mt-px">
-                      {format(setHours(new Date(), h), "ha").toLowerCase()}
+                  <div key={h} className="flex items-start justify-end pr-3" style={{ height: CELL_HEIGHT }}>
+                    <span className="font-ui text-[10px] text-[#999990] tabular-nums font-medium" style={{ marginTop: "-6px" }}>
+                      {format(setHours(new Date(), h), "h")}
+                      <span style={{ fontSize: "8px", letterSpacing: "0.5px" }}>
+                        {format(setHours(new Date(), h), "a").toLowerCase()}
+                      </span>
                     </span>
                   </div>
                 ))}
@@ -1027,7 +1035,7 @@ export default function SchedulePage() {
                 return (
                   <div
                     key={dayIdx}
-                    className={cn("flex-1 min-w-[100px] border-l border-[#E2E8F0] relative", isToday && "bg-[#8B5CF604]")}
+                    className={cn("flex-1 min-w-[100px] border-l border-[#CCCCBC] relative", isToday && "bg-[#FFFEF8]")}
                     style={{ height: HOURS.length * CELL_HEIGHT }}
                   >
                     {/* Static grid lines + drop zones — memo'd, never re-renders */}
@@ -1064,8 +1072,8 @@ export default function SchedulePage() {
                           className="absolute w-full flex items-center z-20 pointer-events-none"
                           style={{ top: (h - HOUR_START) * CELL_HEIGHT }}
                         >
-                          <div className="w-2 h-2 rounded-full bg-[#E85538] shrink-0 -ml-1" />
-                          <div className="flex-1 border-t border-[#E85538]" />
+                          <div className="w-2.5 h-2.5 bg-[#C41E3A] shrink-0 -ml-1.5" style={{ clipPath: "polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)" }} />
+                          <div className="flex-1 border-t-2 border-[#C41E3A]" />
                         </div>
                       );
                     })()}

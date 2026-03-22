@@ -16,10 +16,10 @@ import CreateTaskModal from "@/components/CreateTaskModal";
 // ── Constants ────────────────────────────────────────────────────────────────
 
 const GROUPS = [
-  { id: "in_progress", label: "In Progress", dot: "#8B5CF6", badge: "bg-[#8B5CF618] text-[#8B5CF6] border-[#8B5CF640]" },
-  { id: "todo",        label: "To Do",       dot: "#4A9EE0", badge: "bg-[#4A9EE018] text-[#4A9EE0] border-[#4A9EE040]" },
+  { id: "in_progress", label: "In Progress", dot: "#C41E3A", badge: "bg-[#C41E3A18] text-[#C41E3A] border-[#C41E3A40]" },
+  { id: "todo",        label: "To Do",       dot: "#0D0D0D", badge: "bg-[#0D0D0D18] text-[#0D0D0D] border-[#0D0D0D40]" },
   { id: "blocked",     label: "Blocked",     dot: "#E85538", badge: "bg-[#E8553818] text-[#E85538] border-[#E8553840]" },
-  { id: "backlog",     label: "Backlog",     dot: "#9CA3AF", badge: "bg-[#9CA3AF18] text-[#6B7280] border-[#9CA3AF40]" },
+  { id: "backlog",     label: "Backlog",     dot: "#999990", badge: "bg-[#99999018] text-[#555550] border-[#99999040]" },
   { id: "done",        label: "Done",        dot: "#4CAF6B", badge: "bg-[#4CAF6B18] text-[#4CAF6B] border-[#4CAF6B40]" },
 ] as const;
 
@@ -29,8 +29,8 @@ type Priority = "urgent" | "high" | "medium" | "low";
 const PRIORITY_META: Record<Priority, { icon: React.ReactNode; color: string; label: string }> = {
   urgent: { icon: <Zap size={11} />,     color: "#E85538", label: "Urgent" },
   high:   { icon: <ArrowUp size={11} />, color: "#E8A838", label: "High"   },
-  medium: { icon: <Minus size={11} />,   color: "#8B5CF6", label: "Medium" },
-  low:    { icon: <Minus size={11} />,   color: "#6B7280", label: "Low"    },
+  medium: { icon: <Minus size={11} />,   color: "#C41E3A", label: "Medium" },
+  low:    { icon: <Minus size={11} />,   color: "#555550", label: "Low"    },
 };
 
 function issueKey(areaName: string, taskId: string) {
@@ -67,14 +67,14 @@ function TaskRow({ task, areaName, isSelected, onSelect, onStatusChange }: RowPr
     <div
       onClick={onSelect}
       className={cn(
-        "grid grid-cols-[32px_1fr_160px_120px_90px_36px] gap-2 px-4 py-2 border-b border-[#E2E8F0] items-center cursor-pointer transition-colors group",
-        isSelected ? "bg-[#F5F3FF]" : "hover:bg-[#FFFFFF]"
+        "grid grid-cols-[32px_1fr_160px_120px_90px_36px] gap-2 px-4 py-2 border-b border-[#CCCCBC] items-center cursor-pointer transition-colors group",
+        isSelected ? "bg-[#C41E3A08]" : "hover:bg-[#FFFFFF]"
       )}
     >
       {/* Checkbox */}
       <div
         onClick={(e) => { e.stopPropagation(); onStatusChange(task.status === "done" ? "todo" : "done"); }}
-        className="flex items-center justify-center text-[#9CA3AF] hover:text-[#6B7280] transition-colors"
+        className="flex items-center justify-center text-[#999990] hover:text-[#555550] transition-colors"
       >
         {task.status === "done"
           ? <CheckSquare size={14} className="text-[#4CAF6B]" />
@@ -84,12 +84,12 @@ function TaskRow({ task, areaName, isSelected, onSelect, onStatusChange }: RowPr
 
       {/* Key + title */}
       <div className="flex items-center gap-3 min-w-0">
-        <span className="font-ui text-[11px] text-[#9CA3AF] tracking-[0.05em] shrink-0 w-[72px]">
+        <span className="font-ui text-[11px] text-[#999990] tracking-[0.05em] shrink-0 w-[72px]">
           {issueKey(areaName, task._id)}
         </span>
         <span className={cn(
           "font-ui text-[13px] truncate",
-          task.status === "done" ? "text-[#9CA3AF] line-through" : "text-[#111827]"
+          task.status === "done" ? "text-[#999990] line-through" : "text-[#0D0D0D]"
         )}>
           {task.title}
         </span>
@@ -101,7 +101,7 @@ function TaskRow({ task, areaName, isSelected, onSelect, onStatusChange }: RowPr
           value={task.status}
           onChange={(e) => onStatusChange(e.target.value as Status)}
           className={cn(
-            "appearance-none w-full rounded px-2.5 py-1 font-ui text-[11px] outline-none cursor-pointer border text-center",
+            "appearance-none w-full px-2.5 py-1 font-ui text-[11px] outline-none cursor-pointer border text-center",
             group?.badge ?? ""
           )}
         >
@@ -120,7 +120,7 @@ function TaskRow({ task, areaName, isSelected, onSelect, onStatusChange }: RowPr
       {/* Due date */}
       <span className={cn(
         "font-ui text-[11px]",
-        isOverdue ? "text-[#E85538]" : "text-[#6B7280]"
+        isOverdue ? "text-[#E85538]" : "text-[#555550]"
       )}>
         {task.dueDate ? format(new Date(task.dueDate), "d MMM") : "—"}
       </span>
@@ -128,7 +128,7 @@ function TaskRow({ task, areaName, isSelected, onSelect, onStatusChange }: RowPr
       {/* More */}
       <button
         onClick={(e) => e.stopPropagation()}
-        className="opacity-0 group-hover:opacity-100 flex items-center justify-center text-[#6B7280] hover:text-[#111827] transition-all"
+        className="opacity-0 group-hover:opacity-100 flex items-center justify-center text-[#555550] hover:text-[#0D0D0D] transition-all"
       >
         <MoreHorizontal size={13} />
       </button>
@@ -178,16 +178,16 @@ function DetailPanel({ task, areaName, areaColor, onClose }: DetailPanelProps) {
   const isOverdue = task.dueDate && task.dueDate < Date.now() && task.status !== "done";
 
   return (
-    <div className="w-[340px] border-l border-[#E2E8F0] bg-[#FFFFFF] flex flex-col shrink-0 overflow-hidden">
+    <div className="w-[340px] border-l border-[#CCCCBC] bg-[#FFFFFF] flex flex-col shrink-0 overflow-hidden">
       {/* Panel header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[#E2E8F0] shrink-0">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-[#CCCCBC] shrink-0">
         <div className="flex items-center gap-2">
-          <span className="font-ui text-[11px] text-[#9CA3AF] tracking-[0.05em]">{issueKey(areaName, task._id)}</span>
-          <button className="text-[#9CA3AF] hover:text-[#6B7280] transition-colors">
+          <span className="font-ui text-[11px] text-[#999990] tracking-[0.05em]">{issueKey(areaName, task._id)}</span>
+          <button className="text-[#999990] hover:text-[#555550] transition-colors">
             <ExternalLink size={12} />
           </button>
         </div>
-        <button onClick={onClose} className="text-[#6B7280] hover:text-[#111827] transition-colors">
+        <button onClick={onClose} className="text-[#555550] hover:text-[#0D0D0D] transition-colors">
           <X size={14} />
         </button>
       </div>
@@ -204,12 +204,12 @@ function DetailPanel({ task, areaName, areaColor, onClose }: DetailPanelProps) {
               onBlur={saveTitle}
               onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); saveTitle(); } if (e.key === "Escape") { setTitle(task.title); setEditingTitle(false); } }}
               rows={2}
-              className="w-full bg-transparent font-ui text-[18px] font-semibold text-[#111827] outline-none resize-none"
+              className="w-full bg-transparent font-ui text-[18px] font-semibold text-[#0D0D0D] outline-none resize-none"
             />
           ) : (
             <h2
               onClick={() => setEditingTitle(true)}
-              className="font-ui text-[18px] font-semibold text-[#111827] cursor-text hover:text-white leading-snug"
+              className="font-ui text-[18px] font-semibold text-[#0D0D0D] cursor-text hover:text-[#555550] leading-snug"
             >
               {task.title}
             </h2>
@@ -221,24 +221,24 @@ function DetailPanel({ task, areaName, areaColor, onClose }: DetailPanelProps) {
           <select
             value={task.status}
             onChange={(e) => updateStatus({ id: task._id, status: e.target.value as Status })}
-            className={cn("appearance-none rounded px-3 py-1.5 font-ui text-[12px] font-medium outline-none cursor-pointer border", group?.badge ?? "")}
+            className={cn("appearance-none px-3 py-1.5 font-ui text-[12px] font-medium outline-none cursor-pointer border", group?.badge ?? "")}
           >
             {GROUPS.map((g) => <option key={g.id} value={g.id}>{g.label}</option>)}
           </select>
           <select
             value={task.priority}
             onChange={(e) => updateTask({ id: task._id, priority: e.target.value as Priority })}
-            className="appearance-none bg-[#F1F5F9] border border-[#E2E8F0] rounded px-2.5 py-1.5 font-ui text-[11px] text-[#6B7280] outline-none cursor-pointer"
+            className="appearance-none bg-[#FAFAF5] border border-[#CCCCBC] px-2.5 py-1.5 font-ui text-[11px] text-[#555550] outline-none cursor-pointer"
           >
             {Object.entries(PRIORITY_META).map(([k, v]) => <option key={k} value={k}>{v.label} priority</option>)}
           </select>
         </div>
 
-        <div className="border-t border-[#E2E8F0] mx-5 mb-4" />
+        <div className="border-t border-[#CCCCBC] mx-5 mb-4" />
 
         {/* Description */}
         <div className="px-5 mb-5">
-          <p className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9CA3AF] mb-2">Description</p>
+          <p className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#999990] mb-2">Description</p>
           {editingDesc ? (
             <textarea
               ref={descRef}
@@ -248,14 +248,14 @@ function DetailPanel({ task, areaName, areaColor, onClose }: DetailPanelProps) {
               onKeyDown={(e) => { if (e.key === "Escape") { setDesc(task.description ?? ""); setEditingDesc(false); } }}
               rows={4}
               placeholder="Add a description…"
-              className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded px-3 py-2 font-ui text-[13px] text-[#111827] placeholder:text-[#9CA3AF] outline-none focus:border-[#D1D5DB] resize-none transition-colors"
+              className="w-full bg-[#FAFAF5] border border-[#CCCCBC] px-3 py-2 font-ui text-[13px] text-[#0D0D0D] placeholder:text-[#999990] outline-none focus:border-[#0D0D0D] resize-none transition-colors"
             />
           ) : (
             <p
               onClick={() => setEditingDesc(true)}
               className={cn(
-                "font-ui text-[13px] leading-relaxed cursor-text rounded px-1 py-1 -mx-1 hover:bg-[#F1F5F9] transition-colors",
-                desc ? "text-[#374151]" : "text-[#9CA3AF] italic"
+                "font-ui text-[13px] leading-relaxed cursor-text px-1 py-1 -mx-1 hover:bg-[#FAFAF5] transition-colors",
+                desc ? "text-[#0D0D0D]" : "text-[#999990] italic"
               )}
             >
               {desc || "Add a description…"}
@@ -263,17 +263,17 @@ function DetailPanel({ task, areaName, areaColor, onClose }: DetailPanelProps) {
           )}
         </div>
 
-        <div className="border-t border-[#E2E8F0] mx-5 mb-4" />
+        <div className="border-t border-[#CCCCBC] mx-5 mb-4" />
 
         {/* Details */}
         <div className="px-5 space-y-3 mb-6">
-          <p className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9CA3AF] mb-3">Details</p>
+          <p className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#999990] mb-3">Details</p>
 
           {/* Area */}
           <div className="grid grid-cols-[100px_1fr] items-center gap-2">
-            <span className="font-ui text-[12px] text-[#6B7280]">Area</span>
+            <span className="font-ui text-[12px] text-[#555550]">Area</span>
             <span
-              className="font-ui text-[12px] px-2 py-0.5 rounded w-fit"
+              className="font-ui text-[12px] px-2 py-0.5 w-fit"
               style={{ color: areaColor, backgroundColor: `${areaColor}18` }}
             >
               {areaName}
@@ -282,7 +282,7 @@ function DetailPanel({ task, areaName, areaColor, onClose }: DetailPanelProps) {
 
           {/* Priority */}
           <div className="grid grid-cols-[100px_1fr] items-center gap-2">
-            <span className="font-ui text-[12px] text-[#6B7280]">Priority</span>
+            <span className="font-ui text-[12px] text-[#555550]">Priority</span>
             <span className="flex items-center gap-1.5 font-ui text-[12px]" style={{ color: pri.color }}>
               {pri.icon} {pri.label}
             </span>
@@ -290,29 +290,29 @@ function DetailPanel({ task, areaName, areaColor, onClose }: DetailPanelProps) {
 
           {/* Due date */}
           <div className="grid grid-cols-[100px_1fr] items-center gap-2">
-            <span className="font-ui text-[12px] text-[#6B7280]">Due date</span>
+            <span className="font-ui text-[12px] text-[#555550]">Due date</span>
             <input
               type="date"
               value={task.dueDate ? new Date(task.dueDate).toISOString().split("T")[0] : ""}
               onChange={(e) => updateTask({ id: task._id, dueDate: e.target.value ? new Date(e.target.value).getTime() : undefined })}
               className={cn(
                 "bg-transparent font-ui text-[12px] outline-none cursor-pointer [color-scheme:light] w-fit",
-                isOverdue ? "text-[#E85538]" : "text-[#6B7280]"
+                isOverdue ? "text-[#E85538]" : "text-[#555550]"
               )}
             />
           </div>
 
           {/* Created */}
           <div className="grid grid-cols-[100px_1fr] items-center gap-2">
-            <span className="font-ui text-[12px] text-[#6B7280]">Created</span>
-            <span className="font-ui text-[12px] text-[#6B7280]">
+            <span className="font-ui text-[12px] text-[#555550]">Created</span>
+            <span className="font-ui text-[12px] text-[#555550]">
               {format(new Date(task.createdAt), "d MMM yyyy")}
             </span>
           </div>
 
           {task.completedAt && (
             <div className="grid grid-cols-[100px_1fr] items-center gap-2">
-              <span className="font-ui text-[12px] text-[#6B7280]">Completed</span>
+              <span className="font-ui text-[12px] text-[#555550]">Completed</span>
               <span className="font-ui text-[12px] text-[#4CAF6B]">
                 {format(new Date(task.completedAt), "d MMM yyyy")}
               </span>
@@ -324,7 +324,7 @@ function DetailPanel({ task, areaName, areaColor, onClose }: DetailPanelProps) {
         <div className="px-5 pb-6">
           <button
             onClick={() => { archiveTask({ id: task._id }); onClose(); }}
-            className="font-ui text-[11px] text-[#9CA3AF] hover:text-[#E85538] transition-colors"
+            className="font-ui text-[11px] text-[#999990] hover:text-[#C41E3A] transition-colors"
           >
             Archive issue
           </button>
@@ -370,21 +370,34 @@ export default function AreaBoardPage({ params }: { params: Promise<{ id: string
   const visibleGroups = GROUPS.filter((g) => showDone || g.id !== "done");
 
   return (
-    <div className="h-full flex flex-col bg-[#FFFFFF]">
+    <div className="h-full flex flex-col" style={{ background: "#FAFAF5" }}>
 
-      {/* Area header */}
-      <div className="px-5 py-2.5 border-b border-[#E2E8F0] flex items-center gap-2 shrink-0">
-        <div className="w-6 h-6 rounded flex items-center justify-center text-[14px]" style={{ backgroundColor: `${area?.color ?? "#333"}22` }}>
-          {area?.icon || <span className="font-ui text-[9px] font-bold" style={{ color: area?.color }}>
-            {area?.name.slice(0,2).toUpperCase()}
-          </span>}
+      {/* Area header — newspaper style */}
+      <div className="px-6 py-4 border-b border-[#CCCCBC] shrink-0" style={{ background: "#FAFAF5" }}>
+        {/* Kicker label */}
+        <p className="font-ui text-[10px] tracking-[0.25em] uppercase text-[#999990] mb-1">
+          {area?.category ?? "Area"}
+        </p>
+        {/* Big headline */}
+        <div className="flex items-end gap-3">
+          <h1
+            className="text-[32px] font-bold leading-none text-[#0D0D0D]"
+            style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+          >
+            {area?.name ?? "…"}
+          </h1>
+          {area?.icon && (
+            <span className="text-[22px] mb-0.5">{area.icon}</span>
+          )}
+          <MoreHorizontal size={14} className="text-[#999990] ml-1 mb-1" />
         </div>
-        <span className="font-ui text-[14px] font-semibold text-[#111827]">{area?.name ?? "…"}</span>
-        <MoreHorizontal size={14} className="text-[#9CA3AF] ml-1" />
+        {/* Rule under headline */}
+        <div className="mt-3 border-t border-[#0D0D0D]" style={{ borderTopWidth: "2px" }} />
+        <div className="mt-0.5 border-t border-[#0D0D0D]" style={{ borderTopWidth: "1px" }} />
       </div>
 
       {/* Tab bar */}
-      <div className="px-5 border-b border-[#E2E8F0] flex items-center gap-1 shrink-0">
+      <div className="px-5 border-b border-[#CCCCBC] flex items-center gap-1 shrink-0" style={{ background: "#FAFAF5" }}>
         {[
           { id: "backlog", label: "Backlog", icon: <List size={13} /> },
           { id: "board",   label: "Board",   icon: <Kanban size={13} /> },
@@ -395,8 +408,8 @@ export default function AreaBoardPage({ params }: { params: Promise<{ id: string
             className={cn(
               "flex items-center gap-1.5 px-3 py-2.5 font-ui text-[13px] border-b-2 transition-colors",
               view === tab.id
-                ? "border-[#4A9EE0] text-[#4A9EE0]"
-                : "border-transparent text-[#6B7280] hover:text-[#374151]"
+                ? "border-[#C41E3A] text-[#C41E3A]"
+                : "border-transparent text-[#555550] hover:text-[#0D0D0D]"
             )}
           >
             {tab.icon}
@@ -406,34 +419,34 @@ export default function AreaBoardPage({ params }: { params: Promise<{ id: string
       </div>
 
       {/* Toolbar */}
-      <div className="px-5 py-2 border-b border-[#E2E8F0] flex items-center gap-2 shrink-0">
-        <div className="flex items-center gap-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded px-2.5 py-1.5 w-48">
-          <Search size={12} className="text-[#9CA3AF] shrink-0" />
+      <div className="px-5 py-2 border-b border-[#CCCCBC] flex items-center gap-2 shrink-0" style={{ background: "#FAFAF5" }}>
+        <div className="flex items-center gap-2 bg-[#FFFFFF] border border-[#CCCCBC] px-2.5 py-1.5 w-48">
+          <Search size={12} className="text-[#999990] shrink-0" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search issues…"
-            className="bg-transparent font-ui text-[12px] text-[#111827] placeholder:text-[#9CA3AF] outline-none w-full"
+            className="bg-transparent font-ui text-[12px] text-[#0D0D0D] placeholder:text-[#999990] outline-none w-full"
           />
         </div>
-        <button className="flex items-center gap-1.5 px-2.5 py-1.5 border border-[#E2E8F0] rounded font-ui text-[12px] text-[#6B7280] hover:text-[#111827] transition-colors">
+        <button className="flex items-center gap-1.5 px-2.5 py-1.5 border border-[#CCCCBC] font-ui text-[12px] text-[#555550] hover:text-[#0D0D0D] transition-colors">
           <Filter size={12} />
           Filter
         </button>
         <button
           onClick={() => setShowDone((v) => !v)}
           className={cn(
-            "px-2.5 py-1.5 border rounded font-ui text-[12px] transition-colors",
-            showDone ? "border-[#4CAF6B] text-[#4CAF6B]" : "border-[#E2E8F0] text-[#9CA3AF] hover:text-[#6B7280]"
+            "px-2.5 py-1.5 border font-ui text-[12px] transition-colors",
+            showDone ? "border-[#4CAF6B] text-[#4CAF6B]" : "border-[#CCCCBC] text-[#999990] hover:text-[#555550]"
           )}
         >
           {showDone ? "Hide done" : "Show done"}
         </button>
         <div className="ml-auto flex items-center gap-2">
-          <span className="font-ui text-[11px] text-[#9CA3AF]">{filtered.length} issues</span>
+          <span className="font-ui text-[11px] text-[#999990]">{filtered.length} issues</span>
           <button
             onClick={() => setCreateOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#4A9EE0] rounded font-ui text-[12px] font-medium text-white hover:bg-[#5AAFF0] transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0D0D0D] hover:bg-[#C41E3A] font-ui text-[12px] font-medium text-white transition-colors"
           >
             <Plus size={12} />
             Create
@@ -448,14 +461,14 @@ export default function AreaBoardPage({ params }: { params: Promise<{ id: string
         {view === "backlog" && (
           <div className="flex-1 overflow-y-auto">
             {/* Table column headers */}
-            <div className="grid grid-cols-[32px_1fr_160px_120px_90px_36px] gap-2 px-4 py-2 border-b border-[#E2E8F0] bg-[#FFFFFF] sticky top-0 z-10">
+            <div className="grid grid-cols-[32px_1fr_160px_120px_90px_36px] gap-2 px-4 py-2 border-b border-[#CCCCBC] bg-[#FAFAF5] sticky top-0 z-10">
               <div />
               <div className="flex items-center gap-2">
-                <span className="font-ui text-[11px] uppercase tracking-[0.15em] text-[#9CA3AF] ml-[88px]">Issue</span>
+                <span className="font-ui text-[11px] uppercase tracking-[0.15em] text-[#999990] ml-[88px]">Issue</span>
               </div>
-              <span className="font-ui text-[11px] uppercase tracking-[0.15em] text-[#9CA3AF]">Status</span>
-              <span className="font-ui text-[11px] uppercase tracking-[0.15em] text-[#9CA3AF]">Priority</span>
-              <span className="font-ui text-[11px] uppercase tracking-[0.15em] text-[#9CA3AF]">Due</span>
+              <span className="font-ui text-[11px] uppercase tracking-[0.15em] text-[#999990]">Status</span>
+              <span className="font-ui text-[11px] uppercase tracking-[0.15em] text-[#999990]">Priority</span>
+              <span className="font-ui text-[11px] uppercase tracking-[0.15em] text-[#999990]">Due</span>
               <div />
             </div>
 
@@ -467,26 +480,26 @@ export default function AreaBoardPage({ params }: { params: Promise<{ id: string
 
               return (
                 <div key={group.id} className="mb-1">
-                  {/* Group header */}
+                  {/* Group header — newspaper section label */}
                   <div
-                    className="flex items-center gap-2 px-4 py-2.5 bg-[#FFFFFF] border-b border-[#E2E8F0] cursor-pointer hover:bg-[#F1F5F9] transition-colors sticky top-[37px] z-[9]"
+                    className="flex items-center gap-2 px-4 py-2.5 bg-[#FAFAF5] border-b border-[#CCCCBC] cursor-pointer hover:bg-[#FFFFFF] transition-colors sticky top-[37px] z-[9]"
                     onClick={() => toggleGroup(group.id)}
                   >
                     {isOpen
-                      ? <ChevronDown size={13} className="text-[#6B7280] shrink-0" />
-                      : <ChevronRight size={13} className="text-[#6B7280] shrink-0" />
+                      ? <ChevronDown size={13} className="text-[#555550] shrink-0" />
+                      : <ChevronRight size={13} className="text-[#555550] shrink-0" />
                     }
-                    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: group.dot }} />
-                    <span className="font-ui text-[13px] font-semibold text-[#111827]">{group.label}</span>
-                    <span className="font-ui text-[12px] text-[#9CA3AF]">({groupTasks.length} {groupTasks.length === 1 ? "item" : "items"})</span>
+                    <span className="w-2 h-2 shrink-0" style={{ backgroundColor: group.dot }} />
+                    <span className="font-ui text-[13px] font-semibold text-[#0D0D0D] uppercase tracking-[0.08em]">{group.label}</span>
+                    <span className="font-ui text-[12px] text-[#999990]">({groupTasks.length} {groupTasks.length === 1 ? "item" : "items"})</span>
 
                     {/* Mini stat pills */}
                     <div className="ml-auto flex items-center gap-1.5">
                       {group.id !== "done" && (
                         <>
-                          <span className="font-ui text-[11px] text-[#9CA3AF] bg-[#F1F5F9] border border-[#E2E8F0] px-1.5 py-0.5 rounded">{doneCount}</span>
-                          <span className="font-ui text-[11px] text-[#4A9EE0] bg-[#4A9EE018] border border-[#4A9EE040] px-1.5 py-0.5 rounded">{inProgCount}</span>
-                          <span className="font-ui text-[11px] text-[#9CA3AF] bg-[#F1F5F9] border border-[#E2E8F0] px-1.5 py-0.5 rounded">{groupTasks.length - doneCount - inProgCount}</span>
+                          <span className="font-ui text-[11px] text-[#999990] bg-[#FAFAF5] border border-[#CCCCBC] px-1.5 py-0.5">{doneCount}</span>
+                          <span className="font-ui text-[11px] text-[#0D0D0D] bg-[#0D0D0D18] border border-[#0D0D0D40] px-1.5 py-0.5">{inProgCount}</span>
+                          <span className="font-ui text-[11px] text-[#999990] bg-[#FAFAF5] border border-[#CCCCBC] px-1.5 py-0.5">{groupTasks.length - doneCount - inProgCount}</span>
                         </>
                       )}
                     </div>
@@ -496,8 +509,8 @@ export default function AreaBoardPage({ params }: { params: Promise<{ id: string
                   {isOpen && (
                     <>
                       {groupTasks.length === 0 ? (
-                        <div className="px-16 py-4 border border-dashed border-[#E2E8F0] mx-4 my-2 rounded text-center">
-                          <p className="font-ui text-[12px] text-[#9CA3AF]">No issues in {group.label}</p>
+                        <div className="px-16 py-4 border border-dashed border-[#CCCCBC] mx-4 my-2 text-center">
+                          <p className="font-ui text-[12px] text-[#999990]">No issues in {group.label}</p>
                         </div>
                       ) : (
                         groupTasks.map((task) => (
@@ -515,7 +528,7 @@ export default function AreaBoardPage({ params }: { params: Promise<{ id: string
                       {/* + Create */}
                       <button
                         onClick={() => setCreateOpen(true)}
-                        className="flex items-center gap-2 px-4 py-2 w-full font-ui text-[12px] text-[#9CA3AF] hover:text-[#6B7280] hover:bg-[#FFFFFF] transition-colors border-b border-[#E2E8F0]"
+                        className="flex items-center gap-2 px-4 py-2 w-full font-ui text-[12px] text-[#999990] hover:text-[#555550] hover:bg-[#FFFFFF] transition-colors border-b border-[#CCCCBC]"
                       >
                         <Plus size={12} />
                         Create issue
@@ -530,18 +543,21 @@ export default function AreaBoardPage({ params }: { params: Promise<{ id: string
 
         {/* ── Board view ──────────────────────────────────────────────────── */}
         {view === "board" && (
-          <div className="flex-1 overflow-x-auto overflow-y-hidden p-4">
+          <div className="flex-1 overflow-x-auto overflow-y-hidden p-4" style={{ background: "#FAFAF5" }}>
             <div className="flex gap-3 h-full min-w-max">
               {GROUPS.filter((g) => g.id !== "done" || showDone).map((col) => {
                 const colTasks = filtered.filter((t) => t.status === col.id);
                 return (
                   <div key={col.id} className="w-[260px] flex flex-col shrink-0">
-                    <div className="flex items-center gap-2 px-2 py-2 mb-1">
-                      <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: col.dot }} />
-                      <span className="font-ui text-[11px] font-medium text-[#374151] uppercase tracking-[0.1em]">{col.label}</span>
-                      <span className="ml-auto font-ui text-[11px] text-[#9CA3AF] bg-[#F1F5F9] px-1.5 py-0.5 rounded-full">{colTasks.length}</span>
+                    {/* Column header — newspaper section label */}
+                    <div className="px-2 py-2 mb-1">
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <span className="w-2 h-2 shrink-0" style={{ backgroundColor: col.dot }} />
+                        <span className="font-ui text-[11px] font-bold text-[#0D0D0D] uppercase tracking-[0.12em]">{col.label}</span>
+                        <span className="ml-auto font-ui text-[11px] text-[#999990] border border-[#CCCCBC] bg-[#FAFAF5] px-1.5 py-0.5">{colTasks.length}</span>
+                      </div>
+                      <div className="h-px" style={{ backgroundColor: col.dot }} />
                     </div>
-                    <div className="h-px mb-2" style={{ backgroundColor: col.dot + "30" }} />
                     <div className="flex-1 overflow-y-auto space-y-1.5 pr-1">
                       {colTasks.map((task) => {
                         const pri = PRIORITY_META[task.priority as Priority] ?? PRIORITY_META.medium;
@@ -551,19 +567,19 @@ export default function AreaBoardPage({ params }: { params: Promise<{ id: string
                             key={task._id}
                             onClick={() => setSelectedId(selectedId === task._id ? null : task._id)}
                             className={cn(
-                              "bg-[#FFFFFF] border border-[#E2E8F0] rounded hover:border-[#D1D5DB] transition-colors cursor-pointer relative overflow-hidden",
-                              selectedId === task._id && "border-[#4A9EE0]"
+                              "bg-[#FFFFFF] border border-[#CCCCBC] hover:border-[#0D0D0D] transition-colors cursor-pointer relative overflow-hidden",
+                              selectedId === task._id && "border-[#C41E3A]"
                             )}
                             style={{ borderLeft: `3px solid ${pri.color}` }}
                           >
                             <div className="px-3 pt-2.5 pb-1">
-                              <span className="font-ui text-[11px] text-[#9CA3AF]">{issueKey(area?.name ?? "", task._id)}</span>
+                              <span className="font-ui text-[11px] text-[#999990]">{issueKey(area?.name ?? "", task._id)}</span>
                             </div>
-                            <p className="font-ui text-[13px] text-[#111827] px-3 pb-2.5 leading-snug">{task.title}</p>
+                            <p className="font-ui text-[13px] text-[#0D0D0D] px-3 pb-2.5 leading-snug">{task.title}</p>
                             {task.dueDate && (
-                              <div className="flex items-center gap-1.5 px-3 pb-2.5 border-t border-[#E2E8F0] pt-1.5">
+                              <div className="flex items-center gap-1.5 px-3 pb-2.5 border-t border-[#CCCCBC] pt-1.5">
                                 <span className="font-ui text-[11px]" style={{ color: pri.color }}>{pri.label}</span>
-                                <span className={cn("ml-auto font-ui text-[11px]", isOverdue ? "text-[#E85538]" : "text-[#6B7280]")}>
+                                <span className={cn("ml-auto font-ui text-[11px]", isOverdue ? "text-[#E85538]" : "text-[#555550]")}>
                                   {format(new Date(task.dueDate), "d MMM")}
                                 </span>
                               </div>
@@ -572,7 +588,7 @@ export default function AreaBoardPage({ params }: { params: Promise<{ id: string
                         );
                       })}
                     </div>
-                    <button onClick={() => setCreateOpen(true)} className="mt-2 flex items-center gap-1.5 px-2 py-1.5 rounded font-ui text-[12px] text-[#9CA3AF] hover:text-[#6B7280] hover:bg-[#FFFFFF] transition-colors">
+                    <button onClick={() => setCreateOpen(true)} className="mt-2 flex items-center gap-1.5 px-2 py-1.5 font-ui text-[12px] text-[#999990] hover:text-[#555550] hover:bg-[#FFFFFF] transition-colors">
                       <Plus size={12} />Add issue
                     </button>
                   </div>

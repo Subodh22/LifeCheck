@@ -220,3 +220,69 @@ export const listDoneForWeek = query({
       .collect();
   },
 });
+
+// Returns { streak, completedToday } — consecutive days with ≥1 completed task
+export const getStreak = query({
+  args: { userId: v.string() },
+  handler: async (ctx, { userId }) => {
+    // Get all done tasks with completedAt, most recent first
+    const done = await ctx.db
+      .query("tasks")
+      .withIndex("by_user_status", (q) => q.eq("userId", userId).eq("status", "done"))
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("archivedAt"), undefined),
+          q.neq(q.field("completedAt"), undefined)
+        )
+      )
+      .collect();
+
+    if (done.length === 0) return { streak: 0, completedToday: false };
+
+    // Collect unique YYYY-MM-DD strings
+    const dateSet = new Set<string>();
+    for (const t of done) {
+      if (t.completedAt) {
+        const d = new Date(t.completedAt);
+        const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+        dateSet.add(key);
+      }
+    }
+
+    const now   = new Date();
+    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+    const completedToday = dateSet.has(today);
+
+    // Count consecutive days ending today (or yesterday if today is empty)
+    let streak = 0;
+    const cursor = new Date(now);
+    // If nothing today, start from yesterday for streak count (grace period)
+    if (!completedToday) cursor.setDate(cursor.getDate() - 1);
+
+    while (true) {
+      const key = `${cursor.getFullYear()}-${String(cursor.getMonth() + 1).padStart(2, "0")}-${String(cursor.getDate()).padStart(2, "0")}`;
+      if (!dateSet.has(key)) break;
+      streak++;
+      cursor.setDate(cursor.getDate() - 1);
+    }
+
+    return { streak, completedToday };
+  },
+});
+
+// Won this week — tasks completed since Monday
+export const wonThisWeek = query({
+  args: { userId: v.string(), weekStart: v.number() },
+  handler: async (ctx, { userId, weekStart }) => {
+    return ctx.db
+      .query("tasks")
+      .withIndex("by_user_status", (q) => q.eq("userId", userId).eq("status", "done"))
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("archivedAt"), undefined),
+          q.gte(q.field("completedAt"), weekStart)
+        )
+      )
+      .collect();
+  },
+});

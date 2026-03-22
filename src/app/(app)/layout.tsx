@@ -1,7 +1,7 @@
 "use client";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { redirect } from "next/navigation";
-import Sidebar from "@/components/layout/Sidebar";
+import Masthead from "@/components/layout/Masthead";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { userId, isLoaded, isSignedIn } = useCurrentUser();
@@ -11,9 +11,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex h-screen bg-[#F9F9F7] overflow-hidden">
-      <Sidebar userId={userId ?? ""} />
-      <main className="flex-1 overflow-auto">{children}</main>
+    <div style={{ minHeight: "100vh", background: "#FAFAF5" }}>
+      <Masthead userId={userId ?? ""} />
+      <main>{children}</main>
     </div>
   );
 }

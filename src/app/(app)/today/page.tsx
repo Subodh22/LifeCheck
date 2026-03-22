@@ -3,25 +3,26 @@ import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { healthColor } from "@/constants/colors";
-import { format, startOfWeek, endOfWeek } from "date-fns";
-import { Zap, ArrowUp, Minus, CheckCircle2, Circle, Clock, AlertCircle, Flame } from "lucide-react";
+import { format, startOfWeek } from "date-fns";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { useState } from "react";
-import { cn } from "@/lib/utils";
+import { TrendingDown, CheckCheck } from "lucide-react";
 
-// Research basis:
-// - Fogg Behavior Model (2009): daily habits must be prompted at the daily anchor point
-// - Implementation Intentions (Gollwitzer 1999): today's tasks need clear context
-// - GTD (Allen 2001): Engage = this page. Capture = Backlog. Plan = Goals. Reflect = Reviews.
+const INK       = "#0D0D0D";
+const INK_MID   = "#2A2A2A";
+const INK_LIGHT = "#555550";
+const INK_FAINT = "#999990";
+const RED       = "#C41E3A";
+const RULE_L    = "#CCCCBC";
+const NEWSPRINT = "#FAFAF5";
+const WHITE     = "#FFFFFF";
 
-const PRIORITY_META = {
-  urgent: { icon: <Zap size={11} />,    color: "#E85538" },
-  high:   { icon: <ArrowUp size={11} />, color: "#E8A838" },
-  medium: { icon: <Minus size={11} />,   color: "#8B5CF6" },
-  low:    { icon: <Minus size={11} />,   color: "#6B7280" },
-} as const;
-
-type Priority = keyof typeof PRIORITY_META;
+const PRIORITY_LABELS: Record<string, string> = {
+  urgent: "Urgent",
+  high:   "High",
+  medium: "Medium",
+  low:    "Low",
+};
 
 export default function TodayPage() {
   const { userId } = useCurrentUser();
@@ -29,347 +30,514 @@ export default function TodayPage() {
   const allTasks     = useQuery(api.tasks.listByUser,         userId ? { userId } : "skip") ?? [];
   const areas        = useQuery(api.areas.list,               userId ? { userId } : "skip") ?? [];
   const healthScores = useQuery(api.healthScores.getByUser,   userId ? { userId } : "skip") ?? {};
-  const habits       = useQuery(api.habits.list,              userId ? { userId } : "skip") ?? [];
   const updateStatus = useMutation(api.tasks.updateStatus);
-  const toggleHabit  = useMutation(api.habits.toggleHabitCompletion);
 
-  const [completing,    setCompleting]    = useState<string | null>(null);
-  const [togglingHabit, setTogglingHabit] = useState<string | null>(null);
+  const [completing, setCompleting] = useState<string | null>(null);
 
-  const todayStr  = format(new Date(), "yyyy-MM-dd");
-  const weekStart = format(startOfWeek(new Date(), { weekStartsOn: 1 }), "yyyy-MM-dd");
-  const weekEnd   = format(endOfWeek(new Date(),   { weekStartsOn: 1 }), "yyyy-MM-dd");
+  const weekStartDate = startOfWeek(new Date(), { weekStartsOn: 1 });
+  const weekStartMs   = weekStartDate.getTime();
 
-  const habitCompletions = useQuery(
-    api.habits.getHabitCompletionsForWeek,
-    userId ? { userId, weekStart, weekEnd } : "skip"
-  ) ?? [];
+  const wonThisWeek  = useQuery(api.tasks.wonThisWeek,                    userId ? { userId, weekStart: weekStartMs } : "skip") ?? [];
+  const lastActivity = useQuery(api.healthScores.getLastActivityByUser,   userId ? { userId } : "skip") ?? {};
+  const allGoals     = useQuery(api.goals.listByUser,                     userId ? { userId } : "skip") ?? [];
 
-  const completedTodayIds = new Set<string>(
-    habitCompletions
-      .filter((c) => c.completedDate === todayStr)
-      .map((c) => c.habitId)
-  );
+  const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0);
+  const todayMs    = todayStart.getTime();
 
-  const dailyHabits    = habits.filter((h) => h.frequency === "daily");
-  const habitsDoneToday = dailyHabits.filter((h) => completedTodayIds.has(h._id)).length;
-
-  const areaMap    = Object.fromEntries(areas.map((a) => [a._id, a]));
-  const hour       = new Date().getHours();
-  const greeting   = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
-
-  const doneTasks  = allTasks.filter((t) => t.status === "done");
-  const overdue    = allTasks.filter((t) => t.dueDate && t.dueDate < Date.now() && t.status !== "done");
-  const inProgress = allTasks.filter((t) => t.status === "in_progress");
+  const areaMap      = Object.fromEntries(areas.map(a => [a._id, a]));
+  const overdue        = allTasks.filter(t => t.dueDate && t.dueDate < Date.now() && t.status !== "done");
+  const inProgress     = allTasks.filter(t => t.status === "in_progress");
+  const done           = allTasks.filter(t => t.status === "done");
+  const completedToday = allTasks.filter(t => t.status === "done" && t.completedAt && t.completedAt >= todayMs);
 
   const handleComplete = async (taskId: Id<"tasks">, isDone: boolean) => {
     setCompleting(taskId);
-    try {
-      await updateStatus({ id: taskId, status: isDone ? "todo" : "done" });
-    } finally {
-      setCompleting(null);
-    }
-  };
-
-  const handleToggleHabit = async (habitId: Id<"habits">) => {
-    if (!userId) return;
-    setTogglingHabit(habitId);
-    try {
-      await toggleHabit({ habitId, userId, date: todayStr });
-    } finally {
-      setTogglingHabit(null);
-    }
+    try { await updateStatus({ id: taskId, status: isDone ? "todo" : "done" }); }
+    finally { setCompleting(null); }
   };
 
   return (
-    <div className="h-full overflow-y-auto">
-      <div className="max-w-[900px] mx-auto px-8 py-6">
+    <div style={{ padding: "0 64px 80px", background: NEWSPRINT, minHeight: "calc(100vh - 72px)" }}>
 
-        {/* Header */}
-        <div className="mb-6">
-          <p className="font-ui text-[11px] text-[#9CA3AF] tracking-[0.15em] uppercase mb-1">
-            {format(new Date(), "EEEE, d MMMM yyyy")}
-          </p>
-          <h1 className="font-display text-[32px] font-semibold text-[#111827] leading-tight [text-wrap:balance]">
-            {greeting}.
-          </h1>
+      {/* ── Hero ── */}
+      <div style={{ paddingTop: "40px", paddingBottom: "24px" }}>
+        {/* Kicker */}
+        <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "10px" }}>
+          <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "10px", fontWeight: 700, letterSpacing: "3px", textTransform: "uppercase", color: RED }}>
+            Morning Brief
+          </span>
+          <div style={{ flex: 1, height: "1px", background: RULE_L }} />
+          <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "10px", letterSpacing: "1.5px", textTransform: "uppercase", color: INK_FAINT }}>
+            {format(new Date(), "EEEE, MMMM d, yyyy")}
+          </span>
         </div>
 
-        {/* Stat cards row */}
-        <div className="grid grid-cols-4 gap-3 mb-6">
-          {[
-            {
-              label: "In Progress",
-              value: inProgress.length,
-              icon: <Circle size={14} className="text-[#8B5CF6]" />,
-              color: "#8B5CF6",
-            },
-            {
-              label: "Completed",
-              value: doneTasks.length,
-              icon: <CheckCircle2 size={14} className="text-[#4CAF6B]" />,
-              color: "#4CAF6B",
-            },
-            {
-              label: "Overdue",
-              value: overdue.length,
-              icon: <AlertCircle size={14} className="text-[#E85538]" />,
-              color: overdue.length > 0 ? "#E85538" : "#9CA3AF",
-            },
-            {
-              label: "Open Tasks",
-              value: allTasks.filter((t) => t.status !== "done").length,
-              icon: <Clock size={14} className="text-[#4A9EE0]" />,
-              color: "#4A9EE0",
-            },
-          ].map(({ label, value, icon, color }) => (
-            <div key={label} className="bg-[#FFFFFF] border border-[#E2E8F0] rounded p-3.5">
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-ui text-[11px] text-[#6B7280] uppercase tracking-[0.1em]">{label}</span>
-                {icon}
-              </div>
-              <span className="font-ui text-[24px] font-medium tabular-nums" style={{ color }}>{value}</span>
-            </div>
-          ))}
-        </div>
+        {/* Headline */}
+        <h1 style={{
+          fontFamily: "'Playfair Display', Georgia, serif",
+          fontWeight: 900,
+          fontSize: "80px",
+          lineHeight: 0.92,
+          letterSpacing: "-2px",
+          color: INK,
+          textTransform: "uppercase",
+          marginBottom: "20px",
+        }}>
+          Today
+        </h1>
 
-        <div className="grid grid-cols-[1fr_280px] gap-5">
+        {/* Red rule */}
+        <div style={{ width: "100%", height: "2px", background: RED }} />
 
-          {/* Left: Focus + Overdue */}
-          <div className="flex flex-col gap-5">
-
-            {/* Today's Focus — tasks due today */}
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <h2 className="font-ui text-[11px] font-medium text-[#6B7280] uppercase tracking-[0.15em]">
-                  Today&apos;s Focus
-                </h2>
-                <span className="font-ui text-[11px] text-[#9CA3AF]">{today.length} issues</span>
-              </div>
-
-              <div className="border border-[#E2E8F0] rounded overflow-hidden">
-                <div className="grid grid-cols-[20px_1fr_90px_70px] gap-3 px-4 py-2 bg-[#FFFFFF] border-b border-[#E2E8F0]">
-                  <div />
-                  <span className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9CA3AF]">Issue</span>
-                  <span className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9CA3AF]">Area</span>
-                  <span className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9CA3AF]">Due</span>
+        {/* Sub row */}
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "10px 0",
+          borderBottom: `1px solid ${RULE_L}`,
+          marginBottom: "28px",
+        }}>
+          <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "12px", color: INK_LIGHT, letterSpacing: "0.5px" }}>
+            <strong style={{ color: INK, fontWeight: 600 }}>{today.length}</strong> prioritized today &nbsp;·&nbsp;
+            <strong style={{ color: overdue.length > 0 ? RED : INK, fontWeight: 600 }}>{overdue.length}</strong> overdue &nbsp;·&nbsp;
+            <strong style={{ color: INK, fontWeight: 600 }}>{inProgress.length}</strong> in progress
+          </span>
+          {/* Stats */}
+          <div style={{ display: "flex", gap: "40px" }}>
+            {[
+              { label: "Due Today",   value: today.length,       color: INK },
+              { label: "In Progress", value: inProgress.length,  color: INK },
+              { label: "Overdue",     value: overdue.length,     color: overdue.length > 0 ? RED : INK_FAINT },
+              { label: "Completed",   value: done.length,        color: INK },
+            ].map(s => (
+              <div key={s.label} style={{ textAlign: "center" }}>
+                <div style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "28px", fontWeight: 700, color: s.color, lineHeight: 1 }}>
+                  {s.value}
                 </div>
-
-                {today.length === 0 ? (
-                  <div className="px-4 py-8 text-center bg-[#FFFFFF]">
-                    <p className="font-ui text-[13px] text-[#6B7280]">No priority tasks for today.</p>
-                    <p className="font-ui text-[11px] text-[#9CA3AF] mt-1">Add due dates to surface tasks here.</p>
-                  </div>
-                ) : (
-                  today.map((task) => {
-                    const area      = areaMap[task.areaId];
-                    const pri       = PRIORITY_META[task.priority as Priority] ?? PRIORITY_META.medium;
-                    const isDone    = task.status === "done";
-                    const isOverdue = task.dueDate && task.dueDate < Date.now() && !isDone;
-                    return (
-                      <div
-                        key={task._id}
-                        className="grid grid-cols-[20px_1fr_90px_70px] gap-3 px-4 py-2.5 border-b border-[#E2E8F0] last:border-0 bg-[#FFFFFF] hover:bg-[#F1F5F9] transition-colors items-center"
-                      >
-                        <button
-                          onClick={() => handleComplete(task._id, isDone)}
-                          disabled={completing === task._id}
-                          className="flex items-center justify-center transition-opacity hover:opacity-80"
-                          style={{ color: isDone ? "#4CAF6B" : pri.color }}
-                        >
-                          {isDone ? <CheckCircle2 size={14} /> : <Circle size={14} />}
-                        </button>
-                        <p className={cn(
-                          "font-ui text-[13px] truncate",
-                          isDone ? "text-[#9CA3AF] line-through" : "text-[#111827]"
-                        )}>
-                          {task.title}
-                        </p>
-                        {area ? (
-                          <span
-                            className="font-ui text-[11px] px-1.5 py-0.5 rounded truncate"
-                            style={{ color: area.color, backgroundColor: `${area.color}18` }}
-                          >
-                            {area.name}
-                          </span>
-                        ) : <span />}
-                        <span className={cn(
-                          "font-ui text-[11px]",
-                          isOverdue ? "text-[#E85538]" : "text-[#6B7280]"
-                        )}>
-                          {task.dueDate ? format(new Date(task.dueDate), "d MMM") : "—"}
-                        </span>
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-            </div>
-
-            {/* Overdue — requires triage */}
-            {overdue.length > 0 && (
-              <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <AlertCircle size={12} className="text-[#E85538]" />
-                  <h2 className="font-ui text-[11px] font-medium text-[#E85538] uppercase tracking-[0.15em]">
-                    Overdue
-                  </h2>
-                  <span className="font-ui text-[11px] text-[#9CA3AF]">{overdue.length}</span>
-                </div>
-                <div className="border border-[#E8553820] rounded overflow-hidden">
-                  {overdue.slice(0, 5).map((task) => {
-                    const area = areaMap[task.areaId];
-                    const pri  = PRIORITY_META[task.priority as Priority] ?? PRIORITY_META.medium;
-                    return (
-                      <div
-                        key={task._id}
-                        className="flex items-center gap-3 px-4 py-2.5 border-b border-[#E2E8F0] last:border-0 bg-[#FFFFFF] hover:bg-[#F1F5F9] transition-colors"
-                      >
-                        <span style={{ color: pri.color }}>{pri.icon}</span>
-                        <span className="flex-1 font-ui text-[13px] text-[#111827] truncate">{task.title}</span>
-                        {area && (
-                          <span
-                            className="font-ui text-[11px] px-1.5 py-0.5 rounded shrink-0"
-                            style={{ color: area.color, backgroundColor: `${area.color}18` }}
-                          >
-                            {area.name}
-                          </span>
-                        )}
-                        <span className="font-ui text-[11px] text-[#E85538] shrink-0">
-                          {task.dueDate ? format(new Date(task.dueDate), "d MMM") : "—"}
-                        </span>
-                      </div>
-                    );
-                  })}
-                  {overdue.length > 5 && (
-                    <div className="px-4 py-2 bg-[#FFFFFF] border-t border-[#E2E8F0]">
-                      <span className="font-ui text-[11px] text-[#6B7280]">+{overdue.length - 5} more overdue</span>
-                    </div>
-                  )}
+                <div style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "9px", fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", color: INK_FAINT, marginTop: "2px" }}>
+                  {s.label}
                 </div>
               </div>
-            )}
-          </div>
-
-          {/* Right: Daily Routines + Area Health */}
-          <div className="flex flex-col gap-5">
-
-            {/* Daily Routines — Fogg: prompts must appear at the daily anchor point */}
-            {dailyHabits.length > 0 && (
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-1.5">
-                    <Flame size={11} className="text-[#8B5CF6]" />
-                    <h2 className="font-ui text-[11px] font-medium text-[#6B7280] uppercase tracking-[0.15em]">
-                      Daily Routines
-                    </h2>
-                  </div>
-                  <span className="font-ui text-[11px] text-[#9CA3AF] tabular-nums">
-                    {habitsDoneToday}/{dailyHabits.length}
-                  </span>
-                </div>
-
-                <div className="border border-[#E2E8F0] rounded overflow-hidden">
-                  {dailyHabits.map((habit, i) => {
-                    const isDone     = completedTodayIds.has(habit._id);
-                    const isToggling = togglingHabit === habit._id;
-                    return (
-                      <div
-                        key={habit._id}
-                        className={cn(
-                          "flex items-center gap-3 px-3.5 py-2.5 bg-[#FFFFFF] hover:bg-[#F1F5F9] transition-colors",
-                          i > 0 && "border-t border-[#E2E8F0]"
-                        )}
-                      >
-                        <button
-                          onClick={() => handleToggleHabit(habit._id)}
-                          disabled={isToggling}
-                          className="flex items-center justify-center shrink-0 transition-opacity hover:opacity-80"
-                          style={{ color: isDone ? "#4CAF6B" : "#9CA3AF" }}
-                        >
-                          {isDone ? <CheckCircle2 size={14} /> : <Circle size={14} />}
-                        </button>
-                        <span className={cn(
-                          "flex-1 font-ui text-[13px] truncate",
-                          isDone ? "text-[#9CA3AF] line-through" : "text-[#111827]"
-                        )}>
-                          {habit.title}
-                        </span>
-                        {/* Streak indicator (Seinfeld "don't break the chain") */}
-                        {(habit.currentStreak ?? 0) > 0 && (
-                          <span className="font-ui text-[11px] text-[#8B5CF6] shrink-0 tabular-nums">
-                            {habit.currentStreak}d
-                          </span>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {/* Progress bar for today's routines */}
-                {dailyHabits.length > 0 && (
-                  <div className="mt-1.5 flex items-center gap-2">
-                    <div className="flex-1 h-0.5 bg-[#E2E8F0] rounded-full overflow-hidden">
-                      <div
-                        className="h-full rounded-full transition-all"
-                        style={{
-                          width: `${Math.round((habitsDoneToday / dailyHabits.length) * 100)}%`,
-                          backgroundColor: habitsDoneToday === dailyHabits.length ? "#4CAF6B" : "#8B5CF6",
-                        }}
-                      />
-                    </div>
-                    <span className="font-ui text-[11px] text-[#9CA3AF] tabular-nums shrink-0">
-                      {Math.round((habitsDoneToday / dailyHabits.length) * 100)}%
-                    </span>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Area Health */}
-            <div>
-              <h2 className="font-ui text-[11px] font-medium text-[#6B7280] uppercase tracking-[0.15em] mb-2">
-                Area Health
-              </h2>
-              <div className="border border-[#E2E8F0] rounded overflow-hidden">
-                {areas.length === 0 ? (
-                  <div className="p-5 text-center">
-                    <p className="font-ui text-[13px] text-[#6B7280]">No areas yet.</p>
-                  </div>
-                ) : (
-                  areas.map((area, i) => {
-                    const score = (healthScores as Record<string, number>)[area._id] ?? 50;
-                    const color = healthColor(score);
-                    return (
-                      <div
-                        key={area._id}
-                        className={cn(
-                          "flex items-center gap-3 px-4 py-3 bg-[#FFFFFF] hover:bg-[#F1F5F9] transition-colors cursor-pointer",
-                          i > 0 && "border-t border-[#E2E8F0]"
-                        )}
-                      >
-                        <span className="w-2 h-2 rounded-sm shrink-0" style={{ backgroundColor: area.color }} />
-                        <span className="font-ui text-[13px] text-[#111827] flex-1 truncate">{area.name}</span>
-                        <div className="flex items-center gap-2 shrink-0">
-                          <div className="w-14 h-1 bg-[#E2E8F0] rounded-full overflow-hidden">
-                            <div
-                              className="h-full rounded-full transition-all"
-                              style={{ width: `${score}%`, backgroundColor: color }}
-                            />
-                          </div>
-                          <span className="font-ui text-[11px] w-5 text-right tabular-nums" style={{ color }}>
-                            {score}
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
+
+      {/* ── 3-column grid ── */}
+      <div style={{ display: "grid", gridTemplateColumns: "5fr 4fr 3fr", gap: 0 }}>
+
+        {/* ── COL 1: Today's Focus + Completed Today ── */}
+        <div style={{ paddingRight: "32px" }}>
+          <SectionHeader label="Today's Focus" />
+
+          {today.length === 0 && completedToday.length === 0 ? (
+            <EmptyState message="No tasks due today." hint="Add due dates to surface tasks here." />
+          ) : (
+            <>
+              {today.map(task => {
+                const area   = areaMap[task.areaId];
+                const isDone = task.status === "done";
+                const isLead = today.indexOf(task) === 0;
+                return (
+                  <TaskArticle
+                    key={task._id}
+                    task={task}
+                    area={area}
+                    isDone={isDone}
+                    isLead={isLead}
+                    completing={completing}
+                    onComplete={handleComplete}
+                  />
+                );
+              })}
+              {completedToday.length > 0 && (
+                <div style={{ marginTop: today.length > 0 ? "24px" : 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px" }}>
+                    <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "9px", fontWeight: 700, letterSpacing: "3px", textTransform: "uppercase", color: "#3A7D44" }}>
+                      Done Today · {completedToday.length}
+                    </span>
+                    <div style={{ flex: 1, height: "1px", background: "#3A7D44", opacity: 0.3 }} />
+                  </div>
+                  {completedToday.map(task => {
+                    const area = areaMap[task.areaId];
+                    return (
+                      <div key={task._id} style={{ padding: "10px 0", borderBottom: `1px solid ${RULE_L}`, display: "flex", alignItems: "flex-start", gap: "8px" }}>
+                        <CheckCircle done onClick={() => handleComplete(task._id, true)} />
+                        <div style={{ flex: 1 }}>
+                          <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "15px", fontWeight: 700, color: INK_FAINT, textDecoration: "line-through", lineHeight: 1.2 }}>
+                            {task.title}
+                          </span>
+                          {area && (
+                            <div style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "9px", color: INK_FAINT, marginTop: "2px", letterSpacing: "0.5px" }}>
+                              {area.name}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+
+        {/* ── COL 2: In Progress + Overdue ── */}
+        <div style={{ padding: "0 32px", borderLeft: `1px solid ${INK}` }}>
+
+          {/* In Progress */}
+          <div style={{ marginBottom: inProgress.length > 0 ? "28px" : 0 }}>
+            <SectionHeader label="In Progress" />
+            {inProgress.length === 0 ? (
+              <EmptyState message="Nothing in progress." hint="Move a task to In Progress to track active work." />
+            ) : (
+              inProgress.map(task => {
+                const area = areaMap[task.areaId];
+                return (
+                  <div key={task._id} style={{ padding: "11px 0", borderBottom: `1px solid ${RULE_L}` }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "7px", marginBottom: "4px" }}>
+                      <span style={{
+                        fontFamily: "'Inter', system-ui, sans-serif",
+                        fontSize: "8px", fontWeight: 700, letterSpacing: "1.5px",
+                        textTransform: "uppercase", color: WHITE,
+                        background: INK_MID, padding: "2px 6px",
+                      }}>
+                        Active
+                      </span>
+                      {area && (
+                        <span style={{
+                          fontFamily: "'Inter', system-ui, sans-serif",
+                          fontSize: "8px", fontWeight: 700, letterSpacing: "1.5px",
+                          textTransform: "uppercase", color: INK_LIGHT,
+                          border: `1px solid ${RULE_L}`, padding: "2px 6px",
+                        }}>
+                          {area.name}
+                        </span>
+                      )}
+                    </div>
+                    <div style={{ display: "flex", alignItems: "flex-start", gap: "7px" }}>
+                      <CheckCircle done={false} onClick={() => handleComplete(task._id, false)} />
+                      <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "15px", fontWeight: 700, color: INK, lineHeight: 1.2 }}>
+                        {task.title}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+
+          {/* Overdue */}
+          {overdue.length > 0 && (
+            <div>
+              <SectionHeader label="Overdue" labelColor={RED} />
+              {overdue.slice(0, 6).map(task => {
+                const area   = areaMap[task.areaId];
+                const isDone = task.status === "done";
+                return (
+                  <div
+                    key={task._id}
+                    style={{
+                      padding: "11px 0",
+                      borderBottom: `1px solid ${RULE_L}`,
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: "7px", marginBottom: "4px" }}>
+                      <span style={{
+                        fontFamily: "'Inter', system-ui, sans-serif",
+                        fontSize: "8px", fontWeight: 700, letterSpacing: "1.5px",
+                        textTransform: "uppercase", color: WHITE,
+                        background: RED, padding: "2px 6px",
+                      }}>
+                        Overdue
+                      </span>
+                      {area && (
+                        <span style={{
+                          fontFamily: "'Inter', system-ui, sans-serif",
+                          fontSize: "8px", fontWeight: 700, letterSpacing: "1.5px",
+                          textTransform: "uppercase", color: INK_LIGHT,
+                          border: `1px solid ${RULE_L}`, padding: "2px 6px",
+                        }}>
+                          {area.name}
+                        </span>
+                      )}
+                    </div>
+                    <div style={{ display: "flex", alignItems: "flex-start", gap: "7px" }}>
+                      <CheckCircle done={isDone} urgent onClick={() => handleComplete(task._id, isDone)} />
+                      <span style={{
+                        fontFamily: "'Playfair Display', Georgia, serif",
+                        fontSize: "15px", fontWeight: 700, color: INK, lineHeight: 1.2,
+                      }}>
+                        {task.title}
+                      </span>
+                    </div>
+                    {task.dueDate && (
+                      <div style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "10px", color: RED, marginTop: "3px", paddingLeft: "21px" }}>
+                        Was due {format(new Date(task.dueDate), "d MMM")}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+              {overdue.length > 6 && (
+                <div style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "10px", fontWeight: 600, letterSpacing: "1px", textTransform: "uppercase", color: INK_FAINT, padding: "10px 0" }}>
+                  +{overdue.length - 6} more overdue
+                </div>
+              )}
+            </div>
+          )}
+
+        </div>
+
+        {/* ── COL 3: Area Health ── */}
+        <div style={{ paddingLeft: "32px", borderLeft: `1px solid ${INK}` }}>
+          <SectionHeader label="Area Health" />
+
+          {areas.length === 0 ? (
+            <EmptyState message="No areas yet." hint="Create an area to track health." />
+          ) : (
+            areas.map(area => {
+              const score        = (healthScores as Record<string, number>)[area._id] ?? 50;
+              const color        = healthColor(score);
+              const daysInactive = (lastActivity as Record<string, number>)[area._id] ?? 99;
+              const isStale      = daysInactive >= 3;
+              const areaGoals    = allGoals.filter((g: {areaId: string; status: string; targetValue?: number}) => g.areaId === area._id && g.status === "active" && g.targetValue);
+              const topGoal      = areaGoals[0] as {title: string; currentValue?: number; targetValue?: number} | undefined;
+              const goalPct      = topGoal?.targetValue
+                ? Math.min(100, Math.round(((topGoal.currentValue ?? 0) / topGoal.targetValue) * 100))
+                : null;
+
+              return (
+                <div key={area._id} style={{ padding: "12px 0", borderBottom: `1px solid ${RULE_L}` }}>
+                  <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: "5px" }}>
+                    <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "14px", fontWeight: 700, color: isStale ? INK_FAINT : INK }}>
+                      {area.name}
+                    </span>
+                    <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "20px", fontWeight: 700, color }}>
+                      {score}
+                    </span>
+                  </div>
+                  <div style={{ width: "100%", height: "3px", background: RULE_L, marginBottom: "6px" }}>
+                    <div style={{ width: `${score}%`, height: "100%", background: color, transition: "width 0.6s ease" }} />
+                  </div>
+                  {isStale && (
+                    <div style={{ display: "flex", alignItems: "center", gap: "4px", marginBottom: "5px" }}>
+                      <TrendingDown size={10} color={RED} />
+                      <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "9px", fontWeight: 600, color: RED, letterSpacing: "0.5px" }}>
+                        {daysInactive >= 99 ? "No activity yet" : `${daysInactive}d inactive — score dropping`}
+                      </span>
+                    </div>
+                  )}
+                  {goalPct !== null && topGoal && (
+                    <div>
+                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "3px" }}>
+                        <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "9px", color: INK_FAINT, maxWidth: "70%", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                          {topGoal.title}
+                        </span>
+                        <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "10px", fontWeight: 700, letterSpacing: "0.5px",
+                          color: goalPct >= 80 ? "#3A7D44" : goalPct >= 50 ? "#B08A4E" : INK_FAINT }}>
+                          {goalPct}%{goalPct >= 70 && goalPct < 100 && <span style={{ marginLeft: "3px", fontSize: "8px" }}>↑</span>}
+                        </span>
+                      </div>
+                      <div style={{ width: "100%", height: "2px", background: RULE_L }}>
+                        <div style={{ width: `${goalPct}%`, height: "100%", transition: "width 0.8s ease",
+                          background: goalPct >= 80 ? "#3A7D44" : goalPct >= 50 ? "#B08A4E" : INK_FAINT }} />
+                      </div>
+                      {goalPct >= 70 && goalPct < 100 && (
+                        <div style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "9px", color: "#3A7D44", fontWeight: 600, marginTop: "3px" }}>
+                          {100 - goalPct}% to go — you&apos;re close
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })
+          )}
+
+          {wonThisWeek.length > 0 && (
+            <div style={{ marginTop: "28px" }}>
+              <SectionHeader label={`Won This Week · ${wonThisWeek.length}`} />
+              {wonThisWeek.slice(0, 8).map((task: {_id: string; title: string}) => (
+                <div key={task._id} style={{ display: "flex", alignItems: "flex-start", gap: "7px", padding: "9px 0", borderBottom: `1px solid ${RULE_L}` }}>
+                  <CheckCheck size={11} color="#3A7D44" style={{ flexShrink: 0, marginTop: "2px" }} />
+                  <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "12px", color: INK_FAINT, textDecoration: "line-through", lineHeight: 1.3 }}>
+                    {task.title}
+                  </span>
+                </div>
+              ))}
+              {wonThisWeek.length > 8 && (
+                <div style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "9px", fontWeight: 600, letterSpacing: "1.5px", textTransform: "uppercase", color: INK_FAINT, paddingTop: "8px" }}>
+                  +{wonThisWeek.length - 8} more this week
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Internal components ── */
+
+function SectionHeader({ label, extra, labelColor }: { label: string; extra?: string; labelColor?: string }) {
+  return (
+    <div style={{ marginBottom: "16px" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <span style={{
+          fontFamily: "'Inter', system-ui, sans-serif",
+          fontSize: "9px",
+          fontWeight: 700,
+          letterSpacing: "3px",
+          textTransform: "uppercase",
+          color: labelColor ?? RED,
+        }}>
+          {label}
+        </span>
+        {extra && (
+          <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "9px", color: INK_FAINT }}>
+            {extra}
+          </span>
+        )}
+      </div>
+      <div style={{ width: "100%", height: "1px", background: INK, marginTop: "5px" }} />
+    </div>
+  );
+}
+
+function CheckCircle({ done, urgent, onClick, style }: {
+  done: boolean;
+  urgent?: boolean;
+  onClick?: () => void;
+  style?: React.CSSProperties;
+}) {
+  return (
+    <div
+      onClick={onClick}
+      style={{
+        width: "14px",
+        height: "14px",
+        borderRadius: "50%",
+        border: `1.5px solid ${urgent && !done ? RED : done ? INK : INK}`,
+        background: done ? INK : "transparent",
+        cursor: onClick ? "pointer" : "default",
+        flexShrink: 0,
+        position: "relative",
+        transition: "all 0.15s",
+        ...style,
+      }}
+    >
+      {done && (
+        <div style={{
+          position: "absolute",
+          top: "1px", left: "3.5px",
+          width: "4px", height: "7px",
+          border: `1.5px solid #FFFFFF`,
+          borderTop: "none",
+          borderLeft: "none",
+          transform: "rotate(45deg)",
+        }} />
+      )}
+    </div>
+  );
+}
+
+function TaskArticle({ task, area, isDone, isLead, completing, onComplete }: {
+  task: { _id: Id<"tasks">; title: string; priority: string; dueDate?: number; status: string };
+  area?: { name: string; color: string };
+  isDone: boolean;
+  isLead: boolean;
+  completing: string | null;
+  onComplete: (id: Id<"tasks">, isDone: boolean) => void;
+}) {
+  const isUrgent  = task.priority === "urgent";
+  const isOverdue = task.dueDate && task.dueDate < Date.now() && !isDone;
+
+  return (
+    <div style={{ padding: "14px 0", borderBottom: `1px solid ${RULE_L}` }}>
+      {/* Meta */}
+      <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "5px" }}>
+        {isUrgent && (
+          <span style={{
+            fontFamily: "'Inter', system-ui, sans-serif",
+            fontSize: "8.5px", fontWeight: 700, letterSpacing: "1.5px",
+            textTransform: "uppercase", color: WHITE, background: RED, padding: "2px 6px",
+          }}>
+            Urgent
+          </span>
+        )}
+        {area && (
+          <span style={{
+            fontFamily: "'Inter', system-ui, sans-serif",
+            fontSize: "8.5px", fontWeight: 700, letterSpacing: "1.5px",
+            textTransform: "uppercase", color: WHITE, background: INK, padding: "2px 6px",
+          }}>
+            {area.name}
+          </span>
+        )}
+        {task.dueDate && (
+          <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "9.5px", color: isOverdue ? RED : INK_FAINT }}>
+            {isOverdue ? `Overdue · ` : ""}{format(new Date(task.dueDate), "d MMM")}
+          </span>
+        )}
+      </div>
+
+      {/* Headline */}
+      <div style={{ display: "flex", alignItems: "flex-start", gap: "7px", marginBottom: "5px" }}>
+        <CheckCircle
+          done={isDone}
+          urgent={isUrgent}
+          onClick={() => completing !== task._id && onComplete(task._id, isDone)}
+          style={{ marginTop: "3px" }}
+        />
+        <span style={{
+          fontFamily: "'Playfair Display', Georgia, serif",
+          fontWeight: 700,
+          fontSize: isLead ? "22px" : "17px",
+          lineHeight: 1.15,
+          color: isDone ? INK_FAINT : INK,
+          textDecoration: isDone ? "line-through" : "none",
+          cursor: "pointer",
+          transition: "color 0.1s",
+        }}>
+          {task.title}
+        </span>
+      </div>
+
+      {/* Actions */}
+      {!isDone && (
+        <div style={{ display: "flex", gap: "12px", paddingLeft: "21px" }}>
+          <span style={{
+            fontFamily: "'Inter', system-ui, sans-serif",
+            fontSize: "10px", fontWeight: 600, letterSpacing: "0.3px",
+            color: INK, borderBottom: `1px solid ${INK}`, cursor: "pointer",
+          }}>
+            Complete
+          </span>
+          <span style={{
+            fontFamily: "'Inter', system-ui, sans-serif",
+            fontSize: "10px", fontWeight: 600, letterSpacing: "0.3px",
+            color: INK_FAINT, cursor: "pointer", borderBottom: "1px solid transparent",
+          }}>
+            Defer
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function EmptyState({ message, hint }: { message: string; hint: string }) {
+  return (
+    <div style={{ padding: "24px 0" }}>
+      <p style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", fontSize: "14px", color: INK_LIGHT }}>
+        {message}
+      </p>
+      <p style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "11px", color: INK_FAINT, marginTop: "4px" }}>
+        {hint}
+      </p>
     </div>
   );
 }

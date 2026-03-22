@@ -4,33 +4,35 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { format } from "date-fns";
-import { Zap, ArrowUp, Minus, Search, ChevronDown, Plus, Filter } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { useState } from "react";
 import CreateTaskModal from "@/components/CreateTaskModal";
 
-const STATUS_META: Record<string, { label: string; dot: string; bg: string; text: string }> = {
-  backlog:     { label: "Backlog",     dot: "#9CA3AF", bg: "#9CA3AF18", text: "#9CA3AF" },
-  todo:        { label: "To Do",       dot: "#4A9EE0", bg: "#4A9EE018", text: "#4A9EE0" },
-  in_progress: { label: "In Progress", dot: "#8B5CF6", bg: "#8B5CF618", text: "#8B5CF6" },
-  blocked:     { label: "Blocked",     dot: "#E85538", bg: "#E8553818", text: "#E85538" },
-  done:        { label: "Done",        dot: "#4CAF6B", bg: "#4CAF6B18", text: "#4CAF6B" },
+const INK       = "#0D0D0D";
+const INK_LIGHT = "#555550";
+const INK_FAINT = "#999990";
+const RED       = "#C41E3A";
+const RULE_L    = "#CCCCBC";
+const NEWSPRINT = "#FAFAF5";
+const WHITE     = "#FFFFFF";
+
+const STATUS_LABELS: Record<string, string> = {
+  backlog:     "Backlog",
+  todo:        "To Do",
+  in_progress: "In Progress",
+  blocked:     "Blocked",
+  done:        "Done",
 };
 
-const PRIORITY_META = {
-  urgent: { icon: <Zap size={11} />,    color: "#E85538", label: "Urgent" },
-  high:   { icon: <ArrowUp size={11} />, color: "#E8A838", label: "High"   },
-  medium: { icon: <Minus size={11} />,   color: "#8B5CF6", label: "Medium" },
-  low:    { icon: <Minus size={11} />,   color: "#6B7280", label: "Low"    },
-} as const;
+const PRIORITY_ORDER = ["urgent", "high", "medium", "low"];
+const PRIORITY_LABELS: Record<string, string> = {
+  urgent: "Urgent",
+  high:   "High",
+  medium: "Medium",
+  low:    "Low",
+};
 
-type Priority = keyof typeof PRIORITY_META;
-type Status   = keyof typeof STATUS_META;
-
-function issueKey(areaName: string, taskId: string) {
-  const prefix = areaName.slice(0, 3).toUpperCase().replace(/[^A-Z]/g, "X");
-  return `${prefix}-${taskId.slice(-4).toUpperCase()}`;
-}
+type Status   = "backlog" | "todo" | "in_progress" | "blocked" | "done";
+type Priority = "urgent" | "high" | "medium" | "low";
 
 export default function BacklogPage() {
   const { userId } = useCurrentUser();
@@ -38,227 +40,342 @@ export default function BacklogPage() {
   const areas  = useQuery(api.areas.list,       userId ? { userId } : "skip") ?? [];
   const updateStatus = useMutation(api.tasks.updateStatus);
 
-  const areaMap = Object.fromEntries(areas.map((a) => [a._id, a]));
+  const areaMap = Object.fromEntries(areas.map(a => [a._id, a]));
 
   const [search,         setSearch]         = useState("");
   const [statusFilter,   setStatusFilter]   = useState<Status | "">("");
   const [priorityFilter, setPriorityFilter] = useState<Priority | "">("");
-  const [areaFilter,     setAreaFilter]     = useState<string>("");
+  const [areaFilter,     setAreaFilter]     = useState("");
   const [showDone,       setShowDone]       = useState(false);
   const [createOpen,     setCreateOpen]     = useState(false);
   const [movingTask,     setMovingTask]     = useState<string | null>(null);
 
-  const active = tasks.filter((t) => showDone ? true : t.status !== "done");
-
-  const filtered = active.filter((t) => {
-    if (search         && !t.title.toLowerCase().includes(search.toLowerCase())) return false;
-    if (statusFilter   && t.status   !== statusFilter)                            return false;
-    if (priorityFilter && t.priority !== priorityFilter)                          return false;
-    if (areaFilter     && t.areaId   !== areaFilter)                              return false;
-    return true;
-  });
+  const filtered = tasks
+    .filter(t => showDone ? true : t.status !== "done")
+    .filter(t => !search         || t.title.toLowerCase().includes(search.toLowerCase()))
+    .filter(t => !statusFilter   || t.status   === statusFilter)
+    .filter(t => !priorityFilter || t.priority === priorityFilter)
+    .filter(t => !areaFilter     || t.areaId   === areaFilter);
 
   const sorted = [...filtered].sort((a, b) => {
-    const pa = ["urgent","high","medium","low"].indexOf(a.priority);
-    const pb = ["urgent","high","medium","low"].indexOf(b.priority);
+    const pa = PRIORITY_ORDER.indexOf(a.priority);
+    const pb = PRIORITY_ORDER.indexOf(b.priority);
     if (pa !== pb) return pa - pb;
     return (a.dueDate ?? Infinity) - (b.dueDate ?? Infinity);
   });
 
   const handleMove = async (taskId: Id<"tasks">, status: Status) => {
     setMovingTask(taskId);
-    try {
-      await updateStatus({ id: taskId, status: status as "backlog" | "todo" | "in_progress" | "blocked" | "done" });
-    } finally {
-      setMovingTask(null);
-    }
+    try { await updateStatus({ id: taskId, status }); }
+    finally { setMovingTask(null); }
   };
 
+  const hasFilters = search || statusFilter || priorityFilter || areaFilter;
+
   return (
-    <div className="h-full flex flex-col bg-[#F9F9F7]">
-      {/* Page header */}
-      <div className="px-6 py-3 border-b border-[#E2E8F0] bg-[#FFFFFF] flex items-center justify-between shrink-0">
-        <div className="flex items-center gap-3">
-          <h1 className="font-ui text-[14px] font-medium text-[#111827]">Backlog</h1>
-          <span className="font-ui text-[11px] text-[#9CA3AF] bg-[#F1F5F9] border border-[#E2E8F0] px-2 py-0.5 rounded-full">
-            {filtered.length} issues
-          </span>
+    <div style={{ padding: "0 64px 80px", background: NEWSPRINT, minHeight: "calc(100vh - 72px)" }}>
+
+      {/* ── Page Hero ── */}
+      <div style={{ paddingTop: "36px", paddingBottom: "24px", borderBottom: `2px solid ${INK}`, marginBottom: "28px" }}>
+        <div style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "10px", fontWeight: 700, letterSpacing: "3px", textTransform: "uppercase", color: RED, marginBottom: "8px" }}>
+          Task Registry
         </div>
-        <button
-          onClick={() => setCreateOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-[#8B5CF6] rounded font-ui text-[12px] font-medium text-[#FFFFFF] hover:bg-[#7C3AED] transition-colors"
-        >
-          <Plus size={12} />
-          Create issue
-        </button>
+        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
+          <h1 style={{
+            fontFamily: "'Playfair Display', Georgia, serif",
+            fontWeight: 900,
+            fontSize: "64px",
+            lineHeight: 0.95,
+            letterSpacing: "-2px",
+            textTransform: "uppercase",
+            color: INK,
+          }}>
+            Backlog
+          </h1>
+          {/* Stats */}
+          <div style={{ display: "flex", gap: "32px", alignItems: "flex-end", paddingBottom: "4px" }}>
+            {[
+              { label: "Total",      value: tasks.filter(t => t.status !== "done").length },
+              { label: "Filtered",   value: sorted.length, accent: true },
+              { label: "Overdue",    value: tasks.filter(t => t.dueDate && t.dueDate < Date.now() && t.status !== "done").length, danger: true },
+            ].map(s => (
+              <div key={s.label} style={{ textAlign: "right" }}>
+                <div style={{
+                  fontFamily: "'Playfair Display', Georgia, serif",
+                  fontSize: "24px",
+                  fontWeight: 700,
+                  color: s.danger && (s.value as number) > 0 ? RED : INK,
+                  lineHeight: 1,
+                }}>
+                  {s.value}
+                </div>
+                <div style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "9px", fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", color: INK_FAINT, marginTop: "2px" }}>
+                  {s.label}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Sub row */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "14px" }}>
+          <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "12px", color: INK_LIGHT }}>
+            Sorted by priority, then due date
+          </span>
+          <button
+            onClick={() => setCreateOpen(true)}
+            style={{
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: "11px", fontWeight: 600, letterSpacing: "1px",
+              textTransform: "uppercase", color: WHITE,
+              background: INK, border: "none", cursor: "pointer",
+              padding: "7px 14px", transition: "background 0.15s",
+            }}
+            onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = RED}
+            onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = INK}
+          >
+            + New Task
+          </button>
+        </div>
       </div>
 
-      {/* Filter bar */}
-      <div className="px-6 py-2.5 border-b border-[#E2E8F0] bg-[#FFFFFF] flex items-center gap-2.5 shrink-0 flex-wrap">
-        {/* Search */}
-        <div className="flex items-center gap-2 bg-[#F9F9F7] border border-[#E2E8F0] rounded px-2.5 py-1.5 w-56">
-          <Search size={12} className="text-[#9CA3AF] shrink-0" />
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search issues…"
-            className="bg-transparent font-ui text-[12px] text-[#111827] placeholder:text-[#9CA3AF] outline-none w-full"
-          />
-        </div>
-
-        <Filter size={12} className="text-[#9CA3AF]" />
-
-        {/* Status filter */}
-        <div className="relative">
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value as Status | "")}
-            className="appearance-none bg-[#F9F9F7] border border-[#E2E8F0] rounded px-2.5 py-1.5 font-ui text-[12px] text-[#6B7280] outline-none cursor-pointer pr-7"
-          >
-            <option value="">Status</option>
-            {Object.entries(STATUS_META).map(([k, v]) => (
-              <option key={k} value={k}>{v.label}</option>
-            ))}
-          </select>
-          <ChevronDown size={11} className="absolute right-2 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none" />
+      {/* ── Filter bar ── */}
+      <div style={{ display: "flex", alignItems: "center", marginBottom: "24px", flexWrap: "wrap", gap: "8px" }}>
+        {/* Status filter group */}
+        <div style={{ display: "flex", overflow: "hidden" }}>
+          {(["", "backlog", "todo", "in_progress", "blocked", "done"] as const).map(s => (
+            <button
+              key={s}
+              onClick={() => setStatusFilter(s as Status | "")}
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: "10px", fontWeight: 600, letterSpacing: "1.5px",
+                textTransform: "uppercase", padding: "7px 14px",
+                border: `1px solid ${RULE_L}`, borderRight: "none",
+                cursor: "pointer", transition: "all 0.15s",
+                background: statusFilter === s ? INK : "transparent",
+                color: statusFilter === s ? WHITE : INK_FAINT,
+              }}
+            >
+              {s === "" ? "All" : STATUS_LABELS[s]}
+            </button>
+          ))}
+          <div style={{ width: "1px", background: RULE_L }} />
         </div>
 
         {/* Priority filter */}
-        <div className="relative">
-          <select
-            value={priorityFilter}
-            onChange={(e) => setPriorityFilter(e.target.value as Priority | "")}
-            className="appearance-none bg-[#F9F9F7] border border-[#E2E8F0] rounded px-2.5 py-1.5 font-ui text-[12px] text-[#6B7280] outline-none cursor-pointer pr-7"
-          >
-            <option value="">Priority</option>
-            {Object.entries(PRIORITY_META).map(([k, v]) => (
-              <option key={k} value={k}>{v.label}</option>
-            ))}
-          </select>
-          <ChevronDown size={11} className="absolute right-2 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none" />
+        <div style={{ display: "flex", overflow: "hidden" }}>
+          {(["", "urgent", "high", "medium", "low"] as const).map(p => (
+            <button
+              key={p}
+              onClick={() => setPriorityFilter(p as Priority | "")}
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: "10px", fontWeight: 600, letterSpacing: "1.5px",
+                textTransform: "uppercase", padding: "7px 12px",
+                border: `1px solid ${RULE_L}`, borderRight: "none",
+                cursor: "pointer", transition: "all 0.15s",
+                background: priorityFilter === p ? INK : "transparent",
+                color: priorityFilter === p ? WHITE : INK_FAINT,
+              }}
+            >
+              {p === "" ? "Priority" : PRIORITY_LABELS[p]}
+            </button>
+          ))}
+          <div style={{ width: "1px", background: RULE_L }} />
         </div>
 
-        {/* Area filter */}
-        {areas.length > 0 && (
-          <div className="relative">
-            <select
-              value={areaFilter}
-              onChange={(e) => setAreaFilter(e.target.value)}
-              className="appearance-none bg-[#F9F9F7] border border-[#E2E8F0] rounded px-2.5 py-1.5 font-ui text-[12px] text-[#6B7280] outline-none cursor-pointer pr-7"
-            >
-              <option value="">Area</option>
-              {areas.map((a) => (
-                <option key={a._id} value={a._id}>{a.name}</option>
-              ))}
-            </select>
-            <ChevronDown size={11} className="absolute right-2 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none" />
-          </div>
-        )}
+        {/* Search */}
+        <input
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          placeholder="Search tasks…"
+          style={{
+            fontFamily: "'Inter', system-ui, sans-serif",
+            fontSize: "11px", color: INK, marginLeft: "auto",
+            border: `1px solid ${RULE_L}`, background: "transparent",
+            padding: "6px 14px", outline: "none", width: "220px",
+          }}
+        />
 
-        {/* Show done toggle */}
+        {/* Show done */}
         <button
-          onClick={() => setShowDone((v) => !v)}
-          className={cn(
-            "px-2.5 py-1.5 border rounded font-ui text-[12px] transition-colors",
-            showDone
-              ? "border-[#4CAF6B] text-[#4CAF6B] bg-[#4CAF6B18]"
-              : "border-[#E2E8F0] text-[#9CA3AF] hover:text-[#6B7280]"
-          )}
+          onClick={() => setShowDone(v => !v)}
+          style={{
+            fontFamily: "'Inter', system-ui, sans-serif",
+            fontSize: "10px", fontWeight: 600, letterSpacing: "1px",
+            textTransform: "uppercase", padding: "7px 12px",
+            border: `1px solid ${RULE_L}`, cursor: "pointer",
+            background: showDone ? INK : "transparent",
+            color: showDone ? WHITE : INK_FAINT,
+            marginLeft: "8px", transition: "all 0.15s",
+          }}
         >
-          {showDone ? "Hiding done" : "Show done"}
+          {showDone ? "Hide Done" : "Show Done"}
         </button>
 
-        {/* Clear filters */}
-        {(search || statusFilter || priorityFilter || areaFilter) && (
+        {/* Clear */}
+        {hasFilters && (
           <button
             onClick={() => { setSearch(""); setStatusFilter(""); setPriorityFilter(""); setAreaFilter(""); }}
-            className="font-ui text-[11px] text-[#E85538] hover:text-[#F07060] transition-colors"
+            style={{
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: "10px", fontWeight: 600, letterSpacing: "1px",
+              textTransform: "uppercase", color: RED, background: "none",
+              border: "none", cursor: "pointer", marginLeft: "8px",
+            }}
           >
-            Clear filters
+            Clear ×
           </button>
         )}
       </div>
 
-      {/* Table */}
-      <div className="flex-1 overflow-y-auto bg-[#FFFFFF]">
+      {/* ── Task table ── */}
+      <div>
         {/* Column headers */}
-        <div className="grid grid-cols-[20px_1fr_130px_110px_110px_90px] gap-4 px-6 py-2 border-b border-[#E2E8F0] bg-[#FFFFFF] sticky top-0 z-10">
-          <div />
-          <span className="font-ui text-[11px] tracking-[0.15em] uppercase text-[#9CA3AF]">Issue</span>
-          <span className="font-ui text-[11px] tracking-[0.15em] uppercase text-[#9CA3AF]">Status</span>
-          <span className="font-ui text-[11px] tracking-[0.15em] uppercase text-[#9CA3AF]">Priority</span>
-          <span className="font-ui text-[11px] tracking-[0.15em] uppercase text-[#9CA3AF]">Area</span>
-          <span className="font-ui text-[11px] tracking-[0.15em] uppercase text-[#9CA3AF]">Due</span>
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "0",
+          borderTop: `1px solid ${INK}`,
+          borderBottom: `1px solid ${RULE_L}`,
+          padding: "10px 0",
+        }}>
+          {[
+            { label: "Task",     flex: "1" },
+            { label: "Status",   width: "130px" },
+            { label: "Priority", width: "100px" },
+            { label: "Area",     width: "130px" },
+            { label: "Due",      width: "90px" },
+          ].map(col => (
+            <div
+              key={col.label}
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: "9px", fontWeight: 700, letterSpacing: "2px",
+                textTransform: "uppercase", color: INK_FAINT,
+                flex: col.flex, width: col.width, flexShrink: col.width ? 0 : undefined,
+              }}
+            >
+              {col.label}
+            </div>
+          ))}
         </div>
 
         {sorted.length === 0 ? (
-          <div className="text-center py-16">
-            <p className="font-ui text-sm text-[#6B7280]">No issues match your filters.</p>
-            <p className="font-ui text-xs text-[#9CA3AF] mt-1">Try adjusting your filters or create a new issue.</p>
+          <div style={{ padding: "48px 0", textAlign: "center" }}>
+            <p style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", fontSize: "18px", color: INK_LIGHT }}>
+              No tasks match your filters.
+            </p>
+            <p style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "11px", color: INK_FAINT, marginTop: "8px" }}>
+              Try adjusting your filters or create a new task.
+            </p>
           </div>
         ) : (
-          sorted.map((task) => {
-            const pri    = PRIORITY_META[task.priority as Priority] ?? PRIORITY_META.medium;
-            const status = STATUS_META[task.status] ?? STATUS_META.backlog;
-            const taskArea = areaMap[task.areaId];
+          sorted.map(task => {
+            const taskArea  = areaMap[task.areaId];
             const isOverdue = task.dueDate && task.dueDate < Date.now() && task.status !== "done";
+            const isDone    = task.status === "done";
+            const isUrgent  = task.priority === "urgent";
 
             return (
               <div
                 key={task._id}
-                className="grid grid-cols-[20px_1fr_130px_110px_110px_90px] gap-4 px-6 py-2.5 border-b border-[#E2E8F0] hover:bg-[#F1F5F9] transition-colors cursor-pointer items-center group"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  borderBottom: `1px solid ${RULE_L}`,
+                  padding: "13px 0",
+                  cursor: "pointer",
+                  transition: "background 0.08s",
+                }}
+                onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = "rgba(0,0,0,0.02)"}
+                onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = "transparent"}
               >
-                {/* Priority icon */}
-                <span style={{ color: pri.color }} className="flex items-center justify-center">
-                  {pri.icon}
-                </span>
-
-                {/* Issue title + key */}
-                <div className="min-w-0">
-                  <p className="font-ui text-[13px] text-[#111827] truncate leading-snug">{task.title}</p>
-                  <p className="font-ui text-[11px] text-[#9CA3AF] mt-0.5">
-                    {taskArea ? issueKey(taskArea.name, task._id) : task._id.slice(-6).toUpperCase()}
-                  </p>
+                {/* Task title */}
+                <div style={{ flex: 1, minWidth: 0, paddingRight: "16px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "7px" }}>
+                    {isUrgent && (
+                      <span style={{
+                        fontFamily: "'Inter', system-ui, sans-serif",
+                        fontSize: "7.5px", fontWeight: 700, letterSpacing: "1.5px",
+                        textTransform: "uppercase", color: WHITE,
+                        background: RED, padding: "1.5px 5px", flexShrink: 0,
+                      }}>
+                        Urgent
+                      </span>
+                    )}
+                    <span style={{
+                      fontFamily: "'Playfair Display', Georgia, serif",
+                      fontSize: "15px", fontWeight: 700, color: isDone ? INK_FAINT : INK,
+                      textDecoration: isDone ? "line-through" : "none",
+                      lineHeight: 1.2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                    }}>
+                      {task.title}
+                    </span>
+                  </div>
                 </div>
 
-                {/* Status badge */}
-                <div>
+                {/* Status */}
+                <div style={{ width: "130px", flexShrink: 0 }}>
                   <select
                     value={task.status}
-                    onClick={(e) => e.stopPropagation()}
-                    onChange={(e) => handleMove(task._id, e.target.value as Status)}
+                    onClick={e => e.stopPropagation()}
+                    onChange={e => handleMove(task._id, e.target.value as Status)}
                     disabled={movingTask === task._id}
-                    className="appearance-none w-full rounded px-2 py-0.5 font-ui text-[11px] outline-none cursor-pointer border border-transparent hover:border-[#D1D5DB] transition-colors"
-                    style={{ backgroundColor: status.bg, color: status.text }}
+                    style={{
+                      fontFamily: "'Inter', system-ui, sans-serif",
+                      fontSize: "10px", fontWeight: 600, letterSpacing: "1px",
+                      textTransform: "uppercase", color: INK_LIGHT,
+                      background: "transparent", border: `1px solid ${RULE_L}`,
+                      padding: "3px 8px", cursor: "pointer", outline: "none",
+                    }}
                   >
-                    {Object.entries(STATUS_META).map(([k, v]) => (
-                      <option key={k} value={k}>{v.label}</option>
+                    {Object.entries(STATUS_LABELS).map(([k, v]) => (
+                      <option key={k} value={k}>{v}</option>
                     ))}
                   </select>
                 </div>
 
                 {/* Priority */}
-                <span className="flex items-center gap-1.5 font-ui text-[12px]" style={{ color: pri.color }}>
-                  {pri.icon}
-                  {pri.label}
-                </span>
+                <div style={{ width: "100px", flexShrink: 0 }}>
+                  <span style={{
+                    fontFamily: "'Inter', system-ui, sans-serif",
+                    fontSize: "10px", fontWeight: 600, letterSpacing: "1px",
+                    textTransform: "uppercase",
+                    color: task.priority === "urgent" ? RED : task.priority === "high" ? "#B08A4E" : INK_FAINT,
+                  }}>
+                    {PRIORITY_LABELS[task.priority] ?? "—"}
+                  </span>
+                </div>
 
                 {/* Area */}
-                {taskArea ? (
-                  <span
-                    className="font-ui text-[11px] px-2 py-0.5 rounded truncate"
-                    style={{ color: taskArea.color, backgroundColor: `${taskArea.color}18` }}
-                  >
-                    {taskArea.name}
-                  </span>
-                ) : (
-                  <span className="font-ui text-[11px] text-[#9CA3AF]">—</span>
-                )}
+                <div style={{ width: "130px", flexShrink: 0 }}>
+                  {taskArea ? (
+                    <span style={{
+                      fontFamily: "'Inter', system-ui, sans-serif",
+                      fontSize: "10px", fontWeight: 600, letterSpacing: "1px",
+                      textTransform: "uppercase", color: INK_LIGHT,
+                      border: `1px solid ${RULE_L}`, padding: "2px 7px",
+                    }}>
+                      {taskArea.name}
+                    </span>
+                  ) : (
+                    <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "10px", color: INK_FAINT }}>—</span>
+                  )}
+                </div>
 
-                {/* Due date */}
-                <span className={cn("font-ui text-[12px]", isOverdue ? "text-[#E85538]" : "text-[#6B7280]")}>
-                  {task.dueDate ? format(new Date(task.dueDate), "d MMM") : "—"}
-                </span>
+                {/* Due */}
+                <div style={{ width: "90px", flexShrink: 0 }}>
+                  <span style={{
+                    fontFamily: "'Inter', system-ui, sans-serif",
+                    fontSize: "11px",
+                    color: isOverdue ? RED : INK_FAINT,
+                    fontWeight: isOverdue ? 600 : 400,
+                  }}>
+                    {task.dueDate ? format(new Date(task.dueDate), "d MMM") : "—"}
+                  </span>
+                </div>
               </div>
             );
           })
