@@ -27,6 +27,7 @@ import {
   ExternalLink,
   Trash2,
   ChevronDown,
+  Check,
 } from "lucide-react";
 
 // ── Constants ──────────────────────────────────────────────────────────────────
@@ -140,8 +141,13 @@ const TimeSlotCell = memo(function TimeSlotCell({
 });
 
 const ScheduledTaskBlock = memo(function ScheduledTaskBlock({
-  task, onUnschedule,
-}: { task: Task; onUnschedule: () => void }) {
+  task, onUnschedule, onComplete,
+}: {
+  task: Task;
+  onUnschedule: (id: Id<"tasks">) => void;
+  onComplete:   (id: Id<"tasks">) => void;
+}) {
+  const done     = task.status === "done";
   const start    = task.scheduledStart!;
   const end      = task.scheduledEnd!;
   const topPx    = tsToOffset(start);
@@ -150,6 +156,7 @@ const ScheduledTaskBlock = memo(function ScheduledTaskBlock({
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: `scheduled-${task._id}`,
     data: { taskId: task._id, type: "scheduled", originalStart: start, originalEnd: end },
+    disabled: done,
   });
 
   return (
@@ -158,26 +165,58 @@ const ScheduledTaskBlock = memo(function ScheduledTaskBlock({
       {...listeners}
       {...attributes}
       style={{ transform: CSS.Translate.toString(transform), top: topPx, height: heightPx, opacity: isDragging ? 0.5 : 1 }}
-      className="absolute left-0.5 right-0.5 rounded bg-[#4A9EE018] border border-[#4A9EE040] px-2 py-1 cursor-grab z-10 group overflow-hidden"
+      className={cn(
+        "absolute left-0.5 right-0.5 rounded px-2 py-1 z-10 group overflow-hidden",
+        done
+          ? "bg-[#1A1A1D] border border-[#2A2A2E] cursor-default"
+          : "bg-[#4A9EE018] border border-[#4A9EE040] cursor-grab"
+      )}
     >
-      <p className="font-ui text-[11px] font-medium text-[#4A9EE0] leading-tight truncate">{task.title}</p>
-      <p className="font-ui text-[10px] text-[#4A9EE060] tabular-nums">
+      <p className={cn(
+        "font-ui text-[11px] font-medium leading-tight truncate pr-8",
+        done ? "line-through text-[#3A3A3E]" : "text-[#4A9EE0]"
+      )}>
+        {task.title}
+      </p>
+      <p className={cn("font-ui text-[10px] tabular-nums", done ? "text-[#2A2A2E]" : "text-[#4A9EE060]")}>
         {fmtTime(start)} – {fmtTime(end)}
       </p>
-      <button
-        onPointerDown={(e) => e.stopPropagation()}
-        onClick={onUnschedule}
-        className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 text-[#3A3A3E] hover:text-[#E85538] transition-all"
-      >
-        <Unlink size={9} />
-      </button>
+
+      {/* Action buttons */}
+      <div className="absolute top-1 right-1 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all">
+        {!done && (
+          <button
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={() => onComplete(task._id)}
+            className="text-[#3A3A3E] hover:text-[#4CAF6B] transition-colors"
+            title="Mark done"
+          >
+            <Check size={9} />
+          </button>
+        )}
+        <button
+          onPointerDown={(e) => e.stopPropagation()}
+          onClick={() => onUnschedule(task._id)}
+          className="text-[#3A3A3E] hover:text-[#E85538] transition-colors"
+          title="Remove from calendar"
+        >
+          <Unlink size={9} />
+        </button>
+      </div>
+
+      {/* Done checkmark — always visible when done */}
+      {done && (
+        <div className="absolute top-1 right-1">
+          <Check size={9} className="text-[#4CAF6B]" />
+        </div>
+      )}
     </div>
   );
 });
 
 const GCalEventBlock = memo(function GCalEventBlock({
   event, onDelete,
-}: { event: GCalEvent; onDelete: () => void }) {
+}: { event: GCalEvent; onDelete: (id: string) => void }) {
   const startStr = event.start.dateTime ?? event.start.date;
   const endStr   = event.end.dateTime   ?? event.end.date;
   if (!startStr || !endStr) return null;
@@ -212,7 +251,7 @@ const GCalEventBlock = memo(function GCalEventBlock({
         )}
         <button
           onPointerDown={(e) => e.stopPropagation()}
-          onClick={onDelete}
+          onClick={() => onDelete(event.id)}
           className="p-0.5 rounded hover:bg-white/10 transition-colors text-[#E85538]"
         >
           <Trash2 size={9} />
@@ -269,6 +308,7 @@ export default function SchedulePage() {
 
   const scheduleTask   = useMutation(api.tasks.scheduleTask);
   const unscheduleTask = useMutation(api.tasks.unscheduleTask);
+  const updateStatus   = useMutation(api.tasks.updateStatus);
 
   const weekStart = useMemo(() => startOfWeek(weekDate, { weekStartsOn: 1 }), [weekDate]);
   const weekEnd   = useMemo(() => endOfWeek(weekDate,   { weekStartsOn: 1 }), [weekDate]);
@@ -454,16 +494,22 @@ export default function SchedulePage() {
     scheduleTask({ id: taskData.taskId, scheduledStart: startTs, scheduledEnd: endTs });
   }, [userId, weekStart, scheduledTasks, unscheduledTasks, scheduleTask, gcalConnected]);
 
-  const handleUnschedule = useCallback(async (task: Task) => {
-    if (task.gcalEventId && gcalConnected) {
+  // Accept id only — stable reference so memo'd children don't re-render
+  const handleUnschedule = useCallback((id: Id<"tasks">) => {
+    const task = [...scheduledTasks, ...unscheduledTasks].find((t) => t._id === id);
+    if (task?.gcalEventId && gcalConnected) {
       fetch("/api/calendar/events", {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
         body:    JSON.stringify({ action: "delete", gcalEventId: task.gcalEventId }),
       }).catch(() => {});
     }
-    await unscheduleTask({ id: task._id });
-  }, [gcalConnected, unscheduleTask]);
+    unscheduleTask({ id });
+  }, [scheduledTasks, unscheduledTasks, gcalConnected, unscheduleTask]);
+
+  const handleComplete = useCallback((id: Id<"tasks">) => {
+    updateStatus({ id, status: "done" });
+  }, [updateStatus]);
 
   const handleDeleteGcalEvent = useCallback((eventId: string) => {
     setGcalEvents((prev) => prev.filter((ev) => ev.id !== eventId));
@@ -672,7 +718,7 @@ export default function SchedulePage() {
                       <GCalEventBlock
                         key={ev.id}
                         event={ev}
-                        onDelete={() => handleDeleteGcalEvent(ev.id)}
+                        onDelete={handleDeleteGcalEvent}
                       />
                     ))}
 
@@ -681,7 +727,8 @@ export default function SchedulePage() {
                       <ScheduledTaskBlock
                         key={t._id}
                         task={t}
-                        onUnschedule={() => handleUnschedule(t)}
+                        onUnschedule={handleUnschedule}
+                        onComplete={handleComplete}
                       />
                     ))}
 
