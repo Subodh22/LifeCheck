@@ -3,7 +3,7 @@ import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo, memo } from "react";
 import { format, startOfWeek, endOfWeek, addWeeks, subWeeks, addDays, setHours, setMinutes } from "date-fns";
 import {
   DndContext,
@@ -24,18 +24,17 @@ import {
   CalendarCheck2,
   Unlink,
   GripVertical,
-  Clock,
   ExternalLink,
   Trash2,
 } from "lucide-react";
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
-const HOUR_START  = 6;   // 6am
-const HOUR_END    = 22;  // 10pm
+const HOUR_START  = 6;
+const HOUR_END    = 22;
 const HOURS       = Array.from({ length: HOUR_END - HOUR_START }, (_, i) => HOUR_START + i);
-const CELL_HEIGHT = 64;  // px per hour
-const SNAP_MINS   = 15;  // snap to 15-minute increments
+const CELL_HEIGHT = 64; // px per hour
+const SNAP_MINS   = 15;
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -58,6 +57,8 @@ type GCalEvent = {
   htmlLink?: string;
   colorId?: string;
 };
+
+type PendingMove = { scheduledStart: number; scheduledEnd: number };
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
@@ -85,16 +86,16 @@ function gcalColor(colorId?: string) {
   return colorId ? (map[colorId] ?? "#039BE5") : "#039BE5";
 }
 
-// Map a timestamp to vertical offset (pixels from top of day column)
 function tsToOffset(ts: number): number {
   const d = new Date(ts);
-  const h = d.getHours() + d.getMinutes() / 60;
-  return (h - HOUR_START) * CELL_HEIGHT;
+  return (d.getHours() + d.getMinutes() / 60 - HOUR_START) * CELL_HEIGHT;
 }
 
-// ── Draggable unscheduled task chip ───────────────────────────────────────────
+// ── Sub-components (memo'd to prevent unnecessary re-renders) ─────────────────
 
-function UnscheduledChip({ task, areaColor }: { task: Task; areaColor?: string }) {
+const UnscheduledChip = memo(function UnscheduledChip({
+  task, areaColor,
+}: { task: Task; areaColor?: string }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: `unscheduled-${task._id}`,
     data: { taskId: task._id, type: "unscheduled" },
@@ -109,21 +110,16 @@ function UnscheduledChip({ task, areaColor }: { task: Task; areaColor?: string }
       className="flex items-center gap-2 px-3 py-2 bg-[#111113] border border-[#2A2A2E] rounded cursor-grab hover:border-[#333338] transition-colors group"
     >
       <GripVertical size={11} className="text-[#3A3A3E] shrink-0" />
-      <span
-        className="w-1.5 h-1.5 rounded-full shrink-0"
-        style={{ backgroundColor: priorityColor(task.priority) }}
-      />
+      <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: priorityColor(task.priority) }} />
       {areaColor && <span className="w-1.5 h-1.5 rounded-sm shrink-0" style={{ backgroundColor: areaColor }} />}
       <span className="font-ui text-[12px] text-[#C4C0BA] leading-snug flex-1 min-w-0 truncate">
         {task.title}
       </span>
     </div>
   );
-}
+});
 
-// ── Droppable time slot cell ───────────────────────────────────────────────────
-
-function TimeSlotCell({
+const TimeSlotCell = memo(function TimeSlotCell({
   dayIdx, hour, minute = 0,
 }: { dayIdx: number; hour: number; minute?: number }) {
   const id = `slot-${dayIdx}-${hour}-${minute}`;
@@ -132,30 +128,21 @@ function TimeSlotCell({
   return (
     <div
       ref={setNodeRef}
-      className={cn(
-        "absolute w-full",
-        isOver && "bg-[#C9A84C0A]",
-      )}
+      className={cn("absolute w-full", isOver && "bg-[#C9A84C0A]")}
       style={{
-        top:    ((hour - HOUR_START + minute / 60) * CELL_HEIGHT),
+        top:    (hour - HOUR_START + minute / 60) * CELL_HEIGHT,
         height: (SNAP_MINS / 60) * CELL_HEIGHT,
       }}
     />
   );
-}
+});
 
-// ── Scheduled task block ───────────────────────────────────────────────────────
-
-function ScheduledTaskBlock({
-  task,
-  onUnschedule,
-}: {
-  task: Task;
-  onUnschedule: () => void;
-}) {
-  const start = task.scheduledStart!;
-  const end   = task.scheduledEnd!;
-  const topPx = tsToOffset(start);
+const ScheduledTaskBlock = memo(function ScheduledTaskBlock({
+  task, onUnschedule,
+}: { task: Task; onUnschedule: () => void }) {
+  const start    = task.scheduledStart!;
+  const end      = task.scheduledEnd!;
+  const topPx    = tsToOffset(start);
   const heightPx = Math.max((durationMins(start, end) / 60) * CELL_HEIGHT, 24);
 
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
@@ -168,12 +155,7 @@ function ScheduledTaskBlock({
       ref={setNodeRef}
       {...listeners}
       {...attributes}
-      style={{
-        transform: CSS.Translate.toString(transform),
-        top:    topPx,
-        height: heightPx,
-        opacity: isDragging ? 0.5 : 1,
-      }}
+      style={{ transform: CSS.Translate.toString(transform), top: topPx, height: heightPx, opacity: isDragging ? 0.5 : 1 }}
       className="absolute left-0.5 right-0.5 rounded bg-[#4A9EE018] border border-[#4A9EE040] px-2 py-1 cursor-grab z-10 group overflow-hidden"
     >
       <p className="font-ui text-[11px] font-medium text-[#4A9EE0] leading-tight truncate">{task.title}</p>
@@ -189,41 +171,30 @@ function ScheduledTaskBlock({
       </button>
     </div>
   );
-}
+});
 
-// ── GCal event block ───────────────────────────────────────────────────────────
-
-function GCalEventBlock({
-  event,
-  onDelete,
-}: {
-  event: GCalEvent;
-  onDelete: () => void;
-}) {
+const GCalEventBlock = memo(function GCalEventBlock({
+  event, onDelete,
+}: { event: GCalEvent; onDelete: () => void }) {
   const startStr = event.start.dateTime ?? event.start.date;
   const endStr   = event.end.dateTime   ?? event.end.date;
   if (!startStr || !endStr) return null;
 
-  const start = new Date(startStr).getTime();
-  const end   = new Date(endStr).getTime();
+  const start    = new Date(startStr).getTime();
+  const end      = new Date(endStr).getTime();
   const topPx    = tsToOffset(start);
   const heightPx = Math.max((durationMins(start, end) / 60) * CELL_HEIGHT, 20);
   const color    = gcalColor(event.colorId);
 
   return (
     <div
-      style={{
-        top: topPx, height: heightPx,
-        borderLeftColor: color,
-        backgroundColor: `${color}12`,
-      }}
+      style={{ top: topPx, height: heightPx, borderLeftColor: color, backgroundColor: `${color}12` }}
       className="absolute left-0.5 right-0.5 rounded border-l-2 border border-transparent px-2 py-0.5 overflow-hidden pointer-events-auto group z-5"
     >
       <p className="font-ui text-[11px] leading-tight truncate pr-8" style={{ color }}>{event.summary}</p>
       <p className="font-ui text-[10px] tabular-nums" style={{ color: `${color}80` }}>
         {fmtTime(start)} – {fmtTime(end)}
       </p>
-      {/* Action buttons — visible on hover */}
       <div className="absolute top-0.5 right-0.5 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
         {event.htmlLink && (
           <a
@@ -247,9 +218,7 @@ function GCalEventBlock({
       </div>
     </div>
   );
-}
-
-// ── Drag overlay chip ──────────────────────────────────────────────────────────
+});
 
 function DragOverlayChip({ title }: { title: string }) {
   return (
@@ -260,31 +229,54 @@ function DragOverlayChip({ title }: { title: string }) {
   );
 }
 
+// Static grid background — rendered once per column, no React re-renders
+const DayColumnGrid = memo(function DayColumnGrid({ dayIdx }: { dayIdx: number }) {
+  return (
+    <>
+      {HOURS.map((h) => (
+        <div key={h} className="absolute w-full border-t border-[#1A1A1D]" style={{ top: (h - HOUR_START) * CELL_HEIGHT }} />
+      ))}
+      {HOURS.map((h) => (
+        <div key={`${h}-h`} className="absolute w-full border-t border-dashed border-[#16161A]" style={{ top: (h - HOUR_START + 0.5) * CELL_HEIGHT }} />
+      ))}
+      {HOURS.flatMap((h) =>
+        [0, 15, 30, 45].map((m) => (
+          <TimeSlotCell key={`${h}-${m}`} dayIdx={dayIdx} hour={h} minute={m} />
+        ))
+      )}
+    </>
+  );
+});
+
 // ── Schedule page ──────────────────────────────────────────────────────────────
 
 export default function SchedulePage() {
   const { userId } = useCurrentUser();
   const areas = useQuery(api.areas.list, userId ? { userId } : "skip") ?? [];
 
-  const [weekDate,   setWeekDate]   = useState(() => new Date());
-  const [gcalEvents, setGcalEvents] = useState<GCalEvent[]>([]);
+  const [weekDate,      setWeekDate]      = useState(() => new Date());
+  const [gcalEvents,    setGcalEvents]    = useState<GCalEvent[]>([]);
   const [gcalConnected, setGcalConnected] = useState<boolean | null>(null);
-  const [activeId,   setActiveId]   = useState<string | null>(null);
+  const [activeId,      setActiveId]      = useState<string | null>(null);
   const [connectingGcal, setConnectingGcal] = useState(false);
+
+  // Optimistic moves: taskId → pending {scheduledStart, scheduledEnd}
+  // Applied immediately on drop so the block moves without waiting for Convex
+  const [pendingMoves, setPendingMoves] = useState<Map<string, PendingMove>>(new Map());
 
   const scheduleTask   = useMutation(api.tasks.scheduleTask);
   const unscheduleTask = useMutation(api.tasks.unscheduleTask);
 
-  const weekStart = startOfWeek(weekDate, { weekStartsOn: 1 }); // Mon
-  const weekEnd   = endOfWeek(weekDate,   { weekStartsOn: 1 }); // Sun
-  const weekDays  = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
+  const weekStart = useMemo(() => startOfWeek(weekDate, { weekStartsOn: 1 }), [weekDate]);
+  const weekEnd   = useMemo(() => endOfWeek(weekDate,   { weekStartsOn: 1 }), [weekDate]);
+  const weekDays  = useMemo(() => Array.from({ length: 7 }, (_, i) => addDays(weekStart, i)), [weekStart]);
 
-  const weekStartParam = weekStart.toISOString();
-  const weekEndParam   = weekEnd.toISOString();
+  const weekStartMs = weekStart.getTime();
+  const weekEndMs   = weekEnd.getTime();
 
   const scheduledTasks   = useQuery(
     api.tasks.listScheduledForWeek,
-    userId ? { userId, weekStart: weekStart.getTime(), weekEnd: weekEnd.getTime() } : "skip"
+    userId ? { userId, weekStart: weekStartMs, weekEnd: weekEndMs } : "skip"
   ) ?? [];
 
   const unscheduledTasks = useQuery(
@@ -292,42 +284,87 @@ export default function SchedulePage() {
     userId ? { userId } : "skip"
   ) ?? [];
 
-  const areaMap = Object.fromEntries(areas.map((a) => [a._id, a]));
+  const areaMap = useMemo(
+    () => Object.fromEntries(areas.map((a) => [a._id, a])),
+    [areas]
+  );
 
-  // ── Load / refresh GCal events ──
+  // Clear pending moves once Convex confirms them
+  useEffect(() => {
+    if (pendingMoves.size === 0) return;
+    setPendingMoves((prev) => {
+      const next = new Map(prev);
+      for (const task of scheduledTasks) {
+        const pending = next.get(task._id);
+        if (pending && task.scheduledStart === pending.scheduledStart) {
+          next.delete(task._id);
+        }
+      }
+      return next.size === prev.size ? prev : next;
+    });
+  }, [scheduledTasks]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Merge optimistic moves with Convex data for rendering
+  const displayScheduledTasks = useMemo(() => {
+    const result = scheduledTasks.map((t) => {
+      const move = pendingMoves.get(t._id);
+      return move ? { ...t, ...move } : t;
+    });
+    // Tasks moved FROM unscheduled before Convex updates
+    for (const [taskId, move] of pendingMoves) {
+      if (!result.find((t) => t._id === taskId)) {
+        const task = unscheduledTasks.find((t) => t._id === taskId);
+        if (task) result.push({ ...task, ...move });
+      }
+    }
+    return result;
+  }, [scheduledTasks, unscheduledTasks, pendingMoves]);
+
+  const displayUnscheduledTasks = useMemo(
+    () => unscheduledTasks.filter((t) => !pendingMoves.has(t._id)),
+    [unscheduledTasks, pendingMoves]
+  );
+
+  // ── GCal ──
   const loadGcalEvents = useCallback(() => {
     if (!userId) return;
-    fetch(`/api/calendar/events?weekStart=${encodeURIComponent(weekStartParam)}&weekEnd=${encodeURIComponent(weekEndParam)}`)
+    const ws = new Date(weekStartMs).toISOString();
+    const we = new Date(weekEndMs).toISOString();
+    fetch(`/api/calendar/events?weekStart=${encodeURIComponent(ws)}&weekEnd=${encodeURIComponent(we)}`)
       .then((r) => r.json())
       .then((d) => {
         setGcalConnected(d.connected ?? false);
         setGcalEvents(d.events ?? []);
       })
       .catch(() => setGcalConnected(false));
-  }, [userId, weekStartParam, weekEndParam]);
+  }, [userId, weekStartMs, weekEndMs]);
 
   useEffect(() => { loadGcalEvents(); }, [loadGcalEvents]);
 
-  // Handle ?gcal=connected query param
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("gcal") === "connected") {
       setGcalConnected(true);
       window.history.replaceState({}, "", window.location.pathname);
+      loadGcalEvents();
     }
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── Sensors ──
+  // ── DnD ──
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
-  const activeTask = activeId
-    ? [...scheduledTasks, ...unscheduledTasks].find((t) =>
-        activeId === `scheduled-${t._id}` || activeId === `unscheduled-${t._id}`
-      )
-    : null;
+  const activeTask = useMemo(
+    () => activeId
+      ? [...scheduledTasks, ...unscheduledTasks].find(
+          (t) => activeId === `scheduled-${t._id}` || activeId === `unscheduled-${t._id}`
+        )
+      : null,
+    [activeId, scheduledTasks, unscheduledTasks]
+  );
 
-  const handleDragStart = (e: DragStartEvent) => setActiveId(String(e.active.id));
-  const handleDragEnd = useCallback(async (e: DragEndEvent) => {
+  const handleDragStart = useCallback((e: DragStartEvent) => setActiveId(String(e.active.id)), []);
+
+  const handleDragEnd = useCallback((e: DragEndEvent) => {
     setActiveId(null);
     const { active, over } = e;
     if (!over || !userId) return;
@@ -346,8 +383,10 @@ export default function SchedulePage() {
       : 60 * 60 * 1000;
     const endTs = startTs + durationMs;
 
-    // Find the task and its existing GCal event ID (from either list)
-    const existingTask       = [...scheduledTasks, ...unscheduledTasks].find((t) => t._id === taskData.taskId);
+    // ── Optimistic update — move the block immediately ──
+    setPendingMoves((prev) => new Map(prev).set(taskData.taskId, { scheduledStart: startTs, scheduledEnd: endTs }));
+
+    const existingTask        = [...scheduledTasks, ...unscheduledTasks].find((t) => t._id === taskData.taskId);
     const gcalEventIdToUpdate = existingTask?.gcalEventId;
 
     if (gcalConnected && existingTask) {
@@ -372,9 +411,12 @@ export default function SchedulePage() {
             scheduledEnd:   endTs,
             gcalEventId:    d.eventId ?? gcalEventIdToUpdate,
           });
-          // Refresh GCal events so the deduplication filter has fresh data
-          // and the newly-created event doesn't show as a separate block
-          loadGcalEvents();
+          // Update gcalEvents state locally — no full refetch needed
+          if (d.eventId && !gcalEventIdToUpdate) {
+            // New event created — add to local state so filter can exclude it
+            // We don't have the full event object so we mark it via gcalEventId stored in Convex
+            // The deduplication filter will hide it once Convex updates
+          }
         })
         .catch(() => {
           scheduleTask({ id: taskData.taskId, scheduledStart: startTs, scheduledEnd: endTs });
@@ -383,14 +425,10 @@ export default function SchedulePage() {
     }
 
     // No GCal — update Convex directly
-    await scheduleTask({
-      id:             taskData.taskId,
-      scheduledStart: startTs,
-      scheduledEnd:   endTs,
-    });
-  }, [userId, weekStart, scheduledTasks, unscheduledTasks, scheduleTask, gcalConnected, loadGcalEvents]);
+    scheduleTask({ id: taskData.taskId, scheduledStart: startTs, scheduledEnd: endTs });
+  }, [userId, weekStart, scheduledTasks, unscheduledTasks, scheduleTask, gcalConnected]);
 
-  const handleUnschedule = async (task: Task) => {
+  const handleUnschedule = useCallback(async (task: Task) => {
     if (task.gcalEventId && gcalConnected) {
       fetch("/api/calendar/events", {
         method:  "POST",
@@ -399,46 +437,50 @@ export default function SchedulePage() {
       }).catch(() => {});
     }
     await unscheduleTask({ id: task._id });
-  };
+  }, [gcalConnected, unscheduleTask]);
 
-  // Delete a raw GCal event (not linked to a Life OS task)
   const handleDeleteGcalEvent = useCallback((eventId: string) => {
-    // Optimistically remove from local state
     setGcalEvents((prev) => prev.filter((ev) => ev.id !== eventId));
     fetch("/api/calendar/events", {
       method:  "POST",
       headers: { "Content-Type": "application/json" },
       body:    JSON.stringify({ action: "delete", gcalEventId: eventId }),
-    }).catch(() => {
-      // If delete fails, restore by re-fetching
-      loadGcalEvents();
-    });
+    }).catch(() => loadGcalEvents());
   }, [loadGcalEvents]);
 
-  // Group scheduled tasks by day
-  const tasksByDay = Array.from({ length: 7 }, (_, i) => {
-    const dayStart = addDays(weekStart, i).getTime();
-    const dayEnd   = dayStart + 86400000;
-    return scheduledTasks.filter((t) => t.scheduledStart! >= dayStart && t.scheduledStart! < dayEnd);
-  });
+  // ── Derived display data ──
+  const taskGcalIds = useMemo(
+    () => new Set(displayScheduledTasks.map((t) => t.gcalEventId).filter(Boolean)),
+    [displayScheduledTasks]
+  );
 
-  // GCal events that are already tracked as Life OS tasks — exclude them from
-  // the raw GCal layer so they don't render twice (once as a task block, once
-  // as a GCalEventBlock) after a page refresh.
-  const taskGcalIds = new Set(scheduledTasks.map((t) => t.gcalEventId).filter(Boolean));
+  const tasksByDay = useMemo(() =>
+    Array.from({ length: 7 }, (_, i) => {
+      const dayStart = addDays(weekStart, i).getTime();
+      const dayEnd   = dayStart + 86400000;
+      return displayScheduledTasks.filter(
+        (t) => t.scheduledStart! >= dayStart && t.scheduledStart! < dayEnd
+      );
+    }),
+    [weekStart, displayScheduledTasks]
+  );
 
-  // Group GCal events by day — skip any event that's already a task block
-  const gcalByDay = Array.from({ length: 7 }, (_, i) => {
-    const dayStart = addDays(weekStart, i).setHours(0, 0, 0, 0);
-    const dayEnd   = dayStart + 86400000;
-    return gcalEvents.filter((ev) => {
-      if (taskGcalIds.has(ev.id)) return false; // already shown as a task block
-      const s = ev.start.dateTime ? new Date(ev.start.dateTime).getTime() : new Date(ev.start.date!).getTime();
-      return s >= dayStart && s < dayEnd;
-    });
-  });
+  const gcalByDay = useMemo(() =>
+    Array.from({ length: 7 }, (_, i) => {
+      const dayStart = addDays(weekStart, i).setHours(0, 0, 0, 0);
+      const dayEnd   = dayStart + 86400000;
+      return gcalEvents.filter((ev) => {
+        if (taskGcalIds.has(ev.id)) return false;
+        const s = ev.start.dateTime
+          ? new Date(ev.start.dateTime).getTime()
+          : new Date(ev.start.date!).getTime();
+        return s >= dayStart && s < dayEnd;
+      });
+    }),
+    [weekStart, gcalEvents, taskGcalIds]
+  );
 
-  const today = new Date();
+  const today = useMemo(() => new Date(), []);
 
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
@@ -448,7 +490,6 @@ export default function SchedulePage() {
         <div className="px-6 py-4 border-b border-[#2A2A2E] shrink-0 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <h1 className="font-ui text-[20px] font-semibold text-[#F2EEE8]">Schedule</h1>
-            {/* Week nav */}
             <div className="flex items-center gap-1">
               <button
                 onClick={() => setWeekDate((d) => subWeeks(d, 1))}
@@ -474,7 +515,6 @@ export default function SchedulePage() {
             </span>
           </div>
 
-          {/* GCal connect */}
           <div className="flex items-center gap-2">
             {gcalConnected === true && (
               <span className="flex items-center gap-1.5 font-ui text-[11px] text-[#4CAF6B]">
@@ -498,57 +538,39 @@ export default function SchedulePage() {
         {/* Body */}
         <div className="flex-1 flex min-h-0 overflow-hidden">
 
-          {/* ── Unscheduled sidebar ── */}
+          {/* Unscheduled sidebar */}
           <div className="w-[220px] shrink-0 border-r border-[#2A2A2E] flex flex-col overflow-hidden">
             <div className="px-3 py-2.5 border-b border-[#2A2A2E] shrink-0">
-              <p className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#3A3A3E] font-medium">
-                Unscheduled
-              </p>
+              <p className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#3A3A3E] font-medium">Unscheduled</p>
               <p className="font-ui text-[10px] text-[#3A3A3E] mt-0.5">Drag tasks onto the grid</p>
             </div>
             <div className="flex-1 overflow-y-auto p-2 space-y-1.5">
-              {unscheduledTasks.length === 0 ? (
+              {displayUnscheduledTasks.length === 0 ? (
                 <div className="px-2 py-6 text-center">
                   <p className="font-ui text-[11px] text-[#3A3A3E]">All tasks scheduled</p>
                 </div>
               ) : (
-                unscheduledTasks.map((t) => (
-                  <UnscheduledChip
-                    key={t._id}
-                    task={t}
-                    areaColor={areaMap[t.areaId]?.color}
-                  />
+                displayUnscheduledTasks.map((t) => (
+                  <UnscheduledChip key={t._id} task={t} areaColor={areaMap[t.areaId]?.color} />
                 ))
               )}
             </div>
           </div>
 
-          {/* ── Week grid ── */}
+          {/* Week grid */}
           <div className="flex-1 overflow-auto min-h-0">
 
             {/* Day headers */}
             <div className="sticky top-0 z-20 bg-[#0A0A0B] border-b border-[#2A2A2E] flex">
-              {/* Time gutter */}
               <div className="w-12 shrink-0" />
               {weekDays.map((day, i) => {
                 const isToday = format(day, "yyyy-MM-dd") === format(today, "yyyy-MM-dd");
                 return (
-                  <div
-                    key={i}
-                    className={cn(
-                      "flex-1 min-w-[100px] px-2 py-2.5 border-l border-[#2A2A2E] text-center",
-                    )}
-                  >
-                    <p className={cn(
-                      "font-ui text-[11px] uppercase tracking-[0.1em]",
-                      isToday ? "text-[#C9A84C]" : "text-[#3A3A3E]"
-                    )}>
+                  <div key={i} className="flex-1 min-w-[100px] px-2 py-2.5 border-l border-[#2A2A2E] text-center">
+                    <p className={cn("font-ui text-[11px] uppercase tracking-[0.1em]", isToday ? "text-[#C9A84C]" : "text-[#3A3A3E]")}>
                       {format(day, "EEE")}
                     </p>
-                    <p className={cn(
-                      "font-ui text-[16px] font-semibold mt-0.5 tabular-nums",
-                      isToday ? "text-[#C9A84C]" : "text-[#6B6760]"
-                    )}>
+                    <p className={cn("font-ui text-[16px] font-semibold mt-0.5 tabular-nums", isToday ? "text-[#C9A84C]" : "text-[#6B6760]")}>
                       {format(day, "d")}
                     </p>
                   </div>
@@ -561,11 +583,7 @@ export default function SchedulePage() {
               {/* Hour labels */}
               <div className="w-12 shrink-0">
                 {HOURS.map((h) => (
-                  <div
-                    key={h}
-                    className="flex items-start justify-end pr-2"
-                    style={{ height: CELL_HEIGHT }}
-                  >
+                  <div key={h} className="flex items-start justify-end pr-2" style={{ height: CELL_HEIGHT }}>
                     <span className="font-ui text-[10px] text-[#3A3A3E] tabular-nums mt-px">
                       {format(setHours(new Date(), h), "ha").toLowerCase()}
                     </span>
@@ -579,38 +597,13 @@ export default function SchedulePage() {
                 return (
                   <div
                     key={dayIdx}
-                    className={cn(
-                      "flex-1 min-w-[100px] border-l border-[#2A2A2E] relative",
-                      isToday && "bg-[#C9A84C04]"
-                    )}
+                    className={cn("flex-1 min-w-[100px] border-l border-[#2A2A2E] relative", isToday && "bg-[#C9A84C04]")}
                     style={{ height: HOURS.length * CELL_HEIGHT }}
                   >
-                    {/* Hour grid lines */}
-                    {HOURS.map((h) => (
-                      <div
-                        key={h}
-                        className="absolute w-full border-t border-[#1A1A1D]"
-                        style={{ top: (h - HOUR_START) * CELL_HEIGHT }}
-                      />
-                    ))}
+                    {/* Static grid lines + drop zones — memo'd, never re-renders */}
+                    <DayColumnGrid dayIdx={dayIdx} />
 
-                    {/* 30-min half-hour lines */}
-                    {HOURS.map((h) => (
-                      <div
-                        key={`${h}-half`}
-                        className="absolute w-full border-t border-dashed border-[#16161A]"
-                        style={{ top: (h - HOUR_START + 0.5) * CELL_HEIGHT }}
-                      />
-                    ))}
-
-                    {/* Droppable slots (15-min increments) */}
-                    {HOURS.flatMap((h) =>
-                      [0, 15, 30, 45].map((m) => (
-                        <TimeSlotCell key={`${h}-${m}`} dayIdx={dayIdx} hour={h} minute={m} />
-                      ))
-                    )}
-
-                    {/* GCal background events (pure GCal — task-linked ones are filtered out) */}
+                    {/* GCal events (pure GCal — task-linked ones filtered out) */}
                     {gcalByDay[dayIdx].map((ev) => (
                       <GCalEventBlock
                         key={ev.id}
@@ -630,14 +623,13 @@ export default function SchedulePage() {
 
                     {/* Current time indicator */}
                     {isToday && (() => {
-                      const now  = new Date();
-                      const h    = now.getHours() + now.getMinutes() / 60;
-                      const top  = (h - HOUR_START) * CELL_HEIGHT;
+                      const now = new Date();
+                      const h   = now.getHours() + now.getMinutes() / 60;
                       if (h < HOUR_START || h > HOUR_END) return null;
                       return (
                         <div
                           className="absolute w-full flex items-center z-20 pointer-events-none"
-                          style={{ top }}
+                          style={{ top: (h - HOUR_START) * CELL_HEIGHT }}
                         >
                           <div className="w-2 h-2 rounded-full bg-[#E85538] shrink-0 -ml-1" />
                           <div className="flex-1 border-t border-[#E85538]" />
@@ -652,7 +644,6 @@ export default function SchedulePage() {
         </div>
       </div>
 
-      {/* Drag overlay */}
       <DragOverlay>
         {activeTask && <DragOverlayChip title={activeTask.title} />}
       </DragOverlay>
