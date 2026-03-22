@@ -145,12 +145,17 @@ export const scheduleTask = mutation({
     gcalEventId:    v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    await ctx.db.patch(args.id, {
+    // Only patch gcalEventId if explicitly provided — patching with undefined
+    // would delete the field, wiping a previously-stored event ID and causing
+    // a duplicate GCal event on the next move.
+    const patch: Record<string, unknown> = {
       scheduledStart: args.scheduledStart,
       scheduledEnd:   args.scheduledEnd,
-      gcalEventId:    args.gcalEventId,
-      status:         "todo",
-    });
+    };
+    if (args.gcalEventId !== undefined) {
+      patch.gcalEventId = args.gcalEventId;
+    }
+    await ctx.db.patch(args.id, patch);
   },
 });
 

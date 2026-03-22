@@ -26,6 +26,7 @@ import {
   GripVertical,
   Clock,
   ExternalLink,
+  Trash2,
 } from "lucide-react";
 
 // ── Constants ──────────────────────────────────────────────────────────────────
@@ -194,8 +195,10 @@ function ScheduledTaskBlock({
 
 function GCalEventBlock({
   event,
+  onDelete,
 }: {
   event: GCalEvent;
+  onDelete: () => void;
 }) {
   const startStr = event.start.dateTime ?? event.start.date;
   const endStr   = event.end.dateTime   ?? event.end.date;
@@ -216,22 +219,32 @@ function GCalEventBlock({
       }}
       className="absolute left-0.5 right-0.5 rounded border-l-2 border border-transparent px-2 py-0.5 overflow-hidden pointer-events-auto group z-5"
     >
-      <p className="font-ui text-[11px] leading-tight truncate" style={{ color }}>{event.summary}</p>
+      <p className="font-ui text-[11px] leading-tight truncate pr-8" style={{ color }}>{event.summary}</p>
       <p className="font-ui text-[10px] tabular-nums" style={{ color: `${color}80` }}>
         {fmtTime(start)} – {fmtTime(end)}
       </p>
-      {event.htmlLink && (
-        <a
-          href={event.htmlLink}
-          target="_blank"
-          rel="noreferrer"
+      {/* Action buttons — visible on hover */}
+      <div className="absolute top-0.5 right-0.5 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        {event.htmlLink && (
+          <a
+            href={event.htmlLink}
+            target="_blank"
+            rel="noreferrer"
+            onPointerDown={(e) => e.stopPropagation()}
+            className="p-0.5 rounded hover:bg-white/10 transition-colors"
+            style={{ color }}
+          >
+            <ExternalLink size={9} />
+          </a>
+        )}
+        <button
           onPointerDown={(e) => e.stopPropagation()}
-          className="absolute top-0.5 right-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
-          style={{ color }}
+          onClick={onDelete}
+          className="p-0.5 rounded hover:bg-white/10 transition-colors text-[#E85538]"
         >
-          <ExternalLink size={9} />
-        </a>
-      )}
+          <Trash2 size={9} />
+        </button>
+      </div>
     </div>
   );
 }
@@ -281,8 +294,8 @@ export default function SchedulePage() {
 
   const areaMap = Object.fromEntries(areas.map((a) => [a._id, a]));
 
-  // ── Load GCal events ──
-  useEffect(() => {
+  // ── Load / refresh GCal events ──
+  const loadGcalEvents = useCallback(() => {
     if (!userId) return;
     fetch(`/api/calendar/events?weekStart=${encodeURIComponent(weekStartParam)}&weekEnd=${encodeURIComponent(weekEndParam)}`)
       .then((r) => r.json())
@@ -292,6 +305,8 @@ export default function SchedulePage() {
       })
       .catch(() => setGcalConnected(false));
   }, [userId, weekStartParam, weekEndParam]);
+
+  useEffect(() => { loadGcalEvents(); }, [loadGcalEvents]);
 
   // Handle ?gcal=connected query param
   useEffect(() => {
@@ -312,7 +327,7 @@ export default function SchedulePage() {
     : null;
 
   const handleDragStart = (e: DragStartEvent) => setActiveId(String(e.active.id));
-  const handleDragEnd   = useCallback(async (e: DragEndEvent) => {
+  const handleDragEnd = useCallback(async (e: DragEndEvent) => {
     setActiveId(null);
     const { active, over } = e;
     if (!over || !userId) return;
@@ -324,51 +339,56 @@ export default function SchedulePage() {
     if (!slotData) return;
 
     const { dayIdx, hour, minute } = slotData;
-    const slotDate = addDays(weekStart, dayIdx);
-    const startTs  = setMinutes(setHours(slotDate, hour), minute).getTime();
+    const slotDate   = addDays(weekStart, dayIdx);
+    const startTs    = setMinutes(setHours(slotDate, hour), minute).getTime();
     const durationMs = taskData.originalStart && taskData.originalEnd
       ? taskData.originalEnd - taskData.originalStart
-      : 60 * 60 * 1000; // default 1 hour
+      : 60 * 60 * 1000;
     const endTs = startTs + durationMs;
 
-    const gcalEventIdToUpdate = taskData.type === "scheduled"
-      ? scheduledTasks.find((t) => t._id === taskData.taskId)?.gcalEventId
-      : undefined;
+    // Find the task and its existing GCal event ID (from either list)
+    const existingTask       = [...scheduledTasks, ...unscheduledTasks].find((t) => t._id === taskData.taskId);
+    const gcalEventIdToUpdate = existingTask?.gcalEventId;
 
-    // Update Convex
+    if (gcalConnected && existingTask) {
+      const payload = {
+        action:      gcalEventIdToUpdate ? "update" : "create",
+        taskId:      existingTask._id,
+        title:       existingTask.title,
+        start:       startTs,
+        end:         endTs,
+        gcalEventId: gcalEventIdToUpdate,
+      };
+      fetch("/api/calendar/events", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify(payload),
+      })
+        .then((r) => r.json())
+        .then((d) => {
+          scheduleTask({
+            id:             taskData.taskId,
+            scheduledStart: startTs,
+            scheduledEnd:   endTs,
+            gcalEventId:    d.eventId ?? gcalEventIdToUpdate,
+          });
+          // Refresh GCal events so the deduplication filter has fresh data
+          // and the newly-created event doesn't show as a separate block
+          loadGcalEvents();
+        })
+        .catch(() => {
+          scheduleTask({ id: taskData.taskId, scheduledStart: startTs, scheduledEnd: endTs });
+        });
+      return;
+    }
+
+    // No GCal — update Convex directly
     await scheduleTask({
       id:             taskData.taskId,
       scheduledStart: startTs,
       scheduledEnd:   endTs,
     });
-
-    // Sync to GCal
-    if (gcalConnected) {
-      const task = [...scheduledTasks, ...unscheduledTasks].find((t) => t._id === taskData.taskId);
-      if (task) {
-        const payload = {
-          action:      gcalEventIdToUpdate ? "update" : "create",
-          taskId:      task._id,
-          title:       task.title,
-          start:       startTs,
-          end:         endTs,
-          gcalEventId: gcalEventIdToUpdate,
-        };
-        fetch("/api/calendar/events", {
-          method:  "POST",
-          headers: { "Content-Type": "application/json" },
-          body:    JSON.stringify(payload),
-        })
-          .then((r) => r.json())
-          .then((d) => {
-            if (d.eventId) {
-              scheduleTask({ id: taskData.taskId, scheduledStart: startTs, scheduledEnd: endTs, gcalEventId: d.eventId });
-            }
-          })
-          .catch(() => {/* silent — task is scheduled in Convex either way */});
-      }
-    }
-  }, [userId, weekStart, scheduledTasks, unscheduledTasks, scheduleTask, gcalConnected]);
+  }, [userId, weekStart, scheduledTasks, unscheduledTasks, scheduleTask, gcalConnected, loadGcalEvents]);
 
   const handleUnschedule = async (task: Task) => {
     if (task.gcalEventId && gcalConnected) {
@@ -381,6 +401,20 @@ export default function SchedulePage() {
     await unscheduleTask({ id: task._id });
   };
 
+  // Delete a raw GCal event (not linked to a Life OS task)
+  const handleDeleteGcalEvent = useCallback((eventId: string) => {
+    // Optimistically remove from local state
+    setGcalEvents((prev) => prev.filter((ev) => ev.id !== eventId));
+    fetch("/api/calendar/events", {
+      method:  "POST",
+      headers: { "Content-Type": "application/json" },
+      body:    JSON.stringify({ action: "delete", gcalEventId: eventId }),
+    }).catch(() => {
+      // If delete fails, restore by re-fetching
+      loadGcalEvents();
+    });
+  }, [loadGcalEvents]);
+
   // Group scheduled tasks by day
   const tasksByDay = Array.from({ length: 7 }, (_, i) => {
     const dayStart = addDays(weekStart, i).getTime();
@@ -388,11 +422,17 @@ export default function SchedulePage() {
     return scheduledTasks.filter((t) => t.scheduledStart! >= dayStart && t.scheduledStart! < dayEnd);
   });
 
-  // Group GCal events by day
+  // GCal events that are already tracked as Life OS tasks — exclude them from
+  // the raw GCal layer so they don't render twice (once as a task block, once
+  // as a GCalEventBlock) after a page refresh.
+  const taskGcalIds = new Set(scheduledTasks.map((t) => t.gcalEventId).filter(Boolean));
+
+  // Group GCal events by day — skip any event that's already a task block
   const gcalByDay = Array.from({ length: 7 }, (_, i) => {
     const dayStart = addDays(weekStart, i).setHours(0, 0, 0, 0);
     const dayEnd   = dayStart + 86400000;
     return gcalEvents.filter((ev) => {
+      if (taskGcalIds.has(ev.id)) return false; // already shown as a task block
       const s = ev.start.dateTime ? new Date(ev.start.dateTime).getTime() : new Date(ev.start.date!).getTime();
       return s >= dayStart && s < dayEnd;
     });
@@ -570,9 +610,13 @@ export default function SchedulePage() {
                       ))
                     )}
 
-                    {/* GCal background events */}
+                    {/* GCal background events (pure GCal — task-linked ones are filtered out) */}
                     {gcalByDay[dayIdx].map((ev) => (
-                      <GCalEventBlock key={ev.id} event={ev} />
+                      <GCalEventBlock
+                        key={ev.id}
+                        event={ev}
+                        onDelete={() => handleDeleteGcalEvent(ev.id)}
+                      />
                     ))}
 
                     {/* Scheduled task blocks */}
