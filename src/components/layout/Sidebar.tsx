@@ -9,8 +9,6 @@ import {
   LayoutDashboard,
   ListTodo,
   Target,
-  BookOpen,
-  Repeat2,
   CalendarDays,
   Plus,
   Settings,
@@ -29,8 +27,6 @@ const NAV_ITEMS = [
   { href: "/backlog",  label: "Backlog",  icon: ListTodo },
   { href: "/goals",    label: "Goals",    icon: Target },
   { href: "/schedule", label: "Schedule", icon: CalendarDays },
-  { href: "/habits",   label: "Routines", icon: Repeat2 },
-  { href: "/reviews",  label: "Reviews",  icon: BookOpen },
 ];
 
 export default function Sidebar({ userId }: { userId: string }) {
