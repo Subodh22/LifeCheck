@@ -203,3 +203,20 @@ export const listUnscheduled = query({
       .collect();
   },
 });
+
+export const listDoneForWeek = query({
+  args: { userId: v.string(), weekStart: v.number(), weekEnd: v.number() },
+  handler: async (ctx, { userId, weekStart, weekEnd }) => {
+    return ctx.db
+      .query("tasks")
+      .withIndex("by_user_status", (q) => q.eq("userId", userId).eq("status", "done"))
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("archivedAt"), undefined),
+          q.gte(q.field("completedAt"), weekStart),
+          q.lte(q.field("completedAt"), weekEnd)
+        )
+      )
+      .collect();
+  },
+});

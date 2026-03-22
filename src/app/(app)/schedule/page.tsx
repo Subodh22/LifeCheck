@@ -311,6 +311,7 @@ export default function SchedulePage() {
   const [activeId,      setActiveId]      = useState<string | null>(null);
   const [connectingGcal, setConnectingGcal] = useState(false);
   const [backlogOpen,    setBacklogOpen]    = useState(false);
+  const [completedOpen,  setCompletedOpen]  = useState(false);
 
   // Optimistic moves: taskId → pending {scheduledStart, scheduledEnd}
   // Applied immediately on drop so the block moves without waiting for Convex
@@ -335,6 +336,11 @@ export default function SchedulePage() {
   const unscheduledTasks = useQuery(
     api.tasks.listUnscheduled,
     userId ? { userId } : "skip"
+  ) ?? [];
+
+  const doneTasks = useQuery(
+    api.tasks.listDoneForWeek,
+    userId ? { userId, weekStart: weekStartMs, weekEnd: weekEndMs } : "skip"
   ) ?? [];
 
   const areaMap = useMemo(
@@ -683,6 +689,51 @@ export default function SchedulePage() {
                     <div className="px-2 pb-2 space-y-1.5">
                       {backlogTasks.map((t) => (
                         <UnscheduledChip key={t._id} task={t} areaColor={areaMap[t.areaId]?.color} />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* ── Completed this week (collapsible) ── */}
+              {doneTasks.length > 0 && (
+                <div className="border-t border-[#1E1E21]">
+                  <button
+                    onClick={() => setCompletedOpen((v) => !v)}
+                    className="w-full flex items-center justify-between px-3 py-2 hover:bg-[#111113] transition-colors group"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="font-ui text-[10px] uppercase tracking-[0.12em] text-[#3A3A3E] font-medium">
+                        Done
+                      </span>
+                      <span className="font-ui text-[10px] text-[#3A3A3E] tabular-nums">
+                        {doneTasks.length}
+                      </span>
+                    </div>
+                    <ChevronDown
+                      size={11}
+                      className={cn("text-[#3A3A3E] transition-transform", completedOpen && "rotate-180")}
+                    />
+                  </button>
+                  {completedOpen && (
+                    <div className="px-2 pb-2 space-y-1">
+                      {doneTasks.map((t) => (
+                        <div
+                          key={t._id}
+                          className="flex items-center gap-2 px-2 py-1.5 rounded border border-[#1E1E21] bg-[#111113]"
+                        >
+                          <Check size={10} className="text-[#3A7D44] shrink-0" />
+                          <span className="font-ui text-[11px] text-[#3A3A3E] line-through truncate flex-1">
+                            {t.title}
+                          </span>
+                          <button
+                            onClick={() => updateStatus({ id: t._id, status: "todo" })}
+                            className="font-ui text-[10px] text-[#3A3A3E] hover:text-[#6B6760] shrink-0 transition-colors"
+                            title="Mark as todo"
+                          >
+                            Undo
+                          </button>
+                        </div>
                       ))}
                     </div>
                   )}
