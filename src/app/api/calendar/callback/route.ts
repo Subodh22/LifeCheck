@@ -11,8 +11,10 @@ export async function GET(request: NextRequest) {
   const clerkId = searchParams.get("state");
   const error   = searchParams.get("error");
 
-  // Derive origin from the request so redirects always go to the right domain
-  const origin = request.nextUrl.origin;
+  // Use x-forwarded-host if available (Vercel sets this to the public domain)
+  const host = request.headers.get("x-forwarded-host") ?? request.headers.get("host") ?? request.nextUrl.host;
+  const proto = request.headers.get("x-forwarded-proto") ?? "https";
+  const origin = `${proto}://${host}`;
 
   if (error || !code || !clerkId) {
     return NextResponse.redirect(`${origin}/schedule?gcal=error`);
