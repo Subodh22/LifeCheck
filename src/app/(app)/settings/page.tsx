@@ -25,26 +25,26 @@ export default function SettingsPage() {
   return (
     <div className="p-8 max-w-2xl mx-auto">
       <div className="mb-8">
-        <h1 className="font-display text-3xl font-semibold text-[#0F172A] mb-1">
+        <h1 className="font-display text-3xl font-semibold text-[#111827] mb-1">
           Settings
         </h1>
-        <p className="text-[#64748B] font-ui text-sm">
+        <p className="text-[#6B7280] font-ui text-sm">
           Account and preferences
         </p>
       </div>
 
       {/* Account */}
       <section className="mb-8">
-        <h2 className="text-[#64748B] font-ui text-[11px] tracking-[0.2em] uppercase mb-3">
+        <h2 className="text-[#6B7280] font-ui text-[11px] tracking-[0.2em] uppercase mb-3">
           Account
         </h2>
         <div className="border border-[#E2E8F0] rounded p-4 bg-[#FFFFFF] flex items-center gap-4">
           <UserButton />
           <div>
-            <p className="font-ui text-sm text-[#0F172A]">
+            <p className="font-ui text-sm text-[#111827]">
               {user?.fullName ?? "User"}
             </p>
-            <p className="font-ui text-xs text-[#64748B]">
+            <p className="font-ui text-xs text-[#6B7280]">
               {user?.emailAddresses[0]?.emailAddress}
             </p>
           </div>
@@ -53,14 +53,14 @@ export default function SettingsPage() {
 
       {/* System */}
       <section className="mb-8">
-        <h2 className="text-[#64748B] font-ui text-[11px] tracking-[0.2em] uppercase mb-3">
+        <h2 className="text-[#6B7280] font-ui text-[11px] tracking-[0.2em] uppercase mb-3">
           System
         </h2>
         <div className="border border-[#E2E8F0] rounded p-4 bg-[#FFFFFF]">
-          <p className="font-ui text-[13px] text-[#0F172A] mb-1">
+          <p className="font-ui text-[13px] text-[#111827] mb-1">
             Notion-style Light — Life OS
           </p>
-          <p className="font-ui text-xs text-[#64748B]">
+          <p className="font-ui text-xs text-[#6B7280]">
             Clean light design system · Inter + Outfit
           </p>
         </div>
@@ -68,12 +68,12 @@ export default function SettingsPage() {
 
       {/* Danger zone */}
       <section>
-        <h2 className="text-[#64748B] font-ui text-[11px] tracking-[0.2em] uppercase mb-3">
+        <h2 className="text-[#6B7280] font-ui text-[11px] tracking-[0.2em] uppercase mb-3">
           Danger Zone
         </h2>
         <div className="border border-[#E8553820] rounded p-4 bg-[#FFFFFF]">
-          <p className="font-ui text-[13px] text-[#0F172A] mb-1">Reset all data</p>
-          <p className="font-ui text-xs text-[#64748B] mb-4">
+          <p className="font-ui text-[13px] text-[#111827] mb-1">Reset all data</p>
+          <p className="font-ui text-xs text-[#6B7280] mb-4">
             Permanently deletes all your areas, goals, tasks, habits, and history. Cannot be undone.
           </p>
 
@@ -90,7 +90,7 @@ export default function SettingsPage() {
               </button>
               <button
                 onClick={() => setConfirming(false)}
-                className="font-ui text-[12px] text-[#64748B] hover:text-[#0F172A] transition-colors"
+                className="font-ui text-[12px] text-[#6B7280] hover:text-[#111827] transition-colors"
               >
                 Cancel
               </button>

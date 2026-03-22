@@ -6,7 +6,7 @@ export default function SignInPage() {
       <div className="flex flex-col items-center gap-8">
         <div className="text-center">
           <h1 className="font-display text-5xl font-bold mb-2">Life OS</h1>
-          <p className="text-[#64748B] font-ui text-sm tracking-widest uppercase">
+          <p className="text-[#6B7280] font-ui text-sm tracking-widest uppercase">
             Your personal life operating system
           </p>
         </div>
@@ -14,10 +14,10 @@ export default function SignInPage() {
           appearance={{
             variables: {
               colorBackground: "#FFFFFF",
-              colorText: "#0F172A",
-              colorPrimary: "#2563EB",
+              colorText: "#111827",
+              colorPrimary: "#8B5CF6",
               colorInputBackground: "#F1F5F9",
-              colorInputText: "#0F172A",
+              colorInputText: "#111827",
               borderRadius: "4px",
               fontFamily: "Outfit, sans-serif",
             },

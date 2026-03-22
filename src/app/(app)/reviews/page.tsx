@@ -76,12 +76,12 @@ export default function ReviewsPage() {
       {/* Header */}
       <div className="flex items-end justify-between mb-8">
         <div>
-          <h1 className="font-display text-3xl font-semibold text-[#0F172A] mb-1">Weekly Reviews</h1>
-          <p className="text-[#64748B] font-ui text-sm">{reviews.length} reviews</p>
+          <h1 className="font-display text-3xl font-semibold text-[#111827] mb-1">Weekly Reviews</h1>
+          <p className="text-[#6B7280] font-ui text-sm">{reviews.length} reviews</p>
         </div>
         <button
           onClick={existingThisWeek ? handleEditExisting : () => setShowForm((v) => !v)}
-          className="flex items-center gap-2 px-4 py-2 border border-[#E2E8F0] rounded text-[13px] font-ui text-[#2563EB] hover:bg-[#FFFFFF] transition-colors"
+          className="flex items-center gap-2 px-4 py-2 border border-[#E2E8F0] rounded text-[13px] font-ui text-[#8B5CF6] hover:bg-[#FFFFFF] transition-colors"
         >
           <Plus size={14} />
           {existingThisWeek ? "Edit this week" : "Write this week"}
@@ -90,9 +90,9 @@ export default function ReviewsPage() {
 
       {/* New review form */}
       {showForm && (
-        <div className="border border-[#2563EB] rounded p-5 mb-6 bg-[#FFFFFF] space-y-4">
+        <div className="border border-[#8B5CF6] rounded p-5 mb-6 bg-[#FFFFFF] space-y-4">
           <div className="flex items-center justify-between mb-1">
-            <p className="font-ui text-[11px] tracking-[0.15em] uppercase text-[#2563EB]">
+            <p className="font-ui text-[11px] tracking-[0.15em] uppercase text-[#8B5CF6]">
               Week of {format(new Date(thisWeek), "d MMMM yyyy")}
             </p>
             <div className="flex items-center gap-4 text-[11px] font-ui">
@@ -102,7 +102,7 @@ export default function ReviewsPage() {
           </div>
 
           <div>
-            <label className="block text-[#64748B] font-ui text-[11px] tracking-[0.15em] uppercase mb-1.5">
+            <label className="block text-[#6B7280] font-ui text-[11px] tracking-[0.15em] uppercase mb-1.5">
               How did this week go?
             </label>
             <textarea
@@ -110,13 +110,13 @@ export default function ReviewsPage() {
               onChange={(e) => setContent(e.target.value)}
               placeholder="Reflect on the week. What happened? How did you feel? What did you learn?"
               rows={4}
-              className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded px-3 py-2.5 font-ui text-sm text-[#0F172A] placeholder:text-[#94A3B8] outline-none focus:border-[#2563EB] transition-colors resize-none"
+              className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded px-3 py-2.5 font-ui text-sm text-[#111827] placeholder:text-[#9CA3AF] outline-none focus:border-[#8B5CF6] transition-colors resize-none"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-[#64748B] font-ui text-[11px] tracking-[0.15em] uppercase mb-1.5">
+              <label className="block text-[#6B7280] font-ui text-[11px] tracking-[0.15em] uppercase mb-1.5">
                 Wins
               </label>
               <textarea
@@ -124,11 +124,11 @@ export default function ReviewsPage() {
                 onChange={(e) => setWins(e.target.value)}
                 placeholder="What went well?"
                 rows={3}
-                className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded px-3 py-2.5 font-ui text-sm text-[#0F172A] placeholder:text-[#94A3B8] outline-none focus:border-[#4CAF6B] transition-colors resize-none"
+                className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded px-3 py-2.5 font-ui text-sm text-[#111827] placeholder:text-[#9CA3AF] outline-none focus:border-[#4CAF6B] transition-colors resize-none"
               />
             </div>
             <div>
-              <label className="block text-[#64748B] font-ui text-[11px] tracking-[0.15em] uppercase mb-1.5">
+              <label className="block text-[#6B7280] font-ui text-[11px] tracking-[0.15em] uppercase mb-1.5">
                 To Improve
               </label>
               <textarea
@@ -136,7 +136,7 @@ export default function ReviewsPage() {
                 onChange={(e) => setImprovements(e.target.value)}
                 placeholder="What could be better?"
                 rows={3}
-                className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded px-3 py-2.5 font-ui text-sm text-[#0F172A] placeholder:text-[#94A3B8] outline-none focus:border-[#E8A838] transition-colors resize-none"
+                className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded px-3 py-2.5 font-ui text-sm text-[#111827] placeholder:text-[#9CA3AF] outline-none focus:border-[#E8A838] transition-colors resize-none"
               />
             </div>
           </div>
@@ -144,14 +144,14 @@ export default function ReviewsPage() {
           <div className="flex items-center justify-end gap-3">
             <button
               onClick={() => setShowForm(false)}
-              className="px-4 py-2 font-ui text-[13px] text-[#64748B] hover:text-[#0F172A] transition-colors"
+              className="px-4 py-2 font-ui text-[13px] text-[#6B7280] hover:text-[#111827] transition-colors"
             >
               Cancel
             </button>
             <button
               onClick={handleSave}
               disabled={!content.trim() || saving}
-              className="px-4 py-2 bg-[rgba(37,99,235,0.12)] border border-[#2563EB] rounded font-ui text-[13px] text-[#2563EB] hover:bg-[rgba(37,99,235,0.20)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="px-4 py-2 bg-[rgba(37,99,235,0.12)] border border-[#8B5CF6] rounded font-ui text-[13px] text-[#8B5CF6] hover:bg-[rgba(37,99,235,0.20)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               {saving ? "Saving…" : "Save Review"}
             </button>
@@ -162,9 +162,9 @@ export default function ReviewsPage() {
       {/* Review list */}
       {reviews.length === 0 && !showForm ? (
         <div className="text-center py-16 border border-[#E2E8F0] rounded">
-          <BookOpen size={24} className="text-[#94A3B8] mx-auto mb-3" />
-          <p className="text-[#64748B] font-ui text-sm">No reviews yet.</p>
-          <p className="text-[#94A3B8] font-ui text-xs mt-1">
+          <BookOpen size={24} className="text-[#9CA3AF] mx-auto mb-3" />
+          <p className="text-[#6B7280] font-ui text-sm">No reviews yet.</p>
+          <p className="text-[#9CA3AF] font-ui text-xs mt-1">
             Write your first weekly review to start tracking your progress.
           </p>
         </div>
@@ -179,33 +179,33 @@ export default function ReviewsPage() {
                   onClick={() => setExpandedId(isExpanded ? null : review._id)}
                   className="w-full flex items-center gap-4 px-5 py-4 text-left hover:bg-[#F1F5F9] transition-colors rounded"
                 >
-                  <p className="font-ui text-[11px] tracking-[0.15em] uppercase text-[#64748B] flex-1">
+                  <p className="font-ui text-[11px] tracking-[0.15em] uppercase text-[#6B7280] flex-1">
                     Week of {format(new Date(review.weekOf), "d MMMM yyyy")}
                   </p>
                   <span className="font-ui text-[11px] text-[#4CAF6B]">{review.tasksCompleted} done</span>
                   <span className="font-ui text-[11px] text-[#E85538]">{review.tasksMissed} missed</span>
                   {isExpanded
-                    ? <ChevronUp size={14} className="text-[#64748B] shrink-0" />
-                    : <ChevronDown size={14} className="text-[#64748B] shrink-0" />
+                    ? <ChevronUp size={14} className="text-[#6B7280] shrink-0" />
+                    : <ChevronDown size={14} className="text-[#6B7280] shrink-0" />
                   }
                 </button>
 
                 {/* Expanded content */}
                 {isExpanded && (
                   <div className="px-5 pb-5 border-t border-[#E2E8F0] pt-4 space-y-4">
-                    <p className="font-ui text-sm text-[#64748B] leading-relaxed">{review.content}</p>
+                    <p className="font-ui text-sm text-[#6B7280] leading-relaxed">{review.content}</p>
                     {(review.wins || review.improvements) && (
                       <div className="grid grid-cols-2 gap-4">
                         {review.wins && (
                           <div>
                             <p className="font-ui text-[11px] tracking-[0.15em] uppercase text-[#4CAF6B] mb-1">Wins</p>
-                            <p className="font-ui text-sm text-[#64748B] leading-relaxed">{review.wins}</p>
+                            <p className="font-ui text-sm text-[#6B7280] leading-relaxed">{review.wins}</p>
                           </div>
                         )}
                         {review.improvements && (
                           <div>
                             <p className="font-ui text-[11px] tracking-[0.15em] uppercase text-[#E8A838] mb-1">To Improve</p>
-                            <p className="font-ui text-sm text-[#64748B] leading-relaxed">{review.improvements}</p>
+                            <p className="font-ui text-sm text-[#6B7280] leading-relaxed">{review.improvements}</p>
                           </div>
                         )}
                       </div>

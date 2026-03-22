@@ -17,8 +17,8 @@ import { cn } from "@/lib/utils";
 const PRIORITY_META = {
   urgent: { icon: <Zap size={11} />,    color: "#E85538" },
   high:   { icon: <ArrowUp size={11} />, color: "#E8A838" },
-  medium: { icon: <Minus size={11} />,   color: "#2563EB" },
-  low:    { icon: <Minus size={11} />,   color: "#64748B" },
+  medium: { icon: <Minus size={11} />,   color: "#8B5CF6" },
+  low:    { icon: <Minus size={11} />,   color: "#6B7280" },
 } as const;
 
 type Priority = keyof typeof PRIORITY_META;
@@ -87,10 +87,10 @@ export default function TodayPage() {
 
         {/* Header */}
         <div className="mb-6">
-          <p className="font-ui text-[11px] text-[#94A3B8] tracking-[0.15em] uppercase mb-1">
+          <p className="font-ui text-[11px] text-[#9CA3AF] tracking-[0.15em] uppercase mb-1">
             {format(new Date(), "EEEE, d MMMM yyyy")}
           </p>
-          <h1 className="font-display text-[32px] font-semibold text-[#0F172A] leading-tight [text-wrap:balance]">
+          <h1 className="font-display text-[32px] font-semibold text-[#111827] leading-tight [text-wrap:balance]">
             {greeting}.
           </h1>
         </div>
@@ -101,8 +101,8 @@ export default function TodayPage() {
             {
               label: "In Progress",
               value: inProgress.length,
-              icon: <Circle size={14} className="text-[#2563EB]" />,
-              color: "#2563EB",
+              icon: <Circle size={14} className="text-[#8B5CF6]" />,
+              color: "#8B5CF6",
             },
             {
               label: "Completed",
@@ -114,7 +114,7 @@ export default function TodayPage() {
               label: "Overdue",
               value: overdue.length,
               icon: <AlertCircle size={14} className="text-[#E85538]" />,
-              color: overdue.length > 0 ? "#E85538" : "#94A3B8",
+              color: overdue.length > 0 ? "#E85538" : "#9CA3AF",
             },
             {
               label: "Open Tasks",
@@ -125,7 +125,7 @@ export default function TodayPage() {
           ].map(({ label, value, icon, color }) => (
             <div key={label} className="bg-[#FFFFFF] border border-[#E2E8F0] rounded p-3.5">
               <div className="flex items-center justify-between mb-2">
-                <span className="font-ui text-[11px] text-[#64748B] uppercase tracking-[0.1em]">{label}</span>
+                <span className="font-ui text-[11px] text-[#6B7280] uppercase tracking-[0.1em]">{label}</span>
                 {icon}
               </div>
               <span className="font-ui text-[24px] font-medium tabular-nums" style={{ color }}>{value}</span>
@@ -141,24 +141,24 @@ export default function TodayPage() {
             {/* Today's Focus — tasks due today */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <h2 className="font-ui text-[11px] font-medium text-[#64748B] uppercase tracking-[0.15em]">
+                <h2 className="font-ui text-[11px] font-medium text-[#6B7280] uppercase tracking-[0.15em]">
                   Today&apos;s Focus
                 </h2>
-                <span className="font-ui text-[11px] text-[#94A3B8]">{today.length} issues</span>
+                <span className="font-ui text-[11px] text-[#9CA3AF]">{today.length} issues</span>
               </div>
 
               <div className="border border-[#E2E8F0] rounded overflow-hidden">
                 <div className="grid grid-cols-[20px_1fr_90px_70px] gap-3 px-4 py-2 bg-[#FFFFFF] border-b border-[#E2E8F0]">
                   <div />
-                  <span className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#94A3B8]">Issue</span>
-                  <span className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#94A3B8]">Area</span>
-                  <span className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#94A3B8]">Due</span>
+                  <span className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9CA3AF]">Issue</span>
+                  <span className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9CA3AF]">Area</span>
+                  <span className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9CA3AF]">Due</span>
                 </div>
 
                 {today.length === 0 ? (
                   <div className="px-4 py-8 text-center bg-[#FFFFFF]">
-                    <p className="font-ui text-[13px] text-[#64748B]">No priority tasks for today.</p>
-                    <p className="font-ui text-[11px] text-[#94A3B8] mt-1">Add due dates to surface tasks here.</p>
+                    <p className="font-ui text-[13px] text-[#6B7280]">No priority tasks for today.</p>
+                    <p className="font-ui text-[11px] text-[#9CA3AF] mt-1">Add due dates to surface tasks here.</p>
                   </div>
                 ) : (
                   today.map((task) => {
@@ -181,7 +181,7 @@ export default function TodayPage() {
                         </button>
                         <p className={cn(
                           "font-ui text-[13px] truncate",
-                          isDone ? "text-[#94A3B8] line-through" : "text-[#0F172A]"
+                          isDone ? "text-[#9CA3AF] line-through" : "text-[#111827]"
                         )}>
                           {task.title}
                         </p>
@@ -195,7 +195,7 @@ export default function TodayPage() {
                         ) : <span />}
                         <span className={cn(
                           "font-ui text-[11px]",
-                          isOverdue ? "text-[#E85538]" : "text-[#64748B]"
+                          isOverdue ? "text-[#E85538]" : "text-[#6B7280]"
                         )}>
                           {task.dueDate ? format(new Date(task.dueDate), "d MMM") : "—"}
                         </span>
@@ -214,7 +214,7 @@ export default function TodayPage() {
                   <h2 className="font-ui text-[11px] font-medium text-[#E85538] uppercase tracking-[0.15em]">
                     Overdue
                   </h2>
-                  <span className="font-ui text-[11px] text-[#94A3B8]">{overdue.length}</span>
+                  <span className="font-ui text-[11px] text-[#9CA3AF]">{overdue.length}</span>
                 </div>
                 <div className="border border-[#E8553820] rounded overflow-hidden">
                   {overdue.slice(0, 5).map((task) => {
@@ -226,7 +226,7 @@ export default function TodayPage() {
                         className="flex items-center gap-3 px-4 py-2.5 border-b border-[#E2E8F0] last:border-0 bg-[#FFFFFF] hover:bg-[#F1F5F9] transition-colors"
                       >
                         <span style={{ color: pri.color }}>{pri.icon}</span>
-                        <span className="flex-1 font-ui text-[13px] text-[#0F172A] truncate">{task.title}</span>
+                        <span className="flex-1 font-ui text-[13px] text-[#111827] truncate">{task.title}</span>
                         {area && (
                           <span
                             className="font-ui text-[11px] px-1.5 py-0.5 rounded shrink-0"
@@ -243,7 +243,7 @@ export default function TodayPage() {
                   })}
                   {overdue.length > 5 && (
                     <div className="px-4 py-2 bg-[#FFFFFF] border-t border-[#E2E8F0]">
-                      <span className="font-ui text-[11px] text-[#64748B]">+{overdue.length - 5} more overdue</span>
+                      <span className="font-ui text-[11px] text-[#6B7280]">+{overdue.length - 5} more overdue</span>
                     </div>
                   )}
                 </div>
@@ -259,12 +259,12 @@ export default function TodayPage() {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-1.5">
-                    <Flame size={11} className="text-[#2563EB]" />
-                    <h2 className="font-ui text-[11px] font-medium text-[#64748B] uppercase tracking-[0.15em]">
+                    <Flame size={11} className="text-[#8B5CF6]" />
+                    <h2 className="font-ui text-[11px] font-medium text-[#6B7280] uppercase tracking-[0.15em]">
                       Daily Routines
                     </h2>
                   </div>
-                  <span className="font-ui text-[11px] text-[#94A3B8] tabular-nums">
+                  <span className="font-ui text-[11px] text-[#9CA3AF] tabular-nums">
                     {habitsDoneToday}/{dailyHabits.length}
                   </span>
                 </div>
@@ -285,19 +285,19 @@ export default function TodayPage() {
                           onClick={() => handleToggleHabit(habit._id)}
                           disabled={isToggling}
                           className="flex items-center justify-center shrink-0 transition-opacity hover:opacity-80"
-                          style={{ color: isDone ? "#4CAF6B" : "#94A3B8" }}
+                          style={{ color: isDone ? "#4CAF6B" : "#9CA3AF" }}
                         >
                           {isDone ? <CheckCircle2 size={14} /> : <Circle size={14} />}
                         </button>
                         <span className={cn(
                           "flex-1 font-ui text-[13px] truncate",
-                          isDone ? "text-[#94A3B8] line-through" : "text-[#0F172A]"
+                          isDone ? "text-[#9CA3AF] line-through" : "text-[#111827]"
                         )}>
                           {habit.title}
                         </span>
                         {/* Streak indicator (Seinfeld "don't break the chain") */}
                         {(habit.currentStreak ?? 0) > 0 && (
-                          <span className="font-ui text-[11px] text-[#2563EB] shrink-0 tabular-nums">
+                          <span className="font-ui text-[11px] text-[#8B5CF6] shrink-0 tabular-nums">
                             {habit.currentStreak}d
                           </span>
                         )}
@@ -314,11 +314,11 @@ export default function TodayPage() {
                         className="h-full rounded-full transition-all"
                         style={{
                           width: `${Math.round((habitsDoneToday / dailyHabits.length) * 100)}%`,
-                          backgroundColor: habitsDoneToday === dailyHabits.length ? "#4CAF6B" : "#2563EB",
+                          backgroundColor: habitsDoneToday === dailyHabits.length ? "#4CAF6B" : "#8B5CF6",
                         }}
                       />
                     </div>
-                    <span className="font-ui text-[11px] text-[#94A3B8] tabular-nums shrink-0">
+                    <span className="font-ui text-[11px] text-[#9CA3AF] tabular-nums shrink-0">
                       {Math.round((habitsDoneToday / dailyHabits.length) * 100)}%
                     </span>
                   </div>
@@ -328,13 +328,13 @@ export default function TodayPage() {
 
             {/* Area Health */}
             <div>
-              <h2 className="font-ui text-[11px] font-medium text-[#64748B] uppercase tracking-[0.15em] mb-2">
+              <h2 className="font-ui text-[11px] font-medium text-[#6B7280] uppercase tracking-[0.15em] mb-2">
                 Area Health
               </h2>
               <div className="border border-[#E2E8F0] rounded overflow-hidden">
                 {areas.length === 0 ? (
                   <div className="p-5 text-center">
-                    <p className="font-ui text-[13px] text-[#64748B]">No areas yet.</p>
+                    <p className="font-ui text-[13px] text-[#6B7280]">No areas yet.</p>
                   </div>
                 ) : (
                   areas.map((area, i) => {
@@ -349,7 +349,7 @@ export default function TodayPage() {
                         )}
                       >
                         <span className="w-2 h-2 rounded-sm shrink-0" style={{ backgroundColor: area.color }} />
-                        <span className="font-ui text-[13px] text-[#0F172A] flex-1 truncate">{area.name}</span>
+                        <span className="font-ui text-[13px] text-[#111827] flex-1 truncate">{area.name}</span>
                         <div className="flex items-center gap-2 shrink-0">
                           <div className="w-14 h-1 bg-[#E2E8F0] rounded-full overflow-hidden">
                             <div

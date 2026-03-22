@@ -17,12 +17,12 @@ import CreateAreaModal from "@/components/CreateAreaModal";
 const TEMPLATES = [
   { id: "work",          icon: "💼", name: "Work & Career",   description: "Projects and career goals",   color: "#4A9EE0" },
   { id: "health",        icon: "🏃", name: "Health & Fitness", description: "Workouts, habits, wellness", color: "#4CAF6B" },
-  { id: "creative",      icon: "🎸", name: "Creative",         description: "Music, art, writing",        color: "#2563EB" },
+  { id: "creative",      icon: "🎸", name: "Creative",         description: "Music, art, writing",        color: "#8B5CF6" },
   { id: "finance",       icon: "💰", name: "Finance",          description: "Budget and investments",     color: "#E8A838" },
   { id: "learning",      icon: "📚", name: "Learning",         description: "Courses and skills",         color: "#9B59B6" },
   { id: "travel",        icon: "✈️", name: "Travel",           description: "Trips and adventures",      color: "#E85538" },
   { id: "relationships", icon: "🤝", name: "Relationships",    description: "Family and friends",         color: "#E8538A" },
-  { id: "home",          icon: "🏠", name: "Home & Life",      description: "Household and admin",        color: "#64748B" },
+  { id: "home",          icon: "🏠", name: "Home & Life",      description: "Household and admin",        color: "#6B7280" },
 ];
 
 function areaKey(name: string) {
@@ -82,15 +82,15 @@ export default function AreasPage() {
       {/* Page header */}
       <div className="px-7 py-5 border-b border-[#E2E8F0] shrink-0">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="font-ui text-[22px] font-semibold text-[#0F172A]">Spaces</h1>
+          <h1 className="font-ui text-[22px] font-semibold text-[#111827]">Spaces</h1>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowTemplates((v) => !v)}
               className={cn(
                 "flex items-center gap-1.5 px-3 py-1.5 border rounded font-ui text-[13px] transition-colors",
                 showTemplates
-                  ? "border-[#2563EB] text-[#2563EB] bg-[#2563EB10]"
-                  : "border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A] hover:border-[#CBD5E1]"
+                  ? "border-[#8B5CF6] text-[#8B5CF6] bg-[#8B5CF610]"
+                  : "border-[#E2E8F0] text-[#6B7280] hover:text-[#111827] hover:border-[#D1D5DB]"
               )}
             >
               <LayoutGrid size={13} />
@@ -108,24 +108,24 @@ export default function AreasPage() {
 
         {/* Search */}
         <div className="flex items-center gap-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded px-3 py-2 w-80 mb-3">
-          <Search size={13} className="text-[#94A3B8] shrink-0" />
+          <Search size={13} className="text-[#9CA3AF] shrink-0" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search spaces"
-            className="bg-transparent font-ui text-[13px] text-[#0F172A] placeholder:text-[#94A3B8] outline-none w-full"
+            className="bg-transparent font-ui text-[13px] text-[#111827] placeholder:text-[#9CA3AF] outline-none w-full"
           />
         </div>
 
         {/* Filter row */}
         <div className="relative inline-block">
-          <select className="appearance-none bg-[#FFFFFF] border border-[#E2E8F0] rounded px-3 py-1.5 font-ui text-[12px] text-[#64748B] outline-none cursor-pointer pr-7">
+          <select className="appearance-none bg-[#FFFFFF] border border-[#E2E8F0] rounded px-3 py-1.5 font-ui text-[12px] text-[#6B7280] outline-none cursor-pointer pr-7">
             <option>Filter by category</option>
             {[...new Set(areas.map((a) => a.category).filter(Boolean))].map((cat) => (
               <option key={cat}>{cat}</option>
             ))}
           </select>
-          <ChevronDown size={11} className="absolute right-2 top-1/2 -translate-y-1/2 text-[#94A3B8] pointer-events-none" />
+          <ChevronDown size={11} className="absolute right-2 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none" />
         </div>
       </div>
 
@@ -135,26 +135,26 @@ export default function AreasPage() {
           {/* Table header */}
           <div className="grid grid-cols-[32px_1fr_80px_120px_80px_80px_80px_40px] gap-4 px-7 py-2 border-b border-[#E2E8F0] bg-[#FFFFFF] sticky top-0 z-10">
             <div />
-            <button className="flex items-center gap-1 font-ui text-[11px] tracking-[0.12em] uppercase text-[#64748B] hover:text-[#475569] transition-colors text-left">
+            <button className="flex items-center gap-1 font-ui text-[11px] tracking-[0.12em] uppercase text-[#6B7280] hover:text-[#374151] transition-colors text-left">
               Name <ChevronDown size={10} className="ml-0.5" />
             </button>
-            <span className="font-ui text-[11px] tracking-[0.12em] uppercase text-[#94A3B8]">Key</span>
-            <span className="font-ui text-[11px] tracking-[0.12em] uppercase text-[#94A3B8]">Category</span>
-            <span className="font-ui text-[11px] tracking-[0.12em] uppercase text-[#94A3B8]">Health</span>
-            <span className="font-ui text-[11px] tracking-[0.12em] uppercase text-[#94A3B8]">Tasks</span>
-            <span className="font-ui text-[11px] tracking-[0.12em] uppercase text-[#94A3B8]">Created</span>
+            <span className="font-ui text-[11px] tracking-[0.12em] uppercase text-[#9CA3AF]">Key</span>
+            <span className="font-ui text-[11px] tracking-[0.12em] uppercase text-[#9CA3AF]">Category</span>
+            <span className="font-ui text-[11px] tracking-[0.12em] uppercase text-[#9CA3AF]">Health</span>
+            <span className="font-ui text-[11px] tracking-[0.12em] uppercase text-[#9CA3AF]">Tasks</span>
+            <span className="font-ui text-[11px] tracking-[0.12em] uppercase text-[#9CA3AF]">Created</span>
             <div />
           </div>
 
           {filtered.length === 0 && (
             <div className="px-7 py-20 text-center">
-              <LayoutGrid size={28} className="text-[#94A3B8] mx-auto mb-4" />
-              <p className="font-ui text-[15px] text-[#64748B] mb-1">
+              <LayoutGrid size={28} className="text-[#9CA3AF] mx-auto mb-4" />
+              <p className="font-ui text-[15px] text-[#6B7280] mb-1">
                 {search ? "No spaces match your search." : "No spaces yet."}
               </p>
               {!search && (
                 <>
-                  <p className="font-ui text-[12px] text-[#94A3B8] mb-6">
+                  <p className="font-ui text-[12px] text-[#9CA3AF] mb-6">
                     Create your first space or load demo data to explore the app.
                   </p>
                   <div className="flex items-center justify-center gap-3">
@@ -168,7 +168,7 @@ export default function AreasPage() {
                     <button
                       onClick={handleSeed}
                       disabled={seeding}
-                      className="flex items-center gap-2 px-4 py-2 border border-[#E2E8F0] rounded font-ui text-[13px] text-[#64748B] hover:text-[#0F172A] hover:border-[#CBD5E1] disabled:opacity-40 transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 border border-[#E2E8F0] rounded font-ui text-[13px] text-[#6B7280] hover:text-[#111827] hover:border-[#D1D5DB] disabled:opacity-40 transition-colors"
                     >
                       <Sparkles size={13} />
                       {seeding ? "Loading demo…" : "Load demo data"}
@@ -195,7 +195,7 @@ export default function AreasPage() {
                   onClick={() => toggleStar(area._id)}
                   className={cn(
                     "flex items-center justify-center transition-colors",
-                    isStarred ? "text-[#2563EB]" : "text-[#E2E8F0] hover:text-[#94A3B8]"
+                    isStarred ? "text-[#8B5CF6]" : "text-[#E2E8F0] hover:text-[#9CA3AF]"
                   )}
                 >
                   <Star size={14} fill={isStarred ? "currentColor" : "none"} />
@@ -218,23 +218,23 @@ export default function AreasPage() {
                       {area.name}
                     </p>
                     {area.description && (
-                      <p className="font-ui text-[11px] text-[#64748B] truncate">{area.description}</p>
+                      <p className="font-ui text-[11px] text-[#6B7280] truncate">{area.description}</p>
                     )}
                   </div>
                 </Link>
 
                 {/* Key */}
-                <span className="font-ui text-[12px] text-[#64748B] tracking-[0.05em]">
+                <span className="font-ui text-[12px] text-[#6B7280] tracking-[0.05em]">
                   {areaKey(area.name)}
                 </span>
 
                 {/* Category */}
                 {area.category ? (
-                  <span className="font-ui text-[11px] text-[#64748B] bg-[#F1F5F9] border border-[#E2E8F0] px-2 py-0.5 rounded truncate">
+                  <span className="font-ui text-[11px] text-[#6B7280] bg-[#F1F5F9] border border-[#E2E8F0] px-2 py-0.5 rounded truncate">
                     {area.category}
                   </span>
                 ) : (
-                  <span className="font-ui text-[11px] text-[#94A3B8]">—</span>
+                  <span className="font-ui text-[11px] text-[#9CA3AF]">—</span>
                 )}
 
                 {/* Health score */}
@@ -250,17 +250,17 @@ export default function AreasPage() {
 
                 {/* Task count */}
                 <div className="flex items-center gap-1.5">
-                  <CheckSquare size={12} className="text-[#94A3B8]" />
-                  <span className="font-ui text-[12px] text-[#64748B]">{taskCount}</span>
+                  <CheckSquare size={12} className="text-[#9CA3AF]" />
+                  <span className="font-ui text-[12px] text-[#6B7280]">{taskCount}</span>
                 </div>
 
                 {/* Created */}
-                <span className="font-ui text-[11px] text-[#94A3B8]">
+                <span className="font-ui text-[11px] text-[#9CA3AF]">
                   {format(new Date(area.createdAt), "d MMM yy")}
                 </span>
 
                 {/* Actions */}
-                <button className="opacity-0 group-hover:opacity-100 flex items-center justify-center text-[#64748B] hover:text-[#0F172A] transition-all">
+                <button className="opacity-0 group-hover:opacity-100 flex items-center justify-center text-[#6B7280] hover:text-[#111827] transition-all">
                   <MoreHorizontal size={14} />
                 </button>
               </div>
@@ -273,12 +273,12 @@ export default function AreasPage() {
           <div className="w-[300px] border-l border-[#E2E8F0] bg-[#FFFFFF] flex flex-col shrink-0">
             <div className="flex items-center justify-between px-5 py-4 border-b border-[#E2E8F0]">
               <div>
-                <p className="font-ui text-[13px] font-medium text-[#0F172A]">Templates</p>
-                <p className="font-ui text-[11px] text-[#64748B] mt-0.5">Pick a template for your next space</p>
+                <p className="font-ui text-[13px] font-medium text-[#111827]">Templates</p>
+                <p className="font-ui text-[11px] text-[#6B7280] mt-0.5">Pick a template for your next space</p>
               </div>
               <button
                 onClick={() => setShowTemplates(false)}
-                className="text-[#64748B] hover:text-[#0F172A] transition-colors"
+                className="text-[#6B7280] hover:text-[#111827] transition-colors"
               >
                 <X size={14} />
               </button>
@@ -298,8 +298,8 @@ export default function AreasPage() {
                     {t.icon}
                   </div>
                   <div className="min-w-0">
-                    <p className="font-ui text-[13px] text-[#0F172A]">{t.name}</p>
-                    <p className="font-ui text-[11px] text-[#64748B] mt-0.5">{t.description}</p>
+                    <p className="font-ui text-[13px] text-[#111827]">{t.name}</p>
+                    <p className="font-ui text-[11px] text-[#6B7280] mt-0.5">{t.description}</p>
                   </div>
                 </button>
               ))}

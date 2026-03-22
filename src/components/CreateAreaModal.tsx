@@ -26,7 +26,7 @@ const TEMPLATES = [
     name: "Creative",
     description: "Music, art, writing, hobbies",
     icon: "🎸",
-    color: "#2563EB",
+    color: "#8B5CF6",
     category: "Creative",
   },
   {
@@ -66,14 +66,14 @@ const TEMPLATES = [
     name: "Home & Life",
     description: "Household, admin, personal",
     icon: "🏠",
-    color: "#64748B",
+    color: "#6B7280",
     category: "Home",
   },
 ];
 
 const COLORS = [
-  "#4A9EE0", "#4CAF6B", "#2563EB", "#E8A838",
-  "#E85538", "#9B59B6", "#E8538A", "#64748B",
+  "#4A9EE0", "#4CAF6B", "#8B5CF6", "#E8A838",
+  "#E85538", "#9B59B6", "#E8538A", "#6B7280",
   "#2ECC71", "#3498DB", "#E67E22", "#1ABC9C",
 ];
 
@@ -149,16 +149,16 @@ export default function CreateAreaModal({ open, onClose, userId }: Props) {
               <button
                 type="button"
                 onClick={() => setStep("template")}
-                className="font-ui text-[12px] text-[#64748B] hover:text-[#0F172A] transition-colors"
+                className="font-ui text-[12px] text-[#6B7280] hover:text-[#111827] transition-colors"
               >
                 ← Back
               </button>
             )}
-            <span className="font-ui text-[13px] font-medium text-[#0F172A]">
+            <span className="font-ui text-[13px] font-medium text-[#111827]">
               {step === "template" ? "Create area" : "Configure area"}
             </span>
           </div>
-          <button type="button" onClick={onClose} className="text-[#64748B] hover:text-[#0F172A] transition-colors">
+          <button type="button" onClick={onClose} className="text-[#6B7280] hover:text-[#111827] transition-colors">
             <X size={16} />
           </button>
         </div>
@@ -166,7 +166,7 @@ export default function CreateAreaModal({ open, onClose, userId }: Props) {
         {/* Template picker */}
         {step === "template" && (
           <div className="p-5">
-            <p className="font-ui text-[12px] text-[#64748B] mb-4">
+            <p className="font-ui text-[12px] text-[#6B7280] mb-4">
               Choose a template to get started, or create a blank area.
             </p>
             <div className="grid grid-cols-2 gap-2 mb-4">
@@ -174,12 +174,12 @@ export default function CreateAreaModal({ open, onClose, userId }: Props) {
                 <button
                   key={t.id}
                   onClick={() => selectTemplate(t)}
-                  className="flex items-start gap-3 p-3 rounded border border-[#E2E8F0] bg-[#FFFFFF] hover:bg-[#F1F5F9] hover:border-[#CBD5E1] transition-colors text-left"
+                  className="flex items-start gap-3 p-3 rounded border border-[#E2E8F0] bg-[#FFFFFF] hover:bg-[#F1F5F9] hover:border-[#D1D5DB] transition-colors text-left"
                 >
                   <span className="text-[18px] shrink-0 mt-0.5">{t.icon}</span>
                   <div className="min-w-0">
-                    <p className="font-ui text-[13px] font-medium text-[#0F172A]">{t.name}</p>
-                    <p className="font-ui text-[11px] text-[#64748B] mt-0.5">{t.description}</p>
+                    <p className="font-ui text-[13px] font-medium text-[#111827]">{t.name}</p>
+                    <p className="font-ui text-[11px] text-[#6B7280] mt-0.5">{t.description}</p>
                   </div>
                   <span
                     className="ml-auto w-2 h-2 rounded-full shrink-0 mt-1"
@@ -190,7 +190,7 @@ export default function CreateAreaModal({ open, onClose, userId }: Props) {
             </div>
             <button
               onClick={startBlank}
-              className="w-full py-2 border border-dashed border-[#E2E8F0] rounded font-ui text-[12px] text-[#64748B] hover:text-[#0F172A] hover:border-[#CBD5E1] transition-colors"
+              className="w-full py-2 border border-dashed border-[#E2E8F0] rounded font-ui text-[12px] text-[#6B7280] hover:text-[#111827] hover:border-[#D1D5DB] transition-colors"
             >
               Start blank
             </button>
@@ -210,11 +210,11 @@ export default function CreateAreaModal({ open, onClose, userId }: Props) {
                   {icon || <span className="font-ui text-[11px] font-bold" style={{ color }}>{areaKey.slice(0,2)}</span>}
                 </div>
                 <div>
-                  <p className="font-ui text-[13px] font-medium text-[#0F172A]">{name || "Area name"}</p>
-                  <p className="font-ui text-[11px] text-[#94A3B8]">Key: {areaKey}</p>
+                  <p className="font-ui text-[13px] font-medium text-[#111827]">{name || "Area name"}</p>
+                  <p className="font-ui text-[11px] text-[#9CA3AF]">Key: {areaKey}</p>
                 </div>
                 {category && (
-                  <span className="ml-auto font-ui text-[11px] text-[#64748B] bg-[#F1F5F9] border border-[#E2E8F0] px-2 py-0.5 rounded">
+                  <span className="ml-auto font-ui text-[11px] text-[#6B7280] bg-[#F1F5F9] border border-[#E2E8F0] px-2 py-0.5 rounded">
                     {category}
                   </span>
                 )}
@@ -222,7 +222,7 @@ export default function CreateAreaModal({ open, onClose, userId }: Props) {
 
               {/* Name */}
               <div>
-                <label className="block font-ui text-[11px] tracking-[0.12em] uppercase text-[#64748B] mb-1.5">
+                <label className="block font-ui text-[11px] tracking-[0.12em] uppercase text-[#6B7280] mb-1.5">
                   Area name <span className="text-[#E85538]">*</span>
                 </label>
                 <input
@@ -231,54 +231,54 @@ export default function CreateAreaModal({ open, onClose, userId }: Props) {
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Work & Career"
                   required
-                  className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded px-3 py-2 font-ui text-[13px] text-[#0F172A] placeholder:text-[#94A3B8] outline-none focus:border-[#2563EB] transition-colors"
+                  className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded px-3 py-2 font-ui text-[13px] text-[#111827] placeholder:text-[#9CA3AF] outline-none focus:border-[#8B5CF6] transition-colors"
                 />
               </div>
 
               {/* Description */}
               <div>
-                <label className="block font-ui text-[11px] tracking-[0.12em] uppercase text-[#64748B] mb-1.5">
+                <label className="block font-ui text-[11px] tracking-[0.12em] uppercase text-[#6B7280] mb-1.5">
                   Description
                 </label>
                 <input
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="What does this area track?"
-                  className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded px-3 py-2 font-ui text-[13px] text-[#0F172A] placeholder:text-[#94A3B8] outline-none focus:border-[#CBD5E1] transition-colors"
+                  className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded px-3 py-2 font-ui text-[13px] text-[#111827] placeholder:text-[#9CA3AF] outline-none focus:border-[#D1D5DB] transition-colors"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 {/* Category */}
                 <div>
-                  <label className="block font-ui text-[11px] tracking-[0.12em] uppercase text-[#64748B] mb-1.5">
+                  <label className="block font-ui text-[11px] tracking-[0.12em] uppercase text-[#6B7280] mb-1.5">
                     Category
                   </label>
                   <input
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
                     placeholder="e.g. Work, Health…"
-                    className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded px-3 py-2 font-ui text-[13px] text-[#0F172A] placeholder:text-[#94A3B8] outline-none focus:border-[#CBD5E1] transition-colors"
+                    className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded px-3 py-2 font-ui text-[13px] text-[#111827] placeholder:text-[#9CA3AF] outline-none focus:border-[#D1D5DB] transition-colors"
                   />
                 </div>
 
                 {/* Icon */}
                 <div>
-                  <label className="block font-ui text-[11px] tracking-[0.12em] uppercase text-[#64748B] mb-1.5">
+                  <label className="block font-ui text-[11px] tracking-[0.12em] uppercase text-[#6B7280] mb-1.5">
                     Icon (emoji)
                   </label>
                   <input
                     value={icon}
                     onChange={(e) => setIcon(e.target.value)}
                     placeholder="💼"
-                    className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded px-3 py-2 font-ui text-[13px] text-[#0F172A] placeholder:text-[#94A3B8] outline-none focus:border-[#CBD5E1] transition-colors"
+                    className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded px-3 py-2 font-ui text-[13px] text-[#111827] placeholder:text-[#9CA3AF] outline-none focus:border-[#D1D5DB] transition-colors"
                   />
                 </div>
               </div>
 
               {/* Color */}
               <div>
-                <label className="block font-ui text-[11px] tracking-[0.12em] uppercase text-[#64748B] mb-1.5">
+                <label className="block font-ui text-[11px] tracking-[0.12em] uppercase text-[#6B7280] mb-1.5">
                   Color
                 </label>
                 <div className="flex gap-2 flex-wrap">
@@ -290,7 +290,7 @@ export default function CreateAreaModal({ open, onClose, userId }: Props) {
                       className="w-6 h-6 rounded-sm border-2 transition-all flex items-center justify-center"
                       style={{
                         backgroundColor: c,
-                        borderColor: color === c ? "#0F172A" : "transparent",
+                        borderColor: color === c ? "#111827" : "transparent",
                       }}
                     >
                       {color === c && <Check size={10} className="text-white" />}
@@ -305,14 +305,14 @@ export default function CreateAreaModal({ open, onClose, userId }: Props) {
               <button
                 type="button"
                 onClick={onClose}
-                className="px-3 py-1.5 font-ui text-[13px] text-[#64748B] hover:text-[#0F172A] transition-colors"
+                className="px-3 py-1.5 font-ui text-[13px] text-[#6B7280] hover:text-[#111827] transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={!name.trim() || saving}
-                className="px-4 py-1.5 bg-[#2563EB] rounded font-ui text-[13px] font-medium text-[#FFFFFF] hover:bg-[#1D4ED8] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                className="px-4 py-1.5 bg-[#8B5CF6] rounded font-ui text-[13px] font-medium text-[#FFFFFF] hover:bg-[#7C3AED] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >
                 {saving ? "Creating…" : "Create area"}
               </button>

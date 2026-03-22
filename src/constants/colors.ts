@@ -1,16 +1,16 @@
 export const P = {
-  bg: "#F7F8FA",
+  bg: "#F9F9F7",
   s1: "#FFFFFF",
   s2: "#F1F5F9",
-  s3: "#EFF6FF",
+  s3: "#F5F3FF",
   border: "#E2E8F0",
-  borderLight: "#CBD5E1",
-  gold: "#2563EB",
+  borderLight: "#D1D5DB",
+  gold: "#8B5CF6",
   goldDim: "rgba(37,99,235,0.12)",
   goldMid: "rgba(37,99,235,0.30)",
-  ink: "#0F172A",
-  mid: "#64748B",
-  dim: "#94A3B8",
+  ink: "#111827",
+  mid: "#6B7280",
+  dim: "#9CA3AF",
   // Status colors
   success: "#4CAF6B",
   warning: "#E8A838",
@@ -19,13 +19,13 @@ export const P = {
   // Priority colors
   urgent: "#E85538",
   high: "#E8A838",
-  medium: "#2563EB",
-  low: "#64748B",
+  medium: "#8B5CF6",
+  low: "#6B7280",
 } as const;
 
 // Area colors (one per domain)
 export const AREA_COLORS = [
-  "#2563EB", // blue
+  "#8B5CF6", // blue
   "#5B8FE8", // blue
   "#4CAF6B", // green
   "#E8A838", // amber

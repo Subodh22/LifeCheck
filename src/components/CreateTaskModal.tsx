@@ -18,8 +18,8 @@ interface Props {
 const PRIORITIES = [
   { value: "urgent", label: "Urgent", color: "#E85538" },
   { value: "high", label: "High", color: "#E8A838" },
-  { value: "medium", label: "Medium", color: "#2563EB" },
-  { value: "low", label: "Low", color: "#64748B" },
+  { value: "medium", label: "Medium", color: "#8B5CF6" },
+  { value: "low", label: "Low", color: "#6B7280" },
 ] as const;
 
 const STATUSES = [
@@ -81,11 +81,11 @@ export default function CreateTaskModal({ open, onClose, userId, areas, defaultA
       >
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#E2E8F0]">
-          <span className="font-ui text-[13px] font-medium text-[#0F172A]">Create task</span>
+          <span className="font-ui text-[13px] font-medium text-[#111827]">Create task</span>
           <button
             type="button"
             onClick={onClose}
-            className="text-[#64748B] hover:text-[#0F172A] transition-colors"
+            className="text-[#6B7280] hover:text-[#111827] transition-colors"
           >
             <X size={16} />
           </button>
@@ -99,7 +99,7 @@ export default function CreateTaskModal({ open, onClose, userId, areas, defaultA
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Task title"
             required
-            className="w-full bg-transparent font-ui text-[15px] text-[#0F172A] placeholder:text-[#94A3B8] outline-none border-b border-[#E2E8F0] pb-2 focus:border-[#2563EB] transition-colors"
+            className="w-full bg-transparent font-ui text-[15px] text-[#111827] placeholder:text-[#9CA3AF] outline-none border-b border-[#E2E8F0] pb-2 focus:border-[#8B5CF6] transition-colors"
           />
 
           {/* Description */}
@@ -108,18 +108,18 @@ export default function CreateTaskModal({ open, onClose, userId, areas, defaultA
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Add a description…"
             rows={2}
-            className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded px-3 py-2 font-ui text-[13px] text-[#0F172A] placeholder:text-[#94A3B8] outline-none focus:border-[#CBD5E1] transition-colors resize-none"
+            className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded px-3 py-2 font-ui text-[13px] text-[#111827] placeholder:text-[#9CA3AF] outline-none focus:border-[#D1D5DB] transition-colors resize-none"
           />
 
           {/* Meta row */}
           <div className="grid grid-cols-2 gap-3">
             {/* Area */}
             <div>
-              <label className="block text-[#64748B] font-ui text-[11px] tracking-[0.12em] uppercase mb-1.5">Area</label>
+              <label className="block text-[#6B7280] font-ui text-[11px] tracking-[0.12em] uppercase mb-1.5">Area</label>
               <select
                 value={areaId}
                 onChange={(e) => setAreaId(e.target.value as Id<"areas">)}
-                className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded px-2.5 py-1.5 font-ui text-[13px] text-[#0F172A] outline-none appearance-none cursor-pointer"
+                className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded px-2.5 py-1.5 font-ui text-[13px] text-[#111827] outline-none appearance-none cursor-pointer"
               >
                 {areas.map((a) => (
                   <option key={a._id} value={a._id}>{a.name}</option>
@@ -129,7 +129,7 @@ export default function CreateTaskModal({ open, onClose, userId, areas, defaultA
 
             {/* Priority */}
             <div>
-              <label className="block text-[#64748B] font-ui text-[11px] tracking-[0.12em] uppercase mb-1.5">Priority</label>
+              <label className="block text-[#6B7280] font-ui text-[11px] tracking-[0.12em] uppercase mb-1.5">Priority</label>
               <div className="flex gap-1.5">
                 {PRIORITIES.map((p) => (
                   <button
@@ -139,7 +139,7 @@ export default function CreateTaskModal({ open, onClose, userId, areas, defaultA
                     className="flex-1 py-1.5 rounded border font-ui text-[11px] transition-colors"
                     style={{
                       borderColor: priority === p.value ? p.color : "#E2E8F0",
-                      color: priority === p.value ? p.color : "#64748B",
+                      color: priority === p.value ? p.color : "#6B7280",
                       backgroundColor: priority === p.value ? `${p.color}18` : "transparent",
                     }}
                   >
@@ -153,11 +153,11 @@ export default function CreateTaskModal({ open, onClose, userId, areas, defaultA
           <div className="grid grid-cols-2 gap-3">
             {/* Status */}
             <div>
-              <label className="block text-[#64748B] font-ui text-[11px] tracking-[0.12em] uppercase mb-1.5">Status</label>
+              <label className="block text-[#6B7280] font-ui text-[11px] tracking-[0.12em] uppercase mb-1.5">Status</label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as typeof status)}
-                className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded px-2.5 py-1.5 font-ui text-[13px] text-[#0F172A] outline-none appearance-none cursor-pointer"
+                className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded px-2.5 py-1.5 font-ui text-[13px] text-[#111827] outline-none appearance-none cursor-pointer"
               >
                 {STATUSES.map((s) => (
                   <option key={s.value} value={s.value}>{s.label}</option>
@@ -167,12 +167,12 @@ export default function CreateTaskModal({ open, onClose, userId, areas, defaultA
 
             {/* Due date */}
             <div>
-              <label className="block text-[#64748B] font-ui text-[11px] tracking-[0.12em] uppercase mb-1.5">Due date</label>
+              <label className="block text-[#6B7280] font-ui text-[11px] tracking-[0.12em] uppercase mb-1.5">Due date</label>
               <input
                 type="date"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
-                className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded px-2.5 py-1.5 font-ui text-[13px] text-[#0F172A] outline-none [color-scheme:light] cursor-pointer"
+                className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded px-2.5 py-1.5 font-ui text-[13px] text-[#111827] outline-none [color-scheme:light] cursor-pointer"
               />
             </div>
           </div>
@@ -183,14 +183,14 @@ export default function CreateTaskModal({ open, onClose, userId, areas, defaultA
           <button
             type="button"
             onClick={onClose}
-            className="px-3 py-1.5 font-ui text-[13px] text-[#64748B] hover:text-[#0F172A] transition-colors"
+            className="px-3 py-1.5 font-ui text-[13px] text-[#6B7280] hover:text-[#111827] transition-colors"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={!title.trim() || !areaId || saving}
-            className="px-4 py-1.5 bg-[#2563EB] rounded font-ui text-[13px] font-medium text-[#FFFFFF] hover:bg-[#1D4ED8] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="px-4 py-1.5 bg-[#8B5CF6] rounded font-ui text-[13px] font-medium text-[#FFFFFF] hover:bg-[#7C3AED] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >
             {saving ? "Creating…" : "Create task"}
           </button>
