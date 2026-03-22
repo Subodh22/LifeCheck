@@ -717,13 +717,37 @@ interface DetailPanelProps {
 }
 
 function GoalDetailPanel({ goal, allGoals, areas, relatedTasks, onClose, onEdit, onAddChild }: DetailPanelProps) {
-  const updateGoal    = useMutation(api.goals.update);
-  const archiveGoal   = useMutation(api.goals.archive);
+  const { userId } = useCurrentUser();
+  const updateGoal  = useMutation(api.goals.update);
+  const archiveGoal = useMutation(api.goals.archive);
+  const createTask  = useMutation(api.tasks.create);
 
   const [editingDesc,  setEditingDesc]  = useState(false);
   const [desc,         setDesc]         = useState(goal.description ?? "");
   const [editingVal,   setEditingVal]   = useState(false);
   const [currentInput, setCurrentInput] = useState(String(goal.currentValue ?? 0));
+  const [addingTask,   setAddingTask]   = useState(false);
+  const [newTaskTitle, setNewTaskTitle] = useState("");
+
+  const handleAddTask = async () => {
+    const title = newTaskTitle.trim();
+    if (!title || !userId) return;
+    // For weekly goals set dueDate to end of current week so they appear
+    // automatically in the Schedule sidebar's "This Week" section
+    const dueDate = goal.timeframe === "weekly"
+      ? (() => { const d = new Date(); d.setDate(d.getDate() + (7 - d.getDay())); d.setHours(23, 59, 59, 999); return d.getTime(); })()
+      : undefined;
+    await createTask({
+      userId,
+      areaId:   goal.areaId,
+      goalId:   goal._id,
+      title,
+      priority: "medium",
+      dueDate,
+    });
+    setNewTaskTitle("");
+    setAddingTask(false);
+  };
 
   const area      = areas[goal.areaId];
   const p         = pct(goal);
@@ -929,10 +953,56 @@ function GoalDetailPanel({ goal, allGoals, areas, relatedTasks, onClose, onEdit,
           </div>
         )}
 
-        {/* Related tasks */}
-        {relatedTasks.length > 0 && (
-          <div className="px-4 py-3 border-b border-[#2A2A2E]">
-            <p className="font-ui text-[11px] uppercase tracking-[0.1em] text-[#3A3A3E] mb-2">Active tasks</p>
+        {/* Tasks */}
+        <div className="px-4 py-3 border-b border-[#2A2A2E]">
+          <div className="flex items-center justify-between mb-2">
+            <p className="font-ui text-[11px] uppercase tracking-[0.1em] text-[#3A3A3E]">Tasks</p>
+            <button
+              onClick={() => { setAddingTask(true); setNewTaskTitle(""); }}
+              className="flex items-center gap-1 font-ui text-[11px] text-[#4A9EE0] hover:text-[#5AAFF0] transition-colors"
+            >
+              <Plus size={11} /> Add
+            </button>
+          </div>
+
+          {/* Inline new task input */}
+          {addingTask && (
+            <div className="mb-2">
+              <input
+                autoFocus
+                value={newTaskTitle}
+                onChange={(e) => setNewTaskTitle(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter")  handleAddTask();
+                  if (e.key === "Escape") { setAddingTask(false); setNewTaskTitle(""); }
+                }}
+                placeholder="Task name…"
+                className="w-full bg-[#18181B] border border-[#4A9EE040] rounded px-3 py-1.5 font-ui text-[12px] text-[#F2EEE8] placeholder:text-[#3A3A3E] outline-none focus:border-[#4A9EE0] transition-colors"
+              />
+              <div className="flex items-center gap-2 mt-1.5">
+                <button
+                  onClick={handleAddTask}
+                  className="font-ui text-[11px] text-[#4A9EE0] hover:text-[#5AAFF0] transition-colors"
+                >
+                  Add task
+                </button>
+                <span className="text-[#2A2A2E]">·</span>
+                <button
+                  onClick={() => { setAddingTask(false); setNewTaskTitle(""); }}
+                  className="font-ui text-[11px] text-[#3A3A3E] hover:text-[#6B6760] transition-colors"
+                >
+                  Cancel
+                </button>
+                {goal.timeframe === "weekly" && (
+                  <span className="ml-auto font-ui text-[10px] text-[#3A3A3E]">due this week</span>
+                )}
+              </div>
+            </div>
+          )}
+
+          {relatedTasks.length === 0 && !addingTask ? (
+            <p className="font-ui text-[12px] text-[#3A3A3E] italic">No tasks yet</p>
+          ) : (
             <div className="space-y-1.5">
               {relatedTasks.map((t) => (
                 <div key={t._id} className="flex items-center gap-2">
@@ -949,8 +1019,8 @@ function GoalDetailPanel({ goal, allGoals, areas, relatedTasks, onClose, onEdit,
                 </div>
               ))}
             </div>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Archive */}
         <div className="px-4 py-4">
