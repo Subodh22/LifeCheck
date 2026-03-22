@@ -1268,7 +1268,7 @@ export default function GoalsPage() {
   const detailGoal = detailGoalId ? (goals.find((g) => g._id === detailGoalId) ?? null) : null;
 
   const detailRelatedTasks = detailGoal
-    ? tasks.filter((t) => t.areaId === detailGoal.areaId && t.status !== "done").slice(0, 10)
+    ? tasks.filter((t) => t.goalId === detailGoal._id && t.status !== "done")
     : [];
 
   const handleSelect = (tf: Timeframe, id: string | null) => {
