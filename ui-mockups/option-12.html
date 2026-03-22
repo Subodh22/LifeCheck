@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Life OS — Nordic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --sage:        #7C9A7E;
+      --sage-tint:   #EEF3EE;
+      --sage-mid:    #6B8A6D;
+      --sage-dim:    rgba(124, 154, 126, 0.14);
+      --terracotta:  #C4714B;
+      --terra-tint:  #FAF0EB;
+      --green-done:  #5A8F6A;
+      --green-tint:  #EDF4EF;
+      --warm-dark:   #2C2825;
+      --warm-mid:    #8A8278;
+      --warm-light:  #B0A89E;
+      --warm-bg:     #F4F1EC;
+      --sidebar-bg:  #EDE9E3;
+      --sidebar-border: #DDD8D0;
+      --card-bg:     #FFFFFF;
+      --card-border: #E0DBD4;
+      --row-border:  #F0EBE4;
+      --text-dark:   #2C2825;
+      --text-mid:    #8A8278;
+      --text-light:  #B0A89E;
+
+      --radius-card: 10px;
+      --radius-sm:   6px;
+      --sidebar-w:   220px;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--warm-bg);
+      color: var(--warm-dark);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── LAYOUT ─────────────────────────────────────────── */
+    .app {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ─── SIDEBAR ─────────────────────────────────────────── */
+    .sidebar {
+      width: var(--sidebar-w);
+      min-width: var(--sidebar-w);
+      height: 100vh;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--sidebar-border);
+      display: flex;
+      flex-direction: column;
+      padding: 24px 0;
+      overflow-y: auto;
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 0 18px 22px;
+      border-bottom: 1px solid var(--sidebar-border);
+      margin-bottom: 6px;
+    }
+
+    .logo-icon {
+      width: 26px;
+      height: 26px;
+      background: var(--sage);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* Leaf SVG */
+    .logo-icon svg {
+      width: 14px;
+      height: 14px;
+      fill: #fff;
+    }
+
+    .logo-text {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--warm-dark);
+      letter-spacing: -0.01em;
+    }
+
+    .sidebar-new-task {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 18px;
+      margin: 4px 10px 6px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--sage);
+      transition: background 0.15s;
+      border: none;
+      background: transparent;
+      text-align: left;
+      width: calc(100% - 20px);
+    }
+
+    .sidebar-new-task:hover {
+      background: var(--sage-dim);
+    }
+
+    .sidebar-new-task .plus {
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1;
+      opacity: 0.8;
+    }
+
+    /* Nav sections */
+    .nav-section {
+      padding: 14px 0 4px;
+    }
+
+    .nav-section-label {
+      padding: 0 18px 6px;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--warm-light);
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 18px;
+      margin: 1px 10px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--warm-mid);
+      transition: background 0.15s, color 0.15s;
+      text-decoration: none;
+    }
+
+    .nav-item:hover {
+      background: rgba(138, 130, 120, 0.08);
+      color: var(--warm-dark);
+    }
+
+    .nav-item.active {
+      background: var(--sage-tint);
+      color: var(--sage-mid);
+    }
+
+    .nav-item.active .nav-icon {
+      opacity: 1;
+    }
+
+    .nav-icon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      opacity: 0.65;
+    }
+
+    .nav-item.active .nav-icon {
+      opacity: 1;
+    }
+
+    /* Area dots */
+    .area-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .nav-item .badge {
+      margin-left: auto;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--warm-light);
+    }
+
+    .nav-item.active .badge {
+      color: var(--sage);
+    }
+
+    /* Sidebar bottom */
+    .sidebar-bottom {
+      margin-top: auto;
+      padding: 14px 0 0;
+      border-top: 1px solid var(--sidebar-border);
+    }
+
+    /* ─── MAIN ─────────────────────────────────────────────── */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      background: var(--warm-bg);
+      padding: 48px 48px 64px;
+    }
+
+    .main-inner {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .main-date {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--warm-light);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .main-greeting {
+      font-size: 30px;
+      font-weight: 600;
+      color: var(--warm-dark);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 6px;
+    }
+
+    .main-sub {
+      font-size: 14px;
+      color: var(--warm-mid);
+      font-weight: 400;
+      margin-bottom: 32px;
+    }
+
+    /* ─── STATS ROW ─────────────────────────────────────────── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-card);
+      padding: 16px 18px 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--warm-light);
+      letter-spacing: 0.03em;
+    }
+
+    .stat-num {
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+
+    .stat-num.open    { color: var(--warm-dark); }
+    .stat-num.inprog  { color: var(--sage); }
+    .stat-num.done    { color: var(--green-done); }
+    .stat-num.overdue { color: var(--terracotta); }
+
+    .stat-note {
+      font-size: 11px;
+      color: var(--warm-light);
+      margin-top: 2px;
+    }
+
+    /* ─── CONTENT GRID ──────────────────────────────────────── */
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 260px;
+      gap: 16px;
+      align-items: start;
+    }
+
+    /* ─── TASK LIST ─────────────────────────────────────────── */
+    .task-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+    }
+
+    .task-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px 14px;
+      border-bottom: 1px solid var(--row-border);
+    }
+
+    .task-card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--warm-dark);
+      letter-spacing: -0.01em;
+    }
+
+    .task-card-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .task-filter-btn {
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--warm-mid);
+      background: var(--warm-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 5px;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: color 0.15s, background 0.15s;
+    }
+
+    .task-filter-btn.active {
+      background: var(--sage-tint);
+      color: var(--sage-mid);
+      border-color: rgba(124, 154, 126, 0.25);
+    }
+
+    /* Task rows */
+    .task-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 13px 18px;
+      border-bottom: 1px solid var(--row-border);
+      transition: background 0.12s;
+      cursor: pointer;
+    }
+
+    .task-row:last-child {
+      border-bottom: none;
+    }
+
+    .task-row:hover {
+      background: #FDFCFA;
+    }
+
+    /* Checkbox */
+    .cb {
+      width: 17px;
+      height: 17px;
+      border-radius: 4px;
+      border: 1.5px solid var(--card-border);
+      flex-shrink: 0;
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, border-color 0.15s;
+      cursor: pointer;
+    }
+
+    .cb.checked {
+      background: var(--sage);
+      border-color: var(--sage);
+    }
+
+    .cb.checked svg {
+      display: block;
+    }
+
+    .cb svg {
+      display: none;
+      width: 9px;
+      height: 9px;
+      stroke: #fff;
+      stroke-width: 2.5;
+      fill: none;
+    }
+
+    /* Task content */
+    .task-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .task-title {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--warm-dark);
+      line-height: 1.4;
+    }
+
+    .task-row.done .task-title {
+      color: var(--warm-light);
+      text-decoration: line-through;
+      text-decoration-color: var(--warm-light);
+    }
+
+    .task-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 5px;
+      flex-wrap: wrap;
+    }
+
+    .task-due {
+      font-size: 11px;
+      color: var(--warm-light);
+      font-weight: 400;
+    }
+
+    .task-due.overdue {
+      color: var(--terracotta);
+    }
+
+    .area-tag {
+      font-size: 10.5px;
+      font-weight: 500;
+      border-radius: 4px;
+      padding: 2px 7px;
+      letter-spacing: 0.01em;
+    }
+
+    /* Area tag colors — muted naturals */
+    .tag-work    { background: #EAF0F0; color: #4E7A7C; }
+    .tag-health  { background: #EEF3EE; color: #5A8060; }
+    .tag-personal{ background: #F5EEE8; color: #8C6A4E; }
+    .tag-finance { background: #F5F0E8; color: #7A6840; }
+    .tag-learn   { background: #EEF0F8; color: #4E5C8C; }
+
+    .task-priority {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+
+    .priority-high   { background: var(--terracotta); }
+    .priority-med    { background: #D4A853; }
+    .priority-low    { background: var(--card-border); }
+
+    /* ─── RIGHT COLUMN ──────────────────────────────────────── */
+    .right-col {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* ─── HABITS CARD ───────────────────────────────────────── */
+    .habits-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 15px 16px 13px;
+      border-bottom: 1px solid var(--row-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-title {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--warm-dark);
+      letter-spacing: -0.01em;
+    }
+
+    .card-header-note {
+      font-size: 11px;
+      color: var(--warm-light);
+    }
+
+    .habit-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--row-border);
+    }
+
+    .habit-row:last-child {
+      border-bottom: none;
+    }
+
+    .habit-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .habit-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .habit-name {
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--warm-dark);
+    }
+
+    .habit-streak {
+      font-size: 10.5px;
+      color: var(--warm-light);
+      margin-top: 2px;
+    }
+
+    /* Week dots */
+    .habit-dots {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .hdot {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      background: var(--row-border);
+    }
+
+    .hdot.done  { background: var(--sage); }
+    .hdot.today { background: var(--sage); outline: 2px solid var(--sage-tint); outline-offset: 1px; }
+    .hdot.miss  { background: #E8D5C8; }
+
+    /* ─── AREA HEALTH ───────────────────────────────────────── */
+    .area-health-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+    }
+
+    .area-health-row {
+      display: flex;
+      flex-direction: column;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--row-border);
+      gap: 6px;
+    }
+
+    .area-health-row:last-child {
+      border-bottom: none;
+    }
+
+    .area-health-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .area-name-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--warm-dark);
+    }
+
+    .area-pct {
+      font-size: 11px;
+      color: var(--warm-light);
+    }
+
+    .progress-track {
+      height: 4px;
+      background: var(--row-border);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.4s ease;
+    }
+
+    /* ─── TODAY FOCUS ───────────────────────────────────────── */
+    .focus-card {
+      background: var(--sage);
+      border-radius: var(--radius-card);
+      padding: 18px;
+      color: #fff;
+    }
+
+    .focus-label {
+      font-size: 9.5px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.75;
+      margin-bottom: 8px;
+    }
+
+    .focus-text {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.5;
+      opacity: 0.95;
+    }
+
+    .focus-author {
+      font-size: 11px;
+      opacity: 0.6;
+      margin-top: 10px;
+    }
+
+    /* ─── SECTION DIVIDER ───────────────────────────────────── */
+    .section-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--warm-light);
+      padding: 18px 18px 10px;
+    }
+
+    /* ─── SCROLLBAR ─────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--card-border); border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--warm-light); }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ─── SIDEBAR ───────────────────────────────────────────── -->
+  <nav class="sidebar">
+
+    <!-- Logo -->
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <!-- Leaf icon -->
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17 8C8 10 5.9 16.17 3.82 19.34L5.71 21l1-1C6.17 20.56 6.89 20 8 20c2 0 4-2 4-4s-2-2-2-4c0-1.66 1.34-3 3-3s2.97 1.72 2 4c-1 2.28.5 4 2 5l2-2c-1-1-1.5-3 0-5 1-1.5.5-4-2-5z"/>
+        </svg>
+      </div>
+      <span class="logo-text">Life OS</span>
+    </div>
+
+    <!-- New Task -->
+    <button class="sidebar-new-task">
+      <span class="plus">+</span> New task
+    </button>
+
+    <!-- Main nav -->
+    <div class="nav-section">
+      <a href="#" class="nav-item active">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h4a1 1 0 001-1v-3h2v3a1 1 0 001 1h4a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+        </svg>
+        Today
+        <span class="badge">3</span>
+      </a>
+      <a href="#" class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+        </svg>
+        Upcoming
+        <span class="badge">12</span>
+      </a>
+      <a href="#" class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
+          <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/>
+        </svg>
+        All Tasks
+        <span class="badge">26</span>
+      </a>
+      <a href="#" class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>
+        </svg>
+        Habits
+      </a>
+      <a href="#" class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+        </svg>
+        Journal
+      </a>
+    </div>
+
+    <!-- Areas -->
+    <div class="nav-section">
+      <div class="nav-section-label">Areas</div>
+
+      <a href="#" class="nav-item">
+        <span class="area-dot" style="background:#4E7A7C;"></span>
+        Work
+        <span class="badge">8</span>
+      </a>
+      <a href="#" class="nav-item">
+        <span class="area-dot" style="background:#5A8060;"></span>
+        Health
+        <span class="badge">4</span>
+      </a>
+      <a href="#" class="nav-item">
+        <span class="area-dot" style="background:#8C6A4E;"></span>
+        Personal
+        <span class="badge">7</span>
+      </a>
+      <a href="#" class="nav-item">
+        <span class="area-dot" style="background:#7A6840;"></span>
+        Finance
+        <span class="badge">3</span>
+      </a>
+      <a href="#" class="nav-item">
+        <span class="area-dot" style="background:#4E5C8C;"></span>
+        Learning
+        <span class="badge">4</span>
+      </a>
+    </div>
+
+    <!-- Settings -->
+    <div class="sidebar-bottom">
+      <a href="#" class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/>
+        </svg>
+        Settings
+      </a>
+    </div>
+  </nav>
+
+  <!-- ─── MAIN ──────────────────────────────────────────────── -->
+  <main class="main">
+    <div class="main-inner">
+
+      <!-- Header -->
+      <div class="main-date">Sunday, 22 March 2026</div>
+      <h1 class="main-greeting">Good morning.</h1>
+      <p class="main-sub">You have 3 tasks for today and 4 habits to check in.</p>
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">Open</div>
+          <div class="stat-num open">14</div>
+          <div class="stat-note">across 5 areas</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">In progress</div>
+          <div class="stat-num inprog">3</div>
+          <div class="stat-note">active today</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Done</div>
+          <div class="stat-num done">28</div>
+          <div class="stat-note">this week</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Overdue</div>
+          <div class="stat-num overdue">2</div>
+          <div class="stat-note">needs attention</div>
+        </div>
+      </div>
+
+      <!-- Content grid -->
+      <div class="content-grid">
+
+        <!-- Task list -->
+        <div>
+          <div class="task-card">
+            <div class="task-card-header">
+              <span class="task-card-title">Today's tasks</span>
+              <div class="task-card-actions">
+                <button class="task-filter-btn active">All</button>
+                <button class="task-filter-btn">Pending</button>
+                <button class="task-filter-btn">Done</button>
+              </div>
+            </div>
+
+            <!-- Overdue label -->
+            <div class="section-label">Overdue</div>
+
+            <!-- Task: overdue -->
+            <div class="task-row">
+              <div class="cb"></div>
+              <div class="task-body">
+                <div class="task-title">Review Q1 financial report and prepare summary</div>
+                <div class="task-meta">
+                  <span class="task-due overdue">Mar 19 · overdue</span>
+                  <span class="area-tag tag-finance">Finance</span>
+                </div>
+              </div>
+              <div class="task-priority priority-high"></div>
+            </div>
+
+            <div class="task-row">
+              <div class="cb"></div>
+              <div class="task-body">
+                <div class="task-title">Send invoice to Nordea client</div>
+                <div class="task-meta">
+                  <span class="task-due overdue">Mar 20 · overdue</span>
+                  <span class="area-tag tag-work">Work</span>
+                </div>
+              </div>
+              <div class="task-priority priority-high"></div>
+            </div>
+
+            <!-- Today label -->
+            <div class="section-label">Today</div>
+
+            <div class="task-row">
+              <div class="cb"></div>
+              <div class="task-body">
+                <div class="task-title">Morning walk — 30 minutes outdoors</div>
+                <div class="task-meta">
+                  <span class="task-due">Today, 7:00</span>
+                  <span class="area-tag tag-health">Health</span>
+                </div>
+              </div>
+              <div class="task-priority priority-med"></div>
+            </div>
+
+            <div class="task-row">
+              <div class="cb"></div>
+              <div class="task-body">
+                <div class="task-title">Finish chapter 3 notes — Atomic Habits</div>
+                <div class="task-meta">
+                  <span class="task-due">Today</span>
+                  <span class="area-tag tag-learn">Learning</span>
+                </div>
+              </div>
+              <div class="task-priority priority-low"></div>
+            </div>
+
+            <div class="task-row">
+              <div class="cb"></div>
+              <div class="task-body">
+                <div class="task-title">Call Mum — weekly check-in</div>
+                <div class="task-meta">
+                  <span class="task-due">Today, 17:00</span>
+                  <span class="area-tag tag-personal">Personal</span>
+                </div>
+              </div>
+              <div class="task-priority priority-low"></div>
+            </div>
+
+            <!-- Done label -->
+            <div class="section-label">Completed</div>
+
+            <div class="task-row done">
+              <div class="cb checked">
+                <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
+              </div>
+              <div class="task-body">
+                <div class="task-title">Meditate for 10 minutes</div>
+                <div class="task-meta">
+                  <span class="task-due">Done at 7:14</span>
+                  <span class="area-tag tag-health">Health</span>
+                </div>
+              </div>
+              <div class="task-priority priority-low"></div>
+            </div>
+
+            <div class="task-row done">
+              <div class="cb checked">
+                <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
+              </div>
+              <div class="task-body">
+                <div class="task-title">Plan week in Sunday review</div>
+                <div class="task-meta">
+                  <span class="task-due">Done at 8:30</span>
+                  <span class="area-tag tag-personal">Personal</span>
+                </div>
+              </div>
+              <div class="task-priority priority-low"></div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Right column -->
+        <div class="right-col">
+
+          <!-- Focus / Quote -->
+          <div class="focus-card">
+            <div class="focus-label">Sunday intention</div>
+            <div class="focus-text">"It is not daily increase but daily decrease — hack away at the inessential."</div>
+            <div class="focus-author">— Bruce Lee</div>
+          </div>
+
+          <!-- Habits -->
+          <div class="habits-card">
+            <div class="card-header">
+              <span class="card-title">Habits</span>
+              <span class="card-header-note">4 / 4 today</span>
+            </div>
+
+            <!-- Habit rows -->
+            <div class="habit-row">
+              <div class="habit-left">
+                <div class="habit-icon" style="background:#EEF3EE;">🧘</div>
+                <div>
+                  <div class="habit-name">Meditate</div>
+                  <div class="habit-streak">14-day streak</div>
+                </div>
+              </div>
+              <div class="habit-dots">
+                <div class="hdot done"></div>
+                <div class="hdot done"></div>
+                <div class="hdot done"></div>
+                <div class="hdot miss"></div>
+                <div class="hdot done"></div>
+                <div class="hdot done"></div>
+                <div class="hdot today"></div>
+              </div>
+            </div>
+
+            <div class="habit-row">
+              <div class="habit-left">
+                <div class="habit-icon" style="background:#EAF0F0;">📖</div>
+                <div>
+                  <div class="habit-name">Read 20 min</div>
+                  <div class="habit-streak">7-day streak</div>
+                </div>
+              </div>
+              <div class="habit-dots">
+                <div class="hdot done"></div>
+                <div class="hdot done"></div>
+                <div class="hdot done"></div>
+                <div class="hdot done"></div>
+                <div class="hdot done"></div>
+                <div class="hdot done"></div>
+                <div class="hdot"></div>
+              </div>
+            </div>
+
+            <div class="habit-row">
+              <div class="habit-left">
+                <div class="habit-icon" style="background:#EEF3EE;">🚶</div>
+                <div>
+                  <div class="habit-name">Walk outside</div>
+                  <div class="habit-streak">3-day streak</div>
+                </div>
+              </div>
+              <div class="habit-dots">
+                <div class="hdot done"></div>
+                <div class="hdot miss"></div>
+                <div class="hdot done"></div>
+                <div class="hdot miss"></div>
+                <div class="hdot done"></div>
+                <div class="hdot done"></div>
+                <div class="hdot"></div>
+              </div>
+            </div>
+
+            <div class="habit-row">
+              <div class="habit-left">
+                <div class="habit-icon" style="background:#F5EEE8;">✍️</div>
+                <div>
+                  <div class="habit-name">Journaling</div>
+                  <div class="habit-streak">2-day streak</div>
+                </div>
+              </div>
+              <div class="habit-dots">
+                <div class="hdot miss"></div>
+                <div class="hdot done"></div>
+                <div class="hdot miss"></div>
+                <div class="hdot miss"></div>
+                <div class="hdot miss"></div>
+                <div class="hdot done"></div>
+                <div class="hdot"></div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Area health -->
+          <div class="area-health-card">
+            <div class="card-header">
+              <span class="card-title">Area health</span>
+            </div>
+
+            <div class="area-health-row">
+              <div class="area-health-top">
+                <div class="area-name-row">
+                  <span class="area-dot" style="background:#4E7A7C;"></span>
+                  Work
+                </div>
+                <span class="area-pct">72%</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" style="width:72%; background:#4E7A7C;"></div>
+              </div>
+            </div>
+
+            <div class="area-health-row">
+              <div class="area-health-top">
+                <div class="area-name-row">
+                  <span class="area-dot" style="background:#5A8060;"></span>
+                  Health
+                </div>
+                <span class="area-pct">88%</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" style="width:88%; background:#5A8060;"></div>
+              </div>
+            </div>
+
+            <div class="area-health-row">
+              <div class="area-health-top">
+                <div class="area-name-row">
+                  <span class="area-dot" style="background:#8C6A4E;"></span>
+                  Personal
+                </div>
+                <span class="area-pct">55%</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" style="width:55%; background:#8C6A4E;"></div>
+              </div>
+            </div>
+
+            <div class="area-health-row">
+              <div class="area-health-top">
+                <div class="area-name-row">
+                  <span class="area-dot" style="background:#7A6840;"></span>
+                  Finance
+                </div>
+                <span class="area-pct">40%</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" style="width:40%; background:#C4714B;"></div>
+              </div>
+            </div>
+
+            <div class="area-health-row">
+              <div class="area-health-top">
+                <div class="area-name-row">
+                  <span class="area-dot" style="background:#4E5C8C;"></span>
+                  Learning
+                </div>
+                <span class="area-pct">63%</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" style="width:63%; background:#4E5C8C;"></div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+</div>
+</body>
+</html>

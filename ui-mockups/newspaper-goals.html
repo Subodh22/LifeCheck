@@ -1,0 +1,134 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>LIFE OS  Forward Outlook (Goals)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700&family=Playfair+Display+SC:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--newsprint:#FAFAF5;--ink:#0D0D0D;--ink-mid:#2A2A2A;--ink-light:#555550;--ink-faint:#999990;--red:#C41E3A;--white:#FFFFFF;--rule-light:#CCCCBC;}
+    body{background:var(--newsprint);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+    header{background:var(--white);border-bottom:3px solid var(--ink);position:sticky;top:4px;z-index:100;border-top:4px solid var(--ink);}
+    .masthead-top{display:flex;align-items:center;justify-content:space-between;padding:0 64px;height:64px;border-bottom:1px solid var(--rule-light);}
+    .logo{font-family:'Playfair Display',serif;font-weight:900;font-size:32px;letter-spacing:-1px;text-transform:uppercase;color:var(--ink);}
+    .logo span{color:var(--red);}
+    .nav{display:flex;align-items:center;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-mid);}
+    .nav a{text-decoration:none;color:inherit;padding:0 18px;transition:color .1s;}
+    .nav a:hover,.nav a.active{color:var(--red);}
+    .nav .pipe{color:var(--rule-light);font-size:14px;font-weight:300;}
+    .masthead-r{display:flex;align-items:center;gap:20px;}
+    .m-date{font-size:11px;color:var(--ink-light);}
+    .btn-new{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:white;background:var(--ink);border:none;padding:8px 16px;cursor:pointer;}
+    .edition-bar{display:flex;justify-content:space-between;padding:6px 64px;background:var(--newsprint);border-bottom:1px solid var(--rule-light);}
+    .main{padding:0 64px 80px;}
+    .hero{padding:48px 0 32px;border-bottom:2px solid var(--ink);margin-bottom:32px;}
+    .h-kicker{font-size:10px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--red);margin-bottom:8px;}
+    .h-headline{font-family:'Playfair Display',serif;font-weight:900;font-size:64px;line-height:0.9;letter-spacing:-2px;text-transform:uppercase;margin-bottom:16px;}
+    .h-sub{display:flex;justify-content:space-between;align-items:baseline;}
+    .grid{display:grid;grid-template-columns:2fr 1fr;gap:48px;}
+    .goal-art{padding:24px 0;border-bottom:1px solid var(--rule-light);}
+    .goal-art:last-child{border-bottom:none;}
+    .goal-tag{font-size:10px;font-weight:800;color:var(--red);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;display:block;}
+    .goal-h{font-family:'Playfair Display',serif;font-size:32px;font-weight:900;line-height:1.1;margin-bottom:12px;}
+    .goal-s{font-size:14px;color:var(--ink-light);line-height:1.6;margin-bottom:20px;}
+    .progress-box{border:1px solid var(--rule-light);padding:20px;background:white;margin-bottom:20px;}
+    .progress-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;}
+    .progress-n{font-family:'Playfair Display',serif;font-size:24px;font-weight:800;}
+    .progress-p{font-family:'Playfair Display',serif;font-size:40px;font-weight:900;color:var(--ink);}
+    .progress-bar{height:6px;background:var(--newsprint);border:1px solid var(--rule-light);margin-bottom:12px;}
+    .progress-fill{height:100%;background:var(--ink);}
+    .progress-m{font-size:11px;color:var(--ink-faint);display:flex;justify-content:space-between;}
+    .outlook-sec{background:var(--ink);color:white;padding:24px;}
+    .outlook-h{font-size:10px;font-weight:800;color:var(--red);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;}
+    .outlook-p{font-size:12px;line-height:1.6;color:rgba(255,255,255,0.7);margin-bottom:20px;}
+    .outlook-box{border-top:1px solid rgba(255,255,255,0.1);padding-top:16px;margin-top:16px;}
+    .outlook-label{font-size:9px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+    .outlook-val{font-size:16px;font-weight:700;color:white;}
+    .sec-label{font-size:9px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:12px;display:block;}
+  </style>
+</head>
+<body>
+<header>
+  <div class="masthead-top">
+    <div class="logo">The Daily<span>Log</span></div>
+    <nav class="nav">
+      <a href="newspaper-today.html">Today</a><span class="pipe">|</span>
+      <a href="newspaper-backlog.html">Backlog</a><span class="pipe">|</span>
+      <a href="newspaper-goals.html" class="active">Goals</a><span class="pipe">|</span>
+      <a href="newspaper-areas.html">Areas</a><span class="pipe">|</span>
+      <a href="newspaper-schedule.html">Schedule</a>
+    </nav>
+    <div class="masthead-r"><span class="m-date">Perspectives  Goals</span><button class="btn-new">+ NEW STRATEGY</button></div>
+  </div>
+  <div class="edition-bar"><span>Strategic Perspectives  Q1 2026 Outlook</span><span>Est. 2024  Long Term Vision</span></div>
+</header>
+<main class="main">
+  <section class="hero">
+    <div class="h-kicker">Strategic Horizons</div>
+    <h1 class="h-headline">Forward Outlook.</h1>
+    <div class="h-sub"><div class="h-sub-l">Analysis of <strong>active targets</strong> and 12-month projections. Current sector performance indicates steady growth in Health, concerns in Relationships.</div></div>
+  </section>
+  <div class="grid">
+    <div class="col-l">
+      <span class="sec-label">Major Objectives  Active Engagement</span>
+      <div class="goal-art">
+        <span class="goal-tag">Long-Term Target  Health Sector</span>
+        <h2 class="goal-h">Project Marathon:<br>Scaling 21.1 Kilometers</h2>
+        <p class="goal-s">Training regimen enters its third month of disciplined execution. Current telemetry shows 5km base pace is stable. Scaling to double-digit distances begins Q2. Cardiovascular resilience index is at a 2-year peak.</p>
+        <div class="progress-box">
+          <div class="progress-top"><span class="progress-n">Completion Percentage</span><span class="progress-p">68%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:68%"></div></div>
+          <div class="progress-m"><span>Target Date: June 15, 2026</span><span>Status: Bullish / Ahead</span></div>
+        </div>
+      </div>
+      <div class="goal-art">
+        <span class="goal-tag">Strategic Reserve  Finance Sector</span>
+        <h2 class="goal-h">The Ten-Thousand<br>Emergency Buffer</h2>
+        <p class="goal-s">Capital allocation toward the strategic liquidity reserve remains a high priority. March disbursements were slightly above the historical average, leading to a temporary slowdown in reserve growth. Outlook remains stable for year-end completion.</p>
+        <div class="progress-box">
+          <div class="progress-top"><span class="progress-n">Capitalization Level</span><span class="progress-p">45%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:45%; background:var(--red)"></div></div>
+          <div class="progress-m"><span>Current: $4.5k / $10k</span><span>Status: Stable</span></div>
+        </div>
+      </div>
+      <div class="goal-art">
+        <span class="goal-tag">Intellectual Capital  Learning Sector</span>
+        <h2 class="goal-h">Twenty-Four Volumes:<br>The Annual Reading List</h2>
+        <p class="goal-s">Rate of material consumption has dipped in the last 21 days due to high work-sector demands. Strategy correction needed: allocate 30-minute evening windows for deep reading sessions. Currently 2 volumes behind historical quarterly average.</p>
+        <div class="progress-box">
+          <div class="progress-top"><span class="progress-n">Volume Progress</span><span class="progress-p" style="color:var(--red)">25%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:25%; background:var(--red)"></div></div>
+          <div class="progress-m"><span>6 / 24 Volumes Complete</span><span>Status: Bearish / Behind</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-r">
+      <span class="sec-label">Q1 Forecast</span>
+      <div class="outlook-sec">
+        <div class="outlook-h">Director's Memo</div>
+        <p class="outlook-p">The transition from Q1 to Q2 requires a pivot in energy allocation. While Work and Health metrics are near saturation, the Relationships sector is entering a technical bear market. Strategic intervention in the form of social scheduling is mandatory.</p>
+        <div class="outlook-box">
+          <div class="outlook-label">Quarterly Confidence</div>
+          <div class="outlook-val">78.4 Index Points</div>
+        </div>
+        <div class="outlook-box">
+          <div class="outlook-label">Critical Milestone</div>
+          <div class="outlook-val">Half-Marathon Readiness</div>
+        </div>
+        <div class="outlook-box">
+          <div class="outlook-label">Primary Risk</div>
+          <div class="outlook-val">Social Stagnation</div>
+        </div>
+      </div>
+      <div style="margin-top:40px; border:1px solid var(--rule-light); padding:20px;">
+        <span class="sec-label" style="margin-bottom:12px;">Recently Archive</span>
+        <div style="font-size:12px; color:var(--ink-light); display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--rule-light);"><span>Portfolio Alpha Launch</span><strong style="color:var(--ink)">JAN 12</strong></div>
+        <div style="font-size:12px; color:var(--ink-light); display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--rule-light);"><span>Debt Resolution Phase I</span><strong style="color:var(--ink)">FEB 04</strong></div>
+        <div style="font-size:12px; color:var(--ink-light); display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--rule-light);"><span>5km Sub-25 Mark</span><strong style="color:var(--ink)">MAR 15</strong></div>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

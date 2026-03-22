@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Life OS — Option 44 · Signal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #FFFFFF;
+      --bg2:     #F7F7F8;
+      --bg3:     #F0F0F2;
+      --border:  #E4E4E8;
+      --border2: #CDCDD4;
+      --ink:     #111118;
+      --t2:      #5C5C6E;
+      --t3:      #9898A8;
+      --acc:     #4F46E5;
+      --acc-pale:#EEF2FF;
+      --red:     #DC2626;
+      --red-pale:#FEF2F2;
+      --green:   #16A34A;
+      --green-pale:#F0FDF4;
+      --amber:   #D97706;
+    }
+
+    html, body { height: 100%; font-family: 'DM Sans', system-ui, sans-serif; background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; }
+
+    /* ── TOP NAV ── */
+    .topnav {
+      height: 52px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 32px;
+      gap: 0;
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: var(--ink);
+      margin-right: 40px;
+    }
+
+    .logo em { color: var(--acc); font-style: normal; }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      gap: 2px;
+    }
+
+    .nl {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--t3);
+      padding: 5px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.1s;
+    }
+
+    .nl:hover { color: var(--ink); background: var(--bg2); }
+    .nl.active { color: var(--ink); font-weight: 600; background: var(--bg2); }
+
+    .nav-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--t3);
+      letter-spacing: -0.2px;
+    }
+
+    .btn {
+      font-size: 13px;
+      font-weight: 600;
+      padding: 7px 16px;
+      border-radius: 7px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-primary { background: var(--acc); color: #fff; }
+    .btn-primary:hover { background: #4338CA; }
+
+    .avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--acc), #7C3AED);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    /* ── STATS STRIP ── */
+    .stats-strip {
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      padding: 0 32px;
+    }
+
+    .stat-cell {
+      padding: 20px 32px 20px 0;
+      border-right: 1px solid var(--border);
+      margin-right: 32px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      min-width: 140px;
+    }
+
+    .stat-cell:last-child {
+      border-right: none;
+      margin-right: 0;
+    }
+
+    .stat-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .stat-icon.indigo { background: var(--acc-pale); }
+    .stat-icon.red    { background: var(--red-pale); }
+    .stat-icon.green  { background: var(--green-pale); }
+    .stat-icon.amber  { background: #FFFBEB; }
+
+    .stat-body { }
+
+    .stat-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 28px;
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: -1px;
+      color: var(--ink);
+    }
+
+    .stat-num.red    { color: var(--red); }
+    .stat-num.green  { color: var(--green); }
+    .stat-num.amber  { color: var(--amber); }
+    .stat-num.indigo { color: var(--acc); }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--t3);
+      margin-top: 4px;
+      font-weight: 500;
+    }
+
+    .stat-delta {
+      font-size: 11px;
+      color: var(--green);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .stat-delta.neg { color: var(--red); }
+
+    /* ── PAGE BODY ── */
+    .page-body {
+      display: flex;
+      height: calc(100vh - 52px - 89px);
+    }
+
+    /* ── MAIN COLUMN ── */
+    .main-col {
+      flex: 1;
+      overflow-y: auto;
+      border-right: 1px solid var(--border);
+    }
+
+    /* ── SECTION ── */
+    .sec-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 32px 12px;
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 2;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sec-header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sec-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .sec-badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--t3);
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      padding: 1px 7px;
+      border-radius: 20px;
+    }
+
+    .sec-badge.red {
+      color: var(--red);
+      background: var(--red-pale);
+      border-color: #FECACA;
+    }
+
+    .sec-action {
+      font-size: 12px;
+      color: var(--acc);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* ── TASK ROW ── */
+    .task-group { margin-bottom: 0; }
+
+    .group-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px 6px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--t3);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .group-label-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .task-row {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      height: 44px;
+      padding: 0 32px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--bg2);
+      transition: background 0.08s;
+      position: relative;
+    }
+
+    .task-row:hover { background: var(--bg2); }
+    .task-row:hover .task-hover-actions { opacity: 1; }
+    .task-row.done { opacity: 0.4; }
+
+    .chk-wrap {
+      width: 36px;
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .chk {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border2);
+      cursor: pointer;
+      transition: all 0.15s;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .chk:hover { border-color: var(--acc); }
+
+    .chk.done {
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .chk.done::after {
+      content: '';
+      position: absolute;
+      top: 2px; left: 4px;
+      width: 4px; height: 6px;
+      border: 1.5px solid #fff;
+      border-top: none;
+      border-left: none;
+      transform: rotate(45deg);
+    }
+
+    .chk.urgent { border-color: var(--red); }
+
+    .task-title {
+      flex: 1;
+      font-size: 13.5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
+    }
+
+    .task-title.done {
+      text-decoration: line-through;
+      color: var(--t3);
+    }
+
+    .task-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
+      margin-left: 16px;
+    }
+
+    .area-tag {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      color: var(--t3);
+    }
+
+    .area-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .due-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--t3);
+    }
+
+    .due-tag.overdue { color: var(--red); }
+    .due-tag.today   { color: var(--amber); }
+
+    .priority-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .priority-dot.urgent { background: var(--red); }
+    .priority-dot.high   { background: var(--amber); }
+    .priority-dot.normal { background: var(--border2); }
+
+    .task-hover-actions {
+      position: absolute;
+      right: 32px;
+      opacity: 0;
+      display: flex;
+      gap: 2px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 2px 4px;
+    }
+
+    .tact {
+      font-size: 11.5px;
+      color: var(--t2);
+      padding: 2px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .tact:hover { background: var(--bg2); color: var(--ink); }
+
+    /* ── RIGHT PANEL ── */
+    .right-panel {
+      width: 320px;
+      flex-shrink: 0;
+      overflow-y: auto;
+    }
+
+    .panel-section {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .panel-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--t3);
+      margin-bottom: 14px;
+    }
+
+    /* Area health rows */
+    .area-health-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--bg2);
+      cursor: pointer;
+      transition: background 0.08s;
+    }
+
+    .area-health-row:last-child { border-bottom: none; }
+    .area-health-row:hover { margin: 0 -6px; padding: 8px 6px; border-radius: 6px; background: var(--bg2); border-color: transparent; }
+
+    .area-health-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .area-health-name {
+      font-size: 13px;
+      font-weight: 500;
+      flex: 1;
+      color: var(--ink);
+    }
+
+    .area-health-bar-wrap {
+      width: 64px;
+      height: 3px;
+      background: var(--bg3);
+      border-radius: 2px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .area-health-bar {
+      height: 100%;
+      border-radius: 2px;
+    }
+
+    .area-score {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      font-weight: 500;
+      width: 28px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .score-high  { color: var(--green); }
+    .score-mid   { color: var(--amber); }
+    .score-low   { color: var(--red); }
+    .bar-high    { background: var(--green); }
+    .bar-mid     { background: var(--amber); }
+    .bar-low     { background: var(--red); }
+
+    /* Goals */
+    .goal-item {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--bg2);
+    }
+
+    .goal-item:last-child { border-bottom: none; }
+
+    .goal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 6px;
+    }
+
+    .goal-name {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .goal-pct {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--t2);
+    }
+
+    .goal-bar-track {
+      width: 100%;
+      height: 3px;
+      background: var(--bg3);
+      border-radius: 2px;
+      margin-bottom: 5px;
+    }
+
+    .goal-bar-fill {
+      height: 100%;
+      background: var(--acc);
+      border-radius: 2px;
+    }
+
+    .goal-deadline {
+      font-size: 11px;
+      color: var(--t3);
+    }
+
+    /* Coach panel */
+    .coach-card {
+      background: var(--acc-pale);
+      border: 1px solid #C7D2FE;
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+
+    .coach-header {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 8px;
+    }
+
+    .coach-avatar {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      background: var(--acc);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+    }
+
+    .coach-name {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--acc);
+    }
+
+    .coach-text {
+      font-size: 12.5px;
+      color: #3730A3;
+      line-height: 1.6;
+    }
+
+    /* Upcoming */
+    .upcoming-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--bg2);
+    }
+
+    .upcoming-row:last-child { border-bottom: none; }
+
+    .upcoming-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--t3);
+      width: 30px;
+      flex-shrink: 0;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .upcoming-date strong {
+      display: block;
+      font-size: 15px;
+      color: var(--ink);
+      font-weight: 500;
+    }
+
+    .upcoming-pipe {
+      width: 1px;
+      height: 28px;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+
+    .upcoming-task {
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--ink);
+      line-height: 1.2;
+    }
+
+    .upcoming-area {
+      font-size: 11px;
+      color: var(--t3);
+      margin-top: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP NAV -->
+  <nav class="topnav">
+    <div class="logo">Life <em>OS</em></div>
+    <div class="nav-links">
+      <span class="nl active">Today</span>
+      <span class="nl">Backlog</span>
+      <span class="nl">Goals</span>
+      <span class="nl">Schedule</span>
+    </div>
+    <div class="nav-right">
+      <span class="nav-date">Mon 23 Mar 2026</span>
+      <button class="btn btn-primary">+ New Task</button>
+      <div class="avatar">S</div>
+    </div>
+  </nav>
+
+  <!-- STATS STRIP -->
+  <div class="stats-strip">
+    <div class="stat-cell">
+      <div class="stat-icon indigo">📊</div>
+      <div class="stat-body">
+        <div class="stat-num indigo">67</div>
+        <div class="stat-label">Overall Health</div>
+        <div class="stat-delta neg">▼ 3 from last week</div>
+      </div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-icon amber">⚡</div>
+      <div class="stat-body">
+        <div class="stat-num amber">3</div>
+        <div class="stat-label">Due Today</div>
+        <div class="stat-delta">11 in progress</div>
+      </div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-icon red">⚠</div>
+      <div class="stat-body">
+        <div class="stat-num red">2</div>
+        <div class="stat-label">Overdue</div>
+        <div class="stat-delta neg">Needs attention</div>
+      </div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-icon green">🎯</div>
+      <div class="stat-body">
+        <div class="stat-num green">3</div>
+        <div class="stat-label">Active Goals</div>
+        <div class="stat-delta">1 on track</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="page-body">
+
+    <!-- TASK COLUMN -->
+    <div class="main-col">
+
+      <!-- Section header -->
+      <div class="sec-header">
+        <div class="sec-header-left">
+          <span class="sec-title">Today</span>
+          <span class="sec-badge red">2 overdue</span>
+          <span class="sec-badge">Week 13</span>
+        </div>
+        <span class="sec-action">View all</span>
+      </div>
+
+      <!-- Overdue group -->
+      <div class="task-group">
+        <div class="group-label">
+          Overdue
+          <div class="group-label-line"></div>
+        </div>
+
+        <div class="task-row">
+          <div class="chk-wrap"><div class="chk urgent"></div></div>
+          <span class="task-title">Monthly Budget Review</span>
+          <div class="task-meta-row">
+            <div class="area-tag"><div class="area-dot" style="background:#D97706"></div>Finance</div>
+            <div class="due-tag overdue">Mar 11 — 12d late</div>
+            <div class="priority-dot urgent"></div>
+          </div>
+          <div class="task-hover-actions">
+            <span class="tact">Open</span>
+            <span class="tact">Defer</span>
+            <span class="tact">Done</span>
+          </div>
+        </div>
+
+        <div class="task-row">
+          <div class="chk-wrap"><div class="chk urgent"></div></div>
+          <span class="task-title">Call Mum — Sunday catchup (rescheduled)</span>
+          <div class="task-meta-row">
+            <div class="area-tag"><div class="area-dot" style="background:#DB2777"></div>Relationships</div>
+            <div class="due-tag overdue">Mar 17 — 6d late</div>
+            <div class="priority-dot high"></div>
+          </div>
+          <div class="task-hover-actions">
+            <span class="tact">Open</span>
+            <span class="tact">Defer</span>
+            <span class="tact">Done</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Due today group -->
+      <div class="task-group">
+        <div class="group-label">
+          Due Today
+          <div class="group-label-line"></div>
+        </div>
+
+        <div class="task-row">
+          <div class="chk-wrap"><div class="chk urgent"></div></div>
+          <span class="task-title">Finish Product Roadmap Q2 Draft</span>
+          <div class="task-meta-row">
+            <div class="area-tag"><div class="area-dot" style="background:#2563EB"></div>Career</div>
+            <div class="due-tag today">Today</div>
+            <div class="priority-dot urgent"></div>
+          </div>
+          <div class="task-hover-actions">
+            <span class="tact">Open</span>
+            <span class="tact">Defer</span>
+            <span class="tact">Done</span>
+          </div>
+        </div>
+
+        <div class="task-row">
+          <div class="chk-wrap"><div class="chk"></div></div>
+          <span class="task-title">Morning Run — 5km</span>
+          <div class="task-meta-row">
+            <div class="area-tag"><div class="area-dot" style="background:#16A34A"></div>Health</div>
+            <div class="due-tag today">Habit · Streak 3</div>
+            <div class="priority-dot normal"></div>
+          </div>
+          <div class="task-hover-actions">
+            <span class="tact">Log</span>
+            <span class="tact">Skip</span>
+          </div>
+        </div>
+
+        <div class="task-row">
+          <div class="chk-wrap"><div class="chk"></div></div>
+          <span class="task-title">Stakeholder prep — review presentation slides</span>
+          <div class="task-meta-row">
+            <div class="area-tag"><div class="area-dot" style="background:#2563EB"></div>Career</div>
+            <div class="due-tag today">Today</div>
+            <div class="priority-dot high"></div>
+          </div>
+          <div class="task-hover-actions">
+            <span class="tact">Open</span>
+            <span class="tact">Defer</span>
+            <span class="tact">Done</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- In Progress group -->
+      <div class="task-group">
+        <div class="group-label">
+          In Progress
+          <div class="group-label-line"></div>
+        </div>
+
+        <div class="task-row">
+          <div class="chk-wrap"><div class="chk"></div></div>
+          <span class="task-title">Read "Thinking in Systems" — Ch. 5</span>
+          <div class="task-meta-row">
+            <div class="area-tag"><div class="area-dot" style="background:#7C3AED"></div>Learning</div>
+            <div class="due-tag">Mar 30</div>
+            <div class="priority-dot normal"></div>
+          </div>
+          <div class="task-hover-actions">
+            <span class="tact">Open</span>
+            <span class="tact">Done</span>
+          </div>
+        </div>
+
+        <div class="task-row">
+          <div class="chk-wrap"><div class="chk"></div></div>
+          <span class="task-title">Design portfolio — update case studies</span>
+          <div class="task-meta-row">
+            <div class="area-tag"><div class="area-dot" style="background:#DB2777"></div>Creativity</div>
+            <div class="due-tag">Apr 5</div>
+            <div class="priority-dot normal"></div>
+          </div>
+          <div class="task-hover-actions">
+            <span class="tact">Open</span>
+            <span class="tact">Done</span>
+          </div>
+        </div>
+
+        <div class="task-row">
+          <div class="chk-wrap"><div class="chk"></div></div>
+          <span class="task-title">Build emergency fund transfer — £500</span>
+          <div class="task-meta-row">
+            <div class="area-tag"><div class="area-dot" style="background:#D97706"></div>Finance</div>
+            <div class="due-tag">Mar 31</div>
+            <div class="priority-dot high"></div>
+          </div>
+          <div class="task-hover-actions">
+            <span class="tact">Open</span>
+            <span class="tact">Done</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Completed group -->
+      <div class="task-group">
+        <div class="group-label">
+          Completed Today
+          <div class="group-label-line"></div>
+        </div>
+
+        <div class="task-row done">
+          <div class="chk-wrap"><div class="chk done"></div></div>
+          <span class="task-title done">Read "Thinking in Systems" — Ch. 4</span>
+          <div class="task-meta-row">
+            <div class="area-tag"><div class="area-dot" style="background:#7C3AED"></div>Learning</div>
+          </div>
+        </div>
+
+        <div class="task-row done">
+          <div class="chk-wrap"><div class="chk done"></div></div>
+          <span class="task-title done">Daily journaling — morning pages</span>
+          <div class="task-meta-row">
+            <div class="area-tag"><div class="area-dot" style="background:#DB2777"></div>Creativity</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
+
+      <!-- AI Coach -->
+      <div class="panel-section">
+        <div class="panel-label">AI Coach</div>
+        <div class="coach-card">
+          <div class="coach-header">
+            <div class="coach-avatar">🤖</div>
+            <span class="coach-name">Life OS Intelligence</span>
+          </div>
+          <p class="coach-text">Relationships has gone 14 days without activity — your lowest area. One task today prevents further score decay. The budget review is also dragging Finance down; it's a 30-minute fix.</p>
+        </div>
+      </div>
+
+      <!-- Area Health -->
+      <div class="panel-section">
+        <div class="panel-label">Area Health</div>
+        <div class="area-health-row">
+          <div class="area-health-dot" style="background:#2563EB"></div>
+          <div class="area-health-name">Career</div>
+          <div class="area-health-bar-wrap"><div class="area-health-bar bar-high" style="width:84%"></div></div>
+          <div class="area-score score-high">84</div>
+        </div>
+        <div class="area-health-row">
+          <div class="area-health-dot" style="background:#16A34A"></div>
+          <div class="area-health-name">Health</div>
+          <div class="area-health-bar-wrap"><div class="area-health-bar bar-high" style="width:78%"></div></div>
+          <div class="area-score score-high">78</div>
+        </div>
+        <div class="area-health-row">
+          <div class="area-health-dot" style="background:#DB2777"></div>
+          <div class="area-health-name">Creativity</div>
+          <div class="area-health-bar-wrap"><div class="area-health-bar bar-high" style="width:72%"></div></div>
+          <div class="area-score score-high">72</div>
+        </div>
+        <div class="area-health-row">
+          <div class="area-health-dot" style="background:#D97706"></div>
+          <div class="area-health-name">Finance</div>
+          <div class="area-health-bar-wrap"><div class="area-health-bar bar-mid" style="width:61%"></div></div>
+          <div class="area-score score-mid">61</div>
+        </div>
+        <div class="area-health-row">
+          <div class="area-health-dot" style="background:#7C3AED"></div>
+          <div class="area-health-name">Learning</div>
+          <div class="area-health-bar-wrap"><div class="area-health-bar bar-mid" style="width:55%"></div></div>
+          <div class="area-score score-mid">55</div>
+        </div>
+        <div class="area-health-row">
+          <div class="area-health-dot" style="background:#DB2777"></div>
+          <div class="area-health-name">Relationships</div>
+          <div class="area-health-bar-wrap"><div class="area-health-bar bar-low" style="width:38%"></div></div>
+          <div class="area-score score-low">38</div>
+        </div>
+      </div>
+
+      <!-- Goals -->
+      <div class="panel-section">
+        <div class="panel-label">Active Goals</div>
+        <div class="goal-item">
+          <div class="goal-header">
+            <span class="goal-name">Land Senior PM Role</span>
+            <span class="goal-pct">68%</span>
+          </div>
+          <div class="goal-bar-track"><div class="goal-bar-fill" style="width:68%"></div></div>
+          <div class="goal-deadline">Due Jun 30 · Career</div>
+        </div>
+        <div class="goal-item">
+          <div class="goal-header">
+            <span class="goal-name">Run a Half Marathon</span>
+            <span class="goal-pct">40%</span>
+          </div>
+          <div class="goal-bar-track"><div class="goal-bar-fill" style="width:40%; background:var(--green)"></div></div>
+          <div class="goal-deadline">Due Sep 1 · Health</div>
+        </div>
+        <div class="goal-item">
+          <div class="goal-header">
+            <span class="goal-name">Build £20k Emergency Fund</span>
+            <span class="goal-pct">25%</span>
+          </div>
+          <div class="goal-bar-track"><div class="goal-bar-fill" style="width:25%; background:var(--amber)"></div></div>
+          <div class="goal-deadline">Due Dec 31 · Finance</div>
+        </div>
+      </div>
+
+      <!-- Upcoming -->
+      <div class="panel-section">
+        <div class="panel-label">Coming Up</div>
+        <div class="upcoming-row">
+          <div class="upcoming-date"><strong>24</strong>Tue</div>
+          <div class="upcoming-pipe"></div>
+          <div>
+            <div class="upcoming-task">Stakeholder Review — Roadmap</div>
+            <div class="upcoming-area">Career · 2:00 PM</div>
+          </div>
+        </div>
+        <div class="upcoming-row">
+          <div class="upcoming-date"><strong>26</strong>Thu</div>
+          <div class="upcoming-pipe"></div>
+          <div>
+            <div class="upcoming-task">Submit Tax Documents</div>
+            <div class="upcoming-area">Finance · Deadline</div>
+          </div>
+        </div>
+        <div class="upcoming-row">
+          <div class="upcoming-date"><strong>28</strong>Sat</div>
+          <div class="upcoming-pipe"></div>
+          <div>
+            <div class="upcoming-task">Weekly Review — Q1 Close</div>
+            <div class="upcoming-area">All Areas</div>
+          </div>
+        </div>
+        <div class="upcoming-row">
+          <div class="upcoming-date"><strong>31</strong>Tue</div>
+          <div class="upcoming-pipe"></div>
+          <div>
+            <div class="upcoming-task">Q1 Goal Retrospective</div>
+            <div class="upcoming-area">Goals · Quarter End</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

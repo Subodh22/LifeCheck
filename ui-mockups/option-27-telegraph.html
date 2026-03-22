@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LIFE OS — Telegraph Dispatch</title>
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:wght@400;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--paper:#F2EDDA;--ink:#1C1608;--mid:#5C4E28;--dim:#9C8A5A;--red:#8B1A1A;--rule:#C8B87A;}
+    body{background:var(--paper);color:var(--ink);font-family:'Courier Prime',monospace;-webkit-font-smoothing:antialiased;}
+    .tel-top{background:var(--ink);padding:10px 60px;display:flex;align-items:center;justify-content:space-between;}
+    .tel-logo{font-family:'Playfair Display',serif;font-size:20px;font-weight:900;color:var(--paper);letter-spacing:2px;text-transform:uppercase;}
+    .tel-logo span{color:#D4AA30;}
+    .tel-nav{display:flex;}
+    .tel-nav a{font-size:10px;color:rgba(255,255,255,0.5);text-decoration:none;padding:4px 14px;border:1px solid rgba(255,255,255,0.1);border-right:none;letter-spacing:1px;text-transform:uppercase;}
+    .tel-nav a:last-child{border-right:1px solid rgba(255,255,255,0.1);}
+    .tel-nav a.active{color:white;background:rgba(255,255,255,0.08);}
+    .tel-new{font-size:10px;letter-spacing:1px;text-transform:uppercase;background:var(--red);color:white;border:none;padding:6px 12px;cursor:pointer;}
+    .tel-border{height:8px;background:repeating-linear-gradient(90deg,var(--ink) 0,var(--ink) 8px,var(--paper) 8px,var(--paper) 16px);}
+    .dispatch{padding:28px 60px 20px;border-bottom:2px solid var(--ink);}
+    .dispatch-badges{display:flex;gap:10px;margin-bottom:12px;}
+    .badge{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:3px 10px;border:1.5px solid var(--ink);}
+    .badge.urgent{background:var(--red);color:white;border-color:var(--red);}
+    .dispatch-meta{font-size:11px;color:var(--dim);margin-bottom:12px;}
+    .dispatch-title{font-family:'Special Elite',cursive;font-size:60px;line-height:0.95;color:var(--ink);margin-bottom:14px;}
+    .dispatch-summary{font-size:12px;line-height:1.7;color:var(--mid);max-width:680px;border-left:3px solid var(--red);padding-left:16px;}
+    .dispatch-stats{display:flex;gap:0;margin-top:18px;border:1.5px solid var(--ink);}
+    .dstat{flex:1;padding:12px 16px;border-right:1.5px solid var(--ink);text-align:center;}
+    .dstat:last-child{border-right:none;}
+    .dstat-n{font-family:'Playfair Display',serif;font-size:26px;font-weight:900;}
+    .dstat-n.red{color:var(--red);}
+    .dstat-l{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-top:3px;}
+    .main{display:grid;grid-template-columns:3fr 2fr;gap:0;padding:0 60px;}
+    .col{padding:24px 0;}
+    .col+.col{padding-left:32px;border-left:1.5px solid var(--rule);}
+    .slabel{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--red);display:block;margin-bottom:6px;}
+    .srule{border-bottom:1.5px solid var(--ink);margin-bottom:14px;}
+    .overdue{background:var(--red);color:white;padding:7px 12px;margin-bottom:8px;display:flex;justify-content:space-between;font-size:11px;}
+    .msg{padding:12px;border:1.5px solid var(--rule);margin-bottom:10px;position:relative;}
+    .msg.lead{border-color:var(--ink);}
+    .msg.done{opacity:0.5;}
+    .msg-stamp{position:absolute;top:8px;right:10px;font-size:9px;color:var(--dim);}
+    .msg-hdr{display:flex;align-items:center;gap:7px;margin-bottom:5px;}
+    .mcircle{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--ink);cursor:pointer;flex-shrink:0;}
+    .mcircle.done{background:var(--ink);}
+    .mpri{font-size:9px;letter-spacing:1px;color:var(--mid);}
+    .mtitle{font-family:'Special Elite',cursive;font-size:16px;line-height:1.2;color:var(--ink);}
+    .mtitle.done{text-decoration:line-through;opacity:0.5;}
+    .mbody{font-size:11px;color:var(--mid);line-height:1.6;margin:5px 0 7px;}
+    .mfoot{display:flex;justify-content:space-between;align-items:center;}
+    .marea{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);}
+    .mactions{display:flex;gap:10px;}
+    .ma{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);cursor:pointer;text-decoration:underline;}
+    .ma:hover,.ma.p{color:var(--red);}
+    .hrow{padding:9px 0;border-bottom:1.5px solid var(--rule);}
+    .hrow:last-child{border-bottom:none;}
+    .htop{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;}
+    .hname{font-size:12px;font-weight:700;}
+    .hscore{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;}
+    .hbar{height:2px;background:var(--rule);margin-bottom:3px;}
+    .hfill{height:100%;background:var(--ink);}
+    .hfill.lo{background:var(--red);}
+    .hdetail{font-size:9px;color:var(--dim);}
+    .ritem{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1.5px solid var(--rule);}
+    .ritem:last-child{border-bottom:none;}
+    .rdot{font-size:13px;cursor:pointer;flex-shrink:0;}
+    .rname{font-size:11px;flex:1;color:var(--mid);}
+    .rname.done{text-decoration:line-through;color:var(--dim);}
+    .rtime{font-size:10px;color:var(--dim);}
+    .databox{border:2px solid var(--ink);padding:12px;margin-top:18px;}
+    .dbx-title{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:8px;padding-bottom:5px;border-bottom:1.5px solid var(--rule);}
+    .drow{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--rule);}
+    .drow:last-child{border-bottom:none;}
+    .dkey{font-size:10px;color:var(--mid);}
+    .dval{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;}
+    .dval.g{color:#5C7A2A;}
+    .ticker{position:fixed;bottom:0;left:0;right:0;height:28px;background:var(--ink);display:flex;align-items:center;overflow:hidden;}
+    .tlabel{flex-shrink:0;padding:0 12px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#D4AA30;border-right:1px solid rgba(255,255,255,0.15);}
+    .ttrack{flex:1;overflow:hidden;padding-left:14px;}
+    .tcontent{display:inline-flex;gap:48px;animation:scroll 30s linear infinite;white-space:nowrap;}
+    .ti{font-size:10px;color:rgba(255,255,255,0.55);}
+    .ti b{color:white;}
+    .td{color:#D4AA30;margin:0 6px;}
+    @keyframes scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+  </style>
+</head>
+<body>
+<div class="tel-top">
+  <div class="tel-logo">Life <span>OS</span></div>
+  <nav class="tel-nav"><a href="#" class="active">TODAY</a><a href="#">BACKLOG</a><a href="#">GOALS</a><a href="#">SCHEDULE</a></nav>
+  <button class="tel-new">+ NEW TASK</button>
+</div>
+<div class="tel-border"></div>
+<section class="dispatch">
+  <div class="dispatch-badges"><span class="badge urgent">URGENT</span><span class="badge">PERSONAL DAILY</span><span class="badge">VOL. I · NO. 81</span></div>
+  <div class="dispatch-meta">TRANSMITTED: SUNDAY, 22 MARCH 2026 · 08:30 · WEEK 12 OF 52 · DAY 81</div>
+  <div class="dispatch-title">GOOD MORNING.</div>
+  <div class="dispatch-summary">DISPATCH: Eight tasks scheduled. Three items overdue. Q1 performance review deadline at 1700 hours. Relationships sector critical at index 41. Two of seven daily protocols completed. Prioritise HR submission immediately.</div>
+  <div class="dispatch-stats">
+    <div class="dstat"><div class="dstat-n">8</div><div class="dstat-l">Scheduled</div></div>
+    <div class="dstat"><div class="dstat-n red">3</div><div class="dstat-l">Overdue</div></div>
+    <div class="dstat"><div class="dstat-n">2/7</div><div class="dstat-l">Routines</div></div>
+    <div class="dstat"><div class="dstat-n">72%</div><div class="dstat-l">Week Target</div></div>
+  </div>
+</section>
+<div class="main">
+  <div class="col">
+    <span class="slabel">Active Dispatches — Today</span>
+    <div class="srule"></div>
+    <div class="overdue"><span>⚠ OVERDUE: Update portfolio website</span><span>+6 DAYS</span></div>
+    <div class="overdue"><span>⚠ OVERDUE: File 2024–25 tax return</span><span>+3 DAYS</span></div>
+    <div class="msg lead">
+      <span class="msg-stamp">DUE 1700</span>
+      <div class="msg-hdr"><div class="mcircle"></div><span class="mpri">MSG-01 // PRIORITY ALPHA // WORK</span></div>
+      <div class="mtitle">Q1 PERFORMANCE REVIEW — SELF-ASSESSMENT TO HR</div>
+      <div class="mbody">Annual documentation. Goals achieved, development areas, Q2 objectives. Requires peer review signatures before portal submission deadline.</div>
+      <div class="mfoot"><span class="marea">SECTOR: WORK</span><div class="mactions"><span class="ma p">CONFIRM DONE</span><span class="ma">RESCHEDULE</span><span class="ma">DELEGATE</span></div></div>
+    </div>
+    <div class="msg">
+      <span class="msg-stamp">DUE 1200</span>
+      <div class="msg-hdr"><div class="mcircle"></div><span class="mpri">MSG-02 // PRIORITY BRAVO // FINANCE</span></div>
+      <div class="mtitle">TRANSFER APRIL RENT TO LANDLORD</div>
+      <div class="mbody">Monthly transfer via online banking. Confirm receipt notification.</div>
+      <div class="mfoot"><span class="marea">SECTOR: FINANCE</span><div class="mactions"><span class="ma p">CONFIRM DONE</span><span class="ma">RESCHEDULE</span></div></div>
+    </div>
+    <div class="msg done">
+      <div class="msg-hdr"><div class="mcircle done"></div><span class="mpri">MSG-03 // CONFIRMED // HEALTH // 0730</span></div>
+      <div class="mtitle done">5KM MORNING RUN — TEMPO PACE</div>
+    </div>
+    <div class="msg">
+      <div class="msg-hdr"><div class="mcircle"></div><span class="mpri">MSG-04 // PRIORITY CHARLIE // LEARNING</span></div>
+      <div class="mtitle">CHAPTER 4 — DEEP WORK COURSE MODULE</div>
+      <div class="mbody">45-min focused session. Cornell notation method.</div>
+      <div class="mfoot"><span class="marea">SECTOR: LEARNING</span><div class="mactions"><span class="ma p">CONFIRM DONE</span></div></div>
+    </div>
+    <div class="msg">
+      <div class="msg-hdr"><div class="mcircle"></div><span class="mpri">MSG-05 // FLEXIBLE // PERSONAL</span></div>
+      <div class="mtitle">CALL DAD — EASTER WEEKEND PLANS</div>
+      <div class="mfoot"><span class="marea">SECTOR: PERSONAL</span><div class="mactions"><span class="ma p">CONFIRM DONE</span></div></div>
+    </div>
+  </div>
+  <div class="col">
+    <span class="slabel">Sector Health Index</span>
+    <div class="srule"></div>
+    <div class="hrow"><div class="htop"><span class="hname">Work &amp; Career</span><span class="hscore">87</span></div><div class="hbar"><div class="hfill" style="width:87%"></div></div><div class="hdetail">STATUS: STRONG — 5 open</div></div>
+    <div class="hrow"><div class="htop"><span class="hname">Health &amp; Fitness</span><span class="hscore">91</span></div><div class="hbar"><div class="hfill" style="width:91%"></div></div><div class="hdetail">STATUS: EXCELLENT — 2 open</div></div>
+    <div class="hrow"><div class="htop"><span class="hname">Finance</span><span class="hscore" style="color:var(--mid)">63</span></div><div class="hbar"><div class="hfill" style="width:63%;background:var(--mid)"></div></div><div class="hdetail">STATUS: WATCH — 3 open, 1 overdue</div></div>
+    <div class="hrow"><div class="htop"><span class="hname">Relationships</span><span class="hscore" style="color:var(--red)">41</span></div><div class="hbar"><div class="hfill lo" style="width:41%"></div></div><div class="hdetail" style="color:var(--red)">STATUS: CRITICAL — 4 open, 2 overdue</div></div>
+    <div class="hrow"><div class="htop"><span class="hname">Learning</span><span class="hscore" style="color:var(--mid)">74</span></div><div class="hbar"><div class="hfill" style="width:74%;background:var(--mid)"></div></div><div class="hdetail">STATUS: GOOD — 2 open</div></div>
+    <span class="slabel" style="margin-top:20px;display:block;">Daily Protocol</span>
+    <div class="srule"></div>
+    <div class="ritem"><span class="rdot">☑</span><span class="rname done">MORNING PAGES</span><span class="rtime">0615</span></div>
+    <div class="ritem"><span class="rdot">☑</span><span class="rname done">5KM MORNING RUN</span><span class="rtime">0730</span></div>
+    <div class="ritem"><span class="rdot">☐</span><span class="rname">COLD SHOWER (2 MIN)</span><span class="rtime">0810</span></div>
+    <div class="ritem"><span class="rdot">☐</span><span class="rname">REVIEW DAILY PRIORITIES</span><span class="rtime">0830</span></div>
+    <div class="ritem"><span class="rdot">☐</span><span class="rname">MEDITATE (10 MIN)</span><span class="rtime">AFT.</span></div>
+    <div class="ritem"><span class="rdot">☐</span><span class="rname">READ (30 MIN)</span><span class="rtime">EVE.</span></div>
+    <div class="ritem"><span class="rdot">☐</span><span class="rname">EVENING REVIEW + PLAN</span><span class="rtime">2130</span></div>
+    <div class="databox">
+      <div class="dbx-title">// WEEKLY REPORT //</div>
+      <div class="drow"><span class="dkey">Dispatches confirmed</span><span class="dval">17</span></div>
+      <div class="drow"><span class="dkey">Completion rate</span><span class="dval g">74%</span></div>
+      <div class="drow"><span class="dkey">Protocol streak</span><span class="dval g">12 DAYS</span></div>
+      <div class="drow"><span class="dkey">Focus hours logged</span><span class="dval g">18.5H</span></div>
+    </div>
+  </div>
+</div>
+<div class="ticker"><div class="tlabel">WIRE</div><div class="ttrack"><div class="tcontent">
+  <span class="ti">STREAK: <b>12-DAY</b> protocol active<span class="td">//</span></span>
+  <span class="ti">ALERT: Relationships at <b>41</b> — action required<span class="td">//</span></span>
+  <span class="ti">DEADLINE: Q1 Review at <b>1700 hours</b><span class="td">//</span></span>
+  <span class="ti"><b>17 dispatches</b> confirmed this week<span class="td">//</span></span>
+  <span class="ti">STREAK: <b>12-DAY</b> protocol active<span class="td">//</span></span>
+  <span class="ti">ALERT: Relationships at <b>41</b> — action required<span class="td">//</span></span>
+  <span class="ti">DEADLINE: Q1 Review at <b>1700 hours</b><span class="td">//</span></span>
+  <span class="ti"><b>17 dispatches</b> confirmed this week<span class="td">//</span></span>
+</div></div></div>
+</body>
+</html>

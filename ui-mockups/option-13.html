@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Life OS — Daily Briefing</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ft-salmon: #FFF1E5;
+    --ft-orange: #E9510E;
+    --ft-orange-2: #F96B13;
+    --navy: #1A1A2E;
+    --navy-mid: #33334A;
+    --navy-light: #6B6B80;
+    --navy-dim: #9898A8;
+    --white: #FFFFFF;
+    --border: #E8DDD0;
+    --border-light: #EEE6DC;
+    --card-bg: #FFFFFF;
+    --strip-bg: #FFFFFF;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--ft-salmon);
+    color: var(--navy);
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    font-size: 13px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    background: var(--white);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 0;
+  }
+
+  .sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .logo-mark {
+    width: 9px;
+    height: 9px;
+    background: var(--ft-orange);
+    flex-shrink: 0;
+  }
+
+  .logo-text {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--navy);
+    letter-spacing: 0.01em;
+  }
+
+  .sidebar-section {
+    padding: 18px 0 4px;
+  }
+
+  .sidebar-section-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--navy-dim);
+    padding: 0 20px 6px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 20px;
+    cursor: pointer;
+    transition: background 0.12s;
+    text-decoration: none;
+  }
+
+  .nav-item:hover {
+    background: #FAF6F2;
+  }
+
+  .nav-item.active {
+    background: #FFF4EE;
+  }
+
+  .nav-item.active .nav-label {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-style: italic;
+    font-size: 13.5px;
+    color: var(--ft-orange);
+    font-weight: normal;
+  }
+
+  .nav-item .nav-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--navy-mid);
+    font-weight: 400;
+  }
+
+  .nav-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--border);
+    flex-shrink: 0;
+  }
+
+  .nav-item.active .nav-dot {
+    background: var(--ft-orange);
+  }
+
+  .nav-badge {
+    margin-left: auto;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--white);
+    background: var(--ft-orange);
+    border-radius: 9px;
+    padding: 1px 5px;
+    min-width: 16px;
+    text-align: center;
+    line-height: 14px;
+  }
+
+  .nav-badge.muted {
+    background: var(--border);
+    color: var(--navy-light);
+  }
+
+  /* Area items */
+  .area-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 5px 20px;
+    cursor: pointer;
+  }
+
+  .area-item:hover {
+    background: #FAF6F2;
+  }
+
+  .area-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .area-name {
+    font-size: 12.5px;
+    color: var(--navy-mid);
+    font-family: 'Inter', sans-serif;
+  }
+
+  .area-count {
+    margin-left: auto;
+    font-size: 10px;
+    color: var(--navy-dim);
+  }
+
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 14px 20px;
+    border-top: 1px solid var(--border-light);
+  }
+
+  .sidebar-user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .user-avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--navy);
+    color: var(--white);
+    font-size: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.05em;
+  }
+
+  .user-name {
+    font-size: 12px;
+    color: var(--navy-mid);
+    font-weight: 500;
+  }
+
+  .user-sub {
+    font-size: 10px;
+    color: var(--navy-dim);
+  }
+
+  /* ── MAIN ── */
+  .main {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 48px 60px;
+    background: var(--ft-salmon);
+  }
+
+  .main-inner {
+    max-width: 880px;
+    margin: 0 auto;
+  }
+
+  /* Masthead */
+  .masthead {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 20px 0 10px;
+    border-bottom: 2px solid var(--navy);
+    margin-bottom: 4px;
+  }
+
+  .masthead-title {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--navy);
+    font-family: 'Inter', sans-serif;
+  }
+
+  .masthead-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .masthead-date {
+    font-size: 11px;
+    color: var(--navy-light);
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.03em;
+  }
+
+  .masthead-edition {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--navy-dim);
+    font-family: 'Inter', sans-serif;
+    border-left: 1px solid var(--border);
+    padding-left: 16px;
+  }
+
+  .masthead-sub {
+    font-size: 9px;
+    color: var(--navy-dim);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Inter', sans-serif;
+    padding: 6px 0 14px;
+  }
+
+  /* Main headline */
+  .headline {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 40px;
+    line-height: 1.1;
+    color: var(--navy);
+    margin-bottom: 4px;
+    letter-spacing: -0.01em;
+  }
+
+  .headline-sub {
+    font-size: 13px;
+    color: var(--navy-light);
+    font-family: 'Inter', sans-serif;
+    margin-bottom: 22px;
+    line-height: 1.6;
+  }
+
+  /* Stats strip */
+  .stats-strip {
+    background: var(--strip-bg);
+    border-top: 2.5px solid var(--ft-orange);
+    display: flex;
+    align-items: stretch;
+    margin-bottom: 28px;
+    padding: 0;
+  }
+
+  .stat-cell {
+    flex: 1;
+    padding: 13px 18px;
+    border-right: 1px solid var(--border-light);
+    position: relative;
+  }
+
+  .stat-cell:last-child {
+    border-right: none;
+  }
+
+  .stat-number {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1;
+    margin-bottom: 3px;
+    letter-spacing: -0.02em;
+  }
+
+  .stat-number span.unit {
+    font-size: 13px;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--navy-light);
+    letter-spacing: 0;
+  }
+
+  .stat-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--navy-dim);
+    font-family: 'Inter', sans-serif;
+  }
+
+  .stat-delta {
+    font-size: 10px;
+    color: #00875A;
+    font-weight: 500;
+    margin-top: 1px;
+  }
+
+  .stat-delta.neg {
+    color: #C0392B;
+  }
+
+  /* Two-column layout */
+  .columns {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 28px;
+    align-items: start;
+  }
+
+  /* Section heading */
+  .section-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .section-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--navy);
+    font-family: 'Inter', sans-serif;
+  }
+
+  .section-rule {
+    flex: 1;
+    height: 1px;
+    background: var(--ft-orange);
+    opacity: 0.6;
+  }
+
+  .section-rule-full {
+    height: 1px;
+    background: var(--ft-orange);
+    opacity: 0.5;
+    margin-bottom: 2px;
+  }
+
+  /* Task table */
+  .task-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 24px;
+  }
+
+  .task-table thead tr {
+    border-bottom: 1px solid var(--navy);
+  }
+
+  .task-table th {
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--navy-dim);
+    font-family: 'Inter', sans-serif;
+    padding: 4px 10px 6px 0;
+    text-align: left;
+  }
+
+  .task-table th:last-child {
+    text-align: right;
+    padding-right: 0;
+  }
+
+  .task-row {
+    border-bottom: 1px solid var(--border-light);
+    cursor: pointer;
+  }
+
+  .task-row:hover {
+    background: rgba(233, 81, 14, 0.04);
+  }
+
+  .task-row td {
+    padding: 9px 10px 9px 0;
+    vertical-align: top;
+  }
+
+  .task-row td:last-child {
+    padding-right: 0;
+    text-align: right;
+  }
+
+  .task-name {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 14px;
+    color: var(--navy);
+    line-height: 1.3;
+    margin-bottom: 2px;
+  }
+
+  .task-meta {
+    font-size: 10.5px;
+    color: var(--navy-dim);
+    font-family: 'Inter', sans-serif;
+  }
+
+  .task-area-dot {
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    margin-right: 4px;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+  }
+
+  .task-priority {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 2px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .priority-high {
+    background: rgba(233, 81, 14, 0.12);
+    color: var(--ft-orange);
+  }
+
+  .priority-med {
+    background: rgba(26, 26, 46, 0.07);
+    color: var(--navy-mid);
+  }
+
+  .priority-low {
+    background: rgba(152, 152, 168, 0.15);
+    color: var(--navy-dim);
+  }
+
+  .task-check {
+    width: 15px;
+    height: 15px;
+    border: 1.5px solid var(--border);
+    border-radius: 2px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .task-check.done {
+    background: var(--ft-orange);
+    border-color: var(--ft-orange);
+  }
+
+  .task-check.done::after {
+    content: '';
+    width: 7px;
+    height: 4px;
+    border-left: 1.5px solid white;
+    border-bottom: 1.5px solid white;
+    transform: rotate(-45deg) translateY(-1px);
+    display: block;
+  }
+
+  .task-td-check {
+    width: 28px;
+    vertical-align: middle;
+  }
+
+  .task-td-due {
+    white-space: nowrap;
+    vertical-align: middle;
+    width: 70px;
+  }
+
+  .due-today {
+    color: var(--ft-orange);
+    font-weight: 600;
+    font-size: 10.5px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .due-normal {
+    color: var(--navy-dim);
+    font-size: 10.5px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* Upcoming section */
+  .upcoming-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .upcoming-time {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--navy-mid);
+    font-family: 'Inter', sans-serif;
+    width: 42px;
+    flex-shrink: 0;
+  }
+
+  .upcoming-bar {
+    width: 2px;
+    background: var(--border);
+    flex-shrink: 0;
+    align-self: stretch;
+    min-height: 14px;
+    border-radius: 1px;
+  }
+
+  .upcoming-bar.orange {
+    background: var(--ft-orange);
+  }
+
+  .upcoming-event {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 13px;
+    color: var(--navy);
+    flex: 1;
+  }
+
+  .upcoming-cal {
+    font-size: 10px;
+    color: var(--navy-dim);
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* ── RIGHT COLUMN ── */
+  .right-col {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border-top: 2.5px solid var(--ft-orange);
+    padding: 14px 16px;
+  }
+
+  .card.navy-top {
+    border-top-color: var(--navy);
+  }
+
+  .card.green-top {
+    border-top-color: #00875A;
+  }
+
+  .card-title {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--navy);
+    font-family: 'Inter', sans-serif;
+    margin-bottom: 12px;
+  }
+
+  /* Habits */
+  .habit-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .habit-row:last-child {
+    border-bottom: none;
+  }
+
+  .habit-name {
+    font-size: 12.5px;
+    color: var(--navy);
+    font-family: 'Inter', sans-serif;
+    flex: 1;
+  }
+
+  .habit-streak {
+    font-size: 10px;
+    color: var(--navy-dim);
+    font-family: 'Inter', sans-serif;
+    margin-right: 6px;
+  }
+
+  .habit-streak span {
+    color: var(--ft-orange);
+    font-weight: 600;
+  }
+
+  .habit-check {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  .habit-check.done {
+    background: var(--ft-orange);
+    border-color: var(--ft-orange);
+  }
+
+  .habit-check.done::after {
+    content: '';
+    width: 7px;
+    height: 4px;
+    border-left: 1.5px solid white;
+    border-bottom: 1.5px solid white;
+    transform: rotate(-45deg) translateY(-1px);
+    display: block;
+  }
+
+  /* Health metrics */
+  .health-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .health-cell {
+    border-left: 2px solid var(--border-light);
+    padding-left: 8px;
+  }
+
+  .health-cell.orange-left {
+    border-left-color: var(--ft-orange);
+  }
+
+  .health-cell.green-left {
+    border-left-color: #00875A;
+  }
+
+  .health-cell.blue-left {
+    border-left-color: #1A6DB5;
+  }
+
+  .health-val {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .health-val .unit {
+    font-size: 11px;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--navy-light);
+  }
+
+  .health-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--navy-dim);
+    font-family: 'Inter', sans-serif;
+    margin-top: 2px;
+  }
+
+  /* Progress bar */
+  .progress-row {
+    margin-top: 10px;
+  }
+
+  .progress-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 5px;
+  }
+
+  .progress-name {
+    font-size: 11px;
+    color: var(--navy-mid);
+    font-family: 'Inter', sans-serif;
+  }
+
+  .progress-val {
+    font-size: 10px;
+    color: var(--navy-dim);
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+  }
+
+  .progress-bar-bg {
+    height: 3px;
+    background: var(--border-light);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--ft-orange);
+    border-radius: 2px;
+  }
+
+  .progress-bar-fill.green {
+    background: #00875A;
+  }
+
+  /* Weekly ticker */
+  .ticker {
+    display: flex;
+    border-top: 1px solid var(--border-light);
+    margin-top: 20px;
+    padding-top: 10px;
+    gap: 0;
+    flex-wrap: wrap;
+  }
+
+  .ticker-cell {
+    flex: 1;
+    text-align: center;
+    padding: 4px 0;
+    border-right: 1px solid var(--border-light);
+  }
+
+  .ticker-cell:last-child {
+    border-right: none;
+  }
+
+  .ticker-day {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--navy-dim);
+    font-family: 'Inter', sans-serif;
+  }
+
+  .ticker-val {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 16px;
+    color: var(--navy);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .ticker-val.dim {
+    color: var(--border);
+  }
+
+  .ticker-sub {
+    font-size: 9px;
+    color: var(--navy-dim);
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* Scrollbar */
+  .main::-webkit-scrollbar { width: 4px; }
+  .main::-webkit-scrollbar-track { background: transparent; }
+  .main::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  .sidebar::-webkit-scrollbar { width: 3px; }
+  .sidebar::-webkit-scrollbar-track { background: transparent; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border); }
+
+  /* Quote strip */
+  .quote-strip {
+    background: var(--navy);
+    padding: 10px 16px;
+    margin-bottom: 20px;
+    margin-top: -4px;
+  }
+
+  .quote-text {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-style: italic;
+    font-size: 12px;
+    color: rgba(255, 241, 229, 0.75);
+    line-height: 1.5;
+  }
+
+  .quote-author {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ft-orange);
+    font-family: 'Inter', sans-serif;
+    margin-top: 4px;
+    font-weight: 600;
+  }
+
+  /* FT-style inline article link rows */
+  .digest-item {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .digest-num {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 18px;
+    color: var(--border);
+    font-weight: 700;
+    width: 20px;
+    flex-shrink: 0;
+    line-height: 1;
+    padding-top: 1px;
+  }
+
+  .digest-content {}
+
+  .digest-title {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 13.5px;
+    color: var(--navy);
+    line-height: 1.35;
+    margin-bottom: 3px;
+    font-weight: 700;
+  }
+
+  .digest-sub {
+    font-size: 10.5px;
+    color: var(--navy-light);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.4;
+  }
+
+</style>
+</head>
+<body>
+
+<!-- ── SIDEBAR ── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark"></div>
+    <span class="logo-text">Life OS</span>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Navigation</div>
+    <a class="nav-item active" href="#">
+      <div class="nav-dot"></div>
+      <span class="nav-label">Daily Briefing</span>
+      <span class="nav-badge">3</span>
+    </a>
+    <a class="nav-item" href="#">
+      <div class="nav-dot"></div>
+      <span class="nav-label">Tasks</span>
+      <span class="nav-badge muted">12</span>
+    </a>
+    <a class="nav-item" href="#">
+      <div class="nav-dot"></div>
+      <span class="nav-label">Calendar</span>
+    </a>
+    <a class="nav-item" href="#">
+      <div class="nav-dot"></div>
+      <span class="nav-label">Habits</span>
+    </a>
+    <a class="nav-item" href="#">
+      <div class="nav-dot"></div>
+      <span class="nav-label">Goals</span>
+    </a>
+    <a class="nav-item" href="#">
+      <div class="nav-dot"></div>
+      <span class="nav-label">Journal</span>
+    </a>
+    <a class="nav-item" href="#">
+      <div class="nav-dot"></div>
+      <span class="nav-label">Finances</span>
+    </a>
+    <a class="nav-item" href="#">
+      <div class="nav-dot"></div>
+      <span class="nav-label">Health</span>
+    </a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Areas</div>
+    <div class="area-item">
+      <div class="area-dot" style="background:#E9510E;"></div>
+      <span class="area-name">Work</span>
+      <span class="area-count">5</span>
+    </div>
+    <div class="area-item">
+      <div class="area-dot" style="background:#1A6DB5;"></div>
+      <span class="area-name">Personal</span>
+      <span class="area-count">3</span>
+    </div>
+    <div class="area-item">
+      <div class="area-dot" style="background:#00875A;"></div>
+      <span class="area-name">Health</span>
+      <span class="area-count">2</span>
+    </div>
+    <div class="area-item">
+      <div class="area-dot" style="background:#7B46B0;"></div>
+      <span class="area-name">Learning</span>
+      <span class="area-count">4</span>
+    </div>
+    <div class="area-item">
+      <div class="area-dot" style="background:#B08046;"></div>
+      <span class="area-name">Finance</span>
+      <span class="area-count">2</span>
+    </div>
+    <div class="area-item">
+      <div class="area-dot" style="background:#9898A8;"></div>
+      <span class="area-name">Relationships</span>
+      <span class="area-count">1</span>
+    </div>
+  </div>
+
+  <div style="padding: 18px 0 4px;">
+    <div class="sidebar-section-label">Projects</div>
+    <div class="area-item">
+      <div class="area-dot" style="background:#E9510E; border-radius: 2px;"></div>
+      <span class="area-name">BaliYoLift App</span>
+      <span class="area-count">8</span>
+    </div>
+    <div class="area-item">
+      <div class="area-dot" style="background:#1A6DB5; border-radius: 2px;"></div>
+      <span class="area-name">Prop Dev Book</span>
+      <span class="area-count">6</span>
+    </div>
+    <div class="area-item">
+      <div class="area-dot" style="background:#7B46B0; border-radius: 2px;"></div>
+      <span class="area-name">Life OS</span>
+      <span class="area-count">11</span>
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="user-avatar">SM</div>
+      <div>
+        <div class="user-name">Subodh Maharjan</div>
+        <div class="user-sub">Melbourne, VIC</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ── MAIN ── -->
+<main class="main">
+  <div class="main-inner">
+
+    <!-- Masthead -->
+    <div class="masthead">
+      <div class="masthead-title">Life OS &mdash; Daily Briefing</div>
+      <div class="masthead-meta">
+        <span class="masthead-date">Monday, 22 March 2026</span>
+        <span class="masthead-edition">Week 12 &middot; Q1</span>
+      </div>
+    </div>
+    <div class="masthead-sub">Personal · Melbourne Edition</div>
+
+    <!-- Headline -->
+    <div class="headline">Good morning.</div>
+    <div class="headline-sub">You have 3 urgent tasks, 4 habits pending, and a clear afternoon. A focused day is within reach.</div>
+
+    <!-- Stats strip -->
+    <div class="stats-strip">
+      <div class="stat-cell">
+        <div class="stat-number">12<span class="unit"> open</span></div>
+        <div class="stat-label">Tasks Total</div>
+        <div class="stat-delta">↓ 3 from yesterday</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-number">4<span class="unit">/7</span></div>
+        <div class="stat-label">Habits Today</div>
+        <div class="stat-delta">57% complete</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-number">68<span class="unit">%</span></div>
+        <div class="stat-label">Goal Progress</div>
+        <div class="stat-delta">↑ 4% this week</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-number">7.2<span class="unit"> hrs</span></div>
+        <div class="stat-label">Sleep Last Night</div>
+        <div class="stat-delta neg">↓ 0.6 hrs vs avg</div>
+      </div>
+    </div>
+
+    <!-- Two columns -->
+    <div class="columns">
+
+      <!-- Left column -->
+      <div>
+
+        <!-- Today's priorities -->
+        <div class="section-head">
+          <span class="section-label">Today's Priorities</span>
+          <div class="section-rule"></div>
+        </div>
+
+        <table class="task-table">
+          <thead>
+            <tr>
+              <th style="width:28px;"></th>
+              <th>Task</th>
+              <th>Area</th>
+              <th>Priority</th>
+              <th>Due</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="task-row">
+              <td class="task-td-check"><div class="task-check"></div></td>
+              <td>
+                <div class="task-name">Submit MVP build to TestFlight</div>
+                <div class="task-meta">Finalize onboarding flow, sign IPA, upload</div>
+              </td>
+              <td>
+                <div class="task-meta">
+                  <span class="task-area-dot" style="background:#E9510E;"></span>Work
+                </div>
+              </td>
+              <td><span class="task-priority priority-high">High</span></td>
+              <td class="task-td-due"><span class="due-today">Today</span></td>
+            </tr>
+            <tr class="task-row">
+              <td class="task-td-check"><div class="task-check"></div></td>
+              <td>
+                <div class="task-name">Review RMIT BH113 chapter draft</div>
+                <div class="task-meta">Ch. 4: Site Analysis & Feasibility</div>
+              </td>
+              <td>
+                <div class="task-meta">
+                  <span class="task-area-dot" style="background:#7B46B0;"></span>Learning
+                </div>
+              </td>
+              <td><span class="task-priority priority-high">High</span></td>
+              <td class="task-td-due"><span class="due-today">Today</span></td>
+            </tr>
+            <tr class="task-row">
+              <td class="task-td-check"><div class="task-check done"></div></td>
+              <td>
+                <div class="task-name" style="text-decoration: line-through; color: var(--navy-dim);">Morning workout — upper hypertrophy</div>
+                <div class="task-meta">Bench, OHP, cable flies — BaliYoLift session A</div>
+              </td>
+              <td>
+                <div class="task-meta">
+                  <span class="task-area-dot" style="background:#00875A;"></span>Health
+                </div>
+              </td>
+              <td><span class="task-priority priority-med">Med</span></td>
+              <td class="task-td-due"><span class="due-normal">Done</span></td>
+            </tr>
+            <tr class="task-row">
+              <td class="task-td-check"><div class="task-check"></div></td>
+              <td>
+                <div class="task-name">Call accountant re: trust structure</div>
+                <div class="task-meta">Q1 property acquisition tax implications</div>
+              </td>
+              <td>
+                <div class="task-meta">
+                  <span class="task-area-dot" style="background:#B08046;"></span>Finance
+                </div>
+              </td>
+              <td><span class="task-priority priority-high">High</span></td>
+              <td class="task-td-due"><span class="due-today">2pm</span></td>
+            </tr>
+            <tr class="task-row">
+              <td class="task-td-check"><div class="task-check"></div></td>
+              <td>
+                <div class="task-name">Weekly review &amp; next-week planning</div>
+                <div class="task-meta">Capture, process inbox, set 3 priorities</div>
+              </td>
+              <td>
+                <div class="task-meta">
+                  <span class="task-area-dot" style="background:#1A1A2E;"></span>Personal
+                </div>
+              </td>
+              <td><span class="task-priority priority-med">Med</span></td>
+              <td class="task-td-due"><span class="due-normal">Today</span></td>
+            </tr>
+            <tr class="task-row">
+              <td class="task-td-check"><div class="task-check"></div></td>
+              <td>
+                <div class="task-name">Life OS UI option — FT Bloomberg design</div>
+                <div class="task-meta">Build HTML mockup, review with team</div>
+              </td>
+              <td>
+                <div class="task-meta">
+                  <span class="task-area-dot" style="background:#E9510E;"></span>Work
+                </div>
+              </td>
+              <td><span class="task-priority priority-low">Low</span></td>
+              <td class="task-td-due"><span class="due-normal">Mar 24</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Weekly task digest -->
+        <div class="section-head" style="margin-top:20px;">
+          <span class="section-label">This Week</span>
+          <div class="section-rule"></div>
+        </div>
+
+        <div class="digest-item">
+          <div class="digest-num">1</div>
+          <div class="digest-content">
+            <div class="digest-title">Finalise Convex backend wiring for BaliYoLift progress screen</div>
+            <div class="digest-sub">Work · Due Wednesday · Progressive overload query, chart integration</div>
+          </div>
+        </div>
+        <div class="digest-item">
+          <div class="digest-num">2</div>
+          <div class="digest-content">
+            <div class="digest-title">Prop Dev Book: complete chapters 4–6 first draft</div>
+            <div class="digest-sub">Learning · Due Friday · Site analysis, feasibility, planning overlays</div>
+          </div>
+        </div>
+        <div class="digest-item">
+          <div class="digest-num">3</div>
+          <div class="digest-content">
+            <div class="digest-title">Property acquisition: submit EOI for Brunswick site</div>
+            <div class="digest-sub">Finance · Due Thursday · Legal review complete, funds confirmed</div>
+          </div>
+        </div>
+        <div class="digest-item">
+          <div class="digest-num">4</div>
+          <div class="digest-content">
+            <div class="digest-title">Life OS: finalise UI direction and begin development</div>
+            <div class="digest-sub">Work · Due Friday · Option 13 or option 6, design tokens, Expo setup</div>
+          </div>
+        </div>
+
+        <!-- Schedule -->
+        <div class="section-head" style="margin-top:20px;">
+          <span class="section-label">Today's Schedule</span>
+          <div class="section-rule"></div>
+        </div>
+
+        <div class="upcoming-row">
+          <div class="upcoming-time">7:00</div>
+          <div class="upcoming-bar orange"></div>
+          <div>
+            <div class="upcoming-event">Morning workout — upper hypertrophy</div>
+            <div class="upcoming-cal">Health · 60 min · Completed</div>
+          </div>
+        </div>
+        <div class="upcoming-row">
+          <div class="upcoming-time">9:30</div>
+          <div class="upcoming-bar orange"></div>
+          <div>
+            <div class="upcoming-event">Deep work block — BaliYoLift</div>
+            <div class="upcoming-cal">Work · 2.5 hrs · No interruptions</div>
+          </div>
+        </div>
+        <div class="upcoming-row">
+          <div class="upcoming-time">12:00</div>
+          <div class="upcoming-bar"></div>
+          <div>
+            <div class="upcoming-event">Lunch &amp; walk</div>
+            <div class="upcoming-cal">Personal · 45 min</div>
+          </div>
+        </div>
+        <div class="upcoming-row">
+          <div class="upcoming-time">14:00</div>
+          <div class="upcoming-bar orange"></div>
+          <div>
+            <div class="upcoming-event">Accountant call — trust structure</div>
+            <div class="upcoming-cal">Finance · 45 min · Zoom</div>
+          </div>
+        </div>
+        <div class="upcoming-row">
+          <div class="upcoming-time">16:00</div>
+          <div class="upcoming-bar"></div>
+          <div>
+            <div class="upcoming-event">RMIT chapter review</div>
+            <div class="upcoming-cal">Learning · 90 min</div>
+          </div>
+        </div>
+        <div class="upcoming-row">
+          <div class="upcoming-time">18:30</div>
+          <div class="upcoming-bar"></div>
+          <div>
+            <div class="upcoming-event">Weekly review &amp; planning</div>
+            <div class="upcoming-cal">Personal · 30 min</div>
+          </div>
+        </div>
+
+        <!-- Weekly volume ticker -->
+        <div class="ticker">
+          <div class="ticker-cell">
+            <div class="ticker-day">Mon</div>
+            <div class="ticker-val">8</div>
+            <div class="ticker-sub">tasks</div>
+          </div>
+          <div class="ticker-cell">
+            <div class="ticker-day">Tue</div>
+            <div class="ticker-val">5</div>
+            <div class="ticker-sub">tasks</div>
+          </div>
+          <div class="ticker-cell">
+            <div class="ticker-day">Wed</div>
+            <div class="ticker-val dim">—</div>
+            <div class="ticker-sub">tasks</div>
+          </div>
+          <div class="ticker-cell">
+            <div class="ticker-day">Thu</div>
+            <div class="ticker-val dim">—</div>
+            <div class="ticker-sub">tasks</div>
+          </div>
+          <div class="ticker-cell">
+            <div class="ticker-day">Fri</div>
+            <div class="ticker-val dim">—</div>
+            <div class="ticker-sub">tasks</div>
+          </div>
+          <div class="ticker-cell">
+            <div class="ticker-day">Sat</div>
+            <div class="ticker-val dim">—</div>
+            <div class="ticker-sub">tasks</div>
+          </div>
+          <div class="ticker-cell">
+            <div class="ticker-day">Sun</div>
+            <div class="ticker-val dim">—</div>
+            <div class="ticker-sub">tasks</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right column -->
+      <div class="right-col">
+
+        <!-- Quote -->
+        <div class="quote-strip">
+          <div class="quote-text">"The scarce resource is not money. It is time."</div>
+          <div class="quote-author">— Peter Drucker</div>
+        </div>
+
+        <!-- Habits -->
+        <div class="card">
+          <div class="card-title">Habits &mdash; Today</div>
+
+          <div class="habit-row">
+            <span class="habit-name">Morning workout</span>
+            <span class="habit-streak"><span>14</span>d</span>
+            <div class="habit-check done"></div>
+          </div>
+          <div class="habit-row">
+            <span class="habit-name">Meditation — 10 min</span>
+            <span class="habit-streak"><span>7</span>d</span>
+            <div class="habit-check done"></div>
+          </div>
+          <div class="habit-row">
+            <span class="habit-name">Read — 30 min</span>
+            <span class="habit-streak"><span>21</span>d</span>
+            <div class="habit-check done"></div>
+          </div>
+          <div class="habit-row">
+            <span class="habit-name">Cold shower</span>
+            <span class="habit-streak"><span>5</span>d</span>
+            <div class="habit-check done"></div>
+          </div>
+          <div class="habit-row">
+            <span class="habit-name">No phone before 8am</span>
+            <span class="habit-streak"><span>3</span>d</span>
+            <div class="habit-check"></div>
+          </div>
+          <div class="habit-row">
+            <span class="habit-name">2L water</span>
+            <span class="habit-streak"><span>9</span>d</span>
+            <div class="habit-check"></div>
+          </div>
+          <div class="habit-row">
+            <span class="habit-name">Journal entry</span>
+            <span class="habit-streak"><span>2</span>d</span>
+            <div class="habit-check"></div>
+          </div>
+
+          <!-- Progress bars -->
+          <div style="margin-top:14px; border-top: 1px solid var(--border-light); padding-top:12px;">
+            <div class="progress-row">
+              <div class="progress-label-row">
+                <span class="progress-name">Today</span>
+                <span class="progress-val">4 / 7</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill" style="width:57%;"></div>
+              </div>
+            </div>
+            <div class="progress-row" style="margin-top:8px;">
+              <div class="progress-label-row">
+                <span class="progress-name">This week avg</span>
+                <span class="progress-val">78%</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill green" style="width:78%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Health -->
+        <div class="card green-top">
+          <div class="card-title">Health Metrics</div>
+          <div class="health-grid">
+            <div class="health-cell green-left">
+              <div class="health-val">7.2<span class="unit"> h</span></div>
+              <div class="health-label">Sleep</div>
+            </div>
+            <div class="health-cell orange-left">
+              <div class="health-val">74<span class="unit"> kg</span></div>
+              <div class="health-label">Weight</div>
+            </div>
+            <div class="health-cell" style="margin-top:10px;">
+              <div class="health-val">8,240</div>
+              <div class="health-label">Steps</div>
+            </div>
+            <div class="health-cell blue-left" style="margin-top:10px;">
+              <div class="health-val">64<span class="unit"> bpm</span></div>
+              <div class="health-label">Resting HR</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Goals -->
+        <div class="card navy-top">
+          <div class="card-title">Q1 Goals &mdash; Progress</div>
+
+          <div class="progress-row">
+            <div class="progress-label-row">
+              <span class="progress-name">Ship BaliYoLift v1</span>
+              <span class="progress-val">72%</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" style="width:72%;"></div>
+            </div>
+          </div>
+          <div class="progress-row" style="margin-top:10px;">
+            <div class="progress-label-row">
+              <span class="progress-name">Prop Dev Book draft</span>
+              <span class="progress-val">45%</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" style="width:45%;"></div>
+            </div>
+          </div>
+          <div class="progress-row" style="margin-top:10px;">
+            <div class="progress-label-row">
+              <span class="progress-name">Property acquisition</span>
+              <span class="progress-val">60%</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill green" style="width:60%;"></div>
+            </div>
+          </div>
+          <div class="progress-row" style="margin-top:10px;">
+            <div class="progress-label-row">
+              <span class="progress-name">Body recomposition</span>
+              <span class="progress-val">55%</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill green" style="width:55%;"></div>
+            </div>
+          </div>
+          <div class="progress-row" style="margin-top:10px;">
+            <div class="progress-label-row">
+              <span class="progress-name">Life OS launch</span>
+              <span class="progress-val">30%</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" style="width:30%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Finance snapshot -->
+        <div class="card">
+          <div class="card-title">Finance &mdash; Snapshot</div>
+          <div style="display:flex; gap:0; border-left: 2px solid var(--ft-orange); padding-left:10px; margin-bottom:10px;">
+            <div style="flex:1;">
+              <div style="font-family:Georgia,serif; font-size:22px; font-weight:700; color:var(--navy); letter-spacing:-0.02em;">$48,200</div>
+              <div style="font-size:9px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--navy-dim); font-family:'Inter',sans-serif; margin-top:2px;">Net Worth MTD</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:11px; font-weight:600; color:#00875A; font-family:'Inter',sans-serif;">+$1,240</div>
+              <div style="font-size:9px; color:var(--navy-dim); font-family:'Inter',sans-serif; margin-top:2px;">vs last month</div>
+            </div>
+          </div>
+          <div style="border-top: 1px solid var(--border-light); padding-top:8px;">
+            <div style="display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid var(--border-light);">
+              <span style="font-size:11px; color:var(--navy-mid); font-family:'Inter',sans-serif;">Savings rate</span>
+              <span style="font-size:11px; font-weight:600; color:var(--navy); font-family:'Inter',sans-serif;">34%</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid var(--border-light);">
+              <span style="font-size:11px; color:var(--navy-mid); font-family:'Inter',sans-serif;">Monthly spend</span>
+              <span style="font-size:11px; font-weight:600; color:var(--navy); font-family:'Inter',sans-serif;">$3,850</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; padding:4px 0;">
+              <span style="font-size:11px; color:var(--navy-mid); font-family:'Inter',sans-serif;">Investment portfolio</span>
+              <span style="font-size:11px; font-weight:600; color:#00875A; font-family:'Inter',sans-serif;">$22,100</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</main>
+
+</body>
+</html>

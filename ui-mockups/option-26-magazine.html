@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LIFE OS — Magazine Edition</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--bg:#F8F7F3;--ink:#18181A;--mid:#5A5A5C;--dim:#A0A0A2;--accent:#C8102E;--gold:#C5A028;--rule:#DDDDD8;}
+    body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+
+    /* TOP BAR */
+    .topbar{height:3px;background:var(--ink);}
+    .header{display:flex;align-items:center;justify-content:space-between;padding:0 72px;height:60px;border-bottom:1px solid var(--rule);}
+    .logo{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--ink);}
+    .logo em{color:var(--accent);font-style:normal;}
+    .nav{display:flex;gap:32px;}
+    .nav a{font-size:10px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;color:var(--mid);text-decoration:none;transition:color 0.15s;}
+    .nav a.active,.nav a:hover{color:var(--ink);}
+    .header-right{display:flex;align-items:center;gap:20px;}
+    .date-chip{font-size:10px;color:var(--dim);letter-spacing:0.5px;}
+    .cta{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--ink);padding:6px 14px;background:none;cursor:pointer;transition:all 0.15s;}
+    .cta:hover{background:var(--ink);color:white;}
+
+    /* ISSUE LINE */
+    .issueline{text-align:center;padding:8px 72px;border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:center;gap:32px;}
+    .issueline span{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);}
+    .issueline .sep{color:var(--rule);font-size:14px;}
+
+    /* HERO */
+    .hero{padding:60px 72px 40px;border-bottom:1px solid var(--rule);}
+    .hero-issue{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--accent);margin-bottom:20px;}
+    .hero-grid{display:grid;grid-template-columns:1fr 400px;gap:80px;align-items:end;}
+    .hero-title{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:88px;line-height:0.9;letter-spacing:-3px;color:var(--ink);}
+    .hero-title em{font-style:italic;color:var(--mid);}
+    .hero-right{}
+    .hero-summary{font-size:13px;line-height:1.7;color:var(--mid);margin-bottom:24px;}
+    .hero-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:8px;}
+    .metric{border-top:2px solid var(--ink);padding-top:10px;}
+    .metric-n{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:700;color:var(--ink);line-height:1;}
+    .metric-n.r{color:var(--accent);}
+    .metric-l{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-top:4px;}
+
+    /* GRID */
+    .grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:0;padding:0 72px;}
+    .gc{padding:40px 36px;}
+    .gc:first-child{padding-left:0;}
+    .gc:last-child{padding-right:0;}
+    .gc+.gc{border-left:1px solid var(--rule);}
+
+    /* Section */
+    .sec-lbl{font-size:9px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:12px;display:block;}
+    .sec-rule{height:1px;background:var(--ink);margin-bottom:24px;}
+
+    /* Task */
+    .task-item{padding:20px 0;border-bottom:1px solid var(--rule);}
+    .task-item:last-child{border-bottom:none;}
+    .task-num{font-size:9px;letter-spacing:2px;color:var(--dim);margin-bottom:6px;}
+    .task-hl{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;line-height:1.2;color:var(--ink);cursor:pointer;margin-bottom:4px;}
+    .task-hl:hover{color:var(--accent);}
+    .task-hl.done{text-decoration:line-through;color:var(--dim);font-weight:300;}
+    .task-sub{font-size:11px;color:var(--mid);line-height:1.6;margin-bottom:8px;}
+    .task-tags{display:flex;gap:6px;flex-wrap:wrap;}
+    .tag{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;padding:2px 8px;border:1px solid var(--rule);color:var(--mid);}
+    .tag.priority{border-color:var(--ink);color:var(--ink);}
+    .tag.done{border-color:var(--rule);color:var(--dim);}
+    .task-actions{display:flex;gap:16px;margin-top:10px;}
+    .ta{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);cursor:pointer;transition:color 0.1s;}
+    .ta:hover,.ta.p{color:var(--ink);}
+
+    /* Area health */
+    .arow{padding:14px 0;border-bottom:1px solid var(--rule);}
+    .arow:last-child{border-bottom:none;}
+    .atop{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px;}
+    .aname{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;color:var(--ink);}
+    .ascore{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;}
+    .ascore.hi{color:var(--ink);}
+    .ascore.lo{color:var(--accent);}
+    .abar{height:1px;background:var(--rule);margin-bottom:4px;}
+    .abar-fill{height:100%;background:var(--ink);}
+    .abar-fill.lo{background:var(--accent);}
+    .adetail{font-size:9px;color:var(--dim);}
+
+    /* Routine */
+    .rrow{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--rule);}
+    .rrow:last-child{border-bottom:none;}
+    .rdot{width:10px;height:10px;border-radius:50%;border:1px solid var(--ink);flex-shrink:0;cursor:pointer;}
+    .rdot.done{background:var(--ink);}
+    .rname{font-size:12px;color:var(--mid);flex:1;}
+    .rname.done{text-decoration:line-through;color:var(--dim);}
+    .rtime{font-size:9px;color:var(--dim);}
+
+    /* Quote */
+    .quote{margin:24px 0;padding:20px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);}
+    .quote-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;line-height:1.5;color:var(--mid);}
+    .quote-attr{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-top:8px;}
+
+    /* Goals */
+    .grow{padding:14px 0;border-bottom:1px solid var(--rule);}
+    .grow:last-child{border-bottom:none;}
+    .gname{font-size:12px;font-weight:500;color:var(--ink);margin-bottom:5px;}
+    .gbar{height:1px;background:var(--rule);margin-bottom:4px;}
+    .gfill{height:100%;background:var(--ink);}
+    .gfill.lo{background:var(--accent);}
+    .gbot{display:flex;justify-content:space-between;font-size:9px;color:var(--dim);}
+    .gpct{font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:700;color:var(--ink);}
+
+    /* Ticker */
+    .ticker{position:fixed;bottom:0;left:0;right:0;height:28px;background:var(--ink);display:flex;align-items:center;overflow:hidden;}
+    .tlabel{flex-shrink:0;padding:0 14px;font-size:8px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent);border-right:1px solid rgba(255,255,255,0.1);}
+    .ttrack{flex:1;overflow:hidden;padding-left:16px;}
+    .tcontent{display:inline-flex;gap:48px;animation:scroll 30s linear infinite;white-space:nowrap;}
+    .ti{font-size:10px;color:rgba(255,255,255,0.5);}
+    .ti b{color:white;}
+    .td{color:var(--accent);margin:0 6px;}
+    @keyframes scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+  </style>
+</head>
+<body>
+<div class="topbar"></div>
+<header class="header">
+  <div class="logo">Life<em> OS</em></div>
+  <nav class="nav">
+    <a href="#" class="active">Today</a>
+    <a href="#">Backlog</a>
+    <a href="#">Goals</a>
+    <a href="#">Schedule</a>
+  </nav>
+  <div class="header-right">
+    <span class="date-chip">Sunday, March 22</span>
+    <button class="cta">+ New Task</button>
+  </div>
+</header>
+<div class="issueline">
+  <span>Personal Edition</span><span class="sep">·</span>
+  <span>Vol. I  No. 81</span><span class="sep">·</span>
+  <span>Week 12 of 52</span><span class="sep">·</span>
+  <span>Q1 2026</span><span class="sep">·</span>
+  <span>Est. 2024</span>
+</div>
+
+<section class="hero">
+  <div class="hero-issue">Issue No. 81 — Daily Briefing</div>
+  <div class="hero-grid">
+    <div>
+      <h1 class="hero-title">Good<br><em>Morning.</em></h1>
+    </div>
+    <div class="hero-right">
+      <p class="hero-summary">Eight tasks scheduled today. One critical deadline looms at 5 PM — the Q1 performance review. The Relationships area continues its decline. Two of seven routines already completed.</p>
+      <div class="hero-metrics">
+        <div class="metric"><div class="metric-n">8</div><div class="metric-l">Today</div></div>
+        <div class="metric"><div class="metric-n r">3</div><div class="metric-l">Overdue</div></div>
+        <div class="metric"><div class="metric-n">14</div><div class="metric-l">Backlog</div></div>
+        <div class="metric"><div class="metric-n">72%</div><div class="metric-l">Week</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="grid">
+  <div class="gc">
+    <span class="sec-lbl">Today's Focus</span>
+    <div class="sec-rule"></div>
+    <div class="task-item">
+      <div class="task-num">01 — Priority One · Work · Due 5:00 PM</div>
+      <div class="task-hl">Q1 Performance Review — Self-Assessment Submission</div>
+      <div class="task-sub">Annual documentation covering goals achieved, growth areas identified, and Q2 objectives. Requires team lead sign-off before portal submission deadline.</div>
+      <div class="task-tags"><span class="tag priority">Urgent</span><span class="tag">Work</span></div>
+      <div class="task-actions"><span class="ta p">Complete</span><span class="ta">Reschedule</span><span class="ta">Delegate</span></div>
+    </div>
+    <div class="task-item">
+      <div class="task-num">02 — Priority Two · Finance · Due Noon</div>
+      <div class="task-hl">Transfer April Rent Payment</div>
+      <div class="task-sub">Online banking transfer. Enable receipt confirmation.</div>
+      <div class="task-tags"><span class="tag">Finance</span></div>
+      <div class="task-actions"><span class="ta p">Complete</span><span class="ta">Reschedule</span></div>
+    </div>
+    <div class="task-item">
+      <div class="task-num">03 — Completed · Health · 7:30 AM</div>
+      <div class="task-hl done">Morning Run — 5km Tempo Pace</div>
+    </div>
+    <div class="task-item">
+      <div class="task-num">04 — Priority Three · Learning · Evening</div>
+      <div class="task-hl">Complete Chapter 4 — Deep Work Module</div>
+      <div class="task-actions"><span class="ta p">Complete</span><span class="ta">Reschedule</span></div>
+    </div>
+    <div class="task-item">
+      <div class="task-num">05 — Priority Four · Personal · Flexible</div>
+      <div class="task-hl">Call Dad — Easter Weekend Plans</div>
+      <div class="task-actions"><span class="ta p">Complete</span></div>
+    </div>
+    <div class="quote">
+      <div class="quote-text">"The secret of getting ahead is getting started."</div>
+      <div class="quote-attr">— Mark Twain</div>
+    </div>
+  </div>
+
+  <div class="gc">
+    <span class="sec-lbl">Area Health</span>
+    <div class="sec-rule"></div>
+    <div class="arow"><div class="atop"><span class="aname">Work &amp; Career</span><span class="ascore hi">87</span></div><div class="abar"><div class="abar-fill" style="width:87%"></div></div><div class="adetail">5 open · Strong</div></div>
+    <div class="arow"><div class="atop"><span class="aname">Health</span><span class="ascore hi">91</span></div><div class="abar"><div class="abar-fill" style="width:91%"></div></div><div class="adetail">2 open · Excellent</div></div>
+    <div class="arow"><div class="atop"><span class="aname">Finance</span><span class="ascore" style="color:var(--mid);">63</span></div><div class="abar"><div class="abar-fill" style="width:63%;background:var(--mid);"></div></div><div class="adetail">3 open · Attention</div></div>
+    <div class="arow"><div class="atop"><span class="aname">Relationships</span><span class="ascore lo">41</span></div><div class="abar"><div class="abar-fill lo" style="width:41%"></div></div><div class="adetail" style="color:var(--accent);">4 open · Critical</div></div>
+    <div class="arow"><div class="atop"><span class="aname">Learning</span><span class="ascore" style="color:var(--mid);">74</span></div><div class="abar"><div class="abar-fill" style="width:74%;background:var(--mid);"></div></div><div class="adetail">2 open · Good</div></div>
+    <div class="arow"><div class="atop"><span class="aname">Home &amp; Admin</span><span class="ascore" style="color:var(--mid);">58</span></div><div class="abar"><div class="abar-fill" style="width:58%;background:var(--mid);"></div></div><div class="adetail">3 open · Moderate</div></div>
+
+    <span class="sec-lbl" style="margin-top:28px;display:block;">Active Goals</span>
+    <div class="sec-rule"></div>
+    <div class="grow"><div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;"><span class="gname">Run a Half Marathon</span><span class="gpct">68%</span></div><div class="gbar"><div class="gfill" style="width:68%"></div></div><div class="gbot"><span>June 15</span><span style="color:var(--dim);">On Track</span></div></div>
+    <div class="grow"><div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;"><span class="gname">Emergency Fund $10k</span><span class="gpct" style="color:var(--gold);">45%</span></div><div class="gbar"><div class="gfill" style="width:45%;background:var(--gold);"></div></div><div class="gbot"><span>$4,500 saved</span><span style="color:var(--gold);">Moderate</span></div></div>
+    <div class="grow"><div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;"><span class="gname">Read 24 Books</span><span class="gpct lo" style="color:var(--accent);">25%</span></div><div class="gbar"><div class="gfill lo" style="width:25%"></div></div><div class="gbot"><span>6 of 24</span><span style="color:var(--accent);">Behind</span></div></div>
+  </div>
+
+  <div class="gc">
+    <span class="sec-lbl">Daily Routines</span>
+    <div class="sec-rule"></div>
+    <div class="rrow"><div class="rdot done"></div><span class="rname done">Morning Pages</span><span class="rtime">6:15</span></div>
+    <div class="rrow"><div class="rdot done"></div><span class="rname done">5km Run</span><span class="rtime">7:30</span></div>
+    <div class="rrow"><div class="rdot"></div><span class="rname">Cold Shower</span><span class="rtime">8:10</span></div>
+    <div class="rrow"><div class="rdot"></div><span class="rname">Review Priorities</span><span class="rtime">8:30</span></div>
+    <div class="rrow"><div class="rdot"></div><span class="rname">Meditate 10 min</span><span class="rtime">Aft</span></div>
+    <div class="rrow"><div class="rdot"></div><span class="rname">Read 30 min</span><span class="rtime">Eve</span></div>
+    <div class="rrow"><div class="rdot"></div><span class="rname">Evening Review</span><span class="rtime">9:30</span></div>
+    <div style="margin-top:16px;height:1px;background:var(--rule);"></div>
+    <div style="margin-top:8px;display:flex;justify-content:space-between;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);">
+      <span>Progress</span><span>2 / 7</span>
+    </div>
+    <div style="height:1px;background:var(--rule);margin-top:4px;"><div style="height:100%;width:28.5%;background:var(--ink);"></div></div>
+
+    <div class="quote" style="margin-top:24px;">
+      <div class="quote-text" style="font-size:15px;">"It is not that we have a short time to live, but that we waste a great deal of it."</div>
+      <div class="quote-attr">— Seneca</div>
+    </div>
+
+    <span class="sec-lbl">Next Up</span>
+    <div class="sec-rule"></div>
+    <div style="padding:10px 0;border-bottom:1px solid var(--rule);"><div style="display:flex;justify-content:space-between;"><span style="font-size:12px;font-weight:500;">Team Standup</span><span style="font-size:10px;color:var(--accent);">10:00</span></div><div style="font-size:9px;color:var(--dim);margin-top:2px;">Google Meet · 15 min</div></div>
+    <div style="padding:10px 0;"><div style="display:flex;justify-content:space-between;"><span style="font-size:12px;font-weight:500;">Lunch with Alex</span><span style="font-size:10px;color:var(--dim);">12:30</span></div><div style="font-size:9px;color:var(--dim);margin-top:2px;">Grill'd Fitzroy · 1 hr</div></div>
+  </div>
+</div>
+
+<div class="ticker"><div class="tlabel">Now</div><div class="ttrack"><div class="tcontent">
+  <span class="ti"><b>12-day</b> routine streak<span class="td">—</span></span>
+  <span class="ti">Relationships at <b>41</b> · critical<span class="td">—</span></span>
+  <span class="ti">Q1 Review due in <b>8 hours</b><span class="td">—</span></span>
+  <span class="ti"><b>17 tasks</b> done this week<span class="td">—</span></span>
+  <span class="ti">Week 12 · <b>23%</b> of year complete<span class="td">—</span></span>
+  <span class="ti"><b>12-day</b> routine streak<span class="td">—</span></span>
+  <span class="ti">Relationships at <b>41</b> · critical<span class="td">—</span></span>
+  <span class="ti">Q1 Review due in <b>8 hours</b><span class="td">—</span></span>
+  <span class="ti"><b>17 tasks</b> done this week<span class="td">—</span></span>
+  <span class="ti">Week 12 · <b>23%</b> of year complete<span class="td">—</span></span>
+</div></div></div>
+</body>
+</html>

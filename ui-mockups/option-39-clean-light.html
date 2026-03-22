@@ -1,0 +1,234 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Life OS  Clean Light</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html,body{height:100%;overflow:hidden;}
+    :root{--bg:#FFFFFF;--bg2:#F9F9FB;--b:#EBEBF0;--b2:#D1D1DB;--ink:#111113;--t2:#6B6B77;--t3:#B0B0BC;--acc:#5B5BD6;--red:#E5484D;--green:#30A46C;--amb:#F76B15;}
+    body{background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;font-size:13px;display:flex;height:100vh;}
+    /* SIDEBAR */
+    .sb{width:232px;background:var(--bg);border-right:1px solid var(--b);display:flex;flex-direction:column;height:100%;flex-shrink:0;}
+    .sb-top{padding:14px 12px 12px;border-bottom:1px solid var(--b);}
+    .ws{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;cursor:pointer;transition:background .1s;}
+    .ws:hover{background:var(--bg2);}
+    .ws-av{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--acc),#8E7CF8);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;}
+    .ws-n{font-size:13px;font-weight:600;flex:1;}
+    .sb-search{display:flex;align-items:center;gap:6px;margin:8px 4px 0;padding:7px 10px;border-radius:8px;background:var(--bg2);border:1px solid var(--b);cursor:text;}
+    .sb-search span{font-size:12px;color:var(--t3);flex:1;}
+    .sb-search kbd{font-size:10px;color:var(--t3);background:var(--b);padding:1px 5px;border-radius:4px;}
+    .sb-body{flex:1;overflow-y:auto;padding:12px 8px;}
+    .sb-sec-label{font-size:10.5px;font-weight:600;color:var(--t3);padding:12px 8px 4px;letter-spacing:.3px;}
+    .sbi{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;cursor:pointer;color:var(--t2);transition:all .1s;margin-bottom:1px;}
+    .sbi:hover{background:var(--bg2);color:var(--ink);}
+    .sbi.active{background:var(--bg2);color:var(--ink);font-weight:500;}
+    .sbi-ic{width:16px;text-align:center;font-size:14px;flex-shrink:0;}
+    .sbi-l{font-size:13px;flex:1;}
+    .sbi-n{font-size:11px;color:var(--t3);background:var(--bg2);padding:1px 7px;border-radius:10px;}
+    .sbi-n.red{background:#FDEAEB;color:var(--red);}
+    .sb-div{height:1px;background:var(--b);margin:8px 4px;}
+    .sb-bot{padding:10px;border-top:1px solid var(--b);}
+    .av-row{display:flex;align-items:center;gap:8px;padding:6px 4px;}
+    .av-circle{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--acc),#8E7CF8);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;}
+    .av-name{font-size:12.5px;font-weight:500;}
+    .av-sub{font-size:10.5px;color:var(--t3);}
+    /* MAIN */
+    .main{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--bg);}
+    .topbar{height:48px;display:flex;align-items:center;padding:0 24px;gap:12px;border-bottom:1px solid var(--b);flex-shrink:0;}
+    .tb-t{font-size:14px;font-weight:600;}
+    .tb-sub{font-size:12px;color:var(--t3);}
+    .tb-acts{margin-left:auto;display:flex;gap:6px;}
+    .tbtn{font-size:12px;font-weight:500;padding:5px 12px;border-radius:7px;border:1px solid var(--b);background:var(--bg);color:var(--t2);cursor:pointer;transition:all .1s;}
+    .tbtn:hover{border-color:var(--b2);color:var(--ink);}
+    .tbtn.pri{background:var(--acc);color:#fff;border-color:var(--acc);}
+    .tbtn.pri:hover{background:#4A4AB8;}
+    /* CONTENT */
+    .content-wrap{flex:1;display:flex;overflow:hidden;}
+    .task-col{flex:1;overflow-y:auto;padding:0;}
+    /* Group */
+    .grp{margin-bottom:2px;}
+    .grp-h{display:flex;align-items:center;gap:6px;padding:10px 24px;position:sticky;top:0;background:var(--bg);z-index:2;}
+    .grp-arr{font-size:10px;color:var(--t3);cursor:pointer;width:12px;transition:transform .15s;}
+    .grp-arr.open{transform:rotate(90deg);}
+    .grp-label{font-size:12px;font-weight:600;color:var(--t2);}
+    .grp-ct{font-size:11px;color:var(--t3);background:var(--bg2);padding:1px 7px;border-radius:10px;}
+    .grp-ct.red{background:#FDEAEB;color:var(--red);}
+    .grp-add{margin-left:auto;font-size:11.5px;color:var(--t3);cursor:pointer;opacity:0;}
+    .grp-h:hover .grp-add{opacity:1;}
+    /* Tasks */
+    .task{display:flex;align-items:center;gap:0;height:37px;padding:0 24px;cursor:pointer;transition:background .08s;position:relative;}
+    .task:hover{background:var(--bg2);}
+    .task:hover .act-row{opacity:1;}
+    .task.done{opacity:.38;}
+    .chk-wrap{width:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .chk{width:15px;height:15px;border-radius:50%;border:1.5px solid var(--b2);cursor:pointer;transition:all .15s;flex-shrink:0;}
+    .chk:hover{border-color:var(--acc);}
+    .chk.done{background:var(--green);border-color:var(--green);display:flex;align-items:center;justify-content:center;}
+    .chk.done::after{content:"";font-size:8px;color:#fff;font-weight:700;}
+    .chk.p1{border-color:var(--red);}
+    .tk-title{flex:1;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
+    .tk-title.done{text-decoration:line-through;color:var(--t3);}
+    .tk-detail{display:flex;align-items:center;gap:8px;flex-shrink:0;margin-left:12px;}
+    .area-pip{display:flex;align-items:center;gap:4px;}
+    .area-d{width:6px;height:6px;border-radius:50%;}
+    .area-lb{font-size:11px;color:var(--t3);}
+    .due{font-size:11px;}
+    .due.ov{color:var(--red);font-weight:500;}
+    .due.td{color:var(--amb);}
+    .act-row{position:absolute;right:24px;opacity:0;display:flex;gap:2px;background:var(--bg);border:1px solid var(--b);border-radius:7px;padding:2px 4px;}
+    .act{font-size:11px;padding:2px 7px;border-radius:5px;color:var(--t2);cursor:pointer;}
+    .act:hover{background:var(--bg2);color:var(--ink);}
+    /* PANEL */
+    .panel{width:268px;background:var(--bg2);border-left:1px solid var(--b);overflow-y:auto;flex-shrink:0;}
+    .panel-sec{padding:16px;border-bottom:1px solid var(--b);}
+    .plbl{font-size:10.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);margin-bottom:12px;}
+    /* Ring */
+    .prog{display:flex;align-items:center;gap:14px;}
+    .rw{position:relative;width:68px;height:68px;flex-shrink:0;}
+    .rw svg{transform:rotate(-90deg);}
+    .rmid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+    .rn{font-size:16px;font-weight:700;line-height:1;}
+    .rl{font-size:9px;color:var(--t3);}
+    .prog-stats{display:flex;flex-direction:column;gap:4px;}
+    .ps{display:flex;justify-content:space-between;gap:8px;}
+    .psk{font-size:12px;color:var(--t2);}
+    .psv{font-size:12px;font-weight:600;}
+    .psv.g{color:var(--green);}
+    .psv.r{color:var(--red);}
+    .psv.a{color:var(--amb);}
+    /* Area bars */
+    .ar{display:flex;align-items:center;gap:7px;padding:3px 0;}
+    .ard{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+    .arn{font-size:11.5px;color:var(--t2);flex:1;}
+    .arb{width:80px;height:4px;background:var(--b);border-radius:2px;overflow:hidden;}
+    .arf{height:100%;border-radius:2px;}
+    .ars{font-size:11px;font-weight:600;width:22px;text-align:right;}
+    .ars.lo{color:var(--red);}
+    /* Habits */
+    .hr{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--b);}
+    .hr:last-child{border-bottom:none;}
+    .hd{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--b2);cursor:pointer;flex-shrink:0;}
+    .hd.done{background:var(--acc);border-color:var(--acc);}
+    .hn{font-size:12px;color:var(--t2);flex:1;}
+    .ht{font-size:10px;color:var(--t3);}
+    /* Goals */
+    .gr{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--b);}
+    .gr:last-child{border-bottom:none;}
+    .gic{font-size:18px;}
+    .gb{flex:1;}
+    .gn{font-size:12px;font-weight:500;margin-bottom:4px;}
+    .gbar{height:3px;background:var(--b);border-radius:2px;overflow:hidden;margin-bottom:2px;}
+    .gf{height:100%;border-radius:2px;}
+    .gm{font-size:10px;color:var(--t3);}
+    .gp{font-size:14px;font-weight:700;}
+    ::-webkit-scrollbar{width:4px;}
+    ::-webkit-scrollbar-thumb{background:var(--b);border-radius:2px;}
+  </style>
+</head>
+<body>
+<div class="sb">
+  <div class="sb-top">
+    <div class="ws"><div class="ws-av">L</div><span class="ws-n">Life OS</span><span style="font-size:10px;color:var(--t3)"></span></div>
+    <div class="sb-search"><span></span><span>Search...</span><kbd>K</kbd></div>
+  </div>
+  <div class="sb-body">
+    <div class="sbi active"><span class="sbi-ic"></span><span class="sbi-l">Today</span><span class="sbi-n">8</span></div>
+    <div class="sbi"><span class="sbi-ic"></span><span class="sbi-l">Inbox</span><span class="sbi-n red">3</span></div>
+    <div class="sbi"><span class="sbi-ic"></span><span class="sbi-l">My Tasks</span></div>
+    <div class="sbi"><span class="sbi-ic"></span><span class="sbi-l">Backlog</span><span class="sbi-n">47</span></div>
+    <div class="sb-div"></div>
+    <div class="sb-sec-label">Areas</div>
+    <div class="sbi"><span class="sbi-ic" style="color:#5B5BD6"></span><span class="sbi-l">Work</span><span class="sbi-n">5</span></div>
+    <div class="sbi"><span class="sbi-ic" style="color:#30A46C"></span><span class="sbi-l">Health</span><span class="sbi-n">2</span></div>
+    <div class="sbi"><span class="sbi-ic" style="color:#F76B15"></span><span class="sbi-l">Finance</span><span class="sbi-n">3</span></div>
+    <div class="sbi"><span class="sbi-ic" style="color:#E5484D"></span><span class="sbi-l">Relationships</span><span class="sbi-n red">4</span></div>
+    <div class="sbi"><span class="sbi-ic" style="color:#0C96D3"></span><span class="sbi-l">Learning</span><span class="sbi-n">2</span></div>
+    <div class="sbi"><span class="sbi-ic" style="color:#8B5CF6"></span><span class="sbi-l">Home &amp; Admin</span><span class="sbi-n">3</span></div>
+    <div class="sb-div"></div>
+    <div class="sb-sec-label">Goals</div>
+    <div class="sbi"><span class="sbi-ic"></span><span class="sbi-l">Half Marathon</span></div>
+    <div class="sbi"><span class="sbi-ic"></span><span class="sbi-l">Emergency Fund</span></div>
+    <div class="sbi"><span class="sbi-ic"></span><span class="sbi-l">Read 24 Books</span></div>
+  </div>
+  <div class="sb-bot">
+    <div class="av-row"><div class="av-circle">S</div><div><div class="av-name">Subodh Maharjan</div><div class="av-sub">Week 12  Day 81</div></div></div>
+  </div>
+</div>
+<div class="main">
+  <div class="topbar">
+    <span class="tb-t">Today</span>
+    <span class="tb-sub">Sun, 22 March 2026  8 tasks</span>
+    <div class="tb-acts">
+      <button class="tbtn"> Sort</button>
+      <button class="tbtn"> Filter</button>
+      <button class="tbtn pri">+ New Task</button>
+    </div>
+  </div>
+  <div class="content-wrap">
+    <div class="task-col">
+      <div class="grp">
+        <div class="grp-h"><span class="grp-arr open"></span><span class="grp-label">Overdue</span><span class="grp-ct red">2</span><span class="grp-add">+ Add</span></div>
+        <div class="task"><div class="chk-wrap"><div class="chk p1"></div></div><span class="tk-title">Update portfolio website copy &amp; redesign</span><div class="tk-detail"><div class="area-pip"><div class="area-d" style="background:#5B5BD6"></div><span class="area-lb">Work</span></div><span class="due ov">+6d overdue</span></div><div class="act-row"><span class="act">Done</span><span class="act">Edit</span><span class="act"></span></div></div>
+        <div class="task"><div class="chk-wrap"><div class="chk p1"></div></div><span class="tk-title">File 202425 tax return</span><div class="tk-detail"><div class="area-pip"><div class="area-d" style="background:#F76B15"></div><span class="area-lb">Finance</span></div><span class="due ov">+3d overdue</span></div><div class="act-row"><span class="act">Done</span><span class="act">Edit</span></div></div>
+      </div>
+      <div class="grp">
+        <div class="grp-h"><span class="grp-arr open"></span><span class="grp-label">Today</span><span class="grp-ct">5</span><span class="grp-add">+ Add</span></div>
+        <div class="task"><div class="chk-wrap"><div class="chk p1"></div></div><span class="tk-title">Q1 Performance Review  Self-Assessment Submission to HR</span><div class="tk-detail"><div class="area-pip"><div class="area-d" style="background:#5B5BD6"></div><span class="area-lb">Work</span></div><span class="due td">Today 5:00 PM</span></div><div class="act-row"><span class="act">Done</span><span class="act">Edit</span><span class="act"></span></div></div>
+        <div class="task"><div class="chk-wrap"><div class="chk"></div></div><span class="tk-title">Transfer April rent to landlord</span><div class="tk-detail"><div class="area-pip"><div class="area-d" style="background:#F76B15"></div><span class="area-lb">Finance</span></div><span class="due td">Today noon</span></div><div class="act-row"><span class="act">Done</span><span class="act">Edit</span></div></div>
+        <div class="task done"><div class="chk-wrap"><div class="chk done"></div></div><span class="tk-title done">Morning run  5km tempo pace</span><div class="tk-detail"><div class="area-pip"><div class="area-d" style="background:#30A46C"></div><span class="area-lb">Health</span></div><span class="due" style="color:var(--green)">Done 7:30</span></div></div>
+        <div class="task"><div class="chk-wrap"><div class="chk"></div></div><span class="tk-title">Chapter 4  Deep Work course module</span><div class="tk-detail"><div class="area-pip"><div class="area-d" style="background:#0C96D3"></div><span class="area-lb">Learning</span></div><span class="due">Evening</span></div><div class="act-row"><span class="act">Done</span><span class="act">Edit</span></div></div>
+        <div class="task"><div class="chk-wrap"><div class="chk"></div></div><span class="tk-title">Call Dad  Easter weekend plans</span><div class="tk-detail"><div class="area-pip"><div class="area-d" style="background:#E5484D"></div><span class="area-lb">Relationships</span></div><span class="due">Flexible</span></div><div class="act-row"><span class="act">Done</span><span class="act">Edit</span></div></div>
+      </div>
+      <div class="grp">
+        <div class="grp-h"><span class="grp-arr"></span><span class="grp-label">Upcoming this week</span><span class="grp-ct">6</span><span class="grp-add">+ Add</span></div>
+      </div>
+      <div style="padding:32px 24px;font-size:12px;color:var(--t3);">Sunday 22 March 2026  Week 12  Q1  Day 81 of 365</div>
+    </div>
+    <div class="panel">
+      <div class="panel-sec">
+        <div class="plbl">Day Progress</div>
+        <div class="prog">
+          <div class="rw">
+            <svg width="68" height="68" viewBox="0 0 68 68"><circle cx="34" cy="34" r="27" fill="none" stroke="#EBEBF0" stroke-width="5"/><circle cx="34" cy="34" r="27" fill="none" stroke="#5B5BD6" stroke-width="5" stroke-dasharray="169.6" stroke-dashoffset="105" stroke-linecap="round"/></svg>
+            <div class="rmid"><div class="rn">38%</div><div class="rl">done</div></div>
+          </div>
+          <div class="prog-stats">
+            <div class="ps"><span class="psk">Tasks</span><span class="psv">3/8</span></div>
+            <div class="ps"><span class="psk">Habits</span><span class="psv a">2/7</span></div>
+            <div class="ps"><span class="psk">Streak</span><span class="psv g">12d </span></div>
+            <div class="ps"><span class="psk">Overdue</span><span class="psv r">3</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel-sec">
+        <div class="plbl">Area Health</div>
+        <div class="ar"><div class="ard" style="background:#5B5BD6"></div><span class="arn">Work</span><div class="arb"><div class="arf" style="width:87%;background:#5B5BD6;"></div></div><span class="ars">87</span></div>
+        <div class="ar"><div class="ard" style="background:#30A46C"></div><span class="arn">Health</span><div class="arb"><div class="arf" style="width:91%;background:#30A46C;"></div></div><span class="ars">91</span></div>
+        <div class="ar"><div class="ard" style="background:#F76B15"></div><span class="arn">Finance</span><div class="arb"><div class="arf" style="width:63%;background:#F76B15;"></div></div><span class="ars">63</span></div>
+        <div class="ar"><div class="ard" style="background:#E5484D"></div><span class="arn">Relations</span><div class="arb"><div class="arf" style="width:41%;background:#E5484D;"></div></div><span class="ars lo">41</span></div>
+        <div class="ar"><div class="ard" style="background:#0C96D3"></div><span class="arn">Learning</span><div class="arb"><div class="arf" style="width:74%;background:#0C96D3;"></div></div><span class="ars">74</span></div>
+        <div class="ar"><div class="ard" style="background:#8B5CF6"></div><span class="arn">Home</span><div class="arb"><div class="arf" style="width:58%;background:#8B5CF6;"></div></div><span class="ars">58</span></div>
+      </div>
+      <div class="panel-sec">
+        <div class="plbl">Habits  2/7</div>
+        <div class="hr"><div class="hd done"></div><span class="hn">Morning pages</span><span class="ht">6:15</span></div>
+        <div class="hr"><div class="hd done"></div><span class="hn">5km run</span><span class="ht">7:30</span></div>
+        <div class="hr"><div class="hd"></div><span class="hn">Cold shower</span><span class="ht">8:10</span></div>
+        <div class="hr"><div class="hd"></div><span class="hn">Review priorities</span><span class="ht">8:30</span></div>
+        <div class="hr"><div class="hd"></div><span class="hn">Meditate 10min</span><span class="ht">Aft</span></div>
+        <div class="hr"><div class="hd"></div><span class="hn">Read 30min</span><span class="ht">Eve</span></div>
+        <div class="hr"><div class="hd"></div><span class="hn">Evening review</span><span class="ht">9:30</span></div>
+      </div>
+      <div class="panel-sec">
+        <div class="plbl">Goals</div>
+        <div class="gr"><div class="gic"></div><div class="gb"><div class="gn">Half Marathon</div><div class="gbar"><div class="gf" style="width:68%;background:#30A46C;"></div></div><div class="gm">Jun 15  On track</div></div><div class="gp" style="color:#30A46C;">68%</div></div>
+        <div class="gr"><div class="gic"></div><div class="gb"><div class="gn">Emergency Fund</div><div class="gbar"><div class="gf" style="width:45%;background:#F76B15;"></div></div><div class="gm">$4.5k/$10k</div></div><div class="gp" style="color:#F76B15;">45%</div></div>
+        <div class="gr"><div class="gic"></div><div class="gb"><div class="gn">Read 24 Books</div><div class="gbar"><div class="gf" style="width:25%;background:#E5484D;"></div></div><div class="gm" style="color:var(--red)">6/24  Behind</div></div><div class="gp" style="color:#E5484D;">25%</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

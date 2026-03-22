@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LIFE OS — Option 19: Brutalist Dark</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── RESET ─────────────────────────────────────────── */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ─── TOKENS ─────────────────────────────────────────── */
+    :root {
+      --black:        #000000;
+      --white:        #FFFFFF;
+      --yellow:       #F5E642;
+      --dim:          #888888;
+      --border-heavy: 3px solid #FFFFFF;
+      --border-mid:   2px solid #FFFFFF;
+      --border-thin:  1px solid #FFFFFF;
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-body:    'Barlow', sans-serif;
+    }
+
+    /* ─── ROOT ───────────────────────────────────────────── */
+    html, body {
+      height: 100%;
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── SHELL ──────────────────────────────────────────── */
+    .shell {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      min-height: 100vh;
+    }
+
+    /* ─── SIDEBAR ────────────────────────────────────────── */
+    .sidebar {
+      background: var(--black);
+      border-right: var(--border-heavy);
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .sidebar-logo {
+      padding: 28px 24px 24px;
+      border-bottom: var(--border-mid);
+    }
+
+    .sidebar-logo span {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 16px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--yellow);
+      line-height: 1;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 20px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      overflow-y: auto;
+    }
+
+    .nav-item {
+      display: block;
+      padding: 9px 24px;
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 13px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--white);
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.08s, color 0.08s;
+    }
+
+    .nav-item:hover {
+      background: rgba(255,255,255,0.07);
+    }
+
+    .nav-item.active {
+      background: var(--white);
+      color: var(--black);
+    }
+
+    .sidebar-section-label {
+      padding: 20px 24px 6px;
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--yellow);
+    }
+
+    .area-item {
+      display: block;
+      padding: 7px 24px;
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--dim);
+      text-decoration: none;
+      cursor: pointer;
+      transition: color 0.08s;
+    }
+
+    .area-item:hover {
+      color: var(--white);
+    }
+
+    .sidebar-footer {
+      padding: 18px 24px;
+      border-top: var(--border-mid);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    /* ─── MAIN ───────────────────────────────────────────── */
+    .main {
+      background: var(--black);
+      overflow-y: auto;
+    }
+
+    .main-inner {
+      max-width: 860px;
+      padding: 0 48px 80px;
+    }
+
+    /* ─── YELLOW TOP RULE ────────────────────────────────── */
+    .rule-yellow {
+      width: 100%;
+      height: 3px;
+      background: var(--yellow);
+    }
+
+    .rule-white {
+      width: 100%;
+      height: 3px;
+      background: var(--white);
+    }
+
+    .rule-white-thin {
+      width: 100%;
+      height: 1px;
+      background: var(--white);
+      opacity: 0.2;
+    }
+
+    /* ─── HERO GREETING ──────────────────────────────────── */
+    .hero {
+      padding: 52px 0 44px;
+    }
+
+    .hero-greeting {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 96px;
+      line-height: 0.85;
+      color: var(--white);
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+    }
+
+    .hero-greeting .slash {
+      color: var(--yellow);
+      font-style: italic;
+      font-weight: 900;
+    }
+
+    .hero-meta {
+      margin-top: 18px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .hero-date {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    .hero-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      background: var(--yellow);
+      color: var(--black);
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    /* ─── STATS GRID ─────────────────────────────────────── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border: var(--border-mid);
+      margin-bottom: 40px;
+    }
+
+    .stat-cell {
+      padding: 24px 20px 20px;
+      border-right: var(--border-mid);
+      position: relative;
+    }
+
+    .stat-cell:last-child {
+      border-right: none;
+    }
+
+    .stat-cell.accent {
+      background: var(--yellow);
+      color: var(--black);
+    }
+
+    .stat-number {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 72px;
+      line-height: 1;
+      color: inherit;
+      letter-spacing: -0.02em;
+    }
+
+    .stat-cell.accent .stat-number {
+      color: var(--black);
+    }
+
+    .stat-label {
+      margin-top: 6px;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    .stat-cell.accent .stat-label {
+      color: rgba(0,0,0,0.55);
+    }
+
+    .stat-sub {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--yellow);
+    }
+
+    .stat-cell.accent .stat-sub {
+      color: var(--black);
+    }
+
+    /* ─── SECTION LABEL ──────────────────────────────────── */
+    .section-label {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 11px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--white);
+      margin-bottom: 14px;
+      margin-top: 36px;
+    }
+
+    /* ─── TASK TABLE ─────────────────────────────────────── */
+    .task-table {
+      border: var(--border-mid);
+      margin-bottom: 0;
+    }
+
+    .task-row {
+      display: grid;
+      grid-template-columns: 36px 1fr auto auto;
+      align-items: center;
+      gap: 0;
+      border-bottom: var(--border-thin);
+      padding: 0;
+    }
+
+    .task-row:last-child {
+      border-bottom: none;
+    }
+
+    .task-row.done .task-text {
+      opacity: 0.35;
+      text-decoration: line-through;
+      text-decoration-color: var(--dim);
+    }
+
+    .task-num {
+      padding: 14px 0 14px 14px;
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 13px;
+      color: var(--yellow);
+      letter-spacing: 0.04em;
+    }
+
+    .task-text {
+      padding: 14px 12px;
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 13px;
+      color: var(--white);
+      letter-spacing: 0.01em;
+      line-height: 1.35;
+    }
+
+    .task-area-tag {
+      padding: 14px 8px;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--dim);
+      white-space: nowrap;
+    }
+
+    .task-badge {
+      padding: 14px 14px 14px 4px;
+    }
+
+    .badge-late {
+      display: inline-block;
+      background: var(--yellow);
+      color: var(--black);
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 3px 7px;
+    }
+
+    .badge-today {
+      display: inline-block;
+      background: transparent;
+      color: var(--white);
+      border: 1px solid rgba(255,255,255,0.25);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 3px 7px;
+    }
+
+    .badge-done {
+      display: inline-block;
+      background: transparent;
+      color: var(--dim);
+      border: 1px solid rgba(255,255,255,0.12);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 3px 7px;
+    }
+
+    /* ─── HABITS ─────────────────────────────────────────── */
+    .habits-block {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      border: var(--border-mid);
+      margin-bottom: 0;
+    }
+
+    .habits-count {
+      padding: 18px 20px;
+      border-right: var(--border-mid);
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 22px;
+      color: var(--yellow);
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+      min-width: 70px;
+    }
+
+    .habits-checkboxes {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 18px 20px;
+      flex-wrap: wrap;
+      flex: 1;
+    }
+
+    .habit-box {
+      width: 26px;
+      height: 26px;
+      border: 2px solid var(--white);
+      background: transparent;
+      flex-shrink: 0;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.1s;
+    }
+
+    .habit-box.done {
+      background: var(--yellow);
+      border-color: var(--yellow);
+    }
+
+    .habit-box.done::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--yellow);
+    }
+
+    .habits-label {
+      padding: 18px 20px;
+      border-left: var(--border-mid);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--dim);
+      white-space: nowrap;
+    }
+
+    /* ─── AREA HEALTH ────────────────────────────────────── */
+    .area-health {
+      border: var(--border-mid);
+      margin-bottom: 0;
+    }
+
+    .area-row {
+      display: grid;
+      grid-template-columns: 130px 1fr 56px;
+      align-items: center;
+      gap: 0;
+      border-bottom: var(--border-thin);
+      padding: 0;
+    }
+
+    .area-row:last-child {
+      border-bottom: none;
+    }
+
+    .area-name {
+      padding: 14px 18px;
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--white);
+      border-right: var(--border-thin);
+    }
+
+    .area-bar-wrap {
+      padding: 14px 18px;
+      border-right: var(--border-thin);
+    }
+
+    .area-bar-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(255,255,255,0.1);
+      position: relative;
+    }
+
+    .area-bar-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: var(--white);
+    }
+
+    .area-pct {
+      padding: 14px 18px;
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 14px;
+      letter-spacing: 0.06em;
+      color: var(--yellow);
+      text-align: right;
+    }
+
+    /* ─── FOCUS BLOCK ────────────────────────────────────── */
+    .focus-block {
+      border: var(--border-mid);
+      padding: 22px 24px;
+      margin-bottom: 0;
+    }
+
+    .focus-eyebrow {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 9px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--yellow);
+      margin-bottom: 10px;
+    }
+
+    .focus-text {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 28px;
+      line-height: 1.05;
+      color: var(--white);
+      text-transform: uppercase;
+      letter-spacing: 0.01em;
+    }
+
+    .focus-text em {
+      font-style: italic;
+      color: var(--yellow);
+    }
+
+    /* ─── BOTTOM YELLOW RULE ─────────────────────────────── */
+    .bottom-rule-wrap {
+      padding-top: 56px;
+    }
+
+    /* ─── SCROLL STYLE ───────────────────────────────────── */
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--black);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #333;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--dim);
+    }
+
+    /* ─── SPACING HELPERS ────────────────────────────────── */
+    .mt-8  { margin-top: 8px; }
+    .mt-16 { margin-top: 16px; }
+    .mt-36 { margin-top: 36px; }
+    .gap-block { margin-top: 36px; }
+  </style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ═══════════════════════════════════════════════════════
+       SIDEBAR
+  ══════════════════════════════════════════════════════════ -->
+  <aside class="sidebar">
+
+    <div class="sidebar-logo">
+      <span>LIFE&nbsp;OS</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="nav-item active">Today</a>
+      <a class="nav-item">Backlog</a>
+      <a class="nav-item">Goals</a>
+      <a class="nav-item">Timeline</a>
+      <a class="nav-item">Reviews</a>
+      <a class="nav-item">Habits</a>
+
+      <div class="sidebar-section-label">Areas</div>
+
+      <a class="area-item">Work</a>
+      <a class="area-item">Health</a>
+      <a class="area-item">Finance</a>
+      <a class="area-item">Learning</a>
+      <a class="area-item">Relationships</a>
+      <a class="area-item">Projects</a>
+      <a class="area-item">Creative</a>
+
+      <div style="flex:1"></div>
+
+    </nav>
+
+    <div class="sidebar-footer">
+      Settings
+    </div>
+
+  </aside>
+
+  <!-- ═══════════════════════════════════════════════════════
+       MAIN
+  ══════════════════════════════════════════════════════════ -->
+  <main class="main">
+    <div class="main-inner">
+
+      <!-- TOP YELLOW RULE -->
+      <div class="rule-yellow"></div>
+
+      <!-- HERO GREETING -->
+      <div class="hero">
+        <div class="hero-greeting">
+          GOOD<br>
+          <span class="slash">/</span>&nbsp;MORNING.
+        </div>
+        <div class="hero-meta">
+          <span class="hero-date">Sunday — 22 March 2026</span>
+          <span class="hero-badge">Week 12</span>
+        </div>
+      </div>
+
+      <!-- STATS GRID -->
+      <div class="stats-grid">
+
+        <div class="stat-cell">
+          <span class="stat-sub">Tasks</span>
+          <div class="stat-number">14</div>
+          <div class="stat-label">Open</div>
+        </div>
+
+        <div class="stat-cell accent">
+          <span class="stat-sub">Urgent</span>
+          <div class="stat-number">3</div>
+          <div class="stat-label">Overdue</div>
+        </div>
+
+        <div class="stat-cell">
+          <span class="stat-sub">Today</span>
+          <div class="stat-number">6</div>
+          <div class="stat-label">Scheduled</div>
+        </div>
+
+        <div class="stat-cell">
+          <span class="stat-sub">Habits</span>
+          <div class="stat-number">3<span style="font-size:36px;opacity:0.4">/6</span></div>
+          <div class="stat-label">Done Today</div>
+        </div>
+
+      </div>
+
+      <!-- WHITE RULE -->
+      <div class="rule-white"></div>
+
+      <!-- TODAY SECTION -->
+      <div class="section-label">Today</div>
+
+      <div class="task-table">
+
+        <div class="task-row">
+          <div class="task-num">01</div>
+          <div class="task-text">Review Q1 financial statements and prepare summary</div>
+          <div class="task-area-tag">Finance</div>
+          <div class="task-badge"><span class="badge-late">LATE</span></div>
+        </div>
+
+        <div class="task-row">
+          <div class="task-num">02</div>
+          <div class="task-text">Send project brief to architect</div>
+          <div class="task-area-tag">Work</div>
+          <div class="task-badge"><span class="badge-late">LATE</span></div>
+        </div>
+
+        <div class="task-row">
+          <div class="task-num">03</div>
+          <div class="task-text">Morning run — 5km tempo pace</div>
+          <div class="task-area-tag">Health</div>
+          <div class="task-badge"><span class="badge-late">LATE</span></div>
+        </div>
+
+        <div class="task-row">
+          <div class="task-num">04</div>
+          <div class="task-text">Study Chapter 7: Development Finance</div>
+          <div class="task-area-tag">Learning</div>
+          <div class="task-badge"><span class="badge-today">TODAY</span></div>
+        </div>
+
+        <div class="task-row">
+          <div class="task-num">05</div>
+          <div class="task-text">Call accountant re: trust structure options</div>
+          <div class="task-area-tag">Finance</div>
+          <div class="task-badge"><span class="badge-today">TODAY</span></div>
+        </div>
+
+        <div class="task-row">
+          <div class="task-num">06</div>
+          <div class="task-text">Weekly planning review + next week's goals</div>
+          <div class="task-area-tag">Work</div>
+          <div class="task-badge"><span class="badge-today">TODAY</span></div>
+        </div>
+
+        <div class="task-row done">
+          <div class="task-num">07</div>
+          <div class="task-text">Read design feedback from client</div>
+          <div class="task-area-tag">Work</div>
+          <div class="task-badge"><span class="badge-done">DONE</span></div>
+        </div>
+
+        <div class="task-row done">
+          <div class="task-num">08</div>
+          <div class="task-text">Meditation — 20 min</div>
+          <div class="task-area-tag">Health</div>
+          <div class="task-badge"><span class="badge-done">DONE</span></div>
+        </div>
+
+      </div>
+
+      <!-- HABITS SECTION -->
+      <div class="section-label">Habits</div>
+
+      <div class="habits-block">
+        <div class="habits-count">3/6</div>
+        <div class="habits-checkboxes">
+          <div class="habit-box done"></div>
+          <div class="habit-box done"></div>
+          <div class="habit-box done"></div>
+          <div class="habit-box"></div>
+          <div class="habit-box"></div>
+          <div class="habit-box"></div>
+        </div>
+        <div class="habits-label">Daily&nbsp;Stack</div>
+      </div>
+
+      <!-- FOCUS SECTION -->
+      <div class="section-label">Focus</div>
+
+      <div class="focus-block">
+        <div class="focus-eyebrow">This Week's Intention</div>
+        <div class="focus-text">
+          Ship the DA submission.<br>
+          <em>No excuses.</em> No delay.
+        </div>
+      </div>
+
+      <!-- AREA HEALTH SECTION -->
+      <div class="section-label">Area Health</div>
+
+      <div class="area-health">
+
+        <div class="area-row">
+          <div class="area-name">Work</div>
+          <div class="area-bar-wrap">
+            <div class="area-bar-track">
+              <div class="area-bar-fill" style="width:72%"></div>
+            </div>
+          </div>
+          <div class="area-pct">72%</div>
+        </div>
+
+        <div class="area-row">
+          <div class="area-name">Health</div>
+          <div class="area-bar-wrap">
+            <div class="area-bar-track">
+              <div class="area-bar-fill" style="width:58%"></div>
+            </div>
+          </div>
+          <div class="area-pct">58%</div>
+        </div>
+
+        <div class="area-row">
+          <div class="area-name">Finance</div>
+          <div class="area-bar-wrap">
+            <div class="area-bar-track">
+              <div class="area-bar-fill" style="width:81%"></div>
+            </div>
+          </div>
+          <div class="area-pct">81%</div>
+        </div>
+
+        <div class="area-row">
+          <div class="area-name">Learning</div>
+          <div class="area-bar-wrap">
+            <div class="area-bar-track">
+              <div class="area-bar-fill" style="width:44%"></div>
+            </div>
+          </div>
+          <div class="area-pct">44%</div>
+        </div>
+
+        <div class="area-row">
+          <div class="area-name">Creative</div>
+          <div class="area-bar-wrap">
+            <div class="area-bar-track">
+              <div class="area-bar-fill" style="width:30%"></div>
+            </div>
+          </div>
+          <div class="area-pct">30%</div>
+        </div>
+
+        <div class="area-row">
+          <div class="area-name">Relations</div>
+          <div class="area-bar-wrap">
+            <div class="area-bar-track">
+              <div class="area-bar-fill" style="width:65%"></div>
+            </div>
+          </div>
+          <div class="area-pct">65%</div>
+        </div>
+
+      </div>
+
+      <!-- BOTTOM YELLOW RULE -->
+      <div class="bottom-rule-wrap">
+        <div class="rule-yellow"></div>
+      </div>
+
+    </div><!-- /main-inner -->
+  </main>
+
+</div><!-- /shell -->
+
+</body>
+</html>

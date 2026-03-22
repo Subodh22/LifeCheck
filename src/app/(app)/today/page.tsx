@@ -7,6 +7,7 @@ import { format, startOfWeek } from "date-fns";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { useState } from "react";
 import { TrendingDown, CheckCheck } from "lucide-react";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 const INK       = "#0D0D0D";
 const INK_MID   = "#2A2A2A";
@@ -26,6 +27,7 @@ const PRIORITY_LABELS: Record<string, string> = {
 
 export default function TodayPage() {
   const { userId } = useCurrentUser();
+  const isMobile   = useIsMobile();
   const today        = useQuery(api.tasks.getTodayPriorities, userId ? { userId } : "skip") ?? [];
   const allTasks     = useQuery(api.tasks.listByUser,         userId ? { userId } : "skip") ?? [];
   const areas        = useQuery(api.areas.list,               userId ? { userId } : "skip") ?? [];
@@ -56,8 +58,10 @@ export default function TodayPage() {
     finally { setCompleting(null); }
   };
 
+  const px = isMobile ? "20px" : "64px";
+
   return (
-    <div style={{ padding: "0 64px 80px", background: NEWSPRINT, minHeight: "calc(100vh - 72px)" }}>
+    <div style={{ padding: `0 ${px}`, paddingBottom: isMobile ? "80px" : "80px", background: NEWSPRINT, minHeight: "calc(100vh - 72px)" }}>
 
       {/* ── Hero ── */}
       <div style={{ paddingTop: "40px", paddingBottom: "24px" }}>
@@ -76,7 +80,7 @@ export default function TodayPage() {
         <h1 style={{
           fontFamily: "'Playfair Display', Georgia, serif",
           fontWeight: 900,
-          fontSize: "80px",
+          fontSize: isMobile ? "52px" : "80px",
           lineHeight: 0.92,
           letterSpacing: "-2px",
           color: INK,
@@ -104,7 +108,7 @@ export default function TodayPage() {
             <strong style={{ color: INK, fontWeight: 600 }}>{inProgress.length}</strong> in progress
           </span>
           {/* Stats */}
-          <div style={{ display: "flex", gap: "40px" }}>
+          <div style={{ display: "flex", gap: isMobile ? "20px" : "40px" }}>
             {[
               { label: "Due Today",   value: today.length,       color: INK },
               { label: "In Progress", value: inProgress.length,  color: INK },
@@ -124,11 +128,11 @@ export default function TodayPage() {
         </div>
       </div>
 
-      {/* ── 3-column grid ── */}
-      <div style={{ display: "grid", gridTemplateColumns: "5fr 4fr 3fr", gap: 0 }}>
+      {/* ── Grid ── */}
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "5fr 4fr 3fr", gap: 0 }}>
 
         {/* ── COL 1: Today's Focus + Completed Today ── */}
-        <div style={{ paddingRight: "32px" }}>
+        <div style={{ paddingRight: isMobile ? 0 : "32px", marginBottom: isMobile ? "32px" : 0 }}>
           <SectionHeader label="Today's Focus" />
 
           {today.length === 0 && completedToday.length === 0 ? (
@@ -184,7 +188,13 @@ export default function TodayPage() {
         </div>
 
         {/* ── COL 2: In Progress + Overdue ── */}
-        <div style={{ padding: "0 32px", borderLeft: `1px solid ${INK}` }}>
+        <div style={{
+          padding: isMobile ? "0" : "0 32px",
+          borderLeft: isMobile ? "none" : `1px solid ${INK}`,
+          borderTop: isMobile ? `1px solid ${INK}` : "none",
+          paddingTop: isMobile ? "32px" : 0,
+          marginBottom: isMobile ? "32px" : 0,
+        }}>
 
           {/* In Progress */}
           <div style={{ marginBottom: inProgress.length > 0 ? "28px" : 0 }}>
@@ -291,7 +301,12 @@ export default function TodayPage() {
         </div>
 
         {/* ── COL 3: Area Health ── */}
-        <div style={{ paddingLeft: "32px", borderLeft: `1px solid ${INK}` }}>
+        <div style={{
+          paddingLeft: isMobile ? 0 : "32px",
+          borderLeft: isMobile ? "none" : `1px solid ${INK}`,
+          borderTop: isMobile ? `1px solid ${INK}` : "none",
+          paddingTop: isMobile ? "32px" : 0,
+        }}>
           <SectionHeader label="Area Health" />
 
           {areas.length === 0 ? (

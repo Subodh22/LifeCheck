@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>life os — zine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Special+Elite&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-main: #FAFAF5;
+      --bg-sidebar: #F0EFE8;
+      --black: #1A1A1A;
+      --red: #CC0000;
+      --yellow-hi: rgba(255, 235, 0, 0.42);
+      --yellow-solid: #FFEB00;
+      --border-dash: #333;
+      --mid: #555;
+      --light: #888;
+      --paper: #E8E6DC;
+    }
+
+    body {
+      font-family: 'Courier Prime', Courier, monospace;
+      background: var(--bg-main);
+      color: var(--black);
+      display: flex;
+      min-height: 100vh;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* ─── SIDEBAR ────────────────────────────────────────────── */
+    .sidebar {
+      width: 210px;
+      min-width: 210px;
+      background: var(--bg-sidebar);
+      border-right: 1px dashed var(--border-dash);
+      padding: 36px 20px 40px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .logo-wrap {
+      margin-bottom: 36px;
+    }
+
+    .logo {
+      font-family: 'Courier Prime', monospace;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--black);
+      display: inline-block;
+      position: relative;
+      padding: 2px 6px;
+    }
+
+    /* hand-drawn circle via border-radius */
+    .logo::before {
+      content: '';
+      position: absolute;
+      inset: -5px -8px;
+      border: 2px solid var(--red);
+      border-radius: 48% 52% 46% 54% / 55% 48% 52% 45%;
+      transform: rotate(-2deg);
+      pointer-events: none;
+    }
+
+    .sidebar-section {
+      margin-bottom: 28px;
+    }
+
+    .nav-label {
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--light);
+      margin-bottom: 10px;
+      font-weight: 400;
+    }
+
+    .nav-item {
+      display: block;
+      font-family: 'Courier Prime', monospace;
+      font-size: 13px;
+      color: var(--black);
+      text-decoration: none;
+      padding: 3px 6px 3px 4px;
+      margin-bottom: 2px;
+      cursor: pointer;
+      border-radius: 0;
+      transition: none;
+    }
+
+    .nav-item:hover {
+      background: rgba(255, 235, 0, 0.2);
+    }
+
+    .nav-item.active {
+      background: var(--yellow-hi);
+      font-weight: 700;
+    }
+
+    .areas-header {
+      font-family: 'Courier Prime', monospace;
+      font-size: 12px;
+      color: var(--mid);
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+      margin-top: 4px;
+    }
+
+    .area-item {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--mid);
+      padding: 2px 0 2px 2px;
+      margin-bottom: 1px;
+    }
+
+    .area-dash {
+      color: var(--light);
+      flex-shrink: 0;
+    }
+
+    .sidebar-divider {
+      border: none;
+      border-top: 1px dashed #bbb;
+      margin: 20px 0;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      font-size: 11px;
+      color: var(--light);
+      line-height: 1.8;
+    }
+
+    .sidebar-footer span {
+      display: block;
+    }
+
+    /* ─── MAIN ───────────────────────────────────────────────── */
+    .main {
+      flex: 1;
+      padding: 56px 56px 80px 56px;
+      max-width: 760px;
+    }
+
+    /* STAMP */
+    .stamp {
+      display: inline-block;
+      border: 3px solid var(--red);
+      padding: 4px 10px;
+      font-family: 'Special Elite', serif;
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--red);
+      transform: rotate(-1deg);
+      margin-bottom: 32px;
+      position: relative;
+    }
+
+    .stamp::before {
+      content: '';
+      position: absolute;
+      inset: 2px;
+      border: 1px solid rgba(204,0,0,0.2);
+      pointer-events: none;
+    }
+
+    /* GREETING */
+    .greeting {
+      font-family: 'Courier Prime', monospace;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--black);
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
+    }
+
+    .greeting .period {
+      color: var(--red);
+    }
+
+    /* DATE with marker highlight */
+    .date-line {
+      font-family: 'Courier Prime', monospace;
+      font-size: 13px;
+      color: var(--mid);
+      margin-bottom: 40px;
+      display: inline-block;
+    }
+
+    .highlight-marker {
+      background: linear-gradient(
+        104deg,
+        transparent 2%,
+        var(--yellow-hi) 4%,
+        rgba(255,235,0,0.36) 94%,
+        transparent 96%
+      );
+      padding: 0 4px;
+      margin: 0 -4px;
+    }
+
+    /* STATS LIST */
+    .stats-section {
+      margin-bottom: 36px;
+    }
+
+    .stats-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .stat-row {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      font-family: 'Courier Prime', monospace;
+      font-size: 14px;
+    }
+
+    .stat-num {
+      font-weight: 700;
+      font-size: 15px;
+      min-width: 36px;
+      display: inline-block;
+      text-align: center;
+      letter-spacing: 0.02em;
+    }
+
+    .stat-label {
+      color: var(--mid);
+      font-size: 13px;
+    }
+
+    .stat-row.overdue .stat-num {
+      color: var(--red);
+    }
+
+    .stat-row.overdue .stat-label {
+      color: var(--red);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+    }
+
+    /* DIVIDER */
+    .hand-divider {
+      margin: 36px 0;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      font-family: 'Courier Prime', monospace;
+      font-size: 13px;
+      color: #bbb;
+      letter-spacing: 0.02em;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    /* SECTION HEADERS */
+    .section-label {
+      font-family: 'Courier Prime', monospace;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--black);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      margin-bottom: 16px;
+      letter-spacing: 0.02em;
+    }
+
+    /* TASKS */
+    .tasks-section {
+      margin-bottom: 42px;
+    }
+
+    .task-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      font-family: 'Courier Prime', monospace;
+      font-size: 13px;
+      color: var(--black);
+      padding: 5px 0;
+      border-bottom: 1px dashed #ddd;
+      transform: rotate(0deg);
+    }
+
+    .task-item:nth-child(3) {
+      transform: rotate(-0.3deg);
+    }
+
+    .task-item:nth-child(5) {
+      transform: rotate(0.2deg);
+    }
+
+    .task-check {
+      font-size: 15px;
+      flex-shrink: 0;
+      width: 18px;
+      line-height: 1;
+    }
+
+    .task-body {
+      flex: 1;
+      display: flex;
+      align-items: baseline;
+      gap: 0;
+      flex-wrap: wrap;
+    }
+
+    .task-name {
+      flex: 1;
+    }
+
+    .task-meta {
+      font-size: 11px;
+      color: var(--light);
+      margin-left: 6px;
+      white-space: nowrap;
+    }
+
+    .task-item.done .task-name {
+      text-decoration: line-through;
+      color: var(--light);
+    }
+
+    .task-item.overdue .task-name {
+      color: var(--red);
+    }
+
+    .task-item.overdue .task-meta {
+      color: var(--red);
+      opacity: 0.8;
+    }
+
+    .task-tag {
+      font-size: 10px;
+      background: var(--paper);
+      border: 1px solid #ccc;
+      padding: 0px 5px;
+      margin-left: 8px;
+      letter-spacing: 0.06em;
+      color: var(--mid);
+      transform: rotate(0.5deg);
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    /* HABITS TRACKER */
+    .habits-section {
+      margin-bottom: 42px;
+    }
+
+    .habit-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 10px;
+    }
+
+    .habit-name {
+      font-family: 'Courier Prime', monospace;
+      font-size: 12px;
+      color: var(--mid);
+      width: 130px;
+      flex-shrink: 0;
+      letter-spacing: 0.02em;
+    }
+
+    .habit-squares {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .sq {
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid #aaa;
+      display: inline-block;
+      background: transparent;
+      flex-shrink: 0;
+    }
+
+    .sq.filled {
+      background: var(--black);
+      border-color: var(--black);
+    }
+
+    .sq.partial {
+      background: var(--yellow-hi);
+      border-color: #999;
+    }
+
+    .habit-streak {
+      font-family: 'Courier Prime', monospace;
+      font-size: 11px;
+      color: var(--light);
+      margin-left: 4px;
+    }
+
+    /* TAPE effect */
+    .tape {
+      display: inline-block;
+      background: rgba(255, 235, 0, 0.5);
+      padding: 2px 18px;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: rgba(0,0,0,0.4);
+      transform: rotate(-0.8deg);
+      margin-bottom: 16px;
+      font-family: 'Courier Prime', monospace;
+    }
+
+    /* NOTES SECTION */
+    .notes-section {
+      background: #F5F3EB;
+      border: 1px solid #ddd;
+      padding: 18px 20px;
+      transform: rotate(0.4deg);
+      margin-bottom: 40px;
+      position: relative;
+    }
+
+    .notes-section::before {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%) rotate(-1deg);
+      width: 60px;
+      height: 14px;
+      background: rgba(255, 235, 0, 0.55);
+    }
+
+    .notes-label {
+      font-family: 'Special Elite', serif;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--light);
+      margin-bottom: 10px;
+    }
+
+    .note-line {
+      font-family: 'Courier Prime', monospace;
+      font-size: 13px;
+      color: var(--black);
+      border-bottom: 1px solid #e0ddd5;
+      padding: 5px 0;
+      margin-bottom: 2px;
+    }
+
+    .note-line:last-child {
+      border-bottom: none;
+    }
+
+    /* FOCUS BLOCK */
+    .focus-block {
+      border-left: 3px solid var(--black);
+      padding-left: 18px;
+      margin-bottom: 40px;
+      transform: rotate(-0.5deg);
+    }
+
+    .focus-label {
+      font-family: 'Special Elite', serif;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--light);
+      margin-bottom: 6px;
+    }
+
+    .focus-text {
+      font-family: 'Courier Prime', monospace;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--black);
+      line-height: 1.45;
+    }
+
+    .focus-text em {
+      font-style: italic;
+      color: var(--mid);
+      font-weight: 400;
+    }
+
+    /* HORIZONTAL RULE dashes */
+    .dash-rule {
+      font-family: 'Courier Prime', monospace;
+      font-size: 12px;
+      color: #ccc;
+      letter-spacing: -0.1em;
+      margin: 0 0 36px 0;
+      overflow: hidden;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    /* SMALL ANNOTATION */
+    .annotation {
+      font-family: 'Special Elite', serif;
+      font-size: 11px;
+      color: var(--red);
+      margin-left: 8px;
+      letter-spacing: 0.04em;
+    }
+
+    /* WEEK ROW */
+    .week-row {
+      display: flex;
+      gap: 2px;
+      margin-bottom: 20px;
+      align-items: center;
+    }
+
+    .week-day {
+      width: 30px;
+      text-align: center;
+    }
+
+    .week-day-label {
+      font-family: 'Courier Prime', monospace;
+      font-size: 9px;
+      color: var(--light);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .week-day-num {
+      font-family: 'Courier Prime', monospace;
+      font-size: 12px;
+      color: var(--mid);
+      display: block;
+      width: 28px;
+      height: 28px;
+      line-height: 28px;
+      text-align: center;
+      border: 1px solid transparent;
+    }
+
+    .week-day.today .week-day-num {
+      border: 1.5px solid var(--black);
+      font-weight: 700;
+      color: var(--black);
+      background: var(--yellow-hi);
+    }
+
+    .week-day.past .week-day-num {
+      color: #ccc;
+    }
+
+    /* PROGRESS MINI */
+    .progress-mini {
+      margin-bottom: 40px;
+    }
+
+    .progress-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .progress-item-label {
+      font-family: 'Courier Prime', monospace;
+      font-size: 12px;
+      color: var(--mid);
+      width: 120px;
+      flex-shrink: 0;
+    }
+
+    .progress-track {
+      flex: 1;
+      height: 8px;
+      background: #E0DDD6;
+      position: relative;
+      border: 1px solid #ccc;
+    }
+
+    .progress-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: var(--black);
+    }
+
+    .progress-fill.warn {
+      background: var(--red);
+    }
+
+    .progress-pct {
+      font-family: 'Courier Prime', monospace;
+      font-size: 11px;
+      color: var(--mid);
+      width: 36px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #ccc; }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════ SIDEBAR ══════════ -->
+  <aside class="sidebar">
+    <div class="logo-wrap">
+      <span class="logo">life os</span>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="nav-label">navigate</div>
+      <a class="nav-item active" href="#">today</a>
+      <a class="nav-item" href="#">inbox</a>
+      <a class="nav-item" href="#">tasks</a>
+      <a class="nav-item" href="#">projects</a>
+      <a class="nav-item" href="#">calendar</a>
+      <a class="nav-item" href="#">habits</a>
+      <a class="nav-item" href="#">notes</a>
+    </div>
+
+    <hr class="sidebar-divider" />
+
+    <div class="sidebar-section">
+      <div class="areas-header">[ areas ]</div>
+      <div class="area-item"><span class="area-dash">—</span> work</div>
+      <div class="area-item"><span class="area-dash">—</span> health</div>
+      <div class="area-item"><span class="area-dash">—</span> finance</div>
+      <div class="area-item"><span class="area-dash">—</span> learning</div>
+      <div class="area-item"><span class="area-dash">—</span> personal</div>
+      <div class="area-item"><span class="area-dash">—</span> home</div>
+    </div>
+
+    <hr class="sidebar-divider" />
+
+    <div class="sidebar-section">
+      <div class="nav-label">resources</div>
+      <a class="nav-item" href="#">templates</a>
+      <a class="nav-item" href="#">archive</a>
+      <a class="nav-item" href="#">settings</a>
+    </div>
+
+    <div class="sidebar-footer">
+      <span>wk 12 of 52</span>
+      <span style="color: #ccc; font-size:10px; margin-top:8px; display:block;">— keep going —</span>
+    </div>
+  </aside>
+
+  <!-- ══════════ MAIN ══════════ -->
+  <main class="main">
+
+    <!-- STAMP -->
+    <div class="stamp">march 22</div>
+
+    <!-- WEEK MINI-CALENDAR -->
+    <div class="week-row">
+      <div class="week-day past">
+        <span class="week-day-label">mon</span>
+        <span class="week-day-num">16</span>
+      </div>
+      <div class="week-day past">
+        <span class="week-day-label">tue</span>
+        <span class="week-day-num">17</span>
+      </div>
+      <div class="week-day past">
+        <span class="week-day-label">wed</span>
+        <span class="week-day-num">18</span>
+      </div>
+      <div class="week-day past">
+        <span class="week-day-label">thu</span>
+        <span class="week-day-num">19</span>
+      </div>
+      <div class="week-day past">
+        <span class="week-day-label">fri</span>
+        <span class="week-day-num">20</span>
+      </div>
+      <div class="week-day past">
+        <span class="week-day-label">sat</span>
+        <span class="week-day-num">21</span>
+      </div>
+      <div class="week-day today">
+        <span class="week-day-label">sun</span>
+        <span class="week-day-num">22</span>
+      </div>
+    </div>
+
+    <!-- GREETING -->
+    <div class="greeting">good morning<span class="period">.</span></div>
+    <div class="date-line">
+      <span class="highlight-marker">sunday, march 22 — week 12</span>
+    </div>
+
+    <div style="margin-bottom: 40px;"></div>
+
+    <!-- FOCUS BLOCK -->
+    <div class="focus-block">
+      <div class="focus-label">// today's focus</div>
+      <div class="focus-text">finish the quarterly review<br><em>everything else is secondary.</em></div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-section">
+      <ul class="stats-list">
+        <li class="stat-row">
+          <span class="stat-num">[3]</span>
+          <span class="stat-label">in progress</span>
+        </li>
+        <li class="stat-row">
+          <span class="stat-num">[8]</span>
+          <span class="stat-label">done ✓</span>
+        </li>
+        <li class="stat-row overdue">
+          <span class="stat-num">[2]</span>
+          <span class="stat-label">OVERDUE <span class="annotation">← fix this</span></span>
+        </li>
+        <li class="stat-row">
+          <span class="stat-num">[15]</span>
+          <span class="stat-label">open</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- DIVIDER -->
+    <div class="dash-rule">- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</div>
+
+    <!-- TODAY'S LIST -->
+    <div class="tasks-section">
+      <div class="section-label">today's list:</div>
+
+      <ul class="task-list">
+        <li class="task-item">
+          <span class="task-check">□</span>
+          <div class="task-body">
+            <span class="task-name">quarterly review <span class="task-tag">work</span></span>
+            <span class="task-meta">— mar 22</span>
+          </div>
+        </li>
+        <li class="task-item done">
+          <span class="task-check">☑</span>
+          <div class="task-body">
+            <span class="task-name">morning run — 5km <span class="task-tag">health</span></span>
+            <span class="task-meta">— mar 22</span>
+          </div>
+        </li>
+        <li class="task-item done">
+          <span class="task-check">☑</span>
+          <div class="task-body">
+            <span class="task-name">update budget spreadsheet <span class="task-tag">finance</span></span>
+            <span class="task-meta">— mar 22</span>
+          </div>
+        </li>
+        <li class="task-item overdue">
+          <span class="task-check" style="color: var(--red);">□</span>
+          <div class="task-body">
+            <span class="task-name">call accountant <span class="task-tag" style="border-color: var(--red); color: var(--red);">overdue</span></span>
+            <span class="task-meta">— mar 18</span>
+          </div>
+        </li>
+        <li class="task-item overdue">
+          <span class="task-check" style="color: var(--red);">□</span>
+          <div class="task-body">
+            <span class="task-name">submit insurance docs <span class="task-tag" style="border-color: var(--red); color: var(--red);">overdue</span></span>
+            <span class="task-meta">— mar 15</span>
+          </div>
+        </li>
+        <li class="task-item">
+          <span class="task-check">□</span>
+          <div class="task-body">
+            <span class="task-name">read: deep work ch. 4 <span class="task-tag">learning</span></span>
+            <span class="task-meta">— mar 22</span>
+          </div>
+        </li>
+        <li class="task-item">
+          <span class="task-check">□</span>
+          <div class="task-body">
+            <span class="task-name">meal prep for the week <span class="task-tag">home</span></span>
+            <span class="task-meta">— mar 22</span>
+          </div>
+        </li>
+        <li class="task-item done">
+          <span class="task-check">☑</span>
+          <div class="task-body">
+            <span class="task-name">meditate — 10min <span class="task-tag">health</span></span>
+            <span class="task-meta">— mar 22</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- DIVIDER -->
+    <div class="dash-rule">— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —</div>
+
+    <!-- HABITS -->
+    <div class="habits-section">
+      <div class="tape">habits this week</div>
+      <div style="margin-bottom: 8px;"></div>
+      <div style="margin-bottom: 6px; font-size: 10px; color: var(--light); font-family: 'Courier Prime', monospace; letter-spacing: 0.1em;">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        m&nbsp;&nbsp;&nbsp;t&nbsp;&nbsp;&nbsp;w&nbsp;&nbsp;&nbsp;t&nbsp;&nbsp;&nbsp;f&nbsp;&nbsp;&nbsp;s&nbsp;&nbsp;&nbsp;s
+      </div>
+
+      <div class="habit-row">
+        <span class="habit-name">morning run</span>
+        <div class="habit-squares">
+          <span class="sq filled"></span>
+          <span class="sq filled"></span>
+          <span class="sq filled"></span>
+          <span class="sq"></span>
+          <span class="sq filled"></span>
+          <span class="sq"></span>
+          <span class="sq filled"></span>
+        </div>
+        <span class="habit-streak">5/7</span>
+      </div>
+
+      <div class="habit-row">
+        <span class="habit-name">meditate</span>
+        <div class="habit-squares">
+          <span class="sq filled"></span>
+          <span class="sq filled"></span>
+          <span class="sq filled"></span>
+          <span class="sq filled"></span>
+          <span class="sq filled"></span>
+          <span class="sq filled"></span>
+          <span class="sq filled"></span>
+        </div>
+        <span class="habit-streak" style="color: var(--black); font-weight: 700;">7/7 ✓</span>
+      </div>
+
+      <div class="habit-row">
+        <span class="habit-name">no alcohol</span>
+        <div class="habit-squares">
+          <span class="sq filled"></span>
+          <span class="sq filled"></span>
+          <span class="sq filled"></span>
+          <span class="sq filled"></span>
+          <span class="sq filled"></span>
+          <span class="sq"></span>
+          <span class="sq partial"></span>
+        </div>
+        <span class="habit-streak">5/7</span>
+      </div>
+
+      <div class="habit-row">
+        <span class="habit-name">read 30min</span>
+        <div class="habit-squares">
+          <span class="sq filled"></span>
+          <span class="sq"></span>
+          <span class="sq filled"></span>
+          <span class="sq filled"></span>
+          <span class="sq"></span>
+          <span class="sq"></span>
+          <span class="sq"></span>
+        </div>
+        <span class="habit-streak">3/7</span>
+      </div>
+
+      <div class="habit-row">
+        <span class="habit-name">no social media</span>
+        <div class="habit-squares">
+          <span class="sq"></span>
+          <span class="sq filled"></span>
+          <span class="sq"></span>
+          <span class="sq filled"></span>
+          <span class="sq"></span>
+          <span class="sq"></span>
+          <span class="sq"></span>
+        </div>
+        <span class="habit-streak" style="color: var(--red);">2/7</span>
+      </div>
+
+      <div class="habit-row">
+        <span class="habit-name">cold shower</span>
+        <div class="habit-squares">
+          <span class="sq filled"></span>
+          <span class="sq filled"></span>
+          <span class="sq filled"></span>
+          <span class="sq filled"></span>
+          <span class="sq filled"></span>
+          <span class="sq filled"></span>
+          <span class="sq"></span>
+        </div>
+        <span class="habit-streak">6/7</span>
+      </div>
+    </div>
+
+    <!-- DIVIDER -->
+    <div class="dash-rule">- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</div>
+
+    <!-- PROGRESS -->
+    <div class="progress-mini">
+      <div class="section-label">projects:</div>
+      <div class="progress-item">
+        <span class="progress-item-label">q1 review</span>
+        <div class="progress-track"><div class="progress-fill" style="width: 70%;"></div></div>
+        <span class="progress-pct">70%</span>
+      </div>
+      <div class="progress-item">
+        <span class="progress-item-label">home reno</span>
+        <div class="progress-track"><div class="progress-fill warn" style="width: 20%;"></div></div>
+        <span class="progress-pct" style="color: var(--red);">20%</span>
+      </div>
+      <div class="progress-item">
+        <span class="progress-item-label">learn figma</span>
+        <div class="progress-track"><div class="progress-fill" style="width: 55%;"></div></div>
+        <span class="progress-pct">55%</span>
+      </div>
+      <div class="progress-item">
+        <span class="progress-item-label">book outline</span>
+        <div class="progress-track"><div class="progress-fill" style="width: 88%;"></div></div>
+        <span class="progress-pct">88%</span>
+      </div>
+    </div>
+
+    <!-- NOTES CARD -->
+    <div class="notes-section">
+      <div class="notes-label">// scratch notes</div>
+      <div class="note-line">call back re: insurance claim by EOW</div>
+      <div class="note-line">check if accountant needs bank statements</div>
+      <div class="note-line">gym closes at 6pm sundays — go at 4</div>
+      <div class="note-line">remember: dentist tuesday 11am</div>
+    </div>
+
+    <!-- FOOTER -->
+    <div style="font-family: 'Courier Prime', monospace; font-size: 11px; color: #ccc; margin-top: 24px; letter-spacing: 0.06em;">
+      — end of today — &nbsp;&nbsp;
+      <span style="color: var(--red);">you've got this<span class="period">.</span></span>
+    </div>
+
+  </main>
+
+</body>
+</html>

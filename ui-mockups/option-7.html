@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LIFE OS — Option 7: Brutalist / Raw</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,900;1,700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── RESET ─────────────────────────────────────────── */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ─── TOKENS ─────────────────────────────────────────── */
+    :root {
+      --black:   #000000;
+      --white:   #FFFFFF;
+      --yellow:  #F5E642;
+      --border:  2px solid #000000;
+      --border-thin: 1px solid #000000;
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-body:    'Barlow', sans-serif;
+      --mono: 'Courier New', Courier, monospace;
+    }
+
+    /* ─── ROOT ───────────────────────────────────────────── */
+    html, body {
+      height: 100%;
+      background: var(--white);
+      color: var(--black);
+      font-family: var(--font-body);
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── SHELL ──────────────────────────────────────────── */
+    .shell {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      min-height: 100vh;
+    }
+
+    /* ─── SIDEBAR ────────────────────────────────────────── */
+    .sidebar {
+      background: var(--white);
+      border-right: var(--border);
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .sidebar-logo {
+      padding: 28px 24px 24px;
+      border-bottom: var(--border);
+    }
+
+    .sidebar-logo .wordmark {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 22px;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--black);
+      line-height: 1;
+    }
+
+    .sidebar-logo .tagline {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--black);
+      margin-top: 4px;
+      opacity: 0.45;
+    }
+
+    /* NAV SECTIONS */
+    .nav-section {
+      padding: 20px 0 0;
+    }
+
+    .nav-section + .nav-section {
+      margin-top: 8px;
+    }
+
+    .nav-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--black);
+      opacity: 0.4;
+      padding: 0 24px 8px;
+    }
+
+    .nav-item {
+      display: block;
+      padding: 9px 24px;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--black);
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      line-height: 1;
+      transition: none;
+    }
+
+    .nav-item:hover {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    .nav-item.active {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    .nav-item.active-yellow {
+      background: var(--yellow);
+      color: var(--black);
+    }
+
+    /* STATUS BLOCK */
+    .sidebar-status {
+      margin-top: auto;
+      border-top: var(--border);
+      padding: 16px 24px;
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--yellow);
+      border: 1px solid var(--black);
+      flex-shrink: 0;
+    }
+
+    .status-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--black);
+    }
+
+    .sidebar-user {
+      margin-top: 10px;
+    }
+
+    .user-name {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .user-role {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.4;
+      margin-top: 2px;
+    }
+
+    /* ─── MAIN ───────────────────────────────────────────── */
+    .main {
+      background: var(--white);
+      padding: 48px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    /* ─── HEADER ─────────────────────────────────────────── */
+    .page-header {
+      padding-bottom: 36px;
+      border-bottom: 2px solid var(--black);
+    }
+
+    .page-header-inner {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+
+    .greeting {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 64px;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      text-transform: uppercase;
+      color: var(--black);
+    }
+
+    .greeting em {
+      color: var(--yellow);
+      font-style: normal;
+      /* yellow outline text trick */
+      -webkit-text-stroke: 0px;
+      text-shadow: none;
+    }
+
+    .header-meta {
+      text-align: right;
+    }
+
+    .header-date {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--black);
+      line-height: 1.6;
+    }
+
+    .header-week {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      opacity: 0.4;
+      margin-top: 2px;
+    }
+
+    /* ─── STATS GRID ─────────────────────────────────────── */
+    .stats-block {
+      padding: 36px 0;
+      border-bottom: 2px solid var(--black);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border: 2px solid var(--black);
+    }
+
+    .stat-cell {
+      padding: 28px 28px 24px;
+      border-right: 2px solid var(--black);
+      position: relative;
+    }
+
+    .stat-cell:last-child {
+      border-right: none;
+    }
+
+    .stat-cell.yellow {
+      background: var(--yellow);
+    }
+
+    .stat-number {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 64px;
+      line-height: 1;
+      color: var(--black);
+      letter-spacing: -0.02em;
+    }
+
+    .stat-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--black);
+      margin-top: 8px;
+      opacity: 0.6;
+    }
+
+    .stat-cell.yellow .stat-label {
+      opacity: 0.75;
+    }
+
+    .stat-delta {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.04em;
+      font-weight: 600;
+    }
+
+    .stat-delta.up   { color: #1a7a1a; }
+    .stat-delta.down { color: #c0392b; }
+    .stat-delta.flat { color: var(--black); opacity: 0.35; }
+
+    /* ─── CONTENT ROW ─────────────────────────────────────── */
+    .content-row {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 0;
+      border-bottom: 2px solid var(--black);
+      flex: 1;
+    }
+
+    .content-left {
+      border-right: 2px solid var(--black);
+      padding: 36px 0 0;
+    }
+
+    .content-right {
+      padding: 36px 0 0;
+    }
+
+    /* ─── SECTION HEADER ─────────────────────────────────── */
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 0 0 20px;
+    }
+
+    .section-head.padded {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    .section-head.right-pad {
+      padding-left: 28px;
+      padding-right: 0;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 13px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--black);
+    }
+
+    .section-count {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--black);
+      opacity: 0.4;
+    }
+
+    .section-action {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--black);
+      text-decoration: none;
+      border-bottom: 1px solid var(--black);
+      cursor: pointer;
+    }
+
+    .section-action:hover {
+      background: var(--black);
+      color: var(--white);
+      border-color: var(--black);
+    }
+
+    /* ─── TASK TABLE ─────────────────────────────────────── */
+    .task-table-wrap {
+      border: 2px solid var(--black);
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead tr {
+      background: var(--black);
+    }
+
+    thead th {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--white);
+      padding: 10px 16px;
+      text-align: left;
+      border-right: 1px solid rgba(255,255,255,0.15);
+    }
+
+    thead th:last-child {
+      border-right: none;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--black);
+      cursor: pointer;
+    }
+
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    tbody tr:hover {
+      background: #f2f2f2;
+    }
+
+    tbody tr.done {
+      opacity: 0.38;
+    }
+
+    tbody tr.done td:first-child .task-name {
+      text-decoration: line-through;
+    }
+
+    tbody td {
+      padding: 12px 16px;
+      border-right: 1px solid var(--black);
+      vertical-align: middle;
+    }
+
+    tbody td:last-child {
+      border-right: none;
+    }
+
+    .task-name {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 13px;
+      color: var(--black);
+      line-height: 1.3;
+    }
+
+    .task-project {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      opacity: 0.45;
+      margin-top: 3px;
+    }
+
+    .priority-tag {
+      display: inline-block;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 3px 7px;
+      border: 1px solid var(--black);
+      white-space: nowrap;
+    }
+
+    .priority-tag.p1 {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    .priority-tag.p2 {
+      background: var(--yellow);
+      color: var(--black);
+    }
+
+    .priority-tag.p3 {
+      background: var(--white);
+      color: var(--black);
+    }
+
+    .due-text {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.04em;
+      color: var(--black);
+      white-space: nowrap;
+    }
+
+    .due-text.overdue {
+      color: #c0392b;
+      font-weight: 700;
+    }
+
+    .status-pill {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border: 1.5px solid var(--black);
+    }
+
+    .status-pill.done {
+      background: var(--black);
+    }
+
+    .status-pill.progress {
+      background: var(--yellow);
+    }
+
+    /* ─── ADD TASK ROW ────────────────────────────────────── */
+    .add-task-row {
+      display: flex;
+      align-items: center;
+      border-top: 2px solid var(--black);
+      margin-top: 0;
+    }
+
+    .add-task-input {
+      flex: 1;
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: var(--black);
+      background: var(--white);
+      border: none;
+      outline: none;
+      padding: 12px 16px;
+    }
+
+    .add-task-input::placeholder {
+      opacity: 0.3;
+      font-style: italic;
+    }
+
+    .add-btn {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: var(--black);
+      color: var(--white);
+      border: none;
+      padding: 12px 20px;
+      cursor: pointer;
+      border-left: 2px solid var(--black);
+      flex-shrink: 0;
+    }
+
+    .add-btn:hover {
+      background: var(--yellow);
+      color: var(--black);
+    }
+
+    /* ─── RIGHT PANEL ─────────────────────────────────────── */
+    .right-inner {
+      padding-left: 28px;
+    }
+
+    /* ─── FOCUS BLOCK ─────────────────────────────────────── */
+    .focus-block {
+      border: 2px solid var(--black);
+      margin-bottom: 24px;
+    }
+
+    .focus-head {
+      background: var(--black);
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .focus-head-label {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--white);
+    }
+
+    .focus-live {
+      font-family: var(--mono);
+      font-size: 8px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--yellow);
+    }
+
+    .focus-body {
+      padding: 16px 14px;
+    }
+
+    .focus-task-name {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      line-height: 1.2;
+      color: var(--black);
+    }
+
+    .focus-task-sub {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--black);
+      opacity: 0.45;
+      margin-top: 6px;
+    }
+
+    .focus-timer {
+      margin-top: 16px;
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .focus-timer-num {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 40px;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: var(--black);
+    }
+
+    .focus-timer-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.45;
+    }
+
+    .focus-actions {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-top: 1px solid var(--black);
+    }
+
+    .focus-btn {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 10px 0;
+      color: var(--black);
+      text-align: center;
+    }
+
+    .focus-btn:first-child {
+      border-right: 1px solid var(--black);
+    }
+
+    .focus-btn.primary {
+      background: var(--yellow);
+      font-weight: 900;
+    }
+
+    .focus-btn:hover {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    /* ─── AGENDA BLOCK ────────────────────────────────────── */
+    .agenda-section {
+      margin-bottom: 24px;
+    }
+
+    .agenda-section .section-head {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    .agenda-list {
+      border: 2px solid var(--black);
+    }
+
+    .agenda-item {
+      display: grid;
+      grid-template-columns: 52px 1fr;
+      border-bottom: 1px solid var(--black);
+    }
+
+    .agenda-item:last-child {
+      border-bottom: none;
+    }
+
+    .agenda-time {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--black);
+      opacity: 0.5;
+      padding: 12px 8px 12px 12px;
+      border-right: 1px solid var(--black);
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .agenda-time strong {
+      font-weight: 700;
+      opacity: 1;
+      font-size: 10px;
+    }
+
+    .agenda-content {
+      padding: 12px 14px;
+    }
+
+    .agenda-title {
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 12px;
+      color: var(--black);
+    }
+
+    .agenda-sub {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      opacity: 0.4;
+      margin-top: 3px;
+    }
+
+    .agenda-item.now .agenda-time {
+      background: var(--yellow);
+      opacity: 1;
+      color: var(--black);
+    }
+
+    .agenda-item.now {
+      background: #fffde7;
+    }
+
+    /* ─── HABIT BLOCK ─────────────────────────────────────── */
+    .habit-section {
+      margin-bottom: 0;
+    }
+
+    .habit-grid {
+      border: 2px solid var(--black);
+    }
+
+    .habit-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--black);
+    }
+
+    .habit-row:last-child {
+      border-bottom: none;
+    }
+
+    .habit-name {
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--black);
+    }
+
+    .habit-streak {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--black);
+      opacity: 0.35;
+    }
+
+    .habit-dots {
+      display: flex;
+      gap: 3px;
+      margin-top: 5px;
+    }
+
+    .habit-dot {
+      width: 8px;
+      height: 8px;
+      border: 1.5px solid var(--black);
+    }
+
+    .habit-dot.done {
+      background: var(--black);
+    }
+
+    .habit-dot.today {
+      background: var(--yellow);
+    }
+
+    /* ─── BOTTOM BAR ─────────────────────────────────────── */
+    .bottom-bar {
+      border-top: 2px solid var(--black);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: var(--black);
+    }
+
+    .bottom-bar-cell {
+      padding: 10px 20px;
+      border-right: 1px solid rgba(255,255,255,0.15);
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .bottom-bar-cell:last-child {
+      border-right: none;
+    }
+
+    .bottom-bar-key {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+    }
+
+    .bottom-bar-val {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--white);
+    }
+
+    .bottom-bar-val.yellow {
+      color: var(--yellow);
+    }
+
+    /* ─── SCROLLBAR ──────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--white); }
+    ::-webkit-scrollbar-thumb { background: var(--black); }
+
+  </style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ══════════════ SIDEBAR ══════════════ -->
+  <aside class="sidebar">
+
+    <div class="sidebar-logo">
+      <div class="wordmark">LIFE OS</div>
+      <div class="tagline">Personal Command System</div>
+    </div>
+
+    <nav>
+      <div class="nav-section">
+        <div class="nav-label">Daily</div>
+        <a class="nav-item active" href="#">Today</a>
+        <a class="nav-item" href="#">Inbox</a>
+        <a class="nav-item" href="#">Focus</a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">Manage</div>
+        <a class="nav-item" href="#">Tasks</a>
+        <a class="nav-item" href="#">Projects</a>
+        <a class="nav-item" href="#">Calendar</a>
+        <a class="nav-item" href="#">Habits</a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">System</div>
+        <a class="nav-item" href="#">Goals</a>
+        <a class="nav-item" href="#">Journal</a>
+        <a class="nav-item" href="#">Review</a>
+      </div>
+    </nav>
+
+    <div class="sidebar-status">
+      <div class="status-row">
+        <div class="status-dot"></div>
+        <div class="status-label">System Active</div>
+      </div>
+      <div class="sidebar-user">
+        <div class="user-name">Subodh M.</div>
+        <div class="user-role">Week 12 / Q1 2026</div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ══════════════ MAIN ══════════════ -->
+  <main class="main">
+
+    <!-- HEADER -->
+    <header class="page-header">
+      <div class="page-header-inner">
+        <h1 class="greeting">GOOD MORNING<em>.</em></h1>
+        <div class="header-meta">
+          <div class="header-date">Sunday, 22 March 2026</div>
+          <div class="header-date">06:41 — AEST +11</div>
+          <div class="header-week">Week 12 of 52 · Q1 · Day 81</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- STATS -->
+    <section class="stats-block">
+      <div class="stats-grid">
+
+        <div class="stat-cell yellow">
+          <div class="stat-delta flat">ACTIVE</div>
+          <div class="stat-number">14</div>
+          <div class="stat-label">Open Tasks</div>
+        </div>
+
+        <div class="stat-cell">
+          <div class="stat-delta up">↑ 3</div>
+          <div class="stat-number">5</div>
+          <div class="stat-label">Due Today</div>
+        </div>
+
+        <div class="stat-cell">
+          <div class="stat-delta up">↑ 12%</div>
+          <div class="stat-number">83%</div>
+          <div class="stat-label">Habit Score</div>
+        </div>
+
+        <div class="stat-cell">
+          <div class="stat-delta flat">—</div>
+          <div class="stat-number">3</div>
+          <div class="stat-label">Projects Active</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CONTENT ROW -->
+    <div class="content-row">
+
+      <!-- LEFT: TASK TABLE -->
+      <div class="content-left" style="padding-right: 0;">
+
+        <div class="section-head padded">
+          <div>
+            <div class="section-title">Today's Tasks</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:16px;">
+            <span class="section-count">14 open · 6 done</span>
+            <a class="section-action">+ New Task</a>
+          </div>
+        </div>
+
+        <div class="task-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:20px;"></th>
+                <th>Task</th>
+                <th style="width:90px;">Priority</th>
+                <th style="width:110px;">Project</th>
+                <th style="width:90px;">Due</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <tr>
+                <td><div class="status-pill progress"></div></td>
+                <td>
+                  <div class="task-name">Finalise site survey report for Block 4</div>
+                  <div class="task-project">Prop Dev · Brunswick</div>
+                </td>
+                <td><span class="priority-tag p1">Critical</span></td>
+                <td><span style="font-family:var(--mono);font-size:10px;opacity:.7;">Brunswick</span></td>
+                <td><span class="due-text overdue">Yesterday</span></td>
+              </tr>
+
+              <tr>
+                <td><div class="status-pill"></div></td>
+                <td>
+                  <div class="task-name">Review RMIT BH113 unit outline</div>
+                  <div class="task-project">Study</div>
+                </td>
+                <td><span class="priority-tag p2">High</span></td>
+                <td><span style="font-family:var(--mono);font-size:10px;opacity:.7;">Study</span></td>
+                <td><span class="due-text">Today</span></td>
+              </tr>
+
+              <tr>
+                <td><div class="status-pill"></div></td>
+                <td>
+                  <div class="task-name">Push life-os UI mockup options 6–8</div>
+                  <div class="task-project">Dev · life-os</div>
+                </td>
+                <td><span class="priority-tag p2">High</span></td>
+                <td><span style="font-family:var(--mono);font-size:10px;opacity:.7;">Dev</span></td>
+                <td><span class="due-text">Today</span></td>
+              </tr>
+
+              <tr>
+                <td><div class="status-pill"></div></td>
+                <td>
+                  <div class="task-name">Respond to solicitor re: planning permit</div>
+                  <div class="task-project">Prop Dev · Legal</div>
+                </td>
+                <td><span class="priority-tag p1">Critical</span></td>
+                <td><span style="font-family:var(--mono);font-size:10px;opacity:.7;">Brunswick</span></td>
+                <td><span class="due-text">Today</span></td>
+              </tr>
+
+              <tr>
+                <td><div class="status-pill"></div></td>
+                <td>
+                  <div class="task-name">Wire Convex queries to Progress screen</div>
+                  <div class="task-project">Dev · BaliYoLift</div>
+                </td>
+                <td><span class="priority-tag p3">Normal</span></td>
+                <td><span style="font-family:var(--mono);font-size:10px;opacity:.7;">Dev</span></td>
+                <td><span class="due-text">Mar 25</span></td>
+              </tr>
+
+              <tr>
+                <td><div class="status-pill"></div></td>
+                <td>
+                  <div class="task-name">Morning workout — lower body A</div>
+                  <div class="task-project">Health</div>
+                </td>
+                <td><span class="priority-tag p3">Normal</span></td>
+                <td><span style="font-family:var(--mono);font-size:10px;opacity:.7;">Health</span></td>
+                <td><span class="due-text">Today</span></td>
+              </tr>
+
+              <tr class="done">
+                <td><div class="status-pill done"></div></td>
+                <td>
+                  <div class="task-name">Daily journal entry</div>
+                  <div class="task-project">Habits</div>
+                </td>
+                <td><span class="priority-tag p3">Normal</span></td>
+                <td><span style="font-family:var(--mono);font-size:10px;opacity:.7;">Habits</span></td>
+                <td><span class="due-text">Today</span></td>
+              </tr>
+
+              <tr class="done">
+                <td><div class="status-pill done"></div></td>
+                <td>
+                  <div class="task-name">Morning reading — 30 min</div>
+                  <div class="task-project">Habits</div>
+                </td>
+                <td><span class="priority-tag p3">Normal</span></td>
+                <td><span style="font-family:var(--mono);font-size:10px;opacity:.7;">Habits</span></td>
+                <td><span class="due-text">Today</span></td>
+              </tr>
+
+            </tbody>
+          </table>
+
+          <div class="add-task-row">
+            <input class="add-task-input" type="text" placeholder="Add a task…" />
+            <button class="add-btn">Add</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT PANEL -->
+      <div class="content-right">
+        <div class="right-inner">
+
+          <!-- FOCUS -->
+          <div class="focus-block">
+            <div class="focus-head">
+              <span class="focus-head-label">Now — Deep Work</span>
+              <span class="focus-live">● Live</span>
+            </div>
+            <div class="focus-body">
+              <div class="focus-task-name">Site Survey Report<br/>Block 4</div>
+              <div class="focus-task-sub">Prop Dev · Brunswick · Critical</div>
+              <div class="focus-timer">
+                <div class="focus-timer-num">48:23</div>
+                <div class="focus-timer-label">elapsed</div>
+              </div>
+            </div>
+            <div class="focus-actions">
+              <button class="focus-btn">Pause</button>
+              <button class="focus-btn primary">Done ✓</button>
+            </div>
+          </div>
+
+          <!-- AGENDA -->
+          <div class="agenda-section">
+            <div class="section-head right-pad">
+              <div class="section-title">Schedule</div>
+              <a class="section-action">Calendar →</a>
+            </div>
+            <div class="agenda-list">
+
+              <div class="agenda-item">
+                <div class="agenda-time">
+                  <span>07</span>
+                  <strong>00</strong>
+                </div>
+                <div class="agenda-content">
+                  <div class="agenda-title">Morning Routine</div>
+                  <div class="agenda-sub">Habits · 45 min</div>
+                </div>
+              </div>
+
+              <div class="agenda-item now">
+                <div class="agenda-time">
+                  <span>08</span>
+                  <strong>30</strong>
+                </div>
+                <div class="agenda-content">
+                  <div class="agenda-title">Deep Work Block</div>
+                  <div class="agenda-sub">Now · 2 hrs · Site survey</div>
+                </div>
+              </div>
+
+              <div class="agenda-item">
+                <div class="agenda-time">
+                  <span>11</span>
+                  <strong>00</strong>
+                </div>
+                <div class="agenda-content">
+                  <div class="agenda-title">Call — Solicitor</div>
+                  <div class="agenda-sub">Planning permit · 30 min</div>
+                </div>
+              </div>
+
+              <div class="agenda-item">
+                <div class="agenda-time">
+                  <span>14</span>
+                  <strong>00</strong>
+                </div>
+                <div class="agenda-content">
+                  <div class="agenda-title">RMIT Study Block</div>
+                  <div class="agenda-sub">BH113 · 90 min</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- HABITS -->
+          <div class="habit-section">
+            <div class="section-head right-pad">
+              <div class="section-title">Habits</div>
+              <span class="section-count">5/6 today</span>
+            </div>
+            <div class="habit-grid">
+
+              <div class="habit-row">
+                <div>
+                  <div class="habit-name">Morning Journal</div>
+                  <div class="habit-dots">
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot today"></div>
+                    <div class="habit-dot"></div>
+                  </div>
+                </div>
+                <div class="habit-streak">12d</div>
+              </div>
+
+              <div class="habit-row">
+                <div>
+                  <div class="habit-name">Reading 30 min</div>
+                  <div class="habit-dots">
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot today"></div>
+                    <div class="habit-dot"></div>
+                  </div>
+                </div>
+                <div class="habit-streak">4d</div>
+              </div>
+
+              <div class="habit-row">
+                <div>
+                  <div class="habit-name">Workout</div>
+                  <div class="habit-dots">
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot"></div>
+                    <div class="habit-dot"></div>
+                  </div>
+                </div>
+                <div class="habit-streak">3d</div>
+              </div>
+
+              <div class="habit-row">
+                <div>
+                  <div class="habit-name">No screens before 8am</div>
+                  <div class="habit-dots">
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot today"></div>
+                    <div class="habit-dot"></div>
+                  </div>
+                </div>
+                <div class="habit-streak">2d</div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM BAR -->
+    <div class="bottom-bar">
+      <div class="bottom-bar-cell">
+        <span class="bottom-bar-key">Streak</span>
+        <span class="bottom-bar-val yellow">12 days</span>
+      </div>
+      <div class="bottom-bar-cell">
+        <span class="bottom-bar-key">Week Done</span>
+        <span class="bottom-bar-val">17 tasks</span>
+      </div>
+      <div class="bottom-bar-cell">
+        <span class="bottom-bar-key">Focus Today</span>
+        <span class="bottom-bar-val">2h 14m</span>
+      </div>
+      <div class="bottom-bar-cell">
+        <span class="bottom-bar-key">Next Review</span>
+        <span class="bottom-bar-val">Sunday</span>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LIFE OS — Dark Ink Edition</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--bg:#0D0D0D;--paper:#F5F2EB;--mid:#555550;--dim:#333330;--red:#C41E3A;--gold:#C49A2A;--rule:#1E1E1A;--rule2:#2A2A26;}
+    body{background:var(--bg);color:var(--paper);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+    /* INVERTED MASTHEAD */
+    .mast{background:var(--bg);border-bottom:1px solid var(--rule2);position:sticky;top:0;z-index:100;}
+    .mast-top{display:flex;align-items:center;justify-content:space-between;padding:0 64px;height:56px;border-bottom:1px solid var(--rule2);}
+    .logo{font-family:'Playfair Display',serif;font-weight:900;font-size:22px;letter-spacing:-0.5px;text-transform:uppercase;color:var(--paper);}
+    .logo em{color:var(--red);font-style:normal;}
+    .nav{display:flex;align-items:center;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;}
+    .nav a{text-decoration:none;color:rgba(245,242,235,0.4);padding:0 16px;}
+    .nav a.active,.nav a:hover{color:var(--paper);}
+    .nav .pipe{color:var(--rule2);}
+    .btn{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--bg);background:var(--paper);border:none;padding:7px 14px;cursor:pointer;transition:all 0.15s;}
+    .btn:hover{background:var(--red);color:white;}
+    .ed-bar{display:flex;justify-content:space-between;padding:5px 64px;border-bottom:1px solid var(--rule2);}
+    .ed-bar span{font-size:10px;color:rgba(245,242,235,0.3);}
+    /* HERO */
+    .hero{padding:40px 64px 28px;border-bottom:1px solid var(--rule2);}
+    .hero-kicker{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:10px;}
+    .hero-title{font-family:'Playfair Display',serif;font-weight:900;font-size:72px;line-height:0.9;letter-spacing:-2px;color:var(--paper);text-transform:uppercase;}
+    .hero-sub{display:flex;justify-content:space-between;align-items:flex-end;margin-top:16px;}
+    .hero-desc{font-size:13px;line-height:1.6;color:rgba(245,242,235,0.5);max-width:500px;}
+    .hero-stats{display:flex;gap:28px;}
+    .hs{text-align:center;}
+    .hs-n{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--paper);line-height:1;}
+    .hs-n.red{color:var(--red);}
+    .hs-n.gold{color:var(--gold);}
+    .hs-l{font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:rgba(245,242,235,0.3);margin-top:3px;}
+    /* GRID */
+    .grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:0;padding:0 64px;margin-top:32px;}
+    .gc{padding-right:36px;}
+    .gc+.gc{padding-right:36px;padding-left:36px;border-left:1px solid var(--rule2);}
+    .gc:last-child{padding-right:0;}
+    /* Section */
+    .sl{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--red);display:block;margin-bottom:6px;}
+    .sr{border-bottom:1px solid var(--paper);margin-bottom:16px;}
+    /* Task */
+    .task{padding:14px 0;border-bottom:1px solid var(--rule2);}
+    .task:last-child{border-bottom:none;}
+    .task-hdr{display:flex;align-items:flex-start;gap:8px;}
+    .tdot{width:12px;height:12px;border-radius:50%;border:1.5px solid rgba(245,242,235,0.4);cursor:pointer;flex-shrink:0;margin-top:3px;transition:all 0.15s;}
+    .tdot:hover,.tdot.done{border-color:var(--paper);background:var(--paper);}
+    .ttag{display:inline-block;font-size:7.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:1.5px 5px;flex-shrink:0;}
+    .ttag.p1{background:var(--red);color:white;}
+    .ttag.p2{background:var(--paper);color:var(--bg);}
+    .ttag.p3{border:1px solid var(--rule2);color:rgba(245,242,235,0.4);}
+    .ttag.done{border:1px solid var(--rule2);color:rgba(245,242,235,0.2);}
+    .ttitle{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;line-height:1.2;color:var(--paper);cursor:pointer;}
+    .ttitle:hover{color:var(--red);}
+    .ttitle.done{text-decoration:line-through;color:rgba(245,242,235,0.25);}
+    .tmeta{font-size:9.5px;color:rgba(245,242,235,0.3);display:flex;gap:10px;padding-left:20px;margin-top:4px;}
+    .tmeta .area{font-weight:600;color:rgba(245,242,235,0.5);}
+    .tmeta .due{color:var(--red);}
+    .tacts{display:flex;gap:10px;padding-left:20px;margin-top:6px;}
+    .ta{font-size:9px;color:rgba(245,242,235,0.3);cursor:pointer;border-bottom:1px solid transparent;padding-bottom:1px;}
+    .ta:hover,.ta.p{color:var(--paper);border-color:rgba(245,242,235,0.4);}
+    /* Overdue strip */
+    .ovr{background:rgba(196,30,58,0.12);border:1px solid rgba(196,30,58,0.3);padding:8px 12px;margin-bottom:8px;display:flex;justify-content:space-between;font-size:11px;color:var(--red);}
+    /* Area health */
+    .arow{padding:11px 0;border-bottom:1px solid var(--rule2);}
+    .arow:last-child{border-bottom:none;}
+    .atop{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;}
+    .aname{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:var(--paper);}
+    .ascore{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;}
+    .abar{height:1px;background:var(--rule2);margin-bottom:3px;}
+    .afill{height:100%;background:rgba(245,242,235,0.5);}
+    .afill.lo{background:var(--red);}
+    .afill.hi{background:var(--paper);}
+    .adetail{font-size:9px;color:rgba(245,242,235,0.3);}
+    /* Routine */
+    .rrow{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--rule2);}
+    .rrow:last-child{border-bottom:none;}
+    .rdot{width:10px;height:10px;border-radius:50%;border:1.5px solid rgba(245,242,235,0.3);flex-shrink:0;cursor:pointer;}
+    .rdot.done{background:var(--paper);border-color:var(--paper);}
+    .rname{font-size:12px;color:rgba(245,242,235,0.5);flex:1;}
+    .rname.done{text-decoration:line-through;color:rgba(245,242,235,0.2);}
+    .rtime{font-size:9px;color:rgba(245,242,235,0.2);}
+    /* Stat box */
+    .sbox{background:var(--rule2);padding:14px;margin-top:16px;}
+    .sbox-title{font-size:8.5px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
+    .sbox-row{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px solid var(--rule);}
+    .sbox-row:last-child{border-bottom:none;}
+    .sbox-k{font-size:10px;color:rgba(245,242,235,0.3);}
+    .sbox-v{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--paper);}
+    .sbox-v.gold{color:var(--gold);}
+    /* Pull quote */
+    .pull{border-left:3px solid var(--red);padding:8px 0 8px 14px;margin:16px 0;}
+    .pull-text{font-family:'Playfair Display',serif;font-style:italic;font-size:14px;line-height:1.4;color:rgba(245,242,235,0.5);}
+    .pull-attr{font-size:8.5px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(245,242,235,0.2);margin-top:5px;}
+    /* Ticker */
+    .ticker{position:fixed;bottom:0;left:0;right:0;height:30px;background:var(--red);display:flex;align-items:center;overflow:hidden;}
+    .tlabel{flex-shrink:0;background:var(--paper);height:100%;display:flex;align-items:center;padding:0 14px;font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--bg);}
+    .ttrack{flex:1;overflow:hidden;padding-left:16px;}
+    .tcontent{display:inline-flex;gap:44px;animation:scroll 30s linear infinite;white-space:nowrap;}
+    .ti{font-size:11px;color:rgba(255,255,255,0.7);}
+    .ti b{color:white;font-weight:600;}
+    .td{color:rgba(255,255,255,0.4);margin:0 6px;}
+    @keyframes scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+  </style>
+</head>
+<body>
+<div class="mast">
+  <div class="mast-top">
+    <div class="logo">Life<em>OS</em></div>
+    <nav class="nav"><a href="#" class="active">Today</a><span class="pipe">|</span><a href="#">Backlog</a><span class="pipe">|</span><a href="#">Goals</a><span class="pipe">|</span><a href="#">Schedule</a></nav>
+    <div style="display:flex;align-items:center;gap:20px;"><span style="font-size:11px;color:rgba(245,242,235,0.3);">Sunday, March 22</span><button class="btn">+ New Task</button></div>
+  </div>
+  <div class="ed-bar">
+    <span>Vol. 1, No. 81 · Personal Edition · Est. 2024</span>
+    <span>Week 12 of 52 · Q1 · Day 81</span>
+  </div>
+</div>
+<div class="hero">
+  <div class="hero-kicker">Daily Briefing — Issue No. 81</div>
+  <h1 class="hero-title">Good<br>Morning.</h1>
+  <div class="hero-sub">
+    <p class="hero-desc">Eight tasks on the board. One critical deadline at 5 PM. Relationships sector has dropped to a 5-month low. Two rituals done before 8:30 AM.</p>
+    <div class="hero-stats">
+      <div class="hs"><div class="hs-n">8</div><div class="hs-l">Today</div></div>
+      <div class="hs"><div class="hs-n red">3</div><div class="hs-l">Overdue</div></div>
+      <div class="hs"><div class="hs-n gold">2/7</div><div class="hs-l">Rituals</div></div>
+      <div class="hs"><div class="hs-n">72%</div><div class="hs-l">Week</div></div>
+    </div>
+  </div>
+</div>
+<div class="grid">
+  <div class="gc">
+    <span class="sl">Focus</span><div class="sr"></div>
+    <div class="ovr"><span>⚠ Portfolio website — overdue +6d</span><span style="font-weight:600">ACT NOW</span></div>
+    <div class="ovr"><span>⚠ Tax return — overdue +3d</span><span style="font-weight:600">ACT NOW</span></div>
+    <div class="task">
+      <div class="task-hdr"><div class="tdot"></div><span class="ttag p1">P1</span><span class="ttitle">Q1 Performance Review — Self-Assessment Submission</span></div>
+      <div class="tmeta"><span class="area">Work</span><span class="due">5:00 PM today</span></div>
+      <div class="tacts"><span class="ta p">Mark Done</span><span class="ta">Reschedule</span><span class="ta">Delegate</span></div>
+    </div>
+    <div class="task">
+      <div class="task-hdr"><div class="tdot"></div><span class="ttag p2">P2</span><span class="ttitle">Transfer April Rent to Landlord</span></div>
+      <div class="tmeta"><span class="area">Finance</span><span>Before noon</span></div>
+      <div class="tacts"><span class="ta p">Mark Done</span><span class="ta">Reschedule</span></div>
+    </div>
+    <div class="task">
+      <div class="task-hdr"><div class="tdot done"></div><span class="ttag done">Done</span><span class="ttitle done">Morning Run — 5km Tempo</span></div>
+      <div class="tmeta"><span class="area">Health</span><span>7:30 AM</span></div>
+    </div>
+    <div class="task">
+      <div class="task-hdr"><div class="tdot"></div><span class="ttag p3">P3</span><span class="ttitle">Chapter 4 — Deep Work Module</span></div>
+      <div class="tmeta"><span class="area">Learning</span><span>Evening</span></div>
+      <div class="tacts"><span class="ta p">Mark Done</span><span class="ta">Reschedule</span></div>
+    </div>
+    <div class="task">
+      <div class="task-hdr"><div class="tdot"></div><span class="ttag p3">P4</span><span class="ttitle">Call Dad — Easter Weekend Plans</span></div>
+      <div class="tmeta"><span class="area">Personal</span><span>Flexible</span></div>
+      <div class="tacts"><span class="ta p">Mark Done</span></div>
+    </div>
+    <div class="pull">
+      <div class="pull-text">"The secret of getting ahead is getting started."</div>
+      <div class="pull-attr">— Mark Twain</div>
+    </div>
+  </div>
+  <div class="gc">
+    <span class="sl">Area Health</span><div class="sr"></div>
+    <div class="arow"><div class="atop"><span class="aname">Work &amp; Career</span><span class="ascore hi" style="color:var(--paper)">87</span></div><div class="abar"><div class="afill hi" style="width:87%"></div></div><div class="adetail">5 open · Strong</div></div>
+    <div class="arow"><div class="atop"><span class="aname">Health &amp; Fitness</span><span class="ascore hi" style="color:var(--paper)">91</span></div><div class="abar"><div class="afill hi" style="width:91%"></div></div><div class="adetail">2 open · Excellent</div></div>
+    <div class="arow"><div class="atop"><span class="aname">Finance</span><span class="ascore" style="color:rgba(245,242,235,0.5)">63</span></div><div class="abar"><div class="afill" style="width:63%"></div></div><div class="adetail">3 open · Moderate</div></div>
+    <div class="arow"><div class="atop"><span class="aname">Relationships</span><span class="ascore lo" style="color:var(--red)">41</span></div><div class="abar"><div class="afill lo" style="width:41%"></div></div><div class="adetail" style="color:var(--red)">4 open · Critical</div></div>
+    <div class="arow"><div class="atop"><span class="aname">Learning</span><span class="ascore" style="color:rgba(245,242,235,0.5)">74</span></div><div class="abar"><div class="afill" style="width:74%"></div></div><div class="adetail">2 open · Good</div></div>
+    <div class="arow"><div class="atop"><span class="aname">Home &amp; Admin</span><span class="ascore" style="color:rgba(245,242,235,0.5)">58</span></div><div class="abar"><div class="afill" style="width:58%"></div></div><div class="adetail">3 open · Moderate</div></div>
+    <div class="sbox">
+      <div class="sbox-title">Week Stats</div>
+      <div class="sbox-row"><span class="sbox-k">Completed</span><span class="sbox-v">17</span></div>
+      <div class="sbox-row"><span class="sbox-k">Rate</span><span class="sbox-v gold">74%</span></div>
+      <div class="sbox-row"><span class="sbox-k">Streak</span><span class="sbox-v gold">12d</span></div>
+      <div class="sbox-row"><span class="sbox-k">Focus</span><span class="sbox-v gold">18.5h</span></div>
+    </div>
+  </div>
+  <div class="gc">
+    <span class="sl">Daily Rituals</span><div class="sr"></div>
+    <div class="rrow"><div class="rdot done"></div><span class="rname done">Morning Pages</span><span class="rtime">6:15</span></div>
+    <div class="rrow"><div class="rdot done"></div><span class="rname done">5km Run</span><span class="rtime">7:30</span></div>
+    <div class="rrow"><div class="rdot"></div><span class="rname">Cold Shower</span><span class="rtime">8:10</span></div>
+    <div class="rrow"><div class="rdot"></div><span class="rname">Review Priorities</span><span class="rtime">8:30</span></div>
+    <div class="rrow"><div class="rdot"></div><span class="rname">Meditate 10 min</span><span class="rtime">Aft</span></div>
+    <div class="rrow"><div class="rdot"></div><span class="rname">Read 30 min</span><span class="rtime">Eve</span></div>
+    <div class="rrow"><div class="rdot"></div><span class="rname">Evening Review</span><span class="rtime">9:30</span></div>
+    <span class="sl" style="margin-top:22px;display:block;">Active Goals</span><div class="sr"></div>
+    <div style="padding:10px 0;border-bottom:1px solid var(--rule2);">
+      <div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:var(--paper)">Half Marathon</span><span style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--paper)">68%</span></div>
+      <div style="height:1px;background:var(--rule2);"><div style="height:100%;width:68%;background:var(--paper);"></div></div>
+      <div style="font-size:9px;color:rgba(245,242,235,0.3);margin-top:3px;">June 15 · On Track</div>
+    </div>
+    <div style="padding:10px 0;border-bottom:1px solid var(--rule2);">
+      <div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:var(--paper)">Emergency Fund</span><span style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--gold)">45%</span></div>
+      <div style="height:1px;background:var(--rule2);"><div style="height:100%;width:45%;background:var(--gold);"></div></div>
+      <div style="font-size:9px;color:rgba(245,242,235,0.3);margin-top:3px;">$4,500 / $10k · Moderate</div>
+    </div>
+    <div style="padding:10px 0;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:var(--paper)">Read 24 Books</span><span style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--red)">25%</span></div>
+      <div style="height:1px;background:var(--rule2);"><div style="height:100%;width:25%;background:var(--red);"></div></div>
+      <div style="font-size:9px;color:var(--red);margin-top:3px;">6 of 24 books · Behind</div>
+    </div>
+  </div>
+</div>
+<div class="ticker"><div class="tlabel">LIVE</div><div class="ttrack"><div class="tcontent">
+  <span class="ti"><b>12-day</b> ritual streak<span class="td">◆</span></span>
+  <span class="ti">Relationships at <b>41</b> — critical<span class="td">◆</span></span>
+  <span class="ti">Q1 Review due in <b>8 hours</b><span class="td">◆</span></span>
+  <span class="ti"><b>17 tasks</b> completed this week<span class="td">◆</span></span>
+  <span class="ti">Week 12 — <b>23%</b> of year complete<span class="td">◆</span></span>
+  <span class="ti"><b>12-day</b> ritual streak<span class="td">◆</span></span>
+  <span class="ti">Relationships at <b>41</b> — critical<span class="td">◆</span></span>
+  <span class="ti">Q1 Review due in <b>8 hours</b><span class="td">◆</span></span>
+  <span class="ti"><b>17 tasks</b> completed this week<span class="td">◆</span></span>
+  <span class="ti">Week 12 — <b>23%</b> of year complete<span class="td">◆</span></span>
+</div></div></div>
+</body>
+</html>

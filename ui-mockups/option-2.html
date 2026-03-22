@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Life OS — Today (Dark &amp; Focused)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --amber:        #D4A853;
+      --amber-dim:    rgba(212, 168, 83, 0.08);
+      --amber-dim2:   rgba(212, 168, 83, 0.14);
+      --bg:           #0F0F0F;
+      --sidebar-bg:   #111111;
+      --card:         #1A1A1A;
+      --card-hover:   #1E1E1E;
+      --border:       #222222;
+      --border-mid:   #2A2A2A;
+      --text:         #E8E8E8;
+      --text-mid:     #888888;
+      --text-dim:     #555555;
+      --text-dimmer:  #333333;
+      --text-muted:   #444444;
+      --green:        #4A9D6F;
+      --green-dim:    rgba(74, 157, 111, 0.12);
+      --red:          #C0474A;
+      --red-dim:      rgba(192, 71, 74, 0.10);
+      --blue:         #4A7FC0;
+      --blue-dim:     rgba(74, 127, 192, 0.12);
+      --purple:       #8A6FC0;
+      --purple-dim:   rgba(138, 111, 192, 0.12);
+
+      --dot-health:   #4A9D6F;
+      --dot-work:     #4A7FC0;
+      --dot-learning: #8A6FC0;
+      --dot-personal: #C07A4A;
+
+      --sidebar-w:    220px;
+      --right-col-w:  260px;
+      --content-max:  780px;
+      --content-pad:  48px;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-width: 1280px;
+    }
+
+    /* ─── LAYOUT SHELL ──────────────────────────────────── */
+    .shell {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ─── SIDEBAR ───────────────────────────────────────── */
+    .sidebar {
+      width: var(--sidebar-w);
+      min-width: var(--sidebar-w);
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .sidebar-top {
+      padding: 20px 16px 0;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 0 20px;
+    }
+
+    .logo-icon {
+      width: 22px;
+      height: 22px;
+      border: 1.5px solid var(--amber);
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-icon svg {
+      width: 11px;
+      height: 11px;
+    }
+
+    .logo-text {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--amber);
+      letter-spacing: -0.01em;
+    }
+
+    .new-task-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-dim);
+      font-size: 12px;
+      font-weight: 400;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px 0;
+      margin-bottom: 8px;
+      transition: color 0.15s;
+      width: 100%;
+    }
+
+    .new-task-btn:hover {
+      color: var(--text-mid);
+    }
+
+    .new-task-btn svg {
+      opacity: 0.5;
+    }
+
+    /* Nav */
+    .nav {
+      padding: 4px 8px 0;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 8px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text-dim);
+      transition: background 0.12s, color 0.12s;
+      user-select: none;
+      text-decoration: none;
+    }
+
+    .nav-item:hover {
+      background: var(--card);
+      color: var(--text-mid);
+    }
+
+    .nav-item.active {
+      background: var(--amber-dim2);
+      color: var(--amber);
+    }
+
+    .nav-item svg {
+      flex-shrink: 0;
+      opacity: 0.6;
+    }
+
+    .nav-item.active svg {
+      opacity: 1;
+    }
+
+    .nav-item-count {
+      margin-left: auto;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-dimmer);
+      background: var(--card);
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+
+    .nav-item.active .nav-item-count {
+      background: var(--amber-dim2);
+      color: var(--amber);
+      opacity: 0.7;
+    }
+
+    /* Section labels */
+    .sidebar-section {
+      padding: 20px 16px 6px;
+    }
+
+    .sidebar-section-label {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dimmer);
+    }
+
+    /* Areas */
+    .areas {
+      padding: 2px 8px;
+    }
+
+    .area-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 12px;
+      color: var(--text-mid);
+      transition: background 0.12s, color 0.12s;
+    }
+
+    .area-item:hover {
+      background: var(--card);
+      color: var(--text);
+    }
+
+    .area-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      opacity: 0.75;
+    }
+
+    .area-item-count {
+      margin-left: auto;
+      font-size: 10px;
+      color: var(--text-dimmer);
+    }
+
+    /* Sidebar footer */
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 16px 8px 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .settings-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 8px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 12px;
+      color: var(--text-dim);
+      transition: background 0.12s, color 0.12s;
+    }
+
+    .settings-item:hover {
+      background: var(--card);
+      color: var(--text-mid);
+    }
+
+    /* ─── MAIN ──────────────────────────────────────────── */
+    .main {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    /* Content column */
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--content-pad);
+      max-width: calc(var(--content-max) + var(--content-pad) * 2);
+    }
+
+    /* Right column */
+    .right-col {
+      width: var(--right-col-w);
+      min-width: var(--right-col-w);
+      border-left: 1px solid var(--border);
+      padding: 48px 24px;
+      overflow-y: auto;
+      background: var(--bg);
+    }
+
+    /* ─── CONTENT INNER ─────────────────────────────────── */
+    .date-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 10px;
+    }
+
+    .greeting {
+      font-size: 32px;
+      font-weight: 600;
+      color: #FFFFFF;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 32px;
+    }
+
+    /* Stats row */
+    .stats-row {
+      display: flex;
+      gap: 0;
+      margin-bottom: 32px;
+    }
+
+    .stat-item {
+      flex: 1;
+      padding: 0 20px 0 0;
+    }
+
+    .stat-item + .stat-item {
+      padding-left: 20px;
+      border-left: 1px solid var(--border);
+    }
+
+    .stat-number {
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      margin-bottom: 4px;
+    }
+
+    .stat-number.amber  { color: var(--amber); }
+    .stat-number.green  { color: var(--green); }
+    .stat-number.red    { color: var(--red); }
+    .stat-number.white  { color: #FFFFFF; }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-dim);
+      font-weight: 400;
+    }
+
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin-bottom: 28px;
+    }
+
+    /* Section header */
+    .section-header {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    /* Task list */
+    .task-list {
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      overflow: hidden;
+      background: var(--card);
+    }
+
+    .task-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.12s;
+      position: relative;
+    }
+
+    .task-row:last-child {
+      border-bottom: none;
+    }
+
+    .task-row:hover {
+      background: var(--card-hover);
+    }
+
+    /* Checkbox */
+    .task-check {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border-mid);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.15s, background 0.15s;
+      cursor: pointer;
+    }
+
+    .task-row:hover .task-check {
+      border-color: var(--text-dimmer);
+    }
+
+    .task-check.done {
+      border-color: var(--amber);
+      background: var(--amber-dim);
+    }
+
+    .task-check.done svg {
+      display: block;
+    }
+
+    .task-check svg {
+      display: none;
+      width: 8px;
+      height: 8px;
+    }
+
+    /* Task text */
+    .task-text-wrap {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .task-text {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .task-row.done-row .task-text {
+      color: var(--text-dim);
+      text-decoration: line-through;
+      text-decoration-color: var(--text-dimmer);
+    }
+
+    .task-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .task-subtask {
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+
+    /* Area chip */
+    .area-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 500;
+      padding: 2px 6px;
+      border-radius: 3px;
+      letter-spacing: 0.01em;
+    }
+
+    .area-chip.work {
+      background: var(--blue-dim);
+      color: var(--blue);
+    }
+
+    .area-chip.personal {
+      background: rgba(192, 122, 74, 0.10);
+      color: #C07A4A;
+    }
+
+    .area-chip.learning {
+      background: var(--purple-dim);
+      color: var(--purple);
+    }
+
+    .area-chip.health {
+      background: var(--green-dim);
+      color: var(--green);
+    }
+
+    .area-chip-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    /* Due date */
+    .task-due {
+      font-size: 11px;
+      color: var(--text-dim);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .task-due.overdue {
+      color: var(--red);
+    }
+
+    /* Priority dot */
+    .priority-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-left: 4px;
+    }
+
+    .priority-dot.high {
+      background: var(--amber);
+      opacity: 0.8;
+    }
+
+    /* ─── RIGHT COLUMN ──────────────────────────────────── */
+    .rc-section-header {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+
+    /* Daily routines */
+    .routines-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-bottom: 8px;
+    }
+
+    .routine-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+
+    .routine-row:hover {
+      background: var(--card);
+    }
+
+    .routine-check {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      border: 1.5px solid var(--border-mid);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .routine-check.done {
+      background: var(--amber);
+      border-color: var(--amber);
+    }
+
+    .routine-check.done svg {
+      display: block;
+    }
+
+    .routine-check svg {
+      display: none;
+      width: 8px;
+      height: 8px;
+    }
+
+    .routine-text {
+      font-size: 12px;
+      color: var(--text-mid);
+      flex: 1;
+    }
+
+    .routine-row.done-row .routine-text {
+      color: var(--text-dim);
+    }
+
+    .routine-streak {
+      font-size: 10px;
+      color: var(--text-dim);
+    }
+
+    .routine-streak.amber {
+      color: var(--amber);
+    }
+
+    /* Progress bar */
+    .routine-progress-wrap {
+      margin-top: 10px;
+      margin-bottom: 28px;
+    }
+
+    .routine-progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+
+    .routine-progress-label span:last-child {
+      color: var(--blue);
+    }
+
+    .progress-track {
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 2px;
+      background: var(--blue);
+    }
+
+    /* Area health */
+    .area-health-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .area-health-row {}
+
+    .area-health-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 5px;
+    }
+
+    .area-health-name {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-mid);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .area-health-name-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+    }
+
+    .area-health-pct {
+      font-size: 10px;
+      color: var(--text-dim);
+    }
+
+    .area-health-track {
+      height: 2px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .area-health-fill {
+      height: 100%;
+      border-radius: 2px;
+    }
+
+    .area-health-sub {
+      font-size: 10px;
+      color: var(--text-dimmer);
+      margin-top: 4px;
+    }
+
+    /* Right col divider */
+    .rc-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 24px 0;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-mid);
+      border-radius: 2px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3A3A3A;
+    }
+
+    /* Focus outline kill for demo */
+    * { outline: none; }
+
+    /* Inline tag for overdue in task label */
+    .overdue-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--red);
+      background: var(--red-dim);
+      padding: 2px 5px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ══════════════════════════════════ SIDEBAR ══════ -->
+  <aside class="sidebar">
+    <div class="sidebar-top">
+
+      <!-- Logo -->
+      <div class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="1" width="4" height="4" rx="0.8" fill="#D4A853"/>
+            <rect x="6" y="1" width="4" height="4" rx="0.8" fill="#D4A853" opacity="0.4"/>
+            <rect x="1" y="6" width="4" height="4" rx="0.8" fill="#D4A853" opacity="0.4"/>
+            <rect x="6" y="6" width="4" height="4" rx="0.8" fill="#D4A853" opacity="0.2"/>
+          </svg>
+        </div>
+        <span class="logo-text">Life OS</span>
+      </div>
+
+      <!-- New task -->
+      <button class="new-task-btn">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <path d="M6 1.5V10.5M1.5 6H10.5" stroke="#555" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        New task
+      </button>
+    </div>
+
+    <!-- Nav -->
+    <nav class="nav">
+      <div class="nav-item active">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <rect x="1" y="1" width="5.5" height="5.5" rx="1.2" fill="currentColor"/>
+          <rect x="7.5" y="1" width="5.5" height="5.5" rx="1.2" fill="currentColor" opacity="0.3"/>
+          <rect x="1" y="7.5" width="5.5" height="5.5" rx="1.2" fill="currentColor" opacity="0.3"/>
+          <rect x="7.5" y="7.5" width="5.5" height="5.5" rx="1.2" fill="currentColor" opacity="0.15"/>
+        </svg>
+        Today
+        <span class="nav-item-count">15</span>
+      </div>
+      <div class="nav-item">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <rect x="1.5" y="1.5" width="11" height="11" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
+          <path d="M4.5 7H9.5M4.5 4.5H7.5M4.5 9.5H8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+        Backlog
+        <span class="nav-item-count">34</span>
+      </div>
+      <div class="nav-item">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M7 1.5L8.5 5.5H12.5L9.5 8L10.5 12L7 9.5L3.5 12L4.5 8L1.5 5.5H5.5L7 1.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
+        </svg>
+        Goals
+      </div>
+      <div class="nav-item">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <rect x="1.5" y="2.5" width="11" height="9" rx="1.2" stroke="currentColor" stroke-width="1.3"/>
+          <path d="M4.5 1V4M9.5 1V4M1.5 5.5H12.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+        Schedule
+      </div>
+    </nav>
+
+    <!-- Areas -->
+    <div class="sidebar-section">
+      <span class="sidebar-section-label">Areas</span>
+    </div>
+    <div class="areas">
+      <div class="area-item">
+        <span class="area-dot" style="background: var(--dot-health);"></span>
+        Health
+        <span class="area-item-count">4</span>
+      </div>
+      <div class="area-item">
+        <span class="area-dot" style="background: var(--dot-work);"></span>
+        Work
+        <span class="area-item-count">7</span>
+      </div>
+      <div class="area-item">
+        <span class="area-dot" style="background: var(--dot-learning);"></span>
+        Learning
+        <span class="area-item-count">3</span>
+      </div>
+      <div class="area-item">
+        <span class="area-dot" style="background: var(--dot-personal);"></span>
+        Personal
+        <span class="area-item-count">1</span>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="sidebar-footer">
+      <div class="settings-item">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.3"/>
+          <circle cx="7" cy="7" r="2" fill="currentColor"/>
+        </svg>
+        Settings
+      </div>
+    </div>
+  </aside>
+
+  <!-- ══════════════════════════════════ MAIN ══════════ -->
+  <div class="main">
+
+    <!-- Content -->
+    <div class="content">
+
+      <!-- Date -->
+      <div class="date-label">Sunday, March 22, 2026</div>
+
+      <!-- Greeting -->
+      <h1 class="greeting">Good morning.</h1>
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-item">
+          <div class="stat-number amber">3</div>
+          <div class="stat-label">In progress</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number green">8</div>
+          <div class="stat-label">Done</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number red">2</div>
+          <div class="stat-label">Overdue</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number white">15</div>
+          <div class="stat-label">Open</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Section label -->
+      <div class="section-header">Today's Focus</div>
+
+      <!-- Task list -->
+      <div class="task-list">
+
+        <!-- Task 1 — In progress -->
+        <div class="task-row">
+          <div class="task-check">
+            <svg viewBox="0 0 8 8" fill="none">
+              <path d="M1.5 4L3.2 5.7L6.5 2.3" stroke="#D4A853" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="task-text-wrap">
+            <div class="task-text">Quarterly business review</div>
+            <div class="task-meta">
+              <span class="area-chip work">
+                <span class="area-chip-dot"></span>
+                Work
+              </span>
+              <span class="task-subtask">3 of 5 subtasks</span>
+            </div>
+          </div>
+          <div class="task-due">Mar 22</div>
+          <div class="priority-dot high"></div>
+        </div>
+
+        <!-- Task 2 — Personal -->
+        <div class="task-row">
+          <div class="task-check">
+          </div>
+          <div class="task-text-wrap">
+            <div class="task-text">Call the dentist</div>
+            <div class="task-meta">
+              <span class="area-chip personal">
+                <span class="area-chip-dot"></span>
+                Personal
+              </span>
+            </div>
+          </div>
+          <div class="task-due">Mar 22</div>
+        </div>
+
+        <!-- Task 3 — Overdue -->
+        <div class="task-row">
+          <div class="task-check">
+          </div>
+          <div class="task-text-wrap">
+            <div class="task-text">Review open pull requests</div>
+            <div class="task-meta">
+              <span class="area-chip work">
+                <span class="area-chip-dot"></span>
+                Work
+              </span>
+              <span class="overdue-tag">
+                Overdue
+              </span>
+            </div>
+          </div>
+          <div class="task-due overdue">Mar 21</div>
+        </div>
+
+        <!-- Task 4 — Learning, future -->
+        <div class="task-row">
+          <div class="task-check">
+          </div>
+          <div class="task-text-wrap">
+            <div class="task-text">Read chapter 5</div>
+            <div class="task-meta">
+              <span class="area-chip learning">
+                <span class="area-chip-dot"></span>
+                Learning
+              </span>
+            </div>
+          </div>
+          <div class="task-due">Mar 23</div>
+        </div>
+
+        <!-- Task 5 — Done -->
+        <div class="task-row done-row">
+          <div class="task-check done">
+            <svg viewBox="0 0 8 8" fill="none">
+              <path d="M1.5 4L3.2 5.7L6.5 2.3" stroke="#0F0F0F" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="task-text-wrap">
+            <div class="task-text">Morning workout — chest &amp; triceps</div>
+            <div class="task-meta">
+              <span class="area-chip health">
+                <span class="area-chip-dot"></span>
+                Health
+              </span>
+            </div>
+          </div>
+          <div class="task-due">Mar 22</div>
+        </div>
+
+        <!-- Task 6 — Done -->
+        <div class="task-row done-row">
+          <div class="task-check done">
+            <svg viewBox="0 0 8 8" fill="none">
+              <path d="M1.5 4L3.2 5.7L6.5 2.3" stroke="#0F0F0F" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="task-text-wrap">
+            <div class="task-text">Send invoice to Miller &amp; Co.</div>
+            <div class="task-meta">
+              <span class="area-chip work">
+                <span class="area-chip-dot"></span>
+                Work
+              </span>
+            </div>
+          </div>
+          <div class="task-due">Mar 22</div>
+        </div>
+
+      </div>
+      <!-- /task-list -->
+
+    </div>
+    <!-- /content -->
+
+    <!-- ══════════════════════════ RIGHT COLUMN ══════════ -->
+    <div class="right-col">
+
+      <!-- Daily Routines -->
+      <div class="rc-section-header">Daily Routines</div>
+
+      <div class="routines-list">
+        <div class="routine-row done-row">
+          <div class="routine-check done">
+            <svg viewBox="0 0 8 8" fill="none">
+              <path d="M1.5 4L3.2 5.7L6.5 2.3" stroke="#0F0F0F" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <span class="routine-text">Morning workout</span>
+          <span class="routine-streak amber">🔥 12d</span>
+        </div>
+        <div class="routine-row done-row">
+          <div class="routine-check done">
+            <svg viewBox="0 0 8 8" fill="none">
+              <path d="M1.5 4L3.2 5.7L6.5 2.3" stroke="#0F0F0F" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <span class="routine-text">10-min journal</span>
+          <span class="routine-streak amber">🔥 7d</span>
+        </div>
+        <div class="routine-row done-row">
+          <div class="routine-check done">
+            <svg viewBox="0 0 8 8" fill="none">
+              <path d="M1.5 4L3.2 5.7L6.5 2.3" stroke="#0F0F0F" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <span class="routine-text">Read 20 pages</span>
+          <span class="routine-streak amber">🔥 4d</span>
+        </div>
+        <div class="routine-row">
+          <div class="routine-check">
+          </div>
+          <span class="routine-text">Evening walk</span>
+          <span class="routine-streak">3d</span>
+        </div>
+        <div class="routine-row">
+          <div class="routine-check">
+          </div>
+          <span class="routine-text">Cold shower</span>
+          <span class="routine-streak">—</span>
+        </div>
+        <div class="routine-row">
+          <div class="routine-check">
+          </div>
+          <span class="routine-text">No alcohol</span>
+          <span class="routine-streak">6d</span>
+        </div>
+      </div>
+
+      <!-- Routine progress bar -->
+      <div class="routine-progress-wrap">
+        <div class="routine-progress-label">
+          <span>3 of 6 complete</span>
+          <span>50%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width: 50%;"></div>
+        </div>
+      </div>
+
+      <div class="rc-divider"></div>
+
+      <!-- Area health -->
+      <div class="rc-section-header">Area Health</div>
+
+      <div class="area-health-list">
+
+        <div class="area-health-row">
+          <div class="area-health-top">
+            <div class="area-health-name">
+              <span class="area-health-name-dot" style="background: var(--dot-health);"></span>
+              Health
+            </div>
+            <div class="area-health-pct">78%</div>
+          </div>
+          <div class="area-health-track">
+            <div class="area-health-fill" style="width: 78%; background: var(--dot-health);"></div>
+          </div>
+          <div class="area-health-sub">3 tasks · 1 routine remaining</div>
+        </div>
+
+        <div class="area-health-row">
+          <div class="area-health-top">
+            <div class="area-health-name">
+              <span class="area-health-name-dot" style="background: var(--dot-work);"></span>
+              Work
+            </div>
+            <div class="area-health-pct">45%</div>
+          </div>
+          <div class="area-health-track">
+            <div class="area-health-fill" style="width: 45%; background: var(--dot-work);"></div>
+          </div>
+          <div class="area-health-sub">5 tasks · 1 overdue</div>
+        </div>
+
+        <div class="area-health-row">
+          <div class="area-health-top">
+            <div class="area-health-name">
+              <span class="area-health-name-dot" style="background: var(--dot-learning);"></span>
+              Learning
+            </div>
+            <div class="area-health-pct">60%</div>
+          </div>
+          <div class="area-health-track">
+            <div class="area-health-fill" style="width: 60%; background: var(--dot-learning);"></div>
+          </div>
+          <div class="area-health-sub">2 tasks this week</div>
+        </div>
+
+        <div class="area-health-row">
+          <div class="area-health-top">
+            <div class="area-health-name">
+              <span class="area-health-name-dot" style="background: var(--dot-personal);"></span>
+              Personal
+            </div>
+            <div class="area-health-pct">30%</div>
+          </div>
+          <div class="area-health-track">
+            <div class="area-health-fill" style="width: 30%; background: var(--dot-personal);"></div>
+          </div>
+          <div class="area-health-sub">1 task pending</div>
+        </div>
+
+      </div>
+      <!-- /area-health-list -->
+
+    </div>
+    <!-- /right-col -->
+
+  </div>
+  <!-- /main -->
+
+</div>
+<!-- /shell -->
+
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LIFE OS — The Ledger</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--p:#FBFAF6;--i:#0E0E0A;--m:#4A4A3A;--d:#8A8A6A;--r:#CCCCAA;--r2:#E8E8D5;--red:#8A1414;--grn:#1A5C1A;--gld:#C8A820;--blu:#1A2A5C;}
+    body{background:var(--p);color:var(--i);font-family:'IBM Plex Mono',monospace;-webkit-font-smoothing:antialiased;}
+    .top{background:var(--i);padding:0 56px;height:38px;display:flex;align-items:center;justify-content:space-between;}
+    .logo{font-family:'Playfair Display',serif;font-size:18px;font-weight:900;color:var(--p);letter-spacing:1px;text-transform:uppercase;}
+    .logo span{color:var(--gld);}
+    .nav{display:flex;}
+    .nav a{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.45);text-decoration:none;padding:0 14px;border-right:1px solid rgba(255,255,255,0.08);}
+    .nav a:last-child{border-right:none;}
+    .nav a.active,.nav a:hover{color:white;}
+    .btn{font-size:9px;letter-spacing:1px;text-transform:uppercase;background:var(--gld);color:var(--i);border:none;padding:5px 10px;cursor:pointer;font-weight:600;}
+    .hd{padding:24px 56px;border-bottom:1px solid var(--i);}
+    .hd-row{display:flex;align-items:baseline;justify-content:space-between;border-bottom:1px solid var(--r);padding-bottom:12px;margin-bottom:12px;}
+    .hd-title{font-family:'Playfair Display',serif;font-size:52px;font-weight:900;line-height:0.95;color:var(--i);}
+    .hd-r{text-align:right;font-size:10px;color:var(--d);}
+    .hd-stats{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid var(--i);}
+    .hds{padding:10px 16px;border-right:1px solid var(--i);text-align:center;}
+    .hds:last-child{border-right:none;}
+    .hds-n{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;line-height:1;}
+    .hds-n.red{color:var(--red);}
+    .hds-n.grn{color:var(--grn);}
+    .hds-l{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--d);margin-top:3px;}
+    .body{display:grid;grid-template-columns:3fr 1fr;gap:0;padding:0 56px;}
+    .cl{padding:24px 0;}
+    .cr{padding:24px 0 24px 32px;border-left:2px solid var(--i);}
+    .sl{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--red);display:block;margin-bottom:6px;}
+    .sr{border-bottom:1.5px solid var(--i);margin-bottom:14px;}
+    .ldg{width:100%;border-collapse:collapse;}
+    .ldg thead th{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--d);padding:6px 8px;border-bottom:1.5px solid var(--r);text-align:left;}
+    .ldg tbody tr{border-bottom:1px solid var(--r2);cursor:pointer;}
+    .ldg tbody tr:hover{background:rgba(0,0,0,0.02);}
+    .ldg td{padding:10px 8px;vertical-align:middle;font-size:11px;}
+    .lc{width:16px;}
+    .lci{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--i);cursor:pointer;}
+    .lci.done{background:var(--i);}
+    .lt{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:var(--i);}
+    .lt.done{text-decoration:line-through;color:var(--d);font-weight:400;}
+    .larea{font-size:9px;letter-spacing:1px;color:var(--d);}
+    .lpri{display:inline-block;font-size:7.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:1.5px 5px;}
+    .lpri.p1{background:var(--red);color:white;}
+    .lpri.p2{background:var(--blu);color:white;}
+    .lpri.p3{border:1px solid var(--r);color:var(--m);}
+    .lpri.done{border:1px solid var(--r2);color:var(--d);}
+    .ldue{font-size:10px;text-align:right;white-space:nowrap;}
+    .ldue.late{color:var(--red);font-weight:600;}
+    .lacts{display:flex;gap:6px;font-size:9px;}
+    .la{color:var(--d);cursor:pointer;text-decoration:underline;}
+    .la:hover,.la.p{color:var(--red);}
+    .lsec td{background:var(--i);color:white;font-size:8px;letter-spacing:3px;text-transform:uppercase;padding:5px 8px;}
+    .lovr td{background:rgba(138,20,20,0.07);color:var(--red);}
+    .acct{width:100%;border-collapse:collapse;margin-bottom:18px;}
+    .acct tr{border-bottom:1px solid var(--r2);}
+    .acct tr:last-child{border-bottom:none;}
+    .acct td{font-size:10px;padding:7px 0;vertical-align:middle;}
+    .an{color:var(--m);}
+    .av{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;text-align:right;}
+    .av.grn{color:var(--grn);}
+    .av.red{color:var(--red);}
+    .av.gld{color:var(--gld);}
+    .rtk{display:flex;align-items:center;gap:7px;padding:7px 0;border-bottom:1px solid var(--r2);}
+    .rtk:last-child{border-bottom:none;}
+    .rbox{width:11px;height:11px;border:1.5px solid var(--i);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+    .rbox.done{background:var(--i);}
+    .rbox.done::after{content:'✓';color:white;font-size:8px;}
+    .rn{font-size:11px;color:var(--m);flex:1;}
+    .rn.done{text-decoration:line-through;color:var(--d);}
+    .rt{font-size:9px;color:var(--d);}
+    .ticker{position:fixed;bottom:0;left:0;right:0;height:28px;background:var(--i);display:flex;align-items:center;overflow:hidden;}
+    .tl{flex-shrink:0;padding:0 12px;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--gld);border-right:1px solid rgba(255,255,255,0.1);}
+    .tt{flex:1;overflow:hidden;padding-left:14px;}
+    .tc{display:inline-flex;gap:44px;animation:sc 30s linear infinite;white-space:nowrap;}
+    .ti{font-size:10px;color:rgba(255,255,255,0.5);}
+    .ti b{color:white;}
+    .td{color:var(--gld);margin:0 6px;}
+    @keyframes sc{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+  </style>
+</head>
+<body>
+<div class="top">
+  <div class="logo">Life<span>OS</span></div>
+  <nav class="nav"><a href="#" class="active">TODAY</a><a href="#">BACKLOG</a><a href="#">GOALS</a><a href="#">SCHEDULE</a></nav>
+  <button class="btn">+ NEW ENTRY</button>
+</div>
+<div class="hd">
+  <div class="hd-row">
+    <div class="hd-title">Daily Ledger.</div>
+    <div class="hd-r"><div>Sunday, March 22, 2026</div><div style="font-size:9px;letter-spacing:1px;margin-top:4px;">REF: LIFE-OS/2026/DAY-081 · WEEK 12</div></div>
+  </div>
+  <div class="hd-stats">
+    <div class="hds"><div class="hds-n">8</div><div class="hds-l">Today</div></div>
+    <div class="hds"><div class="hds-n red">3</div><div class="hds-l">Overdue</div></div>
+    <div class="hds"><div class="hds-n">2/7</div><div class="hds-l">Routines</div></div>
+    <div class="hds"><div class="hds-n grn">17</div><div class="hds-l">Week Done</div></div>
+    <div class="hds"><div class="hds-n">72%</div><div class="hds-l">Week Rate</div></div>
+  </div>
+</div>
+<div class="body">
+  <div class="cl">
+    <table class="ldg">
+      <thead><tr><th style="width:16px"></th><th>Entry / Description</th><th>Priority</th><th>Area</th><th style="text-align:right">Due</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr class="lsec"><td colspan="6">⬥ OVERDUE — IMMEDIATE ACTION REQUIRED</td></tr>
+        <tr class="lovr"><td><div class="lci"></div></td><td><div class="lt" style="color:var(--red)">Update portfolio website copy &amp; redesign</div></td><td><span class="lpri p1">P0</span></td><td class="larea">Work</td><td class="ldue late">+6d</td><td class="lacts"><span class="la p">Done</span><span class="la">Sched.</span></td></tr>
+        <tr class="lovr"><td><div class="lci"></div></td><td><div class="lt" style="color:var(--red)">File 2024–25 tax return</div></td><td><span class="lpri p1">P0</span></td><td class="larea">Finance</td><td class="ldue late">+3d</td><td class="lacts"><span class="la p">Done</span><span class="la">Sched.</span></td></tr>
+        <tr class="lsec"><td colspan="6">⬥ TODAY — SCHEDULED</td></tr>
+        <tr><td><div class="lci"></div></td><td><div class="lt">Q1 Performance Review — Self-Assessment to HR</div><div style="font-size:9px;color:var(--m);margin-top:2px;">Annual HR submission. Peer review signatures required before portal.</div></td><td><span class="lpri p1">P1</span></td><td class="larea">Work</td><td class="ldue late">5:00 PM</td><td class="lacts"><span class="la p">Done</span><span class="la">Del.</span></td></tr>
+        <tr><td><div class="lci"></div></td><td><div class="lt">Transfer April Rent to Landlord</div></td><td><span class="lpri p2">P2</span></td><td class="larea">Finance</td><td class="ldue">12:00 PM</td><td class="lacts"><span class="la p">Done</span><span class="la">Sched.</span></td></tr>
+        <tr><td><div class="lci done"></div></td><td><div class="lt done">Morning Run — 5km Tempo Pace</div></td><td><span class="lpri done">Done</span></td><td class="larea" style="text-decoration:line-through;color:var(--d)">Health</td><td class="ldue" style="text-decoration:line-through;color:var(--d)">7:30 AM</td><td></td></tr>
+        <tr><td><div class="lci"></div></td><td><div class="lt">Chapter 4 — Deep Work Course Module</div></td><td><span class="lpri p3">P3</span></td><td class="larea">Learning</td><td class="ldue">Evening</td><td class="lacts"><span class="la p">Done</span></td></tr>
+        <tr><td><div class="lci"></div></td><td><div class="lt">Call Dad — Easter Weekend Plans</div></td><td><span class="lpri p3">P4</span></td><td class="larea">Personal</td><td class="ldue">Flexible</td><td class="lacts"><span class="la p">Done</span></td></tr>
+        <tr class="lsec"><td colspan="6">⬥ LATER THIS WEEK</td></tr>
+        <tr><td><div class="lci"></div></td><td><div class="lt">Dentist — Dr. Kim Annual Checkup</div></td><td><span class="lpri p3">P3</span></td><td class="larea">Health</td><td class="ldue">Tue 2pm</td><td class="lacts"><span class="la p">Done</span><span class="la">Sched.</span></td></tr>
+        <tr><td><div class="lci"></div></td><td><div class="lt">Submit March Expense Report</div></td><td><span class="lpri p3">P3</span></td><td class="larea">Finance</td><td class="ldue">Friday</td><td class="lacts"><span class="la p">Done</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="cr">
+    <span class="sl">Area Accounts</span><div class="sr"></div>
+    <table class="acct">
+      <tr><td class="an">Work &amp; Career</td><td class="av grn">87</td></tr>
+      <tr><td class="an">Health &amp; Fitness</td><td class="av grn">91</td></tr>
+      <tr><td class="an">Finance</td><td class="av gld">63</td></tr>
+      <tr><td class="an">Relationships</td><td class="av red">41</td></tr>
+      <tr><td class="an">Learning</td><td class="av gld">74</td></tr>
+      <tr><td class="an">Home &amp; Admin</td><td class="av gld">58</td></tr>
+    </table>
+    <span class="sl">Daily Protocol</span><div class="sr"></div>
+    <div class="rtk"><div class="rbox done"></div><span class="rn done">Morning Pages</span><span class="rt">0615</span></div>
+    <div class="rtk"><div class="rbox done"></div><span class="rn done">5km Run</span><span class="rt">0730</span></div>
+    <div class="rtk"><div class="rbox"></div><span class="rn">Cold Shower</span><span class="rt">0810</span></div>
+    <div class="rtk"><div class="rbox"></div><span class="rn">Review Priorities</span><span class="rt">0830</span></div>
+    <div class="rtk"><div class="rbox"></div><span class="rn">Meditate 10 min</span><span class="rt">AFT</span></div>
+    <div class="rtk"><div class="rbox"></div><span class="rn">Read 30 min</span><span class="rt">EVE</span></div>
+    <div class="rtk"><div class="rbox"></div><span class="rn">Evening Review</span><span class="rt">2130</span></div>
+    <span class="sl" style="margin-top:20px;display:block;">Goal Registry</span><div class="sr"></div>
+    <table class="acct">
+      <tr><td class="an">Half Marathon</td><td class="av grn">68%</td></tr>
+      <tr><td class="an">Emergency Fund</td><td class="av gld">45%</td></tr>
+      <tr><td class="an">Read 24 Books</td><td class="av red">25%</td></tr>
+    </table>
+    <span class="sl" style="margin-top:20px;display:block;">Weekly Summary</span><div class="sr"></div>
+    <table class="acct">
+      <tr><td class="an">Tasks confirmed</td><td class="av">17</td></tr>
+      <tr><td class="an">Completion rate</td><td class="av grn">74%</td></tr>
+      <tr><td class="an">Protocol streak</td><td class="av grn">12d</td></tr>
+      <tr><td class="an">Focus hours</td><td class="av grn">18.5h</td></tr>
+    </table>
+  </div>
+</div>
+<div class="ticker"><div class="tl">LEDGER</div><div class="tt"><div class="tc">
+  <span class="ti">STREAK: <b>12 days</b> protocol maintained<span class="td">|</span></span>
+  <span class="ti">ALERT: Relationships at <b>41</b><span class="td">|</span></span>
+  <span class="ti">DEADLINE: Q1 review due <b>5:00 PM</b><span class="td">|</span></span>
+  <span class="ti"><b>17 entries</b> confirmed this week<span class="td">|</span></span>
+  <span class="ti">STREAK: <b>12 days</b> protocol maintained<span class="td">|</span></span>
+  <span class="ti">ALERT: Relationships at <b>41</b><span class="td">|</span></span>
+  <span class="ti">DEADLINE: Q1 review due <b>5:00 PM</b><span class="td">|</span></span>
+  <span class="ti"><b>17 entries</b> confirmed this week<span class="td">|</span></span>
+</div></div></div>
+</body>
+</html>

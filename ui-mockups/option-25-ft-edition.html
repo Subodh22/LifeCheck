@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LIFE OS — The Financial Times Edition</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{
+      --salmon:#FDF0E3;--salmon-dark:#F5E4CB;
+      --ink:#1A1209;--ink2:#3D2D14;--ink3:#7A6040;--ink4:#B8A080;
+      --red:#8B2020;--gold:#8B5E1A;--green:#1A5C2A;
+      --rule:#1A1209;--rule2:#D4B896;
+    }
+    body{background:var(--salmon);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+
+    /* ══ FT-STYLE TOP BAR ══ */
+    .top-bar{background:var(--ink);height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 56px;}
+    .top-bar-logo{font-family:'Playfair Display',serif;font-weight:900;font-size:18px;color:var(--salmon);letter-spacing:1px;text-transform:uppercase;}
+    .top-bar-logo span{color:#E2BF4A;}
+    .top-bar-nav{display:flex;align-items:center;gap:0;}
+    .top-bar-nav a{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.55);text-decoration:none;padding:0 14px;border-right:1px solid rgba(255,255,255,0.1);}
+    .top-bar-nav a:last-child{border-right:none;}
+    .top-bar-nav a.active,.top-bar-nav a:hover{color:white;}
+    .top-bar-right{font-size:10px;color:rgba(255,255,255,0.5);}
+
+    /* ══ FT HEADER STRIP ══ */
+    .ft-header{background:var(--salmon-dark);border-bottom:2px solid var(--ink);padding:12px 56px;display:flex;align-items:flex-end;justify-content:space-between;}
+    .ft-date-line{font-size:10px;color:var(--ink3);letter-spacing:0.3px;}
+    .ft-kicker{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--red);}
+    .ft-tagline{font-size:10px;font-style:italic;color:var(--ink3);}
+
+    /* ══ HERO BAND ══ */
+    .hero{background:var(--salmon);padding:28px 56px 22px;border-bottom:1px solid var(--rule2);}
+    .hero-inner{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:end;}
+    .hero-title{font-family:'Playfair Display',serif;font-weight:900;font-size:68px;line-height:0.9;letter-spacing:-2px;color:var(--ink);}
+    .hero-subtitle{font-size:13px;color:var(--ink3);margin-top:10px;max-width:560px;line-height:1.55;}
+    .hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;background:var(--ink);padding:0;}
+    .hstat{padding:12px 18px;border-right:1px solid rgba(255,255,255,0.1);text-align:center;}
+    .hstat:last-child{border-right:none;}
+    .hstat-n{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:white;line-height:1;}
+    .hstat-n.warn{color:#E2BF4A;}
+    .hstat-n.danger{color:#E05050;}
+    .hstat-l{font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-top:4px;}
+
+    /* ══ CONTENT GRID ══ */
+    .content{display:grid;grid-template-columns:340px 1fr 260px;gap:0;padding:0 56px;}
+
+    /* column borders */
+    .col{padding:24px 28px;}
+    .col:first-child{padding-left:0;}
+    .col:last-child{padding-right:0;border-left:1px solid var(--rule2);}
+    .col.mid{border-left:1px solid var(--rule2);}
+
+    /* ══ SECTION LABEL ══ */
+    .slabel{font-size:8.5px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--red);display:block;margin-bottom:5px;}
+    .srule{border-bottom:2px solid var(--ink);margin-bottom:16px;}
+
+    /* ══ TASK ITEMS ══ */
+    .task{padding:12px 0;border-bottom:1px solid var(--rule2);}
+    .task:last-child{border-bottom:none;}
+    .task-header{display:flex;align-items:flex-start;gap:8px;margin-bottom:4px;}
+    .task-dot{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--ink);flex-shrink:0;cursor:pointer;margin-top:2px;transition:all 0.15s;}
+    .task-dot:hover,.task-dot.done{background:var(--ink);}
+    .task-title-ft{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;line-height:1.2;color:var(--ink);cursor:pointer;}
+    .task-title-ft:hover{color:var(--red);}
+    .task-title-ft.done{text-decoration:line-through;color:var(--ink4);font-weight:400;}
+    .task-meta-ft{font-size:9.5px;color:var(--ink3);display:flex;gap:10px;flex-wrap:wrap;}
+    .task-meta-ft .area{font-weight:600;color:var(--ink2);}
+    .task-meta-ft .due{color:var(--red);}
+    .task-desc-ft{font-size:10.5px;color:var(--ink3);line-height:1.55;margin-top:4px;padding-left:20px;}
+    .task-actions-ft{display:flex;gap:10px;margin-top:6px;padding-left:20px;}
+    .taction{font-size:9px;font-weight:700;letter-spacing:0.3px;color:var(--ink3);border-bottom:1px solid transparent;cursor:pointer;padding-bottom:1px;transition:all 0.1s;}
+    .taction:hover,.taction.p{color:var(--ink);border-color:var(--ink);}
+    .taction:hover{color:var(--red);border-color:var(--red);}
+
+    /* FT-style priority tag */
+    .ptag{display:inline-block;font-size:7.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:1.5px 5px;margin-right:4px;vertical-align:middle;}
+    .ptag.p1{background:var(--red);color:white;}
+    .ptag.p2{background:var(--ink);color:white;}
+    .ptag.p3{border:1px solid var(--ink3);color:var(--ink3);}
+    .ptag.done{border:1px solid var(--rule2);color:var(--ink4);}
+
+    /* ══ FT MARKET DATA STYLE — AREA HEALTH ══ */
+    .market-table{width:100%;border-collapse:collapse;}
+    .market-table thead th{font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink4);padding:6px 0;border-bottom:1px solid var(--rule2);text-align:left;}
+    .market-table thead th:last-child{text-align:right;}
+    .market-table tbody tr{border-bottom:1px solid var(--rule2);}
+    .market-table tbody tr:last-child{border-bottom:none;}
+    .market-table td{padding:9px 0;font-size:11px;vertical-align:middle;}
+    .market-name{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:var(--ink);}
+    .market-score{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;text-align:right;}
+    .market-score.up{color:var(--green);}
+    .market-score.mid{color:var(--gold);}
+    .market-score.down{color:var(--red);}
+    .market-bar{width:72px;height:2px;background:var(--rule2);float:right;margin-top:8px;}
+    .market-bar-fill{height:100%;}
+    .market-detail{font-size:9px;color:var(--ink4);}
+    .market-change{font-size:9px;font-weight:600;}
+    .market-change.up{color:var(--green);}
+    .market-change.down{color:var(--red);}
+
+    /* ══ ROUTINES TABLE ══ */
+    .rt-row{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--rule2);}
+    .rt-row:last-child{border-bottom:none;}
+    .rt-dot{width:11px;height:11px;border-radius:50%;border:1.5px solid var(--ink);flex-shrink:0;cursor:pointer;}
+    .rt-dot.done{background:var(--green);border-color:var(--green);}
+    .rt-name{font-size:12px;color:var(--ink2);flex:1;}
+    .rt-name.done{text-decoration:line-through;color:var(--ink4);}
+    .rt-time{font-size:9px;color:var(--ink4);}
+
+    /* ══ FT DATA BOX ══ */
+    .ftbox{background:var(--ink2);padding:16px;margin-top:20px;}
+    .ftbox-title{font-size:8.5px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#E2BF4A;margin-bottom:12px;}
+    .ftbox-row{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.08);}
+    .ftbox-row:last-child{border-bottom:none;}
+    .ftbox-key{font-size:10px;color:rgba(255,255,255,0.5);}
+    .ftbox-val{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:white;}
+    .ftbox-val.g{color:#E2BF4A;}
+    .ftbox-val.r{color:#E05050;}
+
+    /* ══ GOALS ══ */
+    .goal-row{padding:12px 0;border-bottom:1px solid var(--rule2);}
+    .goal-row:last-child{border-bottom:none;}
+    .goal-name{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:var(--ink);margin-bottom:5px;}
+    .goal-bar-bg{height:2px;background:var(--rule2);margin-bottom:4px;}
+    .goal-bar-fill{height:100%;}
+    .goal-row-bottom{display:flex;justify-content:space-between;font-size:9px;color:var(--ink4);}
+    .goal-pct{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;}
+
+    /* ══ PULL QUOTE ══ */
+    .pull{border-left:3px solid var(--gold);padding:8px 0 8px 12px;margin:16px 0;}
+    .pull-text{font-family:'Playfair Display',serif;font-style:italic;font-size:13.5px;line-height:1.4;color:var(--ink2);}
+    .pull-attr{font-size:8.5px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink4);margin-top:5px;}
+
+    /* ══ MOOD BOX ══ */
+    .mood{border:1px solid var(--rule2);padding:12px;margin-top:16px;}
+    .mood-title{font-size:8.5px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink4);margin-bottom:8px;}
+    .mood-opts{display:flex;gap:6px;}
+    .mood-opt{flex:1;text-align:center;padding:5px;border:1px solid var(--rule2);cursor:pointer;font-size:14px;transition:all 0.15s;}
+    .mood-opt.active,.mood-opt:hover{border-color:var(--ink);background:var(--ink);}
+
+    /* ══ TICKER ══ */
+    .ticker{position:fixed;bottom:0;left:0;right:0;height:28px;background:var(--ink);display:flex;align-items:center;overflow:hidden;z-index:100;}
+    .ticker-flag{flex-shrink:0;background:var(--red);height:100%;display:flex;align-items:center;padding:0 12px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:white;}
+    .ticker-track{flex:1;overflow:hidden;padding-left:16px;}
+    .ticker-content{display:inline-flex;gap:44px;animation:scroll 28s linear infinite;white-space:nowrap;}
+    .ti{font-size:10px;color:rgba(255,255,255,0.6);}
+    .ti b{color:white;font-weight:500;}
+    .td{color:var(--red);margin:0 4px;}
+    @keyframes scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+  </style>
+</head>
+<body>
+
+<!-- FT-STYLE TOP NAV BAR -->
+<div class="top-bar">
+  <div class="top-bar-logo">Life<span>OS</span></div>
+  <nav class="top-bar-nav">
+    <a href="#" class="active">Today</a>
+    <a href="#">Backlog</a>
+    <a href="#">Goals</a>
+    <a href="#">Schedule</a>
+    <a href="#">Areas</a>
+    <a href="#">Reviews</a>
+  </nav>
+  <div class="top-bar-right">Sunday, March 22, 2026 &nbsp;·&nbsp; Week 12</div>
+</div>
+
+<div class="ft-header">
+  <div>
+    <div class="ft-kicker">Personal Daily Edition</div>
+    <div class="ft-date-line">Sunday, 22 March 2026 &nbsp;·&nbsp; Vol. I No. 81 &nbsp;·&nbsp; Day 81 of 365</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:16px;">
+    <div class="ft-tagline" style="font-style:normal;font-size:10px;color:var(--ink3);">Registered to your personal account</div>
+    <button style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;background:var(--ink);color:var(--salmon);border:none;padding:5px 12px;cursor:pointer;">+ New Task</button>
+  </div>
+</div>
+
+<!-- HERO BAND -->
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <h1 class="hero-title">Good<br>Morning.</h1>
+      <p class="hero-subtitle">Eight tasks scheduled for today with one critical deadline at 5:00 PM. Relationships area health has dropped to 41 — below threshold. Two of seven routines completed before 8:30 AM.</p>
+    </div>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hstat-n">8</div><div class="hstat-l">Scheduled</div></div>
+      <div class="hstat"><div class="hstat-n danger">3</div><div class="hstat-l">Overdue</div></div>
+      <div class="hstat"><div class="hstat-n warn">2/7</div><div class="hstat-l">Routines</div></div>
+      <div class="hstat"><div class="hstat-n warn">72%</div><div class="hstat-l">Week Goal</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- THREE-COLUMN CONTENT -->
+<div class="content">
+
+  <!-- LEFT: TODAY'S FOCUS -->
+  <div class="col">
+    <span class="slabel">Today's Focus</span>
+    <div class="srule"></div>
+
+    <div class="task">
+      <div class="task-header">
+        <div class="task-dot"></div>
+        <div>
+          <span class="ptag p1">P1</span>
+          <span class="task-title-ft">Q1 Performance Review — Self-Assessment Due Today</span>
+        </div>
+      </div>
+      <div class="task-meta-ft"><span class="area">Work</span><span class="due">5:00 PM deadline</span></div>
+      <div class="task-desc-ft">Annual documentation covering Q1 goals, growth areas, and Q2 objectives. Requires peer review signatures before submission.</div>
+      <div class="task-actions-ft"><span class="taction p">Mark Done</span><span class="taction">Reschedule</span><span class="taction">Delegate</span></div>
+    </div>
+
+    <div class="task">
+      <div class="task-header">
+        <div class="task-dot"></div>
+        <div>
+          <span class="ptag p2">P2</span>
+          <span class="task-title-ft">Transfer April Rent to Landlord Account</span>
+        </div>
+      </div>
+      <div class="task-meta-ft"><span class="area">Finance</span><span>Due noon</span></div>
+      <div class="task-actions-ft"><span class="taction p">Mark Done</span><span class="taction">Reschedule</span></div>
+    </div>
+
+    <div class="task">
+      <div class="task-header">
+        <div class="task-dot done"></div>
+        <div>
+          <span class="ptag done">Done</span>
+          <span class="task-title-ft done">Morning Run — 5km Tempo Pace</span>
+        </div>
+      </div>
+      <div class="task-meta-ft"><span class="area">Health</span><span>7:30 AM</span></div>
+    </div>
+
+    <div class="task">
+      <div class="task-header">
+        <div class="task-dot"></div>
+        <div>
+          <span class="ptag p3">P3</span>
+          <span class="task-title-ft">Complete Chapter 4 — Deep Work Course</span>
+        </div>
+      </div>
+      <div class="task-meta-ft"><span class="area">Learning</span><span>Evening</span></div>
+      <div class="task-desc-ft">45-min focused session using Cornell notes.</div>
+      <div class="task-actions-ft"><span class="taction p">Mark Done</span><span class="taction">Reschedule</span></div>
+    </div>
+
+    <div class="task">
+      <div class="task-header">
+        <div class="task-dot"></div>
+        <div>
+          <span class="ptag p3">P4</span>
+          <span class="task-title-ft">Call Dad — Easter Weekend Plans</span>
+        </div>
+      </div>
+      <div class="task-meta-ft"><span class="area">Personal</span><span>Flexible</span></div>
+      <div class="task-actions-ft"><span class="taction p">Mark Done</span></div>
+    </div>
+
+    <div class="pull">
+      <div class="pull-text">"The secret of getting ahead is getting started."</div>
+      <div class="pull-attr">— Mark Twain</div>
+    </div>
+
+    <!-- Overdue briefs -->
+    <span class="slabel" style="margin-top:16px;display:block;color:var(--red);">Overdue — Action Required</span>
+    <div class="srule" style="border-color:var(--red);"></div>
+    <div style="font-size:11px;color:var(--red);padding:7px 0;border-bottom:1px solid var(--rule2);">▸ OVERDUE +6d: Update portfolio website</div>
+    <div style="font-size:11px;color:var(--red);padding:7px 0;border-bottom:1px solid var(--rule2);">▸ OVERDUE +3d: File 2024-25 tax return</div>
+    <div style="font-size:11px;color:var(--red);padding:7px 0;">▸ OVERDUE +2d: Reply to James re: proposal</div>
+  </div>
+
+  <!-- MIDDLE: AREA HEALTH (FT Markets style) -->
+  <div class="col mid">
+    <span class="slabel">Area Health Index</span>
+    <div class="srule"></div>
+
+    <table class="market-table">
+      <thead>
+        <tr><th>Area</th><th>Status</th><th style="text-align:right;">Score</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <div class="market-name">Work &amp; Career</div>
+            <div class="market-detail">5 open tasks</div>
+          </td>
+          <td><span class="market-change up">Strong ▲</span></td>
+          <td>
+            <div class="market-score up">87</div>
+            <div class="market-bar"><div class="market-bar-fill" style="width:87%;background:var(--green);"></div></div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="market-name">Health &amp; Fitness</div>
+            <div class="market-detail">2 open tasks</div>
+          </td>
+          <td><span class="market-change up">Excellent ▲</span></td>
+          <td>
+            <div class="market-score up">91</div>
+            <div class="market-bar"><div class="market-bar-fill" style="width:91%;background:var(--green);"></div></div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="market-name">Finance</div>
+            <div class="market-detail">3 open · 1 overdue</div>
+          </td>
+          <td><span class="market-change" style="color:var(--gold);">Watch ►</span></td>
+          <td>
+            <div class="market-score mid">63</div>
+            <div class="market-bar"><div class="market-bar-fill" style="width:63%;background:var(--gold);"></div></div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="market-name">Relationships</div>
+            <div class="market-detail">4 open · 2 overdue</div>
+          </td>
+          <td><span class="market-change down">Critical ▼</span></td>
+          <td>
+            <div class="market-score down">41</div>
+            <div class="market-bar"><div class="market-bar-fill" style="width:41%;background:var(--red);"></div></div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="market-name">Learning &amp; Growth</div>
+            <div class="market-detail">2 open tasks</div>
+          </td>
+          <td><span class="market-change" style="color:var(--gold);">Good ►</span></td>
+          <td>
+            <div class="market-score mid">74</div>
+            <div class="market-bar"><div class="market-bar-fill" style="width:74%;background:var(--gold);"></div></div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="market-name">Home &amp; Admin</div>
+            <div class="market-detail">3 open · 1 overdue</div>
+          </td>
+          <td><span class="market-change" style="color:var(--gold);">Moderate ►</span></td>
+          <td>
+            <div class="market-score mid">58</div>
+            <div class="market-bar"><div class="market-bar-fill" style="width:58%;background:var(--gold);"></div></div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="ftbox">
+      <div class="ftbox-title">Weekly Performance</div>
+      <div class="ftbox-row"><span class="ftbox-key">Tasks completed</span><span class="ftbox-val">17</span></div>
+      <div class="ftbox-row"><span class="ftbox-key">Tasks added</span><span class="ftbox-val">23</span></div>
+      <div class="ftbox-row"><span class="ftbox-key">Completion rate</span><span class="ftbox-val g">74%</span></div>
+      <div class="ftbox-row"><span class="ftbox-key">Routine streak</span><span class="ftbox-val g">12 days</span></div>
+      <div class="ftbox-row"><span class="ftbox-key">Overdue cleared</span><span class="ftbox-val">4</span></div>
+      <div class="ftbox-row"><span class="ftbox-key">Focus hours</span><span class="ftbox-val g">18.5h</span></div>
+    </div>
+
+    <span class="slabel" style="margin-top:24px;display:block;">Active Goals</span>
+    <div class="srule"></div>
+    <div class="goal-row">
+      <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+        <div class="goal-name">Run a Half Marathon</div>
+        <div class="goal-pct" style="color:var(--green);">68%</div>
+      </div>
+      <div class="goal-bar-bg"><div class="goal-bar-fill" style="width:68%;background:var(--green);"></div></div>
+      <div class="goal-row-bottom"><span>Target: June 15</span><span style="color:var(--green);">On Track</span></div>
+    </div>
+    <div class="goal-row">
+      <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+        <div class="goal-name">Save $10,000 Emergency Fund</div>
+        <div class="goal-pct" style="color:var(--gold);">45%</div>
+      </div>
+      <div class="goal-bar-bg"><div class="goal-bar-fill" style="width:45%;background:var(--gold);"></div></div>
+      <div class="goal-row-bottom"><span>$4,500 / $10,000</span><span style="color:var(--gold);">Moderate</span></div>
+    </div>
+    <div class="goal-row">
+      <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+        <div class="goal-name">Read 24 Books This Year</div>
+        <div class="goal-pct" style="color:var(--red);">25%</div>
+      </div>
+      <div class="goal-bar-bg"><div class="goal-bar-fill" style="width:25%;background:var(--red);"></div></div>
+      <div class="goal-row-bottom"><span>6 / 24 books</span><span style="color:var(--red);">Behind Pace</span></div>
+    </div>
+  </div>
+
+  <!-- RIGHT: ROUTINES + STATS -->
+  <div class="col" style="padding-right:0;">
+    <span class="slabel">Daily Routines</span>
+    <div class="srule"></div>
+    <div class="rt-row"><div class="rt-dot done"></div><span class="rt-name done">Morning Pages (3 pages)</span><span class="rt-time">6:15</span></div>
+    <div class="rt-row"><div class="rt-dot done"></div><span class="rt-name done">5km Morning Run</span><span class="rt-time">7:30</span></div>
+    <div class="rt-row"><div class="rt-dot"></div><span class="rt-name">Cold Shower (2 min)</span><span class="rt-time">8:10</span></div>
+    <div class="rt-row"><div class="rt-dot"></div><span class="rt-name">Review Daily Priorities</span><span class="rt-time">8:30</span></div>
+    <div class="rt-row"><div class="rt-dot"></div><span class="rt-name">Meditate (10 min)</span><span class="rt-time">Aft</span></div>
+    <div class="rt-row"><div class="rt-dot"></div><span class="rt-name">Read (30 min)</span><span class="rt-time">Eve</span></div>
+    <div class="rt-row"><div class="rt-dot"></div><span class="rt-name">Evening Review</span><span class="rt-time">9:30</span></div>
+
+    <!-- Progress -->
+    <div style="margin-top:12px;display:flex;align-items:center;gap:8px;">
+      <div style="flex:1;height:2px;background:var(--rule2);overflow:hidden;">
+        <div style="height:100%;width:28%;background:var(--green);"></div>
+      </div>
+      <span style="font-size:10px;color:var(--ink4);">2/7</span>
+    </div>
+
+    <!-- Today Glance -->
+    <span class="slabel" style="margin-top:24px;display:block;">Today at a Glance</span>
+    <div class="srule"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--rule2);border:1px solid var(--rule2);margin-bottom:16px;">
+      <div style="background:var(--salmon);padding:12px;text-align:center;">
+        <div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--ink);line-height:1;">8</div>
+        <div style="font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink4);margin-top:3px;">Tasks</div>
+      </div>
+      <div style="background:var(--salmon);padding:12px;text-align:center;">
+        <div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--red);line-height:1;">3</div>
+        <div style="font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink4);margin-top:3px;">Overdue</div>
+      </div>
+      <div style="background:var(--salmon);padding:12px;text-align:center;">
+        <div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--ink);line-height:1;">12</div>
+        <div style="font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink4);margin-top:3px;">Streak</div>
+      </div>
+      <div style="background:var(--salmon);padding:12px;text-align:center;">
+        <div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--ink);line-height:1;">72%</div>
+        <div style="font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink4);margin-top:3px;">Week</div>
+      </div>
+    </div>
+
+    <div class="mood">
+      <div class="mood-title">How are you feeling?</div>
+      <div class="mood-opts">
+        <div class="mood-opt">😴</div>
+        <div class="mood-opt">😐</div>
+        <div class="mood-opt active">🙂</div>
+        <div class="mood-opt">😄</div>
+        <div class="mood-opt">🔥</div>
+      </div>
+    </div>
+
+    <div class="pull" style="margin-top:16px;border-color:var(--red);">
+      <div class="pull-text">"It is not that we have a short time to live, but that we waste a great deal of it."</div>
+      <div class="pull-attr">— Seneca</div>
+    </div>
+
+    <!-- Next up -->
+    <span class="slabel" style="margin-top:16px;display:block;">Next Up</span>
+    <div class="srule"></div>
+    <div style="padding:10px 0;border-bottom:1px solid var(--rule2);">
+      <div style="display:flex;justify-content:space-between;">
+        <span style="font-family:'Playfair Display',serif;font-size:13px;font-weight:700;">Team Standup</span>
+        <span style="font-size:10px;color:var(--red);font-weight:600;">10:00 AM</span>
+      </div>
+      <div style="font-size:9.5px;color:var(--ink4);margin-top:2px;">Google Meet · 15 min</div>
+    </div>
+    <div style="padding:10px 0;">
+      <div style="display:flex;justify-content:space-between;">
+        <span style="font-family:'Playfair Display',serif;font-size:13px;font-weight:700;">Lunch with Alex</span>
+        <span style="font-size:10px;color:var(--ink4);font-weight:600;">12:30 PM</span>
+      </div>
+      <div style="font-size:9.5px;color:var(--ink4);margin-top:2px;">Grill'd Fitzroy · 1 hr</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="ticker">
+  <div class="ticker-flag">LIVE</div>
+  <div class="ticker-track"><div class="ticker-content">
+    <span class="ti"><b>12-day streak</b> on daily routines<span class="td">◆</span></span>
+    <span class="ti">Relationships area at <b>41</b> — critical<span class="td">◆</span></span>
+    <span class="ti">Q1 Review due in <b>8 hours</b><span class="td">◆</span></span>
+    <span class="ti"><b>17 tasks</b> completed this week<span class="td">◆</span></span>
+    <span class="ti">Week 12 of 52 — <b>23%</b> of year complete<span class="td">◆</span></span>
+    <span class="ti"><b>12-day streak</b> on daily routines<span class="td">◆</span></span>
+    <span class="ti">Relationships area at <b>41</b> — critical<span class="td">◆</span></span>
+    <span class="ti">Q1 Review due in <b>8 hours</b><span class="td">◆</span></span>
+    <span class="ti"><b>17 tasks</b> completed this week<span class="td">◆</span></span>
+    <span class="ti">Week 12 of 52 — <b>23%</b> of year complete<span class="td">◆</span></span>
+  </div></div>
+</div>
+
+</body>
+</html>

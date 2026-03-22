@@ -1,0 +1,274 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Life OS  Glassmorphism Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--t:#E2E8F0;--t2:#94A3B8;--t3:#4B5A6A;--acc:#818CF8;--acc2:#A5B4FC;--red:#F87171;--green:#4ADE80;--amb:#FBBF24;--surf:rgba(15,20,40,0.5);--bord:rgba(255,255,255,0.08);}
+    body{min-height:100vh;background:#080D1A;color:var(--t);font-family:'Inter',system-ui,sans-serif;font-size:13px;overflow-x:hidden;}
+    /* Animated gradient bg */
+    .bg{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse at 20% 20%,#1E1060 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,#0D3040 0%,transparent 50%),radial-gradient(ellipse at 60% 10%,#1A0A50 0%,transparent 40%),#080D1A;}
+    .orb{position:fixed;border-radius:50%;filter:blur(80px);opacity:0.3;animation:float 8s ease-in-out infinite;}
+    .orb1{width:400px;height:400px;background:#4F46E5;top:-100px;left:-100px;animation-delay:0s;}
+    .orb2{width:300px;height:300px;background:#0EA5E9;bottom:-50px;right:-50px;animation-delay:-3s;}
+    .orb3{width:200px;height:200px;background:#7C3AED;top:40%;right:20%;animation-delay:-5s;}
+    @keyframes float{0%,100%{transform:translate(0,0);}50%{transform:translate(20px,-20px);}}
+    .layout{position:relative;z-index:1;display:grid;grid-template-columns:60px 1fr;min-height:100vh;}
+    /* ICON SIDEBAR */
+    .icon-sb{background:rgba(8,13,26,0.6);border-right:1px solid var(--bord);backdrop-filter:blur(20px);display:flex;flex-direction:column;align-items:center;padding:16px 0;gap:4px;}
+    .icon-logo{width:36px;height:36px;background:linear-gradient(135deg,var(--acc),#A5B4FC);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#fff;margin-bottom:16px;}
+    .icon-btn{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;color:var(--t3);transition:all .15s;position:relative;}
+    .icon-btn:hover{background:rgba(255,255,255,0.06);color:var(--t);}
+    .icon-btn.active{background:rgba(129,140,248,0.15);color:var(--acc);}
+    .icon-btn .tip{position:absolute;left:48px;top:50%;transform:translateY(-50%);background:rgba(15,20,40,0.95);border:1px solid var(--bord);padding:4px 8px;border-radius:6px;font-size:11px;font-weight:500;color:var(--t);white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .1s;}
+    .icon-btn:hover .tip{opacity:1;}
+    .icon-sb-bot{margin-top:auto;display:flex;flex-direction:column;align-items:center;gap:4px;}
+    .av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--acc),#A5B4FC);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;cursor:pointer;}
+    /* MAIN */
+    .main{padding:24px;overflow-y:auto;}
+    /* TOP */
+    .top-row{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:28px;}
+    .top-greeting{font-size:28px;font-weight:700;color:var(--t);letter-spacing:-0.5px;}
+    .top-greeting span{color:var(--acc2);}
+    .top-meta{font-size:12px;color:var(--t3);margin-top:4px;}
+    .top-actions{display:flex;gap:8px;}
+    .act-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;border:1px solid var(--bord);background:var(--surf);backdrop-filter:blur(12px);font-size:12px;font-weight:500;color:var(--t2);cursor:pointer;transition:all .15s;}
+    .act-btn:hover{border-color:rgba(255,255,255,0.15);color:var(--t);}
+    .act-btn.primary{background:rgba(129,140,248,0.2);border-color:rgba(129,140,248,0.4);color:var(--acc2);}
+    .act-btn.primary:hover{background:rgba(129,140,248,0.3);}
+    /* BENTO GRID */
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:auto;gap:16px;}
+    /* GLASS CARD */
+    .card{background:rgba(255,255,255,0.04);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:20px;transition:border-color .2s;}
+    .card:hover{border-color:rgba(255,255,255,0.14);}
+    .card.span2{grid-column:span 2;}
+    .card.span3{grid-column:span 3;}
+    .card-label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t3);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;}
+    .card-label-action{font-size:10px;font-weight:500;color:var(--acc);cursor:pointer;text-transform:none;letter-spacing:0;}
+    /* HERO STATS */
+    .hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+    .hstat{background:rgba(255,255,255,0.03);border:1px solid var(--bord);border-radius:12px;padding:16px;text-align:center;}
+    .hstat-n{font-size:32px;font-weight:700;color:var(--t);line-height:1;margin-bottom:4px;}
+    .hstat-n.red{color:var(--red);}
+    .hstat-n.green{color:var(--green);}
+    .hstat-n.amb{color:var(--amb);}
+    .hstat-n.acc{color:var(--acc2);}
+    .hstat-l{font-size:11px;color:var(--t3);}
+    /* TASKS */
+    .task{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;transition:background .1s;border-radius:6px;padding-left:6px;padding-right:6px;margin:0 -6px;}
+    .task:last-child{border-bottom:none;}
+    .task:hover{background:rgba(255,255,255,0.04);}
+    .task.done{opacity:.35;}
+    .t-chk{width:16px;height:16px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.2);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+    .t-chk:hover{border-color:var(--acc);}
+    .t-chk.done{background:var(--acc);border-color:var(--acc);}
+    .t-chk.done::after{content:'';font-size:9px;color:#fff;}
+    .t-chk.urgent{border-color:var(--red);}
+    .t-chk.urgent:hover{background:var(--red);}
+    .t-body{flex:1;min-width:0;}
+    .t-title{font-size:12.5px;color:var(--t);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .t-title.done{text-decoration:line-through;color:var(--t3);}
+    .t-sub{font-size:10.5px;color:var(--t3);margin-top:1px;}
+    .t-badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:6px;flex-shrink:0;}
+    .t-badge.urgent{background:rgba(248,113,113,0.15);color:var(--red);}
+    .t-badge.today{background:rgba(251,191,36,0.15);color:var(--amb);}
+    .t-badge.done{background:rgba(74,222,128,0.1);color:var(--green);}
+    /* OVERDUE ALERT */
+    .alert{background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:10px;padding:10px 14px;margin-bottom:10px;display:flex;align-items:center;gap:10px;}
+    .alert-dot{width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0;animation:pulse 2s infinite;}
+    @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+    .alert-text{font-size:12px;color:var(--red);flex:1;}
+    .alert-badge{font-size:10px;font-weight:700;background:rgba(248,113,113,0.2);color:var(--red);padding:2px 7px;border-radius:6px;}
+    /* RING */
+    .ring-row{display:flex;align-items:center;gap:20px;}
+    .ring-wrap{position:relative;width:80px;height:80px;flex-shrink:0;}
+    .ring-wrap svg{transform:rotate(-90deg);}
+    .ring-mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+    .ring-mid-n{font-size:18px;font-weight:700;color:var(--t);line-height:1;}
+    .ring-mid-l{font-size:9px;color:var(--t3);}
+    .ring-stats{}
+    .rs{display:flex;align-items:center;justify-content:space-between;padding:4px 0;}
+    .rs-l{font-size:12px;color:var(--t2);}
+    .rs-v{font-size:12px;font-weight:600;}
+    /* AREA GRID */
+    .area-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+    .ag{background:rgba(255,255,255,0.03);border:1px solid var(--bord);border-radius:10px;padding:12px;}
+    .ag-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
+    .ag-name{font-size:11px;color:var(--t2);}
+    .ag-score{font-size:20px;font-weight:700;color:var(--t);}
+    .ag-score.lo{color:var(--red);}
+    .ag-score.mid{color:var(--amb);}
+    .ag-bar{height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;}
+    .ag-fill{height:100%;border-radius:2px;}
+    /* HABITS ROW */
+    .habit-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+    .habit-row:last-child{border-bottom:none;}
+    .h-dot{width:10px;height:10px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.15);cursor:pointer;flex-shrink:0;}
+    .h-dot.done{background:var(--acc);border-color:var(--acc);}
+    .h-name{font-size:12px;color:var(--t2);flex:1;}
+    .h-time{font-size:10px;color:var(--t3);}
+    /* GOAL CARDS ROW */
+    .goal-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+    .goal-row:last-child{border-bottom:none;}
+    .g-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+    .g-body{flex:1;}
+    .g-name{font-size:12.5px;font-weight:500;color:var(--t);margin-bottom:4px;}
+    .g-bar{height:3px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden;margin-bottom:3px;}
+    .g-fill{height:100%;border-radius:2px;}
+    .g-meta{font-size:10.5px;color:var(--t3);}
+    .g-pct{font-size:16px;font-weight:700;flex-shrink:0;}
+    /* QUOTE CARD */
+    .quote-card{text-align:center;padding:8px 0;}
+    .q-mark{font-size:40px;color:rgba(129,140,248,0.2);line-height:1;font-family:Georgia,serif;}
+    .q-text{font-size:13.5px;font-style:italic;color:var(--t2);line-height:1.6;margin:4px 0;}
+    .q-attr{font-size:11px;color:var(--t3);}
+  </style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+<div class="layout">
+  <div class="icon-sb">
+    <div class="icon-logo">L</div>
+    <div class="icon-btn active"><span class="tip">Today</span></div>
+    <div class="icon-btn"><span class="tip">My Tasks</span></div>
+    <div class="icon-btn"><span class="tip">Inbox (3)</span></div>
+    <div class="icon-btn"><span class="tip">Schedule</span></div>
+    <div class="icon-btn"><span class="tip">Goals</span></div>
+    <div class="icon-btn"><span class="tip">Areas</span></div>
+    <div class="icon-sb-bot">
+      <div class="icon-btn"><span class="tip">Settings</span></div>
+      <div class="av">S</div>
+    </div>
+  </div>
+  <div class="main">
+    <div class="top-row">
+      <div>
+        <div class="top-greeting">Good morning, <span>Subodh.</span></div>
+        <div class="top-meta">Sunday, March 22  Week 12 of 52  Day 81  Q1 2026</div>
+      </div>
+      <div class="top-actions">
+        <div class="act-btn"> Filter</div>
+        <div class="act-btn"> Schedule</div>
+        <div class="act-btn primary"> New Task</div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- Hero stats: span 3 -->
+      <div class="card span3">
+        <div class="card-label">At a glance <span class="card-label-action">View all </span></div>
+        <div class="hero-stats">
+          <div class="hstat"><div class="hstat-n">8</div><div class="hstat-l">Tasks today</div></div>
+          <div class="hstat"><div class="hstat-n red">3</div><div class="hstat-l">Overdue</div></div>
+          <div class="hstat"><div class="hstat-n acc">12</div><div class="hstat-l">Day streak </div></div>
+          <div class="hstat"><div class="hstat-n amb">72%</div><div class="hstat-l">Week rate</div></div>
+        </div>
+      </div>
+
+      <!-- Tasks: span 2 -->
+      <div class="card span2">
+        <div class="card-label">Today's Tasks <span class="card-label-action">+ Add task</span></div>
+        <div class="alert"><div class="alert-dot"></div><span class="alert-text">2 tasks are overdue  act before adding new work</span><span class="alert-badge">2 OVERDUE</span></div>
+        <div class="task">
+          <div class="t-chk urgent"></div>
+          <div class="t-body"><div class="t-title">Q1 Performance Review  Self-Assessment Submission</div><div class="t-sub">Work  Deadline today at 5:00 PM</div></div>
+          <span class="t-badge urgent">5:00 PM</span>
+        </div>
+        <div class="task">
+          <div class="t-chk"></div>
+          <div class="t-body"><div class="t-title">Transfer April rent to landlord</div><div class="t-sub">Finance  Before noon</div></div>
+          <span class="t-badge today">Noon</span>
+        </div>
+        <div class="task done">
+          <div class="t-chk done"></div>
+          <div class="t-body"><div class="t-title done">Morning run  5km tempo pace</div><div class="t-sub">Health  Done at 7:30 AM</div></div>
+          <span class="t-badge done"> Done</span>
+        </div>
+        <div class="task">
+          <div class="t-chk"></div>
+          <div class="t-body"><div class="t-title">Chapter 4  Deep Work course module</div><div class="t-sub">Learning  This evening</div></div>
+        </div>
+        <div class="task">
+          <div class="t-chk"></div>
+          <div class="t-body"><div class="t-title">Call Dad  Easter weekend plans</div><div class="t-sub">Relationships  Flexible</div></div>
+        </div>
+      </div>
+
+      <!-- Day progress -->
+      <div class="card">
+        <div class="card-label">Day Progress</div>
+        <div class="ring-row" style="margin-bottom:16px;">
+          <div class="ring-wrap">
+            <svg width="80" height="80" viewBox="0 0 80 80">
+              <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="6"/>
+              <circle cx="40" cy="40" r="32" fill="none" stroke="url(#grad)" stroke-width="6" stroke-dasharray="201" stroke-dashoffset="124" stroke-linecap="round"/>
+              <defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#818CF8"/><stop offset="100%" stop-color="#A5B4FC"/></linearGradient></defs>
+            </svg>
+            <div class="ring-mid"><div class="ring-mid-n">38%</div><div class="ring-mid-l">done</div></div>
+          </div>
+          <div class="ring-stats">
+            <div class="rs"><span class="rs-l">Tasks done</span><span class="rs-v">3/8</span></div>
+            <div class="rs"><span class="rs-l">Routines</span><span class="rs-v" style="color:var(--acc2)">2/7</span></div>
+            <div class="rs"><span class="rs-l">Streak</span><span class="rs-v" style="color:var(--green)">12d </span></div>
+          </div>
+        </div>
+        <div class="card-label" style="margin-bottom:10px;">Habits</div>
+        <div class="habit-row"><div class="h-dot done"></div><span class="h-name">Morning pages</span><span class="h-time">6:15</span></div>
+        <div class="habit-row"><div class="h-dot done"></div><span class="h-name">5km run</span><span class="h-time">7:30</span></div>
+        <div class="habit-row"><div class="h-dot"></div><span class="h-name">Cold shower</span><span class="h-time">8:10</span></div>
+        <div class="habit-row"><div class="h-dot"></div><span class="h-name">Meditate</span><span class="h-time">Aft</span></div>
+        <div class="habit-row"><div class="h-dot"></div><span class="h-name">Read 30min</span><span class="h-time">Eve</span></div>
+        <div class="habit-row"><div class="h-dot"></div><span class="h-name">Evening review</span><span class="h-time">9:30</span></div>
+      </div>
+
+      <!-- Area health -->
+      <div class="card">
+        <div class="card-label">Area Health <span class="card-label-action">Details </span></div>
+        <div class="area-grid">
+          <div class="ag"><div class="ag-top"><span class="ag-name">Work</span><span class="ag-score">87</span></div><div class="ag-bar"><div class="ag-fill" style="width:87%;background:#818CF8;"></div></div></div>
+          <div class="ag"><div class="ag-top"><span class="ag-name">Health</span><span class="ag-score">91</span></div><div class="ag-bar"><div class="ag-fill" style="width:91%;background:#4ADE80;"></div></div></div>
+          <div class="ag"><div class="ag-top"><span class="ag-name">Finance</span><span class="ag-score mid">63</span></div><div class="ag-bar"><div class="ag-fill" style="width:63%;background:#FBBF24;"></div></div></div>
+          <div class="ag"><div class="ag-top"><span class="ag-name">Relations</span><span class="ag-score lo">41</span></div><div class="ag-bar"><div class="ag-fill" style="width:41%;background:#F87171;"></div></div></div>
+          <div class="ag"><div class="ag-top"><span class="ag-name">Learning</span><span class="ag-score mid">74</span></div><div class="ag-bar"><div class="ag-fill" style="width:74%;background:#38BDF8;"></div></div></div>
+          <div class="ag"><div class="ag-top"><span class="ag-name">Home</span><span class="ag-score mid">58</span></div><div class="ag-bar"><div class="ag-fill" style="width:58%;background:#A78BFA;"></div></div></div>
+        </div>
+      </div>
+
+      <!-- Goals -->
+      <div class="card">
+        <div class="card-label">Active Goals <span class="card-label-action">All goals </span></div>
+        <div class="goal-row">
+          <div class="g-icon" style="background:rgba(74,222,128,0.1);"></div>
+          <div class="g-body"><div class="g-name">Half Marathon</div><div class="g-bar"><div class="g-fill" style="width:68%;background:#4ADE80;"></div></div><div class="g-meta">Jun 15  On track</div></div>
+          <div class="g-pct" style="color:#4ADE80;">68%</div>
+        </div>
+        <div class="goal-row">
+          <div class="g-icon" style="background:rgba(251,191,36,0.1);"></div>
+          <div class="g-body"><div class="g-name">Emergency Fund</div><div class="g-bar"><div class="g-fill" style="width:45%;background:#FBBF24;"></div></div><div class="g-meta">$4.5k / $10k</div></div>
+          <div class="g-pct" style="color:#FBBF24;">45%</div>
+        </div>
+        <div class="goal-row">
+          <div class="g-icon" style="background:rgba(248,113,113,0.1);"></div>
+          <div class="g-body"><div class="g-name">Read 24 Books</div><div class="g-bar"><div class="g-fill" style="width:25%;background:#F87171;"></div></div><div class="g-meta" style="color:var(--red);">6/24  Behind pace</div></div>
+          <div class="g-pct" style="color:#F87171;">25%</div>
+        </div>
+      </div>
+
+      <!-- Quote -->
+      <div class="card">
+        <div class="quote-card">
+          <div class="q-mark">&ldquo;</div>
+          <div class="q-text">The secret of getting ahead is getting started.</div>
+          <div class="q-attr"> Mark Twain</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

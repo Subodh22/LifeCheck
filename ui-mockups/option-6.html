@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Life OS — Today (Option 6: Soft & Personal)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-main: #FAFAFA;
+      --bg-sidebar: #EEEEF3;
+      --bg-card: #FFFFFF;
+      --bg-hover: #F4F4F8;
+      --bg-nav-active: #FFFFFF;
+      --bg-new-task: #EDEDFF;
+      --accent: #6366F1;
+      --accent-light: #EDEDFF;
+      --accent-mid: #818CF8;
+      --text-primary: #1A1A2E;
+      --text-secondary: #52526E;
+      --text-muted: #AAAACC;
+      --text-nav-inactive: #8888AA;
+      --text-nav-active: #6366F1;
+      --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-nav-active: 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-sidebar: 1px 0 0 rgba(0,0,0,0.04);
+      --radius: 8px;
+      --radius-sm: 6px;
+      --radius-xs: 4px;
+      --font: 'Inter', sans-serif;
+    }
+
+    html, body {
+      width: 1280px;
+      min-height: 900px;
+      font-family: var(--font);
+      background: var(--bg-main);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── LAYOUT ─────────────────────────────────────── */
+    .app {
+      display: flex;
+      width: 1280px;
+      min-height: 900px;
+    }
+
+    /* ─── SIDEBAR ─────────────────────────────────────── */
+    .sidebar {
+      width: 230px;
+      min-height: 900px;
+      background: var(--bg-sidebar);
+      display: flex;
+      flex-direction: column;
+      padding: 20px 14px 20px;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sidebar);
+    }
+
+    /* Logo */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 22px;
+      padding: 2px 4px;
+    }
+
+    .logo-icon {
+      width: 34px;
+      height: 34px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.3px;
+      flex-shrink: 0;
+    }
+
+    .logo-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.2px;
+    }
+
+    /* New Task Button */
+    .btn-new {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--bg-new-task);
+      color: var(--accent);
+      border: none;
+      border-radius: var(--radius);
+      padding: 9px 12px;
+      font-size: 13.5px;
+      font-weight: 600;
+      font-family: var(--font);
+      cursor: pointer;
+      margin-bottom: 20px;
+      width: 100%;
+      transition: background 0.15s;
+    }
+
+    .btn-new:hover {
+      background: #E4E4FF;
+    }
+
+    .btn-new svg {
+      flex-shrink: 0;
+    }
+
+    /* Nav */
+    .nav-section {
+      margin-bottom: 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 10px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background 0.12s;
+      margin-bottom: 2px;
+      text-decoration: none;
+    }
+
+    .nav-item.active {
+      background: var(--bg-nav-active);
+      box-shadow: var(--shadow-nav-active);
+    }
+
+    .nav-item.active .nav-label {
+      color: var(--text-nav-active);
+      font-weight: 600;
+    }
+
+    .nav-item.active .nav-icon {
+      color: var(--accent);
+    }
+
+    .nav-item:not(.active):hover {
+      background: var(--bg-hover);
+    }
+
+    .nav-icon {
+      color: var(--text-nav-inactive);
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-label {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--text-nav-inactive);
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 1px 7px;
+      border-radius: 20px;
+    }
+
+    /* Areas section */
+    .section-label {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      margin-top: 10px;
+      margin-bottom: 4px;
+    }
+
+    .area-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 7px 10px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      margin-bottom: 2px;
+      transition: background 0.12s;
+    }
+
+    .area-item:hover {
+      background: var(--bg-hover);
+    }
+
+    .area-emoji {
+      font-size: 14px;
+      flex-shrink: 0;
+      width: 18px;
+      text-align: center;
+    }
+
+    .area-label {
+      font-size: 13px;
+      font-weight: 500;
+      flex: 1;
+    }
+
+    .area-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* Sidebar bottom */
+    .sidebar-spacer {
+      flex: 1;
+    }
+
+    .sidebar-bottom {
+      padding-top: 14px;
+      border-top: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .user-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 10px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+
+    .user-row:hover {
+      background: var(--bg-hover);
+    }
+
+    .avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #818CF8 0%, #6366F1 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .user-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      flex: 1;
+    }
+
+    .settings-icon {
+      color: var(--text-muted);
+    }
+
+    /* ─── MAIN CONTENT ─────────────────────────────────── */
+    .main {
+      flex: 1;
+      background: var(--bg-main);
+      padding: 48px 56px 48px 48px;
+      overflow-y: auto;
+    }
+
+    .content-inner {
+      max-width: 800px;
+    }
+
+    /* Header */
+    .date-line {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+      margin-bottom: 8px;
+    }
+
+    .greeting {
+      font-size: 30px;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.5px;
+      margin-bottom: 5px;
+      line-height: 1.15;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+      font-weight: 400;
+      margin-bottom: 30px;
+    }
+
+    /* Stats row */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-card);
+      padding: 16px 16px 14px;
+    }
+
+    .stat-label {
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      letter-spacing: 0.01em;
+    }
+
+    .stat-value {
+      font-size: 26px;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 6px;
+      letter-spacing: -0.5px;
+    }
+
+    .stat-sub {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .stat-bar {
+      height: 4px;
+      border-radius: 2px;
+      margin-top: 8px;
+      background: #EEEEF3;
+      overflow: hidden;
+    }
+
+    .stat-bar-fill {
+      height: 100%;
+      border-radius: 2px;
+    }
+
+    /* Two-column layout */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .left-col {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .right-col {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Section header */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .section-action {
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--accent);
+      cursor: pointer;
+    }
+
+    /* ─── TASK CARD ─────────────────────────────────────── */
+    .tasks-card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+    }
+
+    .tasks-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px 12px;
+      border-bottom: 1px solid #F0F0F5;
+    }
+
+    .tasks-card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .tasks-count {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: #F0F0F5;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+
+    .task-row {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 11px 16px;
+      border-bottom: 1px solid #F8F8FC;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+
+    .task-row:last-child {
+      border-bottom: none;
+    }
+
+    .task-row:hover {
+      background: #F9F9FD;
+    }
+
+    /* Checkbox */
+    .task-check {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1.75px solid #C8C8E4;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      cursor: pointer;
+    }
+
+    .task-check.done {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .task-check.done svg {
+      display: block;
+    }
+
+    .task-check svg {
+      display: none;
+    }
+
+    .task-text {
+      flex: 1;
+      font-size: 13.5px;
+      font-weight: 400;
+      color: var(--text-primary);
+      line-height: 1.4;
+    }
+
+    .task-text.done {
+      color: var(--text-muted);
+      text-decoration: line-through;
+      text-decoration-color: #C8C8E4;
+    }
+
+    .task-meta {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex-shrink: 0;
+    }
+
+    .area-badge {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
+    .task-due {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .task-due.overdue {
+      color: #EF4444;
+    }
+
+    /* Priority dot */
+    .priority-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ─── HABITS CARD ─────────────────────────────────────── */
+    .habits-card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-card);
+      padding: 14px 16px 16px;
+    }
+
+    .habit-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .habit-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .habit-icon {
+      font-size: 16px;
+      width: 20px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .habit-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .habit-name {
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .habit-track {
+      display: flex;
+      gap: 3px;
+    }
+
+    .habit-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      background: #EEEEF3;
+    }
+
+    .habit-dot.done {
+      background: var(--accent);
+      opacity: 0.85;
+    }
+
+    .habit-dot.today {
+      background: var(--accent);
+    }
+
+    .habit-dot.miss {
+      background: #FFCECE;
+    }
+
+    .habit-streak {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .habit-streak.active {
+      color: var(--accent);
+    }
+
+    /* ─── AREA HEALTH CARD ─────────────────────────────────── */
+    .health-card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-card);
+      padding: 14px 16px 16px;
+    }
+
+    .health-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .health-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .health-emoji {
+      font-size: 14px;
+      flex-shrink: 0;
+      width: 18px;
+      text-align: center;
+    }
+
+    .health-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .health-name {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .health-bar-wrap {
+      height: 5px;
+      background: #EEEEF3;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .health-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+    }
+
+    .health-pct {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      flex-shrink: 0;
+      width: 28px;
+      text-align: right;
+    }
+
+    /* ─── UPCOMING CARD ─────────────────────────────────────── */
+    .upcoming-card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+    }
+
+    .upcoming-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 11px 16px;
+      border-bottom: 1px solid #F8F8FC;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+
+    .upcoming-row:last-child {
+      border-bottom: none;
+    }
+
+    .upcoming-row:hover {
+      background: #F9F9FD;
+    }
+
+    .upcoming-date-col {
+      text-align: center;
+      flex-shrink: 0;
+      width: 32px;
+    }
+
+    .upcoming-day-num {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+
+    .upcoming-day-name {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .upcoming-body {
+      flex: 1;
+    }
+
+    .upcoming-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 3px;
+    }
+
+    .upcoming-sub {
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+
+    /* ─── FOCUS BLOCK ─────────────────────────────────────── */
+    .focus-banner {
+      background: linear-gradient(135deg, #6366F1 0%, #818CF8 100%);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .focus-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    .focus-body {
+      flex: 1;
+    }
+
+    .focus-label {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.7);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+
+    .focus-title {
+      font-size: 14.5px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .focus-meta {
+      font-size: 12px;
+      color: rgba(255,255,255,0.75);
+      margin-top: 2px;
+    }
+
+    .focus-btn {
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: var(--radius-sm);
+      color: #fff;
+      font-size: 12.5px;
+      font-weight: 600;
+      font-family: var(--font);
+      padding: 7px 14px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.15s;
+    }
+
+    .focus-btn:hover {
+      background: rgba(255,255,255,0.3);
+    }
+
+    /* ─── HELPERS ─────────────────────────────────────── */
+    .color-indigo   { color: #6366F1; }
+    .color-emerald  { color: #10B981; }
+    .color-amber    { color: #F59E0B; }
+    .color-rose     { color: #F43F5E; }
+    .color-sky      { color: #0EA5E9; }
+    .color-violet   { color: #8B5CF6; }
+    .color-orange   { color: #F97316; }
+
+    .bg-indigo-soft   { background: #EDEDFF; color: #6366F1; }
+    .bg-emerald-soft  { background: #ECFDF5; color: #059669; }
+    .bg-amber-soft    { background: #FFFBEB; color: #D97706; }
+    .bg-rose-soft     { background: #FFF1F2; color: #E11D48; }
+    .bg-sky-soft      { background: #F0F9FF; color: #0284C7; }
+    .bg-violet-soft   { background: #F5F3FF; color: #7C3AED; }
+    .bg-orange-soft   { background: #FFF7ED; color: #EA580C; }
+
+    .dot-green  { background: #34D399; }
+    .dot-yellow { background: #FCD34D; }
+    .dot-red    { background: #F87171; }
+    .dot-blue   { background: #60A5FA; }
+    .dot-purple { background: #A78BFA; }
+
+    .fill-indigo  { background: #6366F1; }
+    .fill-emerald { background: #10B981; }
+    .fill-amber   { background: #F59E0B; }
+    .fill-rose    { background: #F43F5E; }
+    .fill-sky     { background: #0EA5E9; }
+  </style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ─── SIDEBAR ──────────────────────────────────────── -->
+  <aside class="sidebar">
+
+    <!-- Logo -->
+    <div class="logo">
+      <div class="logo-icon">LO</div>
+      <span class="logo-name">Life OS</span>
+    </div>
+
+    <!-- New Task -->
+    <button class="btn-new">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      New task
+    </button>
+
+    <!-- Navigation -->
+    <div class="nav-section">
+
+      <a class="nav-item active">
+        <span class="nav-icon">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+            <rect x="1" y="1" width="5.5" height="5.5" rx="1.5" fill="currentColor"/>
+            <rect x="8.5" y="1" width="5.5" height="5.5" rx="1.5" fill="currentColor" opacity="0.4"/>
+            <rect x="1" y="8.5" width="5.5" height="5.5" rx="1.5" fill="currentColor" opacity="0.4"/>
+            <rect x="8.5" y="8.5" width="5.5" height="5.5" rx="1.5" fill="currentColor" opacity="0.4"/>
+          </svg>
+        </span>
+        <span class="nav-label">Today</span>
+        <span class="nav-badge">3</span>
+      </a>
+
+      <a class="nav-item">
+        <span class="nav-icon">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+            <path d="M2 4h11M2 7.5h11M2 11h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span class="nav-label">Inbox</span>
+        <span class="nav-badge">7</span>
+      </a>
+
+      <a class="nav-item">
+        <span class="nav-icon">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+            <rect x="2" y="2" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M2 5.5h11" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M5 2v3.5M10 2v3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span class="nav-label">Calendar</span>
+      </a>
+
+      <a class="nav-item">
+        <span class="nav-icon">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+            <path d="M7.5 1L9.18 5.25H13.75L10.08 7.96L11.55 12.25L7.5 9.5L3.45 12.25L4.92 7.96L1.25 5.25H5.82L7.5 1Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="nav-label">Goals</span>
+      </a>
+
+      <a class="nav-item">
+        <span class="nav-icon">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+            <path d="M2 11.5C2 11.5 3.5 10 7.5 10C11.5 10 13 11.5 13 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="7.5" cy="5.5" r="2.5" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+        </span>
+        <span class="nav-label">Reviews</span>
+      </a>
+
+      <a class="nav-item">
+        <span class="nav-icon">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+            <path d="M3 13V6.5L7.5 2L12 6.5V13H9V10H6v3H3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="nav-label">Habits</span>
+      </a>
+
+    </div>
+
+    <!-- Areas -->
+    <div class="section-label">Areas</div>
+
+    <div class="area-item">
+      <span class="area-emoji">💼</span>
+      <span class="area-label color-indigo" style="color:#52526E">Work</span>
+      <span class="area-dot dot-green"></span>
+    </div>
+
+    <div class="area-item">
+      <span class="area-emoji">💪</span>
+      <span class="area-label" style="color:#52526E">Health</span>
+      <span class="area-dot dot-green"></span>
+    </div>
+
+    <div class="area-item">
+      <span class="area-emoji">📚</span>
+      <span class="area-label" style="color:#52526E">Learning</span>
+      <span class="area-dot dot-yellow"></span>
+    </div>
+
+    <div class="area-item">
+      <span class="area-emoji">💰</span>
+      <span class="area-label" style="color:#52526E">Finance</span>
+      <span class="area-dot dot-green"></span>
+    </div>
+
+    <div class="area-item">
+      <span class="area-emoji">👥</span>
+      <span class="area-label" style="color:#52526E">Relationships</span>
+      <span class="area-dot dot-yellow"></span>
+    </div>
+
+    <div class="area-item">
+      <span class="area-emoji">🎨</span>
+      <span class="area-label" style="color:#52526E">Creative</span>
+      <span class="area-dot dot-red"></span>
+    </div>
+
+    <div class="sidebar-spacer"></div>
+
+    <!-- Bottom user row -->
+    <div class="sidebar-bottom">
+      <div class="user-row">
+        <div class="avatar">SM</div>
+        <span class="user-name">Subodh M.</span>
+        <span class="settings-icon">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <circle cx="7" cy="7" r="2" stroke="#AAAACC" stroke-width="1.5"/>
+            <path d="M7 1v2M7 11v2M1 7h2M11 7h2M2.93 2.93l1.41 1.41M9.66 9.66l1.41 1.41M2.93 11.07l1.41-1.41M9.66 4.34l1.41-1.41" stroke="#AAAACC" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </span>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ─── MAIN CONTENT ──────────────────────────────────── -->
+  <main class="main">
+    <div class="content-inner">
+
+      <!-- Header -->
+      <p class="date-line">SUNDAY, 22 MARCH 2026</p>
+      <h1 class="greeting">Good morning, Subodh.</h1>
+      <p class="subtitle">3 tasks need your attention today · 6 habits to check in.</p>
+
+      <!-- Stats -->
+      <div class="stats-row">
+
+        <div class="stat-card">
+          <div class="stat-label">Open Tasks</div>
+          <div class="stat-value color-indigo">12</div>
+          <div class="stat-bar">
+            <div class="stat-bar-fill fill-indigo" style="width: 45%"></div>
+          </div>
+          <div class="stat-sub" style="margin-top:6px">4 due this week</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Habits Today</div>
+          <div class="stat-value color-emerald">4/6</div>
+          <div class="stat-bar">
+            <div class="stat-bar-fill fill-emerald" style="width: 67%"></div>
+          </div>
+          <div class="stat-sub" style="margin-top:6px">67% complete</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Weekly Goals</div>
+          <div class="stat-value color-amber">2/5</div>
+          <div class="stat-bar">
+            <div class="stat-bar-fill fill-amber" style="width: 40%"></div>
+          </div>
+          <div class="stat-sub" style="margin-top:6px">3 remaining</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Best Streak</div>
+          <div class="stat-value color-violet" style="color:#8B5CF6">🔥 14</div>
+          <div class="stat-bar">
+            <div class="stat-bar-fill" style="width:75%; background:#8B5CF6;"></div>
+          </div>
+          <div class="stat-sub" style="margin-top:6px">days — Morning pages</div>
+        </div>
+
+      </div>
+
+      <!-- Focus banner -->
+      <div class="focus-banner">
+        <div class="focus-icon">🎯</div>
+        <div class="focus-body">
+          <div class="focus-label">Deep Work Block</div>
+          <div class="focus-title">Finish Q1 performance review doc</div>
+          <div class="focus-meta">Work · estimated 90 min · due today</div>
+        </div>
+        <button class="focus-btn">Start Focus</button>
+      </div>
+
+      <!-- Two-column layout -->
+      <div class="two-col">
+
+        <!-- LEFT: Tasks + Upcoming -->
+        <div class="left-col">
+
+          <!-- Today's Tasks -->
+          <div>
+            <div class="section-header">
+              <span class="section-title">Today's Focus</span>
+              <span class="section-action">+ Add task</span>
+            </div>
+
+            <div class="tasks-card">
+              <div class="tasks-card-header">
+                <span class="tasks-card-title">Due today</span>
+                <span class="tasks-count">5 tasks</span>
+              </div>
+
+              <!-- Completed task -->
+              <div class="task-row">
+                <div class="task-check done">
+                  <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                    <path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <span class="priority-dot" style="background:#34D399;"></span>
+                <span class="task-text done">Morning run — 5 km</span>
+                <div class="task-meta">
+                  <span class="area-badge bg-emerald-soft">Health</span>
+                  <span class="task-due">Done</span>
+                </div>
+              </div>
+
+              <!-- Completed task -->
+              <div class="task-row">
+                <div class="task-check done">
+                  <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                    <path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <span class="priority-dot" style="background:#60A5FA;"></span>
+                <span class="task-text done">Review pull request #142</span>
+                <div class="task-meta">
+                  <span class="area-badge bg-indigo-soft">Work</span>
+                  <span class="task-due">Done</span>
+                </div>
+              </div>
+
+              <!-- Active task (high priority) -->
+              <div class="task-row">
+                <div class="task-check"></div>
+                <span class="priority-dot" style="background:#F43F5E;"></span>
+                <span class="task-text">Finish Q1 performance review doc</span>
+                <div class="task-meta">
+                  <span class="area-badge bg-indigo-soft">Work</span>
+                  <span class="task-due overdue">Today</span>
+                </div>
+              </div>
+
+              <!-- Active task -->
+              <div class="task-row">
+                <div class="task-check"></div>
+                <span class="priority-dot" style="background:#FCD34D;"></span>
+                <span class="task-text">Read 20 pages of Deep Work</span>
+                <div class="task-meta">
+                  <span class="area-badge bg-violet-soft">Learning</span>
+                  <span class="task-due">Today</span>
+                </div>
+              </div>
+
+              <!-- Active task -->
+              <div class="task-row">
+                <div class="task-check"></div>
+                <span class="priority-dot" style="background:#60A5FA;"></span>
+                <span class="task-text">Meal prep for the week</span>
+                <div class="task-meta">
+                  <span class="area-badge bg-emerald-soft">Health</span>
+                  <span class="task-due">Today</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Upcoming -->
+          <div>
+            <div class="section-header">
+              <span class="section-title">Coming Up</span>
+              <span class="section-action">View all</span>
+            </div>
+
+            <div class="upcoming-card">
+
+              <div class="upcoming-row">
+                <div class="upcoming-date-col">
+                  <div class="upcoming-day-num">23</div>
+                  <div class="upcoming-day-name">Mon</div>
+                </div>
+                <div class="upcoming-body">
+                  <div class="upcoming-title">Team standup — sprint planning</div>
+                  <div class="upcoming-sub">Work · 9:00 AM · 30 min</div>
+                </div>
+                <span class="area-badge bg-indigo-soft">Work</span>
+              </div>
+
+              <div class="upcoming-row">
+                <div class="upcoming-date-col">
+                  <div class="upcoming-day-num">24</div>
+                  <div class="upcoming-day-name">Tue</div>
+                </div>
+                <div class="upcoming-body">
+                  <div class="upcoming-title">Dentist appointment</div>
+                  <div class="upcoming-sub">Health · 2:00 PM · Fitzroy</div>
+                </div>
+                <span class="area-badge bg-emerald-soft">Health</span>
+              </div>
+
+              <div class="upcoming-row">
+                <div class="upcoming-date-col">
+                  <div class="upcoming-day-num">26</div>
+                  <div class="upcoming-day-name">Thu</div>
+                </div>
+                <div class="upcoming-body">
+                  <div class="upcoming-title">Monthly financial review</div>
+                  <div class="upcoming-sub">Finance · Recurring</div>
+                </div>
+                <span class="area-badge bg-amber-soft">Finance</span>
+              </div>
+
+              <div class="upcoming-row">
+                <div class="upcoming-date-col">
+                  <div class="upcoming-day-num">28</div>
+                  <div class="upcoming-day-name">Sat</div>
+                </div>
+                <div class="upcoming-body">
+                  <div class="upcoming-title">Coffee with Marcus</div>
+                  <div class="upcoming-sub">Relationships · 10:00 AM</div>
+                </div>
+                <span class="area-badge bg-rose-soft">People</span>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT: Habits + Area Health -->
+        <div class="right-col">
+
+          <!-- Habits -->
+          <div>
+            <div class="section-header">
+              <span class="section-title">Habits</span>
+              <span class="section-action">All habits</span>
+            </div>
+
+            <div class="habits-card">
+
+              <div class="habit-row">
+                <div class="habit-icon">🌅</div>
+                <div class="habit-info">
+                  <div class="habit-name">Morning pages</div>
+                  <div class="habit-track">
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot today"></div>
+                  </div>
+                </div>
+                <span class="habit-streak active">🔥14</span>
+              </div>
+
+              <div class="habit-row">
+                <div class="habit-icon">🏃</div>
+                <div class="habit-info">
+                  <div class="habit-name">Exercise 30 min</div>
+                  <div class="habit-track">
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot miss"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot today"></div>
+                  </div>
+                </div>
+                <span class="habit-streak active">5</span>
+              </div>
+
+              <div class="habit-row">
+                <div class="habit-icon">📚</div>
+                <div class="habit-info">
+                  <div class="habit-name">Read 20 pages</div>
+                  <div class="habit-track">
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot miss"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot" style="background:#EEEEF3; border: 1.5px dashed #C8C8E4;"></div>
+                  </div>
+                </div>
+                <span class="habit-streak">3</span>
+              </div>
+
+              <div class="habit-row">
+                <div class="habit-icon">💧</div>
+                <div class="habit-info">
+                  <div class="habit-name">2L water</div>
+                  <div class="habit-track">
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot today"></div>
+                  </div>
+                </div>
+                <span class="habit-streak active">🔥9</span>
+              </div>
+
+              <div class="habit-row">
+                <div class="habit-icon">🧘</div>
+                <div class="habit-info">
+                  <div class="habit-name">Meditate 10 min</div>
+                  <div class="habit-track">
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot miss"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot miss"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot" style="background:#EEEEF3; border: 1.5px dashed #C8C8E4;"></div>
+                  </div>
+                </div>
+                <span class="habit-streak">2</span>
+              </div>
+
+              <div class="habit-row">
+                <div class="habit-icon">✍️</div>
+                <div class="habit-info">
+                  <div class="habit-name">Gratitude journal</div>
+                  <div class="habit-track">
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot done"></div>
+                    <div class="habit-dot today"></div>
+                  </div>
+                </div>
+                <span class="habit-streak active">🔥7</span>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Area Health -->
+          <div>
+            <div class="section-header">
+              <span class="section-title">Area Health</span>
+              <span class="section-action">Review</span>
+            </div>
+
+            <div class="health-card">
+
+              <div class="health-row">
+                <div class="health-emoji">💼</div>
+                <div class="health-info">
+                  <div class="health-name">Work</div>
+                  <div class="health-bar-wrap">
+                    <div class="health-bar-fill fill-indigo" style="width:82%"></div>
+                  </div>
+                </div>
+                <div class="health-pct color-indigo">82%</div>
+              </div>
+
+              <div class="health-row">
+                <div class="health-emoji">💪</div>
+                <div class="health-info">
+                  <div class="health-name">Health</div>
+                  <div class="health-bar-wrap">
+                    <div class="health-bar-fill fill-emerald" style="width:91%"></div>
+                  </div>
+                </div>
+                <div class="health-pct color-emerald">91%</div>
+              </div>
+
+              <div class="health-row">
+                <div class="health-emoji">📚</div>
+                <div class="health-info">
+                  <div class="health-name">Learning</div>
+                  <div class="health-bar-wrap">
+                    <div class="health-bar-fill fill-amber" style="width:58%"></div>
+                  </div>
+                </div>
+                <div class="health-pct color-amber">58%</div>
+              </div>
+
+              <div class="health-row">
+                <div class="health-emoji">💰</div>
+                <div class="health-info">
+                  <div class="health-name">Finance</div>
+                  <div class="health-bar-wrap">
+                    <div class="health-bar-fill fill-sky" style="width:74%"></div>
+                  </div>
+                </div>
+                <div class="health-pct color-sky">74%</div>
+              </div>
+
+              <div class="health-row">
+                <div class="health-emoji">👥</div>
+                <div class="health-info">
+                  <div class="health-name">Relationships</div>
+                  <div class="health-bar-wrap">
+                    <div class="health-bar-fill" style="width:45%; background:#8B5CF6;"></div>
+                  </div>
+                </div>
+                <div class="health-pct" style="color:#8B5CF6">45%</div>
+              </div>
+
+              <div class="health-row">
+                <div class="health-emoji">🎨</div>
+                <div class="health-info">
+                  <div class="health-name">Creative</div>
+                  <div class="health-bar-wrap">
+                    <div class="health-bar-fill fill-rose" style="width:28%"></div>
+                  </div>
+                </div>
+                <div class="health-pct color-rose">28%</div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LIFE OS — Classified Notices</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--p:#F9F6EE;--i:#111108;--m:#4A4840;--d:#8A8878;--r:#C8B888;--red:#8B1A1A;--rule:#111108;}
+    body{background:var(--p);color:var(--i);font-family:'Courier Prime',monospace;-webkit-font-smoothing:antialiased;}
+
+    /* ══ CLASSIFIED ADS MASTHEAD ══ */
+    .mast{text-align:center;padding:20px 60px 0;border-bottom:3px solid var(--i);}
+    .mast-over{font-family:'Inter',sans-serif;font-size:9px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--d);margin-bottom:6px;}
+    .mast-title{font-family:'Playfair Display',serif;font-size:56px;font-weight:900;letter-spacing:-1px;color:var(--i);line-height:1;}
+    .mast-sub{font-family:'Courier Prime',monospace;font-size:11px;color:var(--m);margin-top:4px;letter-spacing:0.5px;}
+    .mast-rule{display:flex;align-items:center;gap:0;margin-top:10px;border-top:1px solid var(--i);border-bottom:1px solid var(--i);padding:4px 0;}
+    .mast-rule-item{flex:1;text-align:center;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--m);border-right:1px solid var(--r);}
+    .mast-rule-item:last-child{border-right:none;}
+    .mast-rule-item.active{color:var(--i);}
+    .mast-nav{display:flex;justify-content:center;gap:0;border-bottom:1px solid var(--i);padding:4px 0;margin-bottom:0;}
+    .mast-nav a{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--m);text-decoration:none;padding:0 24px;border-right:1px solid var(--r);}
+    .mast-nav a:last-child{border-right:none;}
+    .mast-nav a.active{color:var(--i);}
+
+    /* ══ TOP NOTICE BAR ══ */
+    .notice-bar{background:var(--i);padding:6px 60px;display:flex;align-items:center;justify-content:space-between;}
+    .notice-text{font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:0.5px;}
+    .notice-red{font-size:10px;color:#FF6B6B;font-weight:700;}
+    .notice-btn{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;background:white;color:var(--i);border:none;padding:4px 10px;cursor:pointer;}
+
+    /* ══ CLASSIFIEDS BODY ══ */
+    .classifieds{padding:0 60px 80px;display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--i);}
+    .col{padding:16px 0;}
+    .col+.col{border-left:1px solid var(--i);}
+
+    /* Section header — like classified sections */
+    .section-header{padding:8px 16px;background:var(--i);color:white;font-family:'Playfair Display',serif;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:0;display:flex;justify-content:space-between;align-items:center;}
+    .section-count{font-family:'Courier Prime',monospace;font-size:10px;color:rgba(255,255,255,0.5);}
+
+    /* Ad box */
+    .ad{padding:12px 16px;border-bottom:1px solid var(--r);position:relative;}
+    .ad:last-child{border-bottom:none;}
+    .ad-ref{font-size:8px;letter-spacing:1.5px;color:var(--d);margin-bottom:4px;display:flex;justify-content:space-between;}
+    .ad-ref span{font-weight:700;}
+    .ad-title{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;line-height:1.2;color:var(--i);margin-bottom:5px;cursor:pointer;}
+    .ad-title:hover{text-decoration:underline;}
+    .ad-title.done{text-decoration:line-through;color:var(--d);}
+    .ad-body{font-size:10px;line-height:1.6;color:var(--m);}
+    .ad-footer{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap;}
+    .ad-tag{font-size:7.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:2px 6px;border:1px solid var(--i);}
+    .ad-tag.urgent{background:var(--red);color:white;border-color:var(--red);}
+    .ad-tag.high{background:var(--i);color:white;}
+    .ad-tag.med{border-color:var(--r);}
+    .ad-tag.done-t{border-color:var(--r);color:var(--d);}
+    .ad-actions{margin-left:auto;display:flex;gap:6px;}
+    .ad-act{font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--d);text-decoration:underline;cursor:pointer;}
+    .ad-act:hover,.ad-act.p{color:var(--red);}
+    /* Overdue stamp */
+    .ad-stamp{position:absolute;top:10px;right:12px;font-family:'Playfair Display',serif;font-style:italic;font-size:28px;font-weight:900;color:rgba(139,26,26,0.15);transform:rotate(-12deg);line-height:1;pointer-events:none;}
+    /* Small ad — brief  */
+    .ad-small{padding:8px 16px;border-bottom:1px solid var(--r);}
+    .ad-small:last-child{border-bottom:none;}
+    .ad-small-ref{font-size:8px;color:var(--d);display:flex;justify-content:space-between;margin-bottom:2px;}
+    .ad-small-title{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:var(--i);line-height:1.2;}
+    .ad-small-title.done{text-decoration:line-through;color:var(--d);}
+    .ad-small-meta{font-size:8.5px;color:var(--m);margin-top:3px;}
+    .ad-small-acts{font-size:8px;color:var(--d);margin-top:4px;text-decoration:underline;cursor:pointer;}
+
+    /* Health classifieds column */
+    .health-ad{padding:10px 16px;border-bottom:1px solid var(--r);}
+    .health-ad:last-child{border-bottom:none;}
+    .health-ad-name{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:var(--i);margin-bottom:4px;}
+    .health-ad-body{font-size:10px;color:var(--m);line-height:1.5;}
+    .health-ad-score{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;float:right;line-height:1;margin-left:8px;}
+    .health-ad-score.hi{color:var(--i);}
+    .health-ad-score.mid{color:#8B6914;}
+    .health-ad-score.lo{color:var(--red);}
+    .health-ad-bar{height:1.5px;background:var(--r);margin-top:6px;clear:both;}
+    .health-ad-bar-fill{height:100%;background:var(--i);}
+    .health-ad-bar-fill.lo{background:var(--red);}
+    .health-ad-bar-fill.mid{background:#8B6914;}
+
+    /* Routine notices */
+    .notice-row{display:flex;align-items:flex-start;gap:8px;padding:8px 16px;border-bottom:1px solid var(--r);}
+    .notice-row:last-child{border-bottom:none;}
+    .notice-check{font-size:12px;flex-shrink:0;cursor:pointer;}
+    .notice-name{font-size:11px;color:var(--m);flex:1;}
+    .notice-name.done{text-decoration:line-through;color:var(--d);}
+    .notice-time{font-size:9px;color:var(--d);}
+    /* Stats notices */
+    .stat-notice{padding:8px 16px;border-bottom:1px solid var(--r);display:flex;justify-content:space-between;align-items:baseline;}
+    .stat-notice:last-child{border-bottom:none;}
+    .stat-n-k{font-size:10px;color:var(--m);}
+    .stat-n-v{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--i);}
+    .stat-n-v.good{color:#1A5C1A;}
+
+    /* Pull quote large */
+    .big-quote{padding:20px 16px;border-bottom:1px solid var(--r);text-align:center;}
+    .bq-marks{font-family:'Playfair Display',serif;font-size:60px;line-height:0.5;color:var(--r);}
+    .bq-text{font-family:'Playfair Display',serif;font-style:italic;font-size:14px;line-height:1.5;color:var(--m);margin:8px 0;}
+    .bq-attr{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--d);}
+
+    /* Ticker */
+    .ticker{position:fixed;bottom:0;left:0;right:0;height:28px;background:var(--i);display:flex;align-items:center;overflow:hidden;}
+    .tlabel{flex-shrink:0;background:var(--red);height:100%;display:flex;align-items:center;padding:0 14px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:white;}
+    .ttrack{flex:1;overflow:hidden;padding-left:16px;}
+    .tcontent{display:inline-flex;gap:44px;animation:scroll 28s linear infinite;white-space:nowrap;}
+    .ti{font-family:'Courier Prime',monospace;font-size:10px;color:rgba(255,255,255,0.55);}
+    .ti b{color:white;}
+    .td{color:var(--red);margin:0 6px;}
+    @keyframes scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+  </style>
+</head>
+<body>
+
+<div class="mast">
+  <div class="mast-over">Established 2024 · Personal Life Registry</div>
+  <div class="mast-title">Life OS Classified</div>
+  <div class="mast-sub">All notices are personal and non-transferable · Ref. Day 081/2026</div>
+  <div class="mast-rule">
+    <div class="mast-rule-item active">Today</div>
+    <div class="mast-rule-item">Health</div>
+    <div class="mast-rule-item">Routine</div>
+    <div class="mast-rule-item">Goals</div>
+    <div class="mast-rule-item">Week 12</div>
+    <div class="mast-rule-item">Q1 2026</div>
+  </div>
+  <nav class="mast-nav">
+    <a href="#" class="active">Today's Board</a>
+    <a href="#">Backlog</a>
+    <a href="#">Goals</a>
+    <a href="#">Schedule</a>
+  </nav>
+</div>
+
+<div class="notice-bar">
+  <span class="notice-text">Sunday 22 March 2026 · Vol. I No. 81 · Week 12 of 52 ·</span>
+  <span class="notice-red">⚠ 3 NOTICES OVERDUE — RESPOND IMMEDIATELY</span>
+  <button class="notice-btn">+ SUBMIT NOTICE</button>
+</div>
+
+<div class="classifieds">
+
+  <!-- COL 1: TODAY'S FOCUS -->
+  <div class="col">
+    <div class="section-header">URGENT NOTICES<span class="section-count">3 OVERDUE</span></div>
+
+    <div class="ad">
+      <div class="ad-stamp">OVERDUE</div>
+      <div class="ad-ref"><span>REF: WORK-2026-0416</span><span style="color:var(--red)">+6 DAYS LATE</span></div>
+      <div class="ad-title">Portfolio Website Redesign — Immediate Attention Required</div>
+      <div class="ad-body">Prospective clients are visiting. Copy outdated by two quarters. Hero section no longer reflects current positioning. Requires immediate execution.</div>
+      <div class="ad-footer">
+        <span class="ad-tag urgent">URGENT</span>
+        <span class="ad-tag high">WORK</span>
+        <div class="ad-actions"><span class="ad-act p">RESPOND</span><span class="ad-act">POSTPONE</span></div>
+      </div>
+    </div>
+
+    <div class="ad">
+      <div class="ad-stamp">OVERDUE</div>
+      <div class="ad-ref"><span>REF: FIN-2026-0413</span><span style="color:var(--red)">+3 DAYS LATE</span></div>
+      <div class="ad-title">Tax Return 2024–25 — Lodgement Overdue</div>
+      <div class="ad-body">ATO compliance filing. All receipts must be gathered before lodgement. Delay incurs penalties.</div>
+      <div class="ad-footer">
+        <span class="ad-tag urgent">URGENT</span>
+        <span class="ad-tag high">FINANCE</span>
+        <div class="ad-actions"><span class="ad-act p">RESPOND</span></div>
+      </div>
+    </div>
+
+    <div class="section-header" style="margin-top:0;">TODAY'S NOTICES<span class="section-count">5 ITEMS</span></div>
+
+    <div class="ad">
+      <div class="ad-ref"><span>REF: WORK-2026-0422-A</span><span style="color:var(--red)">DUE 5:00PM TODAY</span></div>
+      <div class="ad-title">Q1 Performance Review — Self-Assessment to HR</div>
+      <div class="ad-body">Annual review period closes today. Submit completed self-assessment via HR portal. Requires peer review signatures from direct team lead before submission. Failure to respond forfeits Q1 bonus eligibility.</div>
+      <div class="ad-footer">
+        <span class="ad-tag high">P1</span>
+        <span class="ad-tag high">WORK</span>
+        <div class="ad-actions"><span class="ad-act p">CONFIRM DONE</span><span class="ad-act">DEFER</span><span class="ad-act">DELEGATE</span></div>
+      </div>
+    </div>
+
+    <div class="ad-small">
+      <div class="ad-small-ref"><span>REF: FIN-2026-0422-B</span><span style="color:var(--m)">DUE NOON</span></div>
+      <div class="ad-small-title">Transfer April Rent Payment to Landlord</div>
+      <div class="ad-small-meta">Via online banking · Enable receipt notification · Finance</div>
+      <div class="ad-small-acts"><span class="ad-act p">CONFIRM DONE</span> · <span class="ad-act">RESCHEDULE</span></div>
+    </div>
+
+    <div class="ad-small" style="opacity:0.4">
+      <div class="ad-small-ref"><span>REF: HLTH-2026-0422-C</span><span style="color:green;font-weight:700">CONFIRMED ✓</span></div>
+      <div class="ad-small-title done">Morning Run — 5km Tempo Pace</div>
+      <div class="ad-small-meta">Completed 07:30 · Health</div>
+    </div>
+
+    <div class="ad-small">
+      <div class="ad-small-ref"><span>REF: LRN-2026-0422-D</span><span>EVENING</span></div>
+      <div class="ad-small-title">Chapter 4 — Deep Work Course Module</div>
+      <div class="ad-small-meta">45 min · Cornell notes · Learning</div>
+      <div class="ad-small-acts"><span class="ad-act p">CONFIRM DONE</span> · <span class="ad-act">RESCHEDULE</span></div>
+    </div>
+
+    <div class="ad-small">
+      <div class="ad-small-ref"><span>REF: PRSN-2026-0422-E</span><span>FLEXIBLE</span></div>
+      <div class="ad-small-title">Call Dad — Easter Weekend Plans</div>
+      <div class="ad-small-meta">Personal · No fixed deadline</div>
+      <div class="ad-small-acts"><span class="ad-act p">CONFIRM DONE</span></div>
+    </div>
+  </div>
+
+  <!-- COL 2: HEALTH + ROUTINES -->
+  <div class="col">
+    <div class="section-header">HEALTH &amp; AREAS<span class="section-count">6 INDICES</span></div>
+
+    <div class="health-ad">
+      <span class="health-ad-score hi">87</span>
+      <div class="health-ad-name">Work &amp; Career</div>
+      <div class="health-ad-body">5 open notices. Quarter performing strongly. Q1 review completion pending — score will update upon submission.</div>
+      <div class="health-ad-bar"><div class="health-ad-bar-fill" style="width:87%"></div></div>
+    </div>
+    <div class="health-ad">
+      <span class="health-ad-score hi">91</span>
+      <div class="health-ad-name">Health &amp; Fitness</div>
+      <div class="health-ad-body">2 open notices. Half marathon training on schedule. Morning run streak active. Peak quarter.</div>
+      <div class="health-ad-bar"><div class="health-ad-bar-fill" style="width:91%"></div></div>
+    </div>
+    <div class="health-ad">
+      <span class="health-ad-score mid">63</span>
+      <div class="health-ad-name">Finance</div>
+      <div class="health-ad-body">3 open notices, 1 overdue. Tax return delayed. Rent transfer pending today. Emergency fund at 45% of target.</div>
+      <div class="health-ad-bar"><div class="health-ad-bar-fill mid" style="width:63%"></div></div>
+    </div>
+    <div class="health-ad" style="border:1px solid var(--red);">
+      <span class="health-ad-score lo">41</span>
+      <div class="health-ad-name">Relationships</div>
+      <div class="health-ad-body" style="color:var(--red);">4 open notices, 2 overdue. Lowest score in 5 months. Reply to James still pending +2 days. Call Dad today — do not defer.</div>
+      <div class="health-ad-bar"><div class="health-ad-bar-fill lo" style="width:41%"></div></div>
+    </div>
+    <div class="health-ad">
+      <span class="health-ad-score mid">74</span>
+      <div class="health-ad-name">Learning &amp; Growth</div>
+      <div class="health-ad-body">2 open notices. Reading pace behind — 6 of 24 books. Deep Work module progressing well.</div>
+      <div class="health-ad-bar"><div class="health-ad-bar-fill mid" style="width:74%"></div></div>
+    </div>
+    <div class="health-ad">
+      <span class="health-ad-score mid">58</span>
+      <div class="health-ad-name">Home &amp; Admin</div>
+      <div class="health-ad-body">3 open notices, 1 overdue. Inbox backlog building. Standing desk research still pending.</div>
+      <div class="health-ad-bar"><div class="health-ad-bar-fill mid" style="width:58%"></div></div>
+    </div>
+
+    <div class="section-header" style="margin-top:0;">DAILY RITUAL NOTICES<span class="section-count">2/7 CONFIRMED</span></div>
+    <div class="notice-row"><span class="notice-check">☑</span><span class="notice-name done">Morning Pages (3 pages)</span><span class="notice-time">06:15</span></div>
+    <div class="notice-row"><span class="notice-check">☑</span><span class="notice-name done">5km Morning Run</span><span class="notice-time">07:30</span></div>
+    <div class="notice-row"><span class="notice-check">☐</span><span class="notice-name">Cold Shower (2 min)</span><span class="notice-time">08:10</span></div>
+    <div class="notice-row"><span class="notice-check">☐</span><span class="notice-name">Review Daily Priorities</span><span class="notice-time">08:30</span></div>
+    <div class="notice-row"><span class="notice-check">☐</span><span class="notice-name">Meditate (10 min)</span><span class="notice-time">AFT</span></div>
+    <div class="notice-row"><span class="notice-check">☐</span><span class="notice-name">Read (30 min)</span><span class="notice-time">EVE</span></div>
+    <div class="notice-row"><span class="notice-check">☐</span><span class="notice-name">Evening Review &amp; Plan Tomorrow</span><span class="notice-time">21:30</span></div>
+  </div>
+
+  <!-- COL 3: GOALS + STATS -->
+  <div class="col">
+    <div class="section-header">GOAL REGISTRY<span class="section-count">3 ACTIVE</span></div>
+
+    <div class="ad">
+      <div class="ad-ref"><span>REF: GOAL-HLTH-001</span><span style="color:green;font-weight:700">ON TRACK ↑</span></div>
+      <div class="ad-title">Run a Half Marathon in Under 2 Hours</div>
+      <div class="ad-body">Training block week 8 of 14. Long run completed at 16km. Race date June 15, Sydney Half Marathon. 85 days to race day. Pace improving. Q2 milestone on track.</div>
+      <div class="ad-footer">
+        <span class="ad-tag high">68% DONE</span>
+        <span class="ad-tag med">Health</span>
+        <div class="ad-actions"><span class="ad-act p">UPDATE</span><span class="ad-act">VIEW TASKS</span></div>
+      </div>
+    </div>
+
+    <div class="ad">
+      <div class="ad-ref"><span>REF: GOAL-FIN-001</span><span style="color:#8B6914;font-weight:700">MODERATE →</span></div>
+      <div class="ad-title">Build $10,000 Emergency Fund</div>
+      <div class="ad-body">Current balance: $4,500. Fortnight transfers of $500 automated. Target date December 31. Q2 milestone: reach $5,500. Acceleration advised.</div>
+      <div class="ad-footer">
+        <span class="ad-tag high">45% DONE</span>
+        <span class="ad-tag med">Finance</span>
+        <div class="ad-actions"><span class="ad-act p">UPDATE</span></div>
+      </div>
+    </div>
+
+    <div class="ad">
+      <div class="ad-ref"><span>REF: GOAL-LRN-001</span><span style="color:var(--red);font-weight:700">BEHIND ↓</span></div>
+      <div class="ad-title">Read 24 Books This Year</div>
+      <div class="ad-body">Only 6 of 24 books completed. Need 2 per month — currently averaging 0.75. Currently reading: Zero to One (40% complete). Daily reading must increase from 20 to 45 min.</div>
+      <div class="ad-footer">
+        <span class="ad-tag urgent">25% DONE</span>
+        <span class="ad-tag med">Learning</span>
+        <div class="ad-actions"><span class="ad-act p">UPDATE</span><span class="ad-act">ADJUST</span></div>
+      </div>
+    </div>
+
+    <div class="section-header" style="margin-top:0;">WEEKLY PERFORMANCE<span class="section-count">W12 REPORT</span></div>
+    <div class="stat-notice"><span class="stat-n-k">Notices confirmed</span><span class="stat-n-v good">17</span></div>
+    <div class="stat-notice"><span class="stat-n-k">Notices issued</span><span class="stat-n-v">23</span></div>
+    <div class="stat-notice"><span class="stat-n-k">Completion rate</span><span class="stat-n-v good">74%</span></div>
+    <div class="stat-notice"><span class="stat-n-k">Ritual streak</span><span class="stat-n-v good">12 days</span></div>
+    <div class="stat-notice"><span class="stat-n-k">Focus hours logged</span><span class="stat-n-v good">18.5h</span></div>
+    <div class="stat-notice"><span class="stat-n-k">Year progress</span><span class="stat-n-v">23%</span></div>
+
+    <div class="big-quote">
+      <div class="bq-marks">&ldquo;</div>
+      <div class="bq-text">The secret of getting ahead is getting started. The secret of the start is breaking your complex, overwhelming tasks into small manageable tasks, and then starting on the first one.</div>
+      <div class="bq-attr">— Mark Twain</div>
+    </div>
+  </div>
+</div>
+
+<div class="ticker"><div class="tlabel">NOTICES</div><div class="ttrack"><div class="tcontent">
+  <span class="ti">RITUAL STREAK: <b>12 consecutive days</b><span class="td">·</span></span>
+  <span class="ti">REF HLTH-004: Relationships at <b>41 — critical</b><span class="td">·</span></span>
+  <span class="ti">DUE TODAY 17:00: Q1 Performance Review REF WORK-2026-0422-A<span class="td">·</span></span>
+  <span class="ti"><b>17 notices</b> confirmed this week<span class="td">·</span></span>
+  <span class="ti">Year standing: Week 12 of 52 — <b>23% complete</b><span class="td">·</span></span>
+  <span class="ti">RITUAL STREAK: <b>12 consecutive days</b><span class="td">·</span></span>
+  <span class="ti">REF HLTH-004: Relationships at <b>41 — critical</b><span class="td">·</span></span>
+  <span class="ti">DUE TODAY 17:00: Q1 Performance Review REF WORK-2026-0422-A<span class="td">·</span></span>
+  <span class="ti"><b>17 notices</b> confirmed this week<span class="td">·</span></span>
+  <span class="ti">Year standing: Week 12 of 52 — <b>23% complete</b><span class="td">·</span></span>
+</div></div></div>
+</body>
+</html>

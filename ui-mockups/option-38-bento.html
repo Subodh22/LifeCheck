@@ -1,0 +1,206 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Life OS  Bento</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--bg:#F5F5F7;--card:#fff;--ink:#1D1D1F;--t2:#6E6E73;--t3:#AEAEB2;--b:#E5E5EA;--acc:#0071E3;--red:#FF3B30;--green:#34C759;--amb:#FF9500;--pur:#AF52DE;}
+    body{background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;min-height:100vh;}
+    nav{height:52px;background:rgba(245,245,247,0.8);backdrop-filter:blur(20px);border-bottom:1px solid var(--b);display:flex;align-items:center;padding:0 24px;gap:20px;position:sticky;top:0;z-index:10;}
+    .logo{font-size:15px;font-weight:800;letter-spacing:-0.5px;}
+    .logo span{color:var(--acc);}
+    .nav-links{display:flex;gap:2px;}
+    .nl{font-size:12px;font-weight:500;color:var(--t2);padding:5px 12px;border-radius:8px;cursor:pointer;}
+    .nl.active,.nl:hover{background:rgba(0,0,0,0.06);color:var(--ink);}
+    .nav-r{margin-left:auto;display:flex;align-items:center;gap:8px;}
+    .nav-date{font-size:12px;color:var(--t3);}
+    .nav-btn{font-size:12px;font-weight:600;padding:7px 16px;border-radius:20px;border:none;cursor:pointer;}
+    .nav-btn.sec{background:rgba(0,0,0,0.06);color:var(--ink);}
+    .nav-btn.pri{background:var(--acc);color:#fff;}
+    .av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--acc),var(--pur));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;}
+    .page{padding:28px 28px 60px;max-width:1280px;margin:0 auto;}
+    .ph{margin-bottom:24px;}
+    .ph h1{font-size:26px;font-weight:800;letter-spacing:-0.5px;}
+    .ph p{font-size:13px;color:var(--t2);margin-top:3px;}
+    .bento{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:minmax(148px,auto);gap:14px;}
+    .c{background:var(--card);border-radius:18px;padding:22px;box-shadow:0 1px 1px rgba(0,0,0,0.04),0 2px 8px rgba(0,0,0,0.04);}
+    .c:hover{box-shadow:0 2px 2px rgba(0,0,0,0.06),0 4px 16px rgba(0,0,0,0.07);}
+    .c.s2{grid-column:span 2;}
+    .c.s3{grid-column:span 3;}
+    .c.r2{grid-row:span 2;}
+    .c.dark{background:var(--ink);}
+    .c.blue{background:var(--acc);}
+    .clbl{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);margin-bottom:14px;}
+    .c.dark .clbl,.c.blue .clbl{color:rgba(255,255,255,0.45);}
+    .big-num{font-size:64px;font-weight:900;letter-spacing:-3px;line-height:1;}
+    .big-lbl{font-size:13px;color:var(--t2);margin-top:4px;}
+    .c.dark .big-num,.c.dark .big-lbl{color:rgba(255,255,255,0.9);}
+    .c.dark .big-lbl{color:rgba(255,255,255,0.45);}
+    .c.blue .big-num,.c.blue .big-lbl{color:#fff;}
+    .c.blue .big-lbl{color:rgba(255,255,255,0.65);}
+    .big-num.red{color:var(--red);}
+    .big-num.green{color:var(--green);}
+    /* tasks */
+    .tk{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--b);cursor:pointer;}
+    .tk:last-child{border-bottom:none;}
+    .tk.done{opacity:.4;}
+    .tkc{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--b);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+    .tkc.done{background:var(--green);border-color:var(--green);}
+    .tkc.done::after{content:"";font-size:9px;color:#fff;}
+    .tkc.urg{border-color:var(--red);}
+    .tkc:not(.done):not(.urg):hover{border-color:var(--acc);}
+    .tkb{flex:1;min-width:0;}
+    .tkn{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .tkn.done{text-decoration:line-through;color:var(--t3);}
+    .tks{font-size:11px;color:var(--t3);}
+    .tkp{font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;flex-shrink:0;}
+    .tkp.r{background:#FFF0EE;color:var(--red);}
+    .tkp.a{background:#FFF7EE;color:var(--amb);}
+    .tkp.g{background:#EDFAF1;color:var(--green);}
+    /* alert */
+    .alr{display:flex;align-items:center;gap:8px;background:#FFF0EE;border-radius:10px;padding:9px 12px;margin-bottom:10px;}
+    .alr-dot{width:6px;height:6px;border-radius:50%;background:var(--red);animation:p 2s infinite;}
+    @keyframes p{0%,100%{opacity:1;}50%{opacity:.3;}}
+    .alr-t{font-size:12px;color:var(--red);flex:1;}
+    .alr-b{font-size:11px;font-weight:700;background:rgba(255,59,48,.15);color:var(--red);padding:2px 7px;border-radius:6px;}
+    /* area bars */
+    .ar{display:flex;align-items:center;gap:8px;padding:4px 0;}
+    .ar-d{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+    .ar-n{font-size:12px;color:var(--t2);width:76px;}
+    .ar-b{flex:1;height:5px;background:var(--bg);border-radius:3px;overflow:hidden;}
+    .ar-f{height:100%;border-radius:3px;}
+    .ar-s{font-size:12px;font-weight:700;width:26px;text-align:right;}
+    .ar-s.lo{color:var(--red);}
+    /* habits week grid */
+    .hg{display:flex;flex-direction:column;gap:7px;}
+    .hr{display:flex;align-items:center;gap:6px;}
+    .hl{font-size:11.5px;color:var(--t2);flex:1;}
+    .hd{width:13px;height:13px;border-radius:4px;background:var(--bg);}
+    .hd.y{background:var(--acc);}
+    /* goals */
+    .gl{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--b);}
+    .gl:last-child{border-bottom:none;}
+    .gl-ic{font-size:22px;}
+    .gl-b{flex:1;}
+    .gl-n{font-size:13px;font-weight:600;margin-bottom:5px;}
+    .gl-bar{height:4px;background:var(--bg);border-radius:2px;}
+    .gl-f{height:100%;border-radius:2px;}
+    .gl-m{font-size:11px;color:var(--t3);margin-top:3px;}
+    .gl-p{font-size:16px;font-weight:800;}
+    /* streak card */
+    .streak-body{display:flex;flex-direction:column;align-items:center;justify-content:center;height:calc(100% - 30px);text-align:center;}
+    .sn{font-size:52px;font-weight:900;color:#fff;line-height:1;}
+    .sl{font-size:13px;color:rgba(255,255,255,.65);}
+    .ss{font-size:11px;color:rgba(255,255,255,.4);margin-top:6px;}
+    /* quote */
+    .qb{display:flex;flex-direction:column;justify-content:flex-end;height:calc(100% - 30px);}
+    .qt{font-size:13.5px;font-style:italic;color:rgba(255,255,255,.7);line-height:1.6;margin-bottom:8px;}
+    .qa{font-size:11px;color:rgba(255,255,255,.35);}
+    /* ring */
+    .rw{display:flex;align-items:center;gap:16px;margin-bottom:16px;}
+    .ring-c{position:relative;width:72px;height:72px;flex-shrink:0;}
+    .ring-c svg{transform:rotate(-90deg);}
+    .ring-mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+    .ring-n{font-size:17px;font-weight:800;line-height:1;}
+    .ring-l{font-size:9px;color:var(--t3);}
+    .rs{display:flex;flex-direction:column;gap:3px;}
+    .rsv{font-size:12px;font-weight:600;}
+    .rsk{font-size:11px;color:var(--t2);}
+  </style>
+</head>
+<body>
+<nav>
+  <div class="logo">Life<span>OS</span></div>
+  <div class="nav-links">
+    <div class="nl active">Today</div>
+    <div class="nl">Tasks</div>
+    <div class="nl">Goals</div>
+    <div class="nl">Schedule</div>
+  </div>
+  <div class="nav-r">
+    <span class="nav-date">Sun, 22 Mar  Week 12</span>
+    <button class="nav-btn sec"> Search</button>
+    <button class="nav-btn pri">+ Task</button>
+    <div class="av">S</div>
+  </div>
+</nav>
+<div class="page">
+  <div class="ph"><h1>Good morning, Subodh.</h1><p>Day 81 of 365  Q1 2026  3 items overdue</p></div>
+  <div class="bento">
+    <!-- Tasks c2 r2 -->
+    <div class="c s2 r2">
+      <div class="clbl">Today's Tasks</div>
+      <div class="alr"><div class="alr-dot"></div><span class="alr-t">2 tasks overdue  needs immediate action</span><span class="alr-b">2 OVERDUE</span></div>
+      <div class="tk"><div class="tkc urg"></div><div class="tkb"><div class="tkn">Q1 Performance Review  Self-Assessment</div><div class="tks">Work  Today</div></div><span class="tkp r">5:00 PM</span></div>
+      <div class="tk"><div class="tkc"></div><div class="tkb"><div class="tkn">Transfer April rent to landlord</div><div class="tks">Finance  Today</div></div><span class="tkp a">Noon</span></div>
+      <div class="tk done"><div class="tkc done"></div><div class="tkb"><div class="tkn done">Morning run  5km tempo pace</div><div class="tks">Health</div></div><span class="tkp g">Done</span></div>
+      <div class="tk"><div class="tkc"></div><div class="tkb"><div class="tkn">Chapter 4  Deep Work module</div><div class="tks">Learning</div></div></div>
+      <div class="tk"><div class="tkc"></div><div class="tkb"><div class="tkn">Call Dad  Easter weekend plans</div><div class="tks">Relationships</div></div></div>
+    </div>
+    <!-- Streak blue -->
+    <div class="c blue">
+      <div class="clbl">Ritual Streak</div>
+      <div class="streak-body"><div class="sn">12</div><div class="sl">days </div><div class="ss">Personal best: 21</div></div>
+    </div>
+    <!-- Overdue red -->
+    <div class="c" style="background:#FFF0EE;">
+      <div class="clbl" style="color:#FF3B30;">Overdue</div>
+      <div class="big-num red">3</div>
+      <div class="big-lbl" style="color:var(--red);">items need action</div>
+    </div>
+    <!-- Week dark -->
+    <div class="c dark">
+      <div class="clbl">Week Rate</div>
+      <div class="big-num">72%</div>
+      <div class="big-lbl">17 of 23 tasks</div>
+    </div>
+    <!-- Area health c2 -->
+    <div class="c s2">
+      <div class="clbl">Area Health</div>
+      <div class="ar"><div class="ar-d" style="background:#0071E3"></div><span class="ar-n">Work</span><div class="ar-b"><div class="ar-f" style="width:87%;background:#0071E3;"></div></div><span class="ar-s">87</span></div>
+      <div class="ar"><div class="ar-d" style="background:#34C759"></div><span class="ar-n">Health</span><div class="ar-b"><div class="ar-f" style="width:91%;background:#34C759;"></div></div><span class="ar-s">91</span></div>
+      <div class="ar"><div class="ar-d" style="background:#FF9500"></div><span class="ar-n">Finance</span><div class="ar-b"><div class="ar-f" style="width:63%;background:#FF9500;"></div></div><span class="ar-s">63</span></div>
+      <div class="ar"><div class="ar-d" style="background:#FF3B30"></div><span class="ar-n">Relations</span><div class="ar-b"><div class="ar-f" style="width:41%;background:#FF3B30;"></div></div><span class="ar-s lo">41</span></div>
+      <div class="ar"><div class="ar-d" style="background:#32ADE6"></div><span class="ar-n">Learning</span><div class="ar-b"><div class="ar-f" style="width:74%;background:#32ADE6;"></div></div><span class="ar-s">74</span></div>
+      <div class="ar"><div class="ar-d" style="background:#AF52DE"></div><span class="ar-n">Home</span><div class="ar-b"><div class="ar-f" style="width:58%;background:#AF52DE;"></div></div><span class="ar-s">58</span></div>
+    </div>
+    <!-- Habits c2 -->
+    <div class="c s2">
+      <div class="clbl">Habit Tracker  Week 12</div>
+      <div class="hg">
+        <div class="hr"><span class="hl">Morning pages</span><div class="hd y"></div><div class="hd y"></div><div class="hd y"></div><div class="hd y"></div><div class="hd y"></div><div class="hd y"></div><div class="hd"></div></div>
+        <div class="hr"><span class="hl">5km run</span><div class="hd y"></div><div class="hd y"></div><div class="hd y"></div><div class="hd y"></div><div class="hd y"></div><div class="hd y"></div><div class="hd"></div></div>
+        <div class="hr"><span class="hl">Cold shower</span><div class="hd y"></div><div class="hd y"></div><div class="hd y"></div><div class="hd y"></div><div class="hd"></div><div class="hd" style="border:1.5px dashed var(--b)"></div><div class="hd"></div></div>
+        <div class="hr"><span class="hl">Meditate</span><div class="hd y"></div><div class="hd y"></div><div class="hd"></div><div class="hd y"></div><div class="hd y"></div><div class="hd" style="border:1.5px dashed var(--b)"></div><div class="hd"></div></div>
+        <div class="hr"><span class="hl">Read 30 min</span><div class="hd y"></div><div class="hd y"></div><div class="hd y"></div><div class="hd"></div><div class="hd y"></div><div class="hd" style="border:1.5px dashed var(--b)"></div><div class="hd"></div></div>
+      </div>
+    </div>
+    <!-- Goals c2 -->
+    <div class="c s2">
+      <div class="clbl">Active Goals</div>
+      <div class="gl"><div class="gl-ic"></div><div class="gl-b"><div class="gl-n">Run a Half Marathon</div><div class="gl-bar"><div class="gl-f" style="width:68%;background:#34C759;"></div></div><div class="gl-m">Jun 15  On track</div></div><div class="gl-p" style="color:#34C759;">68%</div></div>
+      <div class="gl"><div class="gl-ic"></div><div class="gl-b"><div class="gl-n">Emergency Fund</div><div class="gl-bar"><div class="gl-f" style="width:45%;background:#FF9500;"></div></div><div class="gl-m">$4.5k / $10k</div></div><div class="gl-p" style="color:#FF9500;">45%</div></div>
+      <div class="gl"><div class="gl-ic"></div><div class="gl-b"><div class="gl-n">Read 24 Books</div><div class="gl-bar"><div class="gl-f" style="width:25%;background:#FF3B30;"></div></div><div class="gl-m" style="color:var(--red);">6/24  Behind</div></div><div class="gl-p" style="color:#FF3B30;">25%</div></div>
+    </div>
+    <!-- day progress -->
+    <div class="c">
+      <div class="clbl">Day Progress</div>
+      <div class="rw">
+        <div class="ring-c">
+          <svg width="72" height="72" viewBox="0 0 72 72"><circle cx="36" cy="36" r="28" fill="none" stroke="#F5F5F7" stroke-width="6"/><circle cx="36" cy="36" r="28" fill="none" stroke="#0071E3" stroke-width="6" stroke-dasharray="175.9" stroke-dashoffset="109" stroke-linecap="round"/></svg>
+          <div class="ring-mid"><div class="ring-n">38%</div><div class="ring-l">done</div></div>
+        </div>
+        <div class="rs"><div><div class="rsv">3/8 tasks</div><div class="rsk">completed</div></div><div style="margin-top:6px;"><div class="rsv" style="color:var(--green);">12d streak</div><div class="rsk">current</div></div></div>
+      </div>
+    </div>
+    <!-- Quote -->
+    <div class="c dark">
+      <div class="clbl">Today's Note</div>
+      <div class="qb"><div class="qt">"The secret of getting ahead is getting started."</div><div class="qa"> Mark Twain  Day 81 of 365</div></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

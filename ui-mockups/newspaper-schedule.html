@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>LIFE OS  Daily Program (Schedule)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700&family=Playfair+Display+SC:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--newsprint:#FAFAF5;--ink:#0D0D0D;--ink-mid:#2A2A2A;--ink-light:#555550;--ink-faint:#999990;--red:#C41E3A;--white:#FFFFFF;--rule-light:#CCCCBC;}
+    body{background:var(--newsprint);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+    header{background:var(--white);border-bottom:3px solid var(--ink);position:sticky;top:4px;z-index:100;border-top:4px solid var(--ink);}
+    .masthead-top{display:flex;align-items:center;justify-content:space-between;padding:0 64px;height:64px;border-bottom:1px solid var(--rule-light);}
+    .logo{font-family:'Playfair Display',serif;font-weight:900;font-size:32px;letter-spacing:-1px;text-transform:uppercase;color:var(--ink);}
+    .logo span{color:var(--red);}
+    .nav{display:flex;align-items:center;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-mid);}
+    .nav a{text-decoration:none;color:inherit;padding:0 18px;transition:color .1s;}
+    .nav a:hover,.nav a.active{color:var(--red);}
+    .nav .pipe{color:var(--rule-light);font-size:14px;font-weight:300;}
+    .m-date{font-size:11px;color:var(--ink-light);}
+    .btn-new{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:white;background:var(--ink);border:none;padding:8px 16px;cursor:pointer;}
+    .edition-bar{display:flex;justify-content:space-between;padding:6px 64px;background:var(--newsprint);border-bottom:1px solid var(--rule-light);}
+    .main{padding:0 64px 80px;}
+    .hero{padding:48px 0 32px;border-bottom:2px solid var(--ink);margin-bottom:32px;}
+    .h-kicker{font-size:10px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--red);margin-bottom:8px;}
+    .h-headline{font-family:'Playfair Display',serif;font-weight:900;font-size:64px;line-height:0.9;letter-spacing:-2px;text-transform:uppercase;margin-bottom:16px;}
+    .h-sub{font-size:14px;color:var(--ink-light);max-width:800px;line-height:1.6;}
+    .guide{display:grid;grid-template-columns:100px 1fr;gap:0;border:1px solid var(--rule-light);background:white;}
+    .guide-h{background:var(--newsprint);border-bottom:1px solid var(--rule-light);display:contents;}
+    .g-time-h,.g-prog-h{padding:12px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--ink-faint);border-bottom:1px solid var(--rule-light);}
+    .g-row{display:contents;}
+    .g-time{padding:20px 12px;font-family:'Playfair Display',serif;font-size:16px;font-weight:800;border-bottom:1px solid var(--rule-light);text-align:right;background:var(--newsprint);}
+    .g-prog{padding:20px 24px;border-bottom:1px solid var(--rule-light);display:flex;flex-direction:column;gap:4px;}
+    .g-prog:hover{background:var(--newsprint);}
+    .g-tag{font-size:9px;font-weight:800;color:var(--red);text-transform:uppercase;letter-spacing:1px;}
+    .g-name{font-family:'Playfair Display',serif;font-size:18px;font-weight:800;}
+    .g-desc{font-size:12px;color:var(--ink-light);line-height:1.4;}
+    .g-active{background:var(--red-pale);position:relative;}
+    .g-active::before{content:'LIVE';position:absolute;top:10px;right:20px;font-size:9px;font-weight:800;color:var(--red);letter-spacing:1px;}
+    .sec-label{font-size:9px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:12px;display:block;}
+  </style>
+</head>
+<body>
+<header>
+  <div class="masthead-top">
+    <div class="logo">The Daily<span>Log</span></div>
+    <nav class="nav">
+      <a href="newspaper-today.html">Today</a><span class="pipe">|</span>
+      <a href="newspaper-backlog.html">Backlog</a><span class="pipe">|</span>
+      <a href="newspaper-goals.html">Goals</a><span class="pipe">|</span>
+      <a href="newspaper-areas.html">Areas</a><span class="pipe">|</span>
+      <a href="newspaper-schedule.html" class="active">Schedule</a>
+    </nav>
+    <div class="masthead-r"><span class="m-date">Listings  Program Guide</span><button class="btn-new">+ NEW EVENT</button></div>
+  </div>
+  <div class="edition-bar"><span>TV Guide Style Daily Programming Schedule</span><span>Week 12 Edition</span></div>
+</header>
+<main class="main">
+  <section class="hero">
+    <div class="h-kicker">Program Guide</div>
+    <h1 class="h-headline">Daily Listings.</h1>
+    <div class="h-sub">Scheduled operations for <strong>Sunday, March 22</strong>. Programming includes habitual rituals, critical deep work broadcasts, and evening recovery sessions. All times in 24-hour format.</div>
+  </section>
+  <span class="sec-label">The Prime Time Schedule  Sunday Programming</span>
+  <div class="guide">
+    <div class="g-time-h">Time</div><div class="g-prog-h">Program / Ritual</div>
+    <!-- 06:00 -->
+    <div class="g-row"><div class="g-time">06:00</div><div class="g-prog"><span class="g-tag">Morning News</span><h3 class="g-name">Morning Pages ritual</h3><p class="g-desc">Stream-of-consciousness broadcast. Primary mental drainage protocol. 21m duration.</p></div></div>
+    <!-- 07:00 -->
+    <div class="g-row"><div class="g-time">07:00</div><div class="g-prog"><span class="g-tag">Sports Live</span><h3 class="g-name">Tempo Run (5KM)</h3><p class="g-desc">Historical cardiovascular peak session. High intensity cardio broadcast from the local park circuit.</p></div></div>
+    <!-- 08:30 -->
+    <div class="g-row"><div class="g-time">08:30</div><div class="g-prog g-active"><span class="g-tag">Special Report</span><h3 class="g-name">Priority Review &amp; Deep Work</h3><p class="g-desc">Directing the first quarter tactical strategy. Review of the Sector Index performance and Registry cleanup.</p></div></div>
+    <!-- 12:00 -->
+    <div class="g-row"><div class="g-time">12:00</div><div class="g-prog"><span class="g-tag">Mid-Day Docu</span><h3 class="g-name">Lunch &amp; Leisure Recovery</h3><p class="g-desc">Nutritional intake and cognitive rest period. Non-screen engagement mandatory.</p></div></div>
+    <!-- 14:00 -->
+    <div class="g-row"><div class="g-time">14:00</div><div class="g-prog"><span class="g-tag">Deep Feature</span><h3 class="g-name">Q1 Performance Review (Phase II)</h3><p class="g-desc">Intense analytical broadcast. Drafting final submission of quarterly progress documentation.</p></div></div>
+    <!-- 17:00 -->
+    <div class="g-row"><div class="g-time">17:00</div><div class="g-prog"><span class="g-tag">Talk Show</span><h3 class="g-name">Social Outreach Protocol</h3><p class="g-desc">Emergency outreach to the Relationships sector. Sunday evening family transmission via mobile link.</p></div></div>
+    <!-- 20:00 -->
+    <div class="g-row"><div class="g-time">20:00</div><div class="g-prog"><span class="g-tag">Late Learning</span><h3 class="g-name">Chapter 4: Deep Work module</h3><p class="g-desc">Instructional broadcast. Final academic session of the week cycle.</p></div></div>
+    <!-- 21:30 -->
+    <div class="g-row"><div class="g-time">21:30</div><div class="g-prog"><span class="g-tag">Off-Air</span><h3 class="g-name">Evening Review &amp; Shutdown</h3><p class="g-desc">Final registry update. Preparation for Monday's broadcast cycle. Shutdown at 22:30.</p></div></div>
+  </div>
+</main>
+</body>
+</html>

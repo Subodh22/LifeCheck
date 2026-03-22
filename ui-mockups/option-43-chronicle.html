@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LIFE OS — Option 43 · Chronicle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700&family=Playfair+Display+SC:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --newsprint: #FAFAF5;
+      --ink: #0D0D0D;
+      --ink-mid: #2A2A2A;
+      --ink-light: #555550;
+      --ink-faint: #999990;
+      --red: #C41E3A;
+      --red-pale: rgba(196,30,58,0.07);
+      --white: #FFFFFF;
+      --rule: #0D0D0D;
+      --rule-light: #CCCCBC;
+    }
+
+    html, body {
+      font-family: 'Inter', sans-serif;
+      background: var(--newsprint);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── MASTHEAD ── */
+    .masthead {
+      background: var(--white);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    /* Triple rule at top — classic newspaper style */
+    .masthead-rule-top {
+      height: 5px;
+      background: var(--ink);
+    }
+    .masthead-rule-mid {
+      height: 1px;
+      background: var(--red);
+      margin: 2px 0;
+    }
+    .masthead-rule-bot {
+      height: 2px;
+      background: var(--ink);
+      margin-bottom: 0;
+    }
+
+    .masthead-body {
+      padding: 12px 72px 0;
+      border-bottom: 1px solid var(--ink);
+    }
+
+    /* Logo centered — big editorial */
+    .logo-block {
+      text-align: center;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--rule-light);
+      margin-bottom: 0;
+    }
+
+    .logo-eyebrow {
+      font-size: 8.5px;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 4px;
+    }
+
+    .logo-main {
+      font-family: 'Playfair Display', serif;
+      font-weight: 900;
+      font-size: 52px;
+      letter-spacing: -1px;
+      text-transform: uppercase;
+      line-height: 0.9;
+      color: var(--ink);
+    }
+
+    .logo-main em {
+      color: var(--red);
+      font-style: normal;
+    }
+
+    .logo-sub {
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-top: 6px;
+    }
+
+    /* Nav row below logo */
+    .masthead-nav-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+    }
+
+    .masthead-date-left {
+      font-size: 10px;
+      color: var(--ink-light);
+      letter-spacing: 0.3px;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--ink-mid);
+    }
+
+    .nav a {
+      text-decoration: none;
+      color: inherit;
+      padding: 0 16px;
+      transition: color 0.15s;
+    }
+
+    .nav a.active { color: var(--red); }
+    .nav a:hover  { color: var(--red); }
+    .nav .pipe { color: var(--rule-light); font-size: 13px; user-select: none; }
+
+    .btn-new {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--white);
+      background: var(--ink);
+      border: none;
+      cursor: pointer;
+      padding: 6px 14px;
+      transition: background 0.15s;
+    }
+
+    .btn-new:hover { background: var(--red); }
+
+    /* ── MAIN ── */
+    .main { padding: 0 72px 80px; }
+
+    /* ── HERO — centered title, italic deck ── */
+    .hero {
+      text-align: center;
+      padding: 44px 0 28px;
+      border-bottom: 2px solid var(--ink);
+      margin-bottom: 32px;
+    }
+
+    .hero-kicker {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 12px;
+    }
+
+    .hero-headline {
+      font-family: 'Playfair Display', serif;
+      font-weight: 900;
+      font-size: 90px;
+      line-height: 0.88;
+      letter-spacing: -3px;
+      text-transform: uppercase;
+      color: var(--ink);
+      margin-bottom: 20px;
+    }
+
+    .hero-rule-ornament {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .hero-rule-ornament-line {
+      width: 80px;
+      height: 1px;
+      background: var(--ink);
+    }
+
+    .hero-ornament {
+      font-size: 10px;
+      color: var(--red);
+      letter-spacing: 4px;
+    }
+
+    .hero-deck {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 16px;
+      color: var(--ink-light);
+      line-height: 1.6;
+      max-width: 620px;
+      margin: 0 auto 22px;
+    }
+
+    .hero-deck strong {
+      font-style: normal;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    /* Hero stats inline */
+    .hero-stats {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+    }
+
+    .hero-stat {
+      padding: 0 28px;
+      border-right: 1px solid var(--rule-light);
+      text-align: center;
+    }
+
+    .hero-stat:first-child { border-left: 1px solid var(--rule-light); }
+
+    .hero-stat-val {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--ink);
+    }
+
+    .hero-stat-val.red { color: var(--red); }
+
+    .hero-stat-label {
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-top: 3px;
+    }
+
+    /* ── TWO-COLUMN LAYOUT ── */
+    .columns-2 {
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: 0;
+    }
+
+    .col-main {
+      padding-right: 40px;
+      border-right: 1px solid var(--rule);
+    }
+
+    .col-side {
+      padding-left: 36px;
+    }
+
+    /* ── SECTION HEADER ── */
+    .section-header {
+      margin-bottom: 18px;
+    }
+
+    .section-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--red);
+      margin-bottom: 2px;
+    }
+
+    .section-title {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 6px;
+    }
+
+    .section-rule {
+      width: 100%;
+      height: 1px;
+      background: var(--ink);
+    }
+
+    /* ── TASK ARTICLE ── */
+    .task-article {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--rule-light);
+    }
+
+    .task-article:last-child { border-bottom: none; }
+
+    .task-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .task-tag {
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--white);
+      background: var(--ink);
+      padding: 2px 7px;
+    }
+
+    .task-tag.red { background: var(--red); }
+
+    .task-tag.outline {
+      background: transparent;
+      color: var(--ink-light);
+      border: 1px solid var(--rule-light);
+    }
+
+    .task-byline {
+      font-size: 9.5px;
+      color: var(--ink-faint);
+    }
+
+    .task-headline-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .task-check {
+      width: 14px;
+      height: 14px;
+      border: 1.5px solid var(--ink);
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 4px;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.15s;
+    }
+
+    .task-check.done { background: var(--ink); }
+
+    .task-check.done::after {
+      content: '';
+      position: absolute;
+      top: 1px; left: 3.5px;
+      width: 4px; height: 7px;
+      border: 1.5px solid var(--white);
+      border-top: none;
+      border-left: none;
+      transform: rotate(45deg);
+    }
+
+    .task-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.15;
+      cursor: pointer;
+      transition: color 0.1s;
+    }
+
+    .task-headline:hover { color: var(--red); }
+
+    .task-headline.lead {
+      font-size: 30px;
+      line-height: 1.05;
+    }
+
+    .task-headline.small { font-size: 16px; }
+
+    .task-headline.done {
+      text-decoration: line-through;
+      color: var(--ink-faint);
+    }
+
+    .task-summary {
+      font-size: 12px;
+      color: var(--ink-light);
+      line-height: 1.65;
+      margin-bottom: 9px;
+    }
+
+    .task-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .task-action {
+      font-size: 9.5px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      color: var(--ink-faint);
+      cursor: pointer;
+      border-bottom: 1px solid transparent;
+      transition: color 0.1s, border-color 0.1s;
+    }
+
+    .task-action:hover { color: var(--red); border-color: var(--red); }
+    .task-action.primary { color: var(--ink); border-color: var(--ink); }
+
+    /* ── PULL QUOTE ── */
+    .pull-quote {
+      border-top: 2px solid var(--ink);
+      border-bottom: 1px solid var(--rule-light);
+      padding: 18px 0;
+      margin: 20px 0;
+    }
+
+    .pull-quote-text {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 21px;
+      font-weight: 700;
+      line-height: 1.35;
+      color: var(--ink);
+      text-align: center;
+    }
+
+    .pull-quote-text em {
+      color: var(--red);
+      font-style: italic;
+    }
+
+    .pull-quote-source {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    /* ── SIDEBAR SECTION ── */
+    .side-section { margin-bottom: 28px; }
+
+    /* Area health grid */
+    .area-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .area-cell {
+      border: 1px solid var(--rule-light);
+      padding: 10px 12px;
+      transition: border-color 0.15s;
+      cursor: pointer;
+    }
+
+    .area-cell:hover { border-color: var(--ink); }
+
+    .area-cell-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
+    .area-cell-score {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .area-cell-score.high { color: #3A7D44; }
+    .area-cell-score.mid  { color: #B08A4E; }
+    .area-cell-score.low  { color: var(--red); }
+
+    .area-cell-bar {
+      width: 100%;
+      height: 2px;
+      background: var(--rule-light);
+      margin-top: 6px;
+    }
+
+    .area-cell-fill {
+      height: 100%;
+    }
+
+    .area-cell-fill.high { background: #3A7D44; }
+    .area-cell-fill.mid  { background: #B08A4E; }
+    .area-cell-fill.low  { background: var(--red); }
+
+    /* Goal progress */
+    .goal-item {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--rule-light);
+    }
+
+    .goal-item:last-child { border-bottom: none; }
+
+    .goal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 5px;
+    }
+
+    .goal-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .goal-pct {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .goal-bar {
+      width: 100%;
+      height: 2px;
+      background: var(--rule-light);
+      margin-bottom: 4px;
+    }
+
+    .goal-fill {
+      height: 100%;
+      background: var(--ink);
+    }
+
+    .goal-deadline {
+      font-size: 9.5px;
+      color: var(--ink-faint);
+    }
+
+    /* Upcoming — compact */
+    .upcoming-compact {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--rule-light);
+    }
+
+    .upcoming-compact:last-child { border-bottom: none; }
+
+    .upcoming-day-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1;
+      width: 26px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .upcoming-day-name {
+      font-size: 7.5px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      text-align: center;
+    }
+
+    .upcoming-divider {
+      width: 1px;
+      height: 28px;
+      background: var(--rule-light);
+      flex-shrink: 0;
+    }
+
+    .upcoming-task-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.2;
+    }
+
+    .upcoming-task-area {
+      font-size: 9.5px;
+      color: var(--ink-faint);
+      margin-top: 1px;
+    }
+
+    /* Coach panel */
+    .coach-panel {
+      background: var(--ink);
+      padding: 16px 18px;
+      margin-top: 4px;
+    }
+
+    .coach-label {
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .coach-text {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 13px;
+      color: #E8E4DC;
+      line-height: 1.6;
+    }
+
+    .coach-source {
+      font-size: 9px;
+      color: #888880;
+      margin-top: 8px;
+      letter-spacing: 0.3px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- MASTHEAD -->
+  <header class="masthead">
+    <div class="masthead-rule-top"></div>
+    <div class="masthead-rule-mid"></div>
+    <div class="masthead-rule-bot"></div>
+
+    <div class="masthead-body">
+      <div class="logo-block">
+        <div class="logo-eyebrow">Personal Life Management System</div>
+        <div class="logo-main">Life <em>OS</em></div>
+        <div class="logo-sub">Est. 2024 &nbsp;·&nbsp; Personal Edition</div>
+      </div>
+
+      <div class="masthead-nav-row">
+        <span class="masthead-date-left">Monday, March 23, 2026 &nbsp;·&nbsp; Week 13 &nbsp;·&nbsp; Q1</span>
+        <nav class="nav">
+          <a href="#" class="active">Today</a>
+          <span class="pipe">|</span>
+          <a href="#">Backlog</a>
+          <span class="pipe">|</span>
+          <a href="#">Goals</a>
+          <span class="pipe">|</span>
+          <a href="#">Schedule</a>
+        </nav>
+        <button class="btn-new">+ New Task</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- HERO — centered -->
+    <section class="hero">
+      <div class="hero-kicker">Morning Chronicle &nbsp;·&nbsp; March 23, 2026</div>
+      <h1 class="hero-headline">Today</h1>
+
+      <div class="hero-rule-ornament">
+        <div class="hero-rule-ornament-line"></div>
+        <span class="hero-ornament">◆ ◆ ◆</span>
+        <div class="hero-rule-ornament-line"></div>
+      </div>
+
+      <p class="hero-deck">
+        <strong>Three priorities await.</strong> The product roadmap is due for stakeholder review tomorrow — your week's heaviest lift. Finance review has slipped by 12 days. Relationships have gone quiet; one small act changes everything.
+      </p>
+
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-val">3</div>
+          <div class="hero-stat-label">Due Today</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-val">11</div>
+          <div class="hero-stat-label">In Progress</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-val red">2</div>
+          <div class="hero-stat-label">Overdue</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-val">67</div>
+          <div class="hero-stat-label">Health Score</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2-COLUMN LAYOUT -->
+    <div class="columns-2">
+
+      <!-- LEFT: Tasks -->
+      <div class="col-main">
+
+        <div class="section-header">
+          <div class="section-number">§ I</div>
+          <div class="section-title">Today's Priorities</div>
+          <div class="section-rule"></div>
+        </div>
+
+        <div class="task-article">
+          <div class="task-meta">
+            <span class="task-tag red">Urgent</span>
+            <span class="task-tag">Career</span>
+            <span class="task-byline">Due Today</span>
+          </div>
+          <div class="task-headline-row">
+            <span class="task-check"></span>
+            <h2 class="task-headline lead">Finish Product Roadmap Q2 Draft</h2>
+          </div>
+          <p class="task-summary">Final review pass before stakeholder meeting Thursday. Add competitive analysis section and timeline estimates. This task is blocking two downstream deliverables and directly affects the Q2 planning cycle.</p>
+          <div class="task-actions">
+            <span class="task-action primary">Open →</span>
+            <span class="task-action">Defer to Tomorrow</span>
+            <span class="task-action">Mark Complete</span>
+          </div>
+        </div>
+
+        <!-- Pull quote between tasks -->
+        <div class="pull-quote">
+          <div class="pull-quote-text">"The roadmap was due yesterday. <em>Every hour counts now.</em>"</div>
+          <div class="pull-quote-source">— Life OS Coach</div>
+        </div>
+
+        <div class="task-article">
+          <div class="task-meta">
+            <span class="task-tag red">Overdue</span>
+            <span class="task-tag">Finance</span>
+            <span class="task-byline">Was Due March 11 — 12 days late</span>
+          </div>
+          <div class="task-headline-row">
+            <span class="task-check"></span>
+            <h2 class="task-headline">Monthly Budget Review</h2>
+          </div>
+          <p class="task-summary">March reconciliation still pending. Three unused subscription services identified last quarter remain unresolved. 30-minute task — long overdue.</p>
+          <div class="task-actions">
+            <span class="task-action primary">Open →</span>
+            <span class="task-action">Defer</span>
+          </div>
+        </div>
+
+        <div class="task-article">
+          <div class="task-meta">
+            <span class="task-tag">Health</span>
+            <span class="task-byline">Daily Habit · Streak: 3 days</span>
+          </div>
+          <div class="task-headline-row">
+            <span class="task-check"></span>
+            <h2 class="task-headline small">Morning Run — 5km</h2>
+          </div>
+          <div class="task-actions">
+            <span class="task-action primary">Log Run →</span>
+            <span class="task-action">Skip Today</span>
+          </div>
+        </div>
+
+        <div class="task-article">
+          <div class="task-meta">
+            <span class="task-tag outline">Learning</span>
+            <span class="task-byline">Chapter 4 of 12 · 33% complete</span>
+          </div>
+          <div class="task-headline-row">
+            <span class="task-check done"></span>
+            <h2 class="task-headline small done">Read "Thinking in Systems" — Ch. 4</h2>
+          </div>
+        </div>
+
+        <div class="task-article">
+          <div class="task-meta">
+            <span class="task-tag outline">Relationships</span>
+            <span class="task-byline">Recurring · Weekly</span>
+          </div>
+          <div class="task-headline-row">
+            <span class="task-check"></span>
+            <h2 class="task-headline small">Call Mum — Sunday catchup (rescheduled)</h2>
+          </div>
+          <div class="task-actions">
+            <span class="task-action primary">Schedule →</span>
+            <span class="task-action">Complete</span>
+          </div>
+        </div>
+
+        <!-- Section II: Goals -->
+        <div class="section-header" style="margin-top: 32px;">
+          <div class="section-number">§ II</div>
+          <div class="section-title">Active Goals</div>
+          <div class="section-rule"></div>
+        </div>
+
+        <div class="task-article">
+          <div class="task-meta">
+            <span class="task-tag">Career</span>
+            <span class="task-byline">68% complete · Due Jun 30</span>
+          </div>
+          <div class="task-headline-row">
+            <h2 class="task-headline small">Land Senior Product Manager Role</h2>
+          </div>
+          <div style="width:100%; height:2px; background:var(--rule-light); margin-top:6px;">
+            <div style="width:68%; height:100%; background:var(--ink);"></div>
+          </div>
+        </div>
+
+        <div class="task-article">
+          <div class="task-meta">
+            <span class="task-tag">Health</span>
+            <span class="task-byline">40% complete · Due Sep 1</span>
+          </div>
+          <div class="task-headline-row">
+            <h2 class="task-headline small">Run a Half Marathon</h2>
+          </div>
+          <div style="width:100%; height:2px; background:var(--rule-light); margin-top:6px;">
+            <div style="width:40%; height:100%; background:#3A7D44;"></div>
+          </div>
+        </div>
+
+        <div class="task-article">
+          <div class="task-meta">
+            <span class="task-tag">Finance</span>
+            <span class="task-byline">25% complete · Due Dec 31</span>
+          </div>
+          <div class="task-headline-row">
+            <h2 class="task-headline small">Build £20,000 Emergency Fund</h2>
+          </div>
+          <div style="width:100%; height:2px; background:var(--rule-light); margin-top:6px;">
+            <div style="width:25%; height:100%; background:#B08A4E;"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: Areas + Upcoming + Coach -->
+      <div class="col-side">
+
+        <!-- Area Health grid -->
+        <div class="side-section">
+          <div class="section-header">
+            <div class="section-number">§ III</div>
+            <div class="section-title">Area Health</div>
+            <div class="section-rule"></div>
+          </div>
+
+          <div class="area-grid">
+            <div class="area-cell">
+              <div class="area-cell-name">Career</div>
+              <div class="area-cell-score high">84</div>
+              <div class="area-cell-bar"><div class="area-cell-fill high" style="width:84%"></div></div>
+            </div>
+            <div class="area-cell">
+              <div class="area-cell-name">Health</div>
+              <div class="area-cell-score high">78</div>
+              <div class="area-cell-bar"><div class="area-cell-fill high" style="width:78%"></div></div>
+            </div>
+            <div class="area-cell">
+              <div class="area-cell-name">Finance</div>
+              <div class="area-cell-score mid">61</div>
+              <div class="area-cell-bar"><div class="area-cell-fill mid" style="width:61%"></div></div>
+            </div>
+            <div class="area-cell">
+              <div class="area-cell-name">Learning</div>
+              <div class="area-cell-score mid">55</div>
+              <div class="area-cell-bar"><div class="area-cell-fill mid" style="width:55%"></div></div>
+            </div>
+            <div class="area-cell">
+              <div class="area-cell-name">Relationships</div>
+              <div class="area-cell-score low">38</div>
+              <div class="area-cell-bar"><div class="area-cell-fill low" style="width:38%"></div></div>
+            </div>
+            <div class="area-cell">
+              <div class="area-cell-name">Creativity</div>
+              <div class="area-cell-score high">72</div>
+              <div class="area-cell-bar"><div class="area-cell-fill high" style="width:72%"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coming Up -->
+        <div class="side-section">
+          <div class="section-header">
+            <div class="section-number">§ IV</div>
+            <div class="section-title">Coming Up</div>
+            <div class="section-rule"></div>
+          </div>
+
+          <div class="upcoming-compact">
+            <div>
+              <div class="upcoming-day-num">24</div>
+              <div class="upcoming-day-name">Tue</div>
+            </div>
+            <div class="upcoming-divider"></div>
+            <div>
+              <div class="upcoming-task-name">Stakeholder Review — Roadmap</div>
+              <div class="upcoming-task-area">Career · 2:00 PM</div>
+            </div>
+          </div>
+
+          <div class="upcoming-compact">
+            <div>
+              <div class="upcoming-day-num">26</div>
+              <div class="upcoming-day-name">Thu</div>
+            </div>
+            <div class="upcoming-divider"></div>
+            <div>
+              <div class="upcoming-task-name">Submit Tax Documents</div>
+              <div class="upcoming-task-area">Finance · Deadline</div>
+            </div>
+          </div>
+
+          <div class="upcoming-compact">
+            <div>
+              <div class="upcoming-day-num">28</div>
+              <div class="upcoming-day-name">Sat</div>
+            </div>
+            <div class="upcoming-divider"></div>
+            <div>
+              <div class="upcoming-task-name">Weekly Review — Q1 Close</div>
+              <div class="upcoming-task-area">All Areas</div>
+            </div>
+          </div>
+
+          <div class="upcoming-compact">
+            <div>
+              <div class="upcoming-day-num">31</div>
+              <div class="upcoming-day-name">Tue</div>
+            </div>
+            <div class="upcoming-divider"></div>
+            <div>
+              <div class="upcoming-task-name">Q1 Goal Retrospective</div>
+              <div class="upcoming-task-area">Goals · Quarter End</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coach Panel -->
+        <div class="side-section">
+          <div class="section-header">
+            <div class="section-number">§ V</div>
+            <div class="section-title">AI Coach</div>
+            <div class="section-rule"></div>
+          </div>
+
+          <div class="coach-panel">
+            <span class="coach-label">Daily Intelligence</span>
+            <p class="coach-text">Relationships has gone untouched for two weeks. Health is strong but the budget review is becoming a drag on your Finance score. One 30-minute session today changes both.</p>
+            <p class="coach-source">— Life OS Coach · March 23, 2026</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</body>
+</html>

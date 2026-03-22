@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LIFE OS — Daily Planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── TOKENS ─── */
+    :root {
+      --cream:   #F5F0E8;
+      --teal:    #1E6B6B;
+      --mag:     #C2385A;
+      --black:   #1A1A1A;
+      --white:   #FFFFFF;
+      --font:    'Courier Prime', Courier, monospace;
+
+      /* Risograph bleed / misregistration */
+      --reg-x:  1.2px;
+      --reg-y:  0.8px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #D9D4C7;
+      font-family: var(--font);
+      color: var(--black);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px;
+    }
+
+    /* ─── PAGE SHELL ─── */
+    .page {
+      width: 100%;
+      max-width: 1100px;
+      background: var(--cream);
+      border: 3px solid var(--teal);
+      display: flex;
+      flex-direction: column;
+      /* subtle paper texture via layered radial gradients */
+      background-image:
+        radial-gradient(ellipse at 20% 30%, rgba(30,107,107,0.04) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 70%, rgba(194,56,90,0.03) 0%, transparent 55%);
+    }
+
+    /* ─── HEADER ─── */
+    header {
+      background: var(--teal);
+      padding: 14px 24px 12px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      /* Risograph misregistration: faint magenta ghost behind */
+      position: relative;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--mag);
+      opacity: 0.08;
+      transform: translate(var(--reg-x), var(--reg-y));
+      pointer-events: none;
+    }
+
+    header .h-left  { font-size: 22px; font-weight: 700; color: var(--white); letter-spacing: 4px; text-transform: uppercase; }
+    header .h-mid   { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.75); letter-spacing: 6px; text-transform: uppercase; }
+    header .h-right { font-size: 14px; font-weight: 700; color: var(--white); letter-spacing: 3px; text-transform: uppercase; }
+
+    /* thin rule below header */
+    .header-rule {
+      height: 2px;
+      background: var(--cream);
+      opacity: 0.35;
+    }
+
+    /* ─── COLUMNS WRAPPER ─── */
+    .columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      flex: 1;
+    }
+
+    /* Column dividers */
+    .col {
+      padding: 0;
+      border-right: 1px solid var(--teal);
+    }
+    .col:last-child { border-right: none; }
+
+    /* ─── SECTION HEADER ─── */
+    .sec-head {
+      padding: 7px 16px 6px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+    }
+    .sec-head.teal { background: var(--teal); color: var(--white); }
+    .sec-head.mag  { background: var(--mag);  color: var(--white); }
+
+    .col-body { padding: 18px 16px; }
+
+    /* ─── LEFT: TODAY'S WORK ─── */
+
+    /* Numbered task list */
+    .task-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+
+    .task-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .task-num {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--teal);
+      min-width: 16px;
+      padding-top: 2px;
+      letter-spacing: 1px;
+    }
+
+    .task-check {
+      width: 14px;
+      height: 14px;
+      border: 1.5px solid var(--teal);
+      flex-shrink: 0;
+      margin-top: 2px;
+      position: relative;
+    }
+    .task-check.done {
+      background: var(--teal);
+    }
+    .task-check.done::after {
+      content: '';
+      position: absolute;
+      inset: 2px;
+      background: var(--white);
+      clip-path: polygon(20% 45%, 40% 65%, 80% 20%, 85% 28%, 40% 78%, 15% 53%);
+    }
+
+    .task-text-wrap { flex: 1; }
+
+    .task-text {
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--black);
+    }
+    .task-text.done {
+      text-decoration: line-through;
+      color: rgba(30,107,107,0.55);
+    }
+    .task-text.overdue {
+      color: var(--mag);
+    }
+
+    .task-tag {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 1px 5px;
+      margin-top: 3px;
+    }
+    .task-tag.teal { border: 1px solid var(--teal); color: var(--teal); }
+    .task-tag.mag  { border: 1px solid var(--mag);  color: var(--mag);  }
+
+    .task-divider {
+      border: none;
+      border-top: 1px dashed rgba(30,107,107,0.3);
+      margin: 6px 0;
+    }
+
+    /* Overdue label */
+    .overdue-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--mag);
+      margin: 16px 0 8px;
+    }
+
+    /* ─── MIDDLE: FOCUS ─── */
+
+    .focus-num-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .focus-big-num {
+      font-size: 72px;
+      font-weight: 700;
+      color: var(--teal);
+      line-height: 1;
+      position: relative;
+    }
+    /* misregistration ghost */
+    .focus-big-num::before {
+      content: attr(data-num);
+      position: absolute;
+      inset: 0;
+      color: var(--mag);
+      opacity: 0.18;
+      transform: translate(var(--reg-x), var(--reg-y));
+      pointer-events: none;
+    }
+    .focus-num-sub {
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--teal);
+      font-weight: 700;
+    }
+
+    /* Decorative circle */
+    .focus-circle-wrap {
+      display: flex;
+      justify-content: center;
+      margin: 18px 0;
+    }
+    .focus-circle {
+      width: 120px;
+      height: 120px;
+      border: 2.5px solid var(--teal);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    /* inner concentric ring */
+    .focus-circle::before {
+      content: '';
+      position: absolute;
+      width: 92px;
+      height: 92px;
+      border: 1px solid rgba(30,107,107,0.35);
+      border-radius: 50%;
+    }
+    /* misreg ghost ring */
+    .focus-circle::after {
+      content: '';
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      border: 1.5px solid var(--mag);
+      border-radius: 50%;
+      opacity: 0.12;
+      transform: translate(var(--reg-x), var(--reg-y));
+    }
+    .focus-word {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--teal);
+      text-align: center;
+    }
+
+    /* 2x2 Stats grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border: 1.5px solid var(--teal);
+      margin-bottom: 20px;
+    }
+    .stat-cell {
+      padding: 10px 12px;
+      border-right: 1px solid var(--teal);
+      border-bottom: 1px solid var(--teal);
+    }
+    .stat-cell:nth-child(2n) { border-right: none; }
+    .stat-cell:nth-child(3),
+    .stat-cell:nth-child(4) { border-bottom: none; }
+
+    .stat-val {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--teal);
+      line-height: 1;
+    }
+    .stat-val.mag { color: var(--mag); }
+    .stat-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(30,107,107,0.65);
+      margin-top: 3px;
+    }
+
+    /* Daily Score bar */
+    .score-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 6px;
+    }
+    .score-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--teal);
+    }
+    .score-pct {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--mag);
+    }
+    .score-bar-track {
+      height: 10px;
+      background: rgba(30,107,107,0.12);
+      border: 1px solid var(--teal);
+      position: relative;
+      overflow: hidden;
+    }
+    .score-bar-fill {
+      height: 100%;
+      background: var(--teal);
+      position: relative;
+    }
+    /* halftone-ish texture on fill via repeating gradient */
+    .score-bar-fill::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        90deg,
+        transparent 0px,
+        transparent 5px,
+        rgba(255,255,255,0.15) 5px,
+        rgba(255,255,255,0.15) 6px
+      );
+    }
+    /* misreg ghost */
+    .score-bar-track::after {
+      content: '';
+      position: absolute;
+      top: 1px;
+      left: 0;
+      height: 100%;
+      width: 68%;
+      background: var(--mag);
+      opacity: 0.08;
+      transform: translate(var(--reg-x), 0);
+    }
+    .score-tick-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 3px;
+    }
+    .score-tick {
+      font-size: 8px;
+      color: rgba(30,107,107,0.5);
+      letter-spacing: 1px;
+    }
+
+    /* ─── RIGHT: HABITS + AREAS ─── */
+
+    /* Habit row */
+    .habits-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .habit-item {}
+    .habit-name-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 5px;
+    }
+    .habit-name {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--black);
+    }
+    .habit-streak {
+      font-size: 9px;
+      color: var(--teal);
+      letter-spacing: 2px;
+    }
+    .habit-squares {
+      display: flex;
+      gap: 5px;
+    }
+    .h-sq {
+      width: 13px;
+      height: 13px;
+      border: 1.5px solid var(--teal);
+      flex-shrink: 0;
+    }
+    .h-sq.done   { background: var(--teal); }
+    .h-sq.missed { background: var(--mag); border-color: var(--mag); }
+    .h-sq.empty  { background: transparent; }
+
+    /* section divider */
+    .col-divider {
+      border: none;
+      border-top: 1px solid var(--teal);
+      margin: 18px 0;
+    }
+
+    /* Life Areas */
+    .areas-list { display: flex; flex-direction: column; gap: 14px; }
+
+    .area-item {}
+    .area-name-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 5px;
+    }
+    .area-name {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--black);
+    }
+    .area-score {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--mag);
+    }
+    .area-bar-track {
+      height: 6px;
+      background: rgba(30,107,107,0.1);
+      border: 1px solid rgba(30,107,107,0.4);
+      overflow: hidden;
+    }
+    .area-bar-fill {
+      height: 100%;
+      background: var(--teal);
+    }
+
+    /* ─── DECORATIVE RISOGRAPH PATTERN (bottom-right) ─── */
+    .riso-pattern {
+      margin-top: 20px;
+      position: relative;
+      height: 80px;
+      overflow: visible;
+    }
+    /* overlapping circles + triangles, offset for misreg */
+    .riso-shape {
+      position: absolute;
+      border-radius: 50%;
+    }
+    .riso-circle-1 {
+      width: 48px; height: 48px;
+      border: 2px solid var(--teal);
+      top: 10px; left: 10px;
+      border-radius: 50%;
+    }
+    .riso-circle-2 {
+      width: 48px; height: 48px;
+      border: 2px solid var(--mag);
+      top: 12px; left: 30px;
+      border-radius: 50%;
+      opacity: 0.7;
+    }
+    .riso-circle-3 {
+      width: 26px; height: 26px;
+      background: var(--teal);
+      top: 4px; left: 80px;
+      border-radius: 50%;
+      opacity: 0.2;
+    }
+    .riso-tri {
+      position: absolute;
+      width: 0; height: 0;
+    }
+    .riso-tri-1 {
+      border-left: 18px solid transparent;
+      border-right: 18px solid transparent;
+      border-bottom: 30px solid var(--mag);
+      top: 0; left: 105px;
+      opacity: 0.25;
+    }
+    .riso-tri-2 {
+      border-left: 14px solid transparent;
+      border-right: 14px solid transparent;
+      border-bottom: 24px solid var(--teal);
+      top: 3px; left: 110px;
+      opacity: 0.45;
+    }
+    .riso-rect {
+      position: absolute;
+      background: var(--mag);
+      opacity: 0.15;
+    }
+    .riso-rect-1 {
+      width: 22px; height: 22px;
+      top: 30px; left: 85px;
+    }
+    .riso-rect-2 {
+      width: 22px; height: 22px;
+      top: 32px; left: 87px;
+      background: var(--teal);
+      opacity: 0.3;
+    }
+    .riso-dot-row {
+      position: absolute;
+      top: 56px; left: 10px;
+      display: flex; gap: 6px;
+    }
+    .riso-dot {
+      width: 6px; height: 6px;
+      background: var(--teal);
+      border-radius: 50%;
+      opacity: 0.4;
+    }
+    .riso-dot:nth-child(odd) { background: var(--mag); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--teal);
+      padding: 9px 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+    footer::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--mag);
+      opacity: 0.06;
+      transform: translate(var(--reg-x), var(--reg-y));
+      pointer-events: none;
+    }
+    footer p {
+      font-size: 10px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.8);
+      letter-spacing: 4px;
+      text-transform: lowercase;
+    }
+
+    /* ─── NOISE OVERLAY (paper grain) ─── */
+    .page::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+      opacity: 0.35;
+      border-radius: 0;
+    }
+    .page { position: relative; }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ═══════════════════════════════ HEADER ═══════════════════════════════ -->
+  <header>
+    <span class="h-left">Life OS</span>
+    <span class="h-mid">Daily Planner</span>
+    <span class="h-right">Mon 22 Mar</span>
+  </header>
+  <div class="header-rule"></div>
+
+  <!-- ═══════════════════════════════ COLUMNS ══════════════════════════════ -->
+  <div class="columns">
+
+    <!-- ───────────────── LEFT ───────────────── -->
+    <div class="col">
+      <div class="sec-head mag">Today's Work</div>
+      <div class="col-body">
+
+        <ul class="task-list">
+
+          <li class="task-item">
+            <span class="task-num">01</span>
+            <div class="task-check done"></div>
+            <div class="task-text-wrap">
+              <div class="task-text done">Review Q1 budget report</div>
+              <span class="task-tag teal">work</span>
+            </div>
+          </li>
+
+          <li class="task-item">
+            <span class="task-num">02</span>
+            <div class="task-check done"></div>
+            <div class="task-text-wrap">
+              <div class="task-text done">Morning pages + journaling</div>
+              <span class="task-tag mag">self</span>
+            </div>
+          </li>
+
+          <li class="task-item">
+            <span class="task-num">03</span>
+            <div class="task-check"></div>
+            <div class="task-text-wrap">
+              <div class="task-text">Write section 3 outline</div>
+              <span class="task-tag teal">deep work</span>
+            </div>
+          </li>
+
+          <li class="task-item">
+            <span class="task-num">04</span>
+            <div class="task-check"></div>
+            <div class="task-text-wrap">
+              <div class="task-text">Call with architect — site plans</div>
+              <span class="task-tag mag">project</span>
+            </div>
+          </li>
+
+          <li class="task-item">
+            <span class="task-num">05</span>
+            <div class="task-check"></div>
+            <div class="task-text-wrap">
+              <div class="task-text">Read 30 pages: The Magic Mountain</div>
+              <span class="task-tag teal">learning</span>
+            </div>
+          </li>
+
+          <li class="task-item">
+            <span class="task-num">06</span>
+            <div class="task-check"></div>
+            <div class="task-text-wrap">
+              <div class="task-text">Inbox zero — respond to 3 threads</div>
+              <span class="task-tag mag">comms</span>
+            </div>
+          </li>
+
+        </ul>
+
+        <hr class="task-divider" style="margin-top:18px;" />
+        <p class="overdue-label">// Overdue</p>
+
+        <ul class="task-list">
+
+          <li class="task-item">
+            <span class="task-num" style="color:var(--mag)">!</span>
+            <div class="task-check" style="border-color:var(--mag)"></div>
+            <div class="task-text-wrap">
+              <div class="task-text overdue">Submit planning permit application</div>
+              <span class="task-tag mag">urgent</span>
+            </div>
+          </li>
+
+          <li class="task-item">
+            <span class="task-num" style="color:var(--mag)">!</span>
+            <div class="task-check" style="border-color:var(--mag)"></div>
+            <div class="task-text-wrap">
+              <div class="task-text overdue">Update project cost model</div>
+              <span class="task-tag teal">work</span>
+            </div>
+          </li>
+
+        </ul>
+
+        <hr class="task-divider" style="margin-top:18px;" />
+
+        <!-- Note area -->
+        <div style="margin-top:4px;">
+          <p style="font-size:9px; font-weight:700; letter-spacing:4px; text-transform:uppercase; color:var(--teal); margin-bottom:8px;">// Field notes</p>
+          <p style="font-size:11px; line-height:1.65; color:rgba(30,107,107,0.7); font-style:italic;">"Focus on the one thing that makes everything else easier or unnecessary."</p>
+          <div style="border-top:1px solid rgba(30,107,107,0.2); margin-top:10px; padding-top:6px; font-size:10px; color:rgba(26,26,26,0.45); line-height:1.8;">
+            Energy level: ████░░░░ 4/8<br>
+            Sleep last night: 6h 40m<br>
+            Mood at start: focused
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /LEFT -->
+
+    <!-- ───────────────── MIDDLE ───────────────── -->
+    <div class="col">
+      <div class="sec-head teal">Focus</div>
+      <div class="col-body">
+
+        <!-- Big number -->
+        <div class="focus-num-row">
+          <div class="focus-big-num" data-num="3">3</div>
+          <div>
+            <div class="focus-num-sub">tasks<br>active</div>
+          </div>
+        </div>
+
+        <p style="font-size:9px; letter-spacing:3px; text-transform:uppercase; color:rgba(30,107,107,0.55); margin-bottom:4px;">2 of 6 complete · 2 overdue</p>
+
+        <!-- Decorative circle -->
+        <div class="focus-circle-wrap">
+          <div class="focus-circle">
+            <span class="focus-word">BUILD</span>
+          </div>
+        </div>
+
+        <!-- 2x2 Stats -->
+        <div class="stats-grid">
+          <div class="stat-cell">
+            <div class="stat-val">14</div>
+            <div class="stat-label">Done today</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-val mag">2</div>
+            <div class="stat-label">Overdue</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-val">6h</div>
+            <div class="stat-label">Deep work</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-val">87</div>
+            <div class="stat-label">Week score</div>
+          </div>
+        </div>
+
+        <!-- Daily Score bar -->
+        <div class="score-label-row">
+          <span class="score-label">Daily Score</span>
+          <span class="score-pct">68%</span>
+        </div>
+        <div class="score-bar-track">
+          <div class="score-bar-fill" style="width:68%;"></div>
+        </div>
+        <div class="score-tick-row">
+          <span class="score-tick">0</span>
+          <span class="score-tick">25</span>
+          <span class="score-tick">50</span>
+          <span class="score-tick">75</span>
+          <span class="score-tick">100</span>
+        </div>
+
+        <!-- Time blocks -->
+        <div style="margin-top:20px;">
+          <p style="font-size:9px; font-weight:700; letter-spacing:4px; text-transform:uppercase; color:var(--teal); margin-bottom:10px;">// Time Blocks</p>
+          <div style="display:flex; flex-direction:column; gap:6px;">
+
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:9px; color:rgba(30,107,107,0.6); width:38px; letter-spacing:1px;">06:00</span>
+              <div style="flex:1; height:18px; background:var(--teal); opacity:0.85; display:flex; align-items:center; padding:0 7px;">
+                <span style="font-size:8px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--white);">Morning ritual</span>
+              </div>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:9px; color:rgba(30,107,107,0.6); width:38px; letter-spacing:1px;">09:00</span>
+              <div style="flex:1; height:18px; background:var(--teal); opacity:0.9; display:flex; align-items:center; padding:0 7px;">
+                <span style="font-size:8px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--white);">Deep work #1</span>
+              </div>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:9px; color:rgba(30,107,107,0.6); width:38px; letter-spacing:1px;">11:30</span>
+              <div style="flex:1; height:18px; background:var(--mag); opacity:0.7; display:flex; align-items:center; padding:0 7px;">
+                <span style="font-size:8px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--white);">Admin + comms</span>
+              </div>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:9px; color:rgba(30,107,107,0.6); width:38px; letter-spacing:1px;">14:00</span>
+              <div style="flex:1; height:18px; background:var(--teal); opacity:0.9; display:flex; align-items:center; padding:0 7px;">
+                <span style="font-size:8px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--white);">Deep work #2</span>
+              </div>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:9px; color:rgba(30,107,107,0.6); width:38px; letter-spacing:1px;">17:00</span>
+              <div style="flex:1; height:18px; background:rgba(30,107,107,0.18); border:1px dashed rgba(30,107,107,0.35); display:flex; align-items:center; padding:0 7px;">
+                <span style="font-size:8px; letter-spacing:2px; text-transform:uppercase; color:rgba(30,107,107,0.5);">— open —</span>
+              </div>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:9px; color:rgba(30,107,107,0.6); width:38px; letter-spacing:1px;">19:00</span>
+              <div style="flex:1; height:18px; background:var(--mag); opacity:0.55; display:flex; align-items:center; padding:0 7px;">
+                <span style="font-size:8px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--white);">Reading + wind down</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /MIDDLE -->
+
+    <!-- ───────────────── RIGHT ───────────────── -->
+    <div class="col">
+      <div class="sec-head mag">Habits + Areas</div>
+      <div class="col-body">
+
+        <p style="font-size:9px; font-weight:700; letter-spacing:4px; text-transform:uppercase; color:var(--mag); margin-bottom:12px;">// Daily Rituals</p>
+
+        <div class="habits-list">
+
+          <div class="habit-item">
+            <div class="habit-name-row">
+              <span class="habit-name">Morning Pages</span>
+              <span class="habit-streak">↑ 12d</span>
+            </div>
+            <div class="habit-squares">
+              <div class="h-sq done"></div>
+              <div class="h-sq done"></div>
+              <div class="h-sq done"></div>
+              <div class="h-sq done"></div>
+              <div class="h-sq done"></div>
+              <div class="h-sq missed"></div>
+              <div class="h-sq done"></div>
+            </div>
+          </div>
+
+          <div class="habit-item">
+            <div class="habit-name-row">
+              <span class="habit-name">Cold Shower</span>
+              <span class="habit-streak">↑ 5d</span>
+            </div>
+            <div class="habit-squares">
+              <div class="h-sq done"></div>
+              <div class="h-sq done"></div>
+              <div class="h-sq missed"></div>
+              <div class="h-sq done"></div>
+              <div class="h-sq done"></div>
+              <div class="h-sq done"></div>
+              <div class="h-sq empty"></div>
+            </div>
+          </div>
+
+          <div class="habit-item">
+            <div class="habit-name-row">
+              <span class="habit-name">Strength Train</span>
+              <span class="habit-streak">↑ 8d</span>
+            </div>
+            <div class="habit-squares">
+              <div class="h-sq done"></div>
+              <div class="h-sq done"></div>
+              <div class="h-sq done"></div>
+              <div class="h-sq missed"></div>
+              <div class="h-sq done"></div>
+              <div class="h-sq done"></div>
+              <div class="h-sq done"></div>
+            </div>
+          </div>
+
+          <div class="habit-item">
+            <div class="habit-name-row">
+              <span class="habit-name">No Screens 9pm</span>
+              <span class="habit-streak">↓ 2d</span>
+            </div>
+            <div class="habit-squares">
+              <div class="h-sq done"></div>
+              <div class="h-sq missed"></div>
+              <div class="h-sq missed"></div>
+              <div class="h-sq done"></div>
+              <div class="h-sq done"></div>
+              <div class="h-sq missed"></div>
+              <div class="h-sq empty"></div>
+            </div>
+          </div>
+
+          <div class="habit-item">
+            <div class="habit-name-row">
+              <span class="habit-name">Read 30 Min</span>
+              <span class="habit-streak">↑ 21d</span>
+            </div>
+            <div class="habit-squares">
+              <div class="h-sq done"></div>
+              <div class="h-sq done"></div>
+              <div class="h-sq done"></div>
+              <div class="h-sq done"></div>
+              <div class="h-sq done"></div>
+              <div class="h-sq done"></div>
+              <div class="h-sq done"></div>
+            </div>
+          </div>
+
+          <div class="habit-item">
+            <div class="habit-name-row">
+              <span class="habit-name">Meditate</span>
+              <span class="habit-streak">↑ 4d</span>
+            </div>
+            <div class="habit-squares">
+              <div class="h-sq missed"></div>
+              <div class="h-sq done"></div>
+              <div class="h-sq done"></div>
+              <div class="h-sq done"></div>
+              <div class="h-sq missed"></div>
+              <div class="h-sq done"></div>
+              <div class="h-sq done"></div>
+            </div>
+          </div>
+
+        </div>
+
+        <hr class="col-divider" />
+
+        <!-- Life Areas -->
+        <p style="font-size:9px; font-weight:700; letter-spacing:4px; text-transform:uppercase; color:var(--teal); margin-bottom:12px;">// Life Areas</p>
+
+        <div class="areas-list">
+
+          <div class="area-item">
+            <div class="area-name-row">
+              <span class="area-name">Work / Career</span>
+              <span class="area-score">82</span>
+            </div>
+            <div class="area-bar-track">
+              <div class="area-bar-fill" style="width:82%;"></div>
+            </div>
+          </div>
+
+          <div class="area-item">
+            <div class="area-name-row">
+              <span class="area-name">Health</span>
+              <span class="area-score">74</span>
+            </div>
+            <div class="area-bar-track">
+              <div class="area-bar-fill" style="width:74%;"></div>
+            </div>
+          </div>
+
+          <div class="area-item">
+            <div class="area-name-row">
+              <span class="area-name">Learning</span>
+              <span class="area-score">91</span>
+            </div>
+            <div class="area-bar-track">
+              <div class="area-bar-fill" style="width:91%;"></div>
+            </div>
+          </div>
+
+          <div class="area-item">
+            <div class="area-name-row">
+              <span class="area-name">Relationships</span>
+              <span class="area-score">58</span>
+            </div>
+            <div class="area-bar-track">
+              <div class="area-bar-fill" style="width:58%; background:var(--mag);"></div>
+            </div>
+          </div>
+
+          <div class="area-item">
+            <div class="area-name-row">
+              <span class="area-name">Finance</span>
+              <span class="area-score">67</span>
+            </div>
+            <div class="area-bar-track">
+              <div class="area-bar-fill" style="width:67%;"></div>
+            </div>
+          </div>
+
+          <div class="area-item">
+            <div class="area-name-row">
+              <span class="area-name">Creativity</span>
+              <span class="area-score">79</span>
+            </div>
+            <div class="area-bar-track">
+              <div class="area-bar-fill" style="width:79%;"></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Decorative risograph pattern -->
+        <div class="riso-pattern">
+          <div class="riso-circle-1"></div>
+          <div class="riso-circle-2"></div>
+          <div class="riso-circle-3"></div>
+          <div class="riso-tri riso-tri-1"></div>
+          <div class="riso-tri riso-tri-2"></div>
+          <div class="riso-rect riso-rect-1"></div>
+          <div class="riso-rect riso-rect-2"></div>
+          <div class="riso-dot-row">
+            <div class="riso-dot"></div>
+            <div class="riso-dot"></div>
+            <div class="riso-dot"></div>
+            <div class="riso-dot"></div>
+            <div class="riso-dot"></div>
+            <div class="riso-dot"></div>
+            <div class="riso-dot"></div>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /RIGHT -->
+
+  </div><!-- /columns -->
+
+  <!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
+  <footer>
+    <p>printed by life-os &nbsp;·&nbsp; march 22 &nbsp;·&nbsp; daily edition</p>
+  </footer>
+
+</div><!-- /page -->
+
+</body>
+</html>

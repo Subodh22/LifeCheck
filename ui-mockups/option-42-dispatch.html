@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LIFE OS — Option 42 · Dispatch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700&family=Playfair+Display+SC:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --newsprint: #FAFAF5;
+      --ink: #0D0D0D;
+      --ink-mid: #2A2A2A;
+      --ink-light: #555550;
+      --ink-faint: #999990;
+      --red: #C41E3A;
+      --red-pale: rgba(196,30,58,0.07);
+      --white: #FFFFFF;
+      --rule: #0D0D0D;
+      --rule-light: #CCCCBC;
+      --gold: #B08A4E;
+    }
+
+    html, body {
+      font-family: 'Inter', sans-serif;
+      background: var(--newsprint);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── TOP STRIPE ── */
+    .top-stripe {
+      height: 3px;
+      background: var(--red);
+    }
+
+    /* ── MASTHEAD ── */
+    .masthead {
+      background: var(--white);
+      border-bottom: 2px solid var(--ink);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .masthead-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 56px;
+      height: 54px;
+      border-bottom: 1px solid var(--rule-light);
+    }
+
+    .logo {
+      font-family: 'Playfair Display SC', serif;
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: 2px;
+      color: var(--ink);
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .logo em { color: var(--red); font-style: normal; }
+
+    .masthead-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .masthead-tagline {
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--ink-mid);
+    }
+
+    .nav a {
+      text-decoration: none;
+      color: inherit;
+      padding: 0 16px;
+      transition: color 0.15s;
+    }
+
+    .nav a.active { color: var(--red); }
+    .nav a:hover { color: var(--red); }
+    .nav .pipe { color: var(--rule-light); font-size: 13px; user-select: none; }
+
+    .masthead-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .masthead-date {
+      font-size: 10.5px;
+      color: var(--ink-light);
+      letter-spacing: 0.3px;
+    }
+
+    .btn-new {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--white);
+      background: var(--red);
+      border: none;
+      cursor: pointer;
+      padding: 7px 16px;
+      transition: background 0.15s;
+    }
+
+    .btn-new:hover { background: var(--ink); }
+
+    /* Ticker bar — areas as live health feed */
+    .ticker-bar {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding: 0 56px;
+      height: 32px;
+      border-bottom: 1px solid var(--rule-light);
+      background: var(--white);
+      overflow: hidden;
+    }
+
+    .ticker-label {
+      font-size: 8.5px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--white);
+      background: var(--red);
+      padding: 3px 10px;
+      margin-right: 20px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .ticker-items {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .ticker-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 10px;
+      color: var(--ink-light);
+      white-space: nowrap;
+    }
+
+    .ticker-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .ticker-dot.green { background: #3A7D44; }
+    .ticker-dot.amber { background: #B08A4E; }
+    .ticker-dot.red   { background: var(--red); }
+
+    .ticker-name { font-weight: 600; color: var(--ink); }
+    .ticker-score { font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700; }
+    .ticker-score.up   { color: #3A7D44; }
+    .ticker-score.down { color: var(--red); }
+
+    .ticker-divider {
+      width: 1px;
+      height: 14px;
+      background: var(--rule-light);
+    }
+
+    /* ── MAIN ── */
+    .main { padding: 0 56px 80px; }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 36px 0 0;
+      margin-bottom: 28px;
+    }
+
+    .hero-kicker {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+
+    .hero-kicker-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--red);
+    }
+
+    .hero-kicker-rule { flex: 1; height: 1px; background: var(--rule-light); }
+
+    .hero-kicker-date {
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+    }
+
+    .hero-headline {
+      font-family: 'Playfair Display', serif;
+      font-weight: 900;
+      font-size: 76px;
+      line-height: 0.92;
+      letter-spacing: -2px;
+      text-transform: uppercase;
+      color: var(--ink);
+      margin-bottom: 18px;
+    }
+
+    .hero-rule-double {
+      border: none;
+      border-top: 3px double var(--ink);
+      margin-bottom: 12px;
+    }
+
+    .hero-summary-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 40px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--rule-light);
+      margin-bottom: 28px;
+    }
+
+    .hero-summary {
+      font-size: 13px;
+      color: var(--ink-light);
+      line-height: 1.65;
+      max-width: 480px;
+    }
+
+    .hero-summary strong { color: var(--ink); font-weight: 600; }
+
+    .hero-stats {
+      display: flex;
+      gap: 0;
+      flex-shrink: 0;
+      border: 1px solid var(--rule-light);
+    }
+
+    .hero-stat {
+      padding: 14px 22px;
+      text-align: center;
+      border-right: 1px solid var(--rule-light);
+    }
+
+    .hero-stat:last-child { border-right: none; }
+
+    .hero-stat-val {
+      font-family: 'Playfair Display', serif;
+      font-size: 30px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--ink);
+    }
+
+    .hero-stat-val.red { color: var(--red); }
+
+    .hero-stat-label {
+      font-size: 8.5px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-top: 4px;
+    }
+
+    /* ── 4-COLUMN GRID ── */
+    .columns-4 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 0;
+    }
+
+    .col4 {
+      padding: 0 24px;
+      position: relative;
+    }
+
+    .col4:first-child { padding-left: 0; }
+    .col4:last-child  { padding-right: 0; }
+
+    .col4::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 1px;
+      background: var(--rule);
+    }
+
+    .col4:first-child::before { display: none; }
+
+    /* wide col spans 2 */
+    .col4.wide {
+      grid-column: span 2;
+    }
+
+    /* ── SECTION HEADER ── */
+    .section-label {
+      display: block;
+      font-size: 8.5px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 5px;
+    }
+
+    .section-rule {
+      width: 100%;
+      height: 1px;
+      background: var(--ink);
+      margin-bottom: 14px;
+    }
+
+    /* ── TASK ARTICLE ── */
+    .task-article {
+      padding: 13px 0;
+      border-bottom: 1px solid var(--rule-light);
+    }
+
+    .task-article:last-child { border-bottom: none; }
+
+    .task-meta {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 5px;
+    }
+
+    .task-tag {
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--white);
+      background: var(--ink);
+      padding: 2px 6px;
+    }
+
+    .task-tag.red { background: var(--red); }
+
+    .task-tag.outline {
+      background: transparent;
+      color: var(--ink-light);
+      border: 1px solid var(--rule-light);
+    }
+
+    .task-byline {
+      font-size: 9.5px;
+      color: var(--ink-faint);
+    }
+
+    .task-headline-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+    }
+
+    .task-check {
+      width: 13px;
+      height: 13px;
+      border: 1.5px solid var(--ink);
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 3px;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.15s;
+    }
+
+    .task-check.done {
+      background: var(--ink);
+    }
+
+    .task-check.done::after {
+      content: '';
+      position: absolute;
+      top: 1px; left: 3px;
+      width: 4px; height: 6px;
+      border: 1.5px solid var(--white);
+      border-top: none;
+      border-left: none;
+      transform: rotate(45deg);
+    }
+
+    .task-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.2;
+      margin-bottom: 5px;
+      cursor: pointer;
+      transition: color 0.1s;
+    }
+
+    .task-headline:hover { color: var(--red); }
+
+    .task-headline.lead {
+      font-size: 22px;
+      line-height: 1.1;
+    }
+
+    .task-headline.done {
+      text-decoration: line-through;
+      color: var(--ink-faint);
+    }
+
+    .task-summary {
+      font-size: 11px;
+      color: var(--ink-light);
+      line-height: 1.6;
+      margin-bottom: 7px;
+    }
+
+    .task-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .task-action {
+      font-size: 9.5px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      color: var(--ink-faint);
+      cursor: pointer;
+      border-bottom: 1px solid transparent;
+      transition: color 0.1s, border-color 0.1s;
+    }
+
+    .task-action:hover {
+      color: var(--red);
+      border-color: var(--red);
+    }
+
+    .task-action.primary {
+      color: var(--ink);
+      border-color: var(--ink);
+    }
+
+    /* ── AREA CARD (right column) ── */
+    .area-card {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--rule-light);
+    }
+
+    .area-card:last-child { border-bottom: none; }
+
+    .area-card-top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+
+    .area-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .area-score {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .area-score.high { color: #3A7D44; }
+    .area-score.mid  { color: var(--gold); }
+    .area-score.low  { color: var(--red); }
+
+    .area-bar-track {
+      width: 100%;
+      height: 3px;
+      background: var(--rule-light);
+      margin-bottom: 5px;
+    }
+
+    .area-bar-fill {
+      height: 100%;
+      background: var(--ink);
+      transition: width 0.4s ease;
+    }
+
+    .area-bar-fill.high { background: #3A7D44; }
+    .area-bar-fill.mid  { background: var(--gold); }
+    .area-bar-fill.low  { background: var(--red); }
+
+    .area-meta {
+      font-size: 9.5px;
+      color: var(--ink-faint);
+    }
+
+    /* ── UPCOMING column ── */
+    .upcoming-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--rule-light);
+    }
+
+    .upcoming-item:last-child { border-bottom: none; }
+
+    .upcoming-date-block {
+      text-align: center;
+      flex-shrink: 0;
+      width: 32px;
+    }
+
+    .upcoming-day {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--ink);
+    }
+
+    .upcoming-month {
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+    }
+
+    .upcoming-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.2;
+      margin-bottom: 3px;
+    }
+
+    .upcoming-area {
+      font-size: 9.5px;
+      color: var(--ink-faint);
+    }
+
+    /* ── COACH / INTELLIGENCE PANEL ── */
+    .intel-panel {
+      border: 1px solid var(--ink);
+      padding: 16px;
+      margin-top: 14px;
+      background: var(--white);
+    }
+
+    .intel-label {
+      font-size: 8.5px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .intel-text {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 13px;
+      color: var(--ink-mid);
+      line-height: 1.6;
+    }
+
+    .intel-source {
+      font-size: 9px;
+      color: var(--ink-faint);
+      margin-top: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── SECTION DIVIDER ── */
+    .section-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 32px 0 20px;
+    }
+
+    .section-divider-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--red);
+      white-space: nowrap;
+    }
+
+    .section-divider-rule {
+      flex: 1;
+      height: 1px;
+      background: var(--rule);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-stripe"></div>
+
+  <!-- MASTHEAD -->
+  <header class="masthead">
+    <div class="masthead-top">
+      <div class="logo">Life <em>OS</em></div>
+      <div class="masthead-center">
+        <span class="masthead-tagline">Personal Intelligence Dispatch</span>
+        <nav class="nav">
+          <a href="#" class="active">Today</a>
+          <span class="pipe">|</span>
+          <a href="#">Backlog</a>
+          <span class="pipe">|</span>
+          <a href="#">Goals</a>
+          <span class="pipe">|</span>
+          <a href="#">Schedule</a>
+        </nav>
+      </div>
+      <div class="masthead-right">
+        <span class="masthead-date">Monday, March 23, 2026</span>
+        <button class="btn-new">+ New Task</button>
+      </div>
+    </div>
+
+    <!-- Areas ticker -->
+    <div class="ticker-bar">
+      <span class="ticker-label">Area Health</span>
+      <div class="ticker-items">
+        <div class="ticker-item">
+          <span class="ticker-dot green"></span>
+          <span class="ticker-name">Career</span>
+          <span class="ticker-score up">84</span>
+        </div>
+        <div class="ticker-divider"></div>
+        <div class="ticker-item">
+          <span class="ticker-dot green"></span>
+          <span class="ticker-name">Health</span>
+          <span class="ticker-score up">78</span>
+        </div>
+        <div class="ticker-divider"></div>
+        <div class="ticker-item">
+          <span class="ticker-dot amber"></span>
+          <span class="ticker-name">Finance</span>
+          <span class="ticker-score">61</span>
+        </div>
+        <div class="ticker-divider"></div>
+        <div class="ticker-item">
+          <span class="ticker-dot amber"></span>
+          <span class="ticker-name">Learning</span>
+          <span class="ticker-score">55</span>
+        </div>
+        <div class="ticker-divider"></div>
+        <div class="ticker-item">
+          <span class="ticker-dot red"></span>
+          <span class="ticker-name">Relationships</span>
+          <span class="ticker-score down">38</span>
+        </div>
+        <div class="ticker-divider"></div>
+        <div class="ticker-item">
+          <span class="ticker-dot green"></span>
+          <span class="ticker-name">Creativity</span>
+          <span class="ticker-score up">72</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-kicker">
+        <span class="hero-kicker-label">Morning Brief</span>
+        <div class="hero-kicker-rule"></div>
+        <span class="hero-kicker-date">Week 13 &nbsp;·&nbsp; Q1 2026</span>
+      </div>
+      <h1 class="hero-headline">Today's<br>Dispatch</h1>
+      <hr class="hero-rule-double">
+
+      <div class="hero-summary-row">
+        <p class="hero-summary">
+          <strong>3 tasks demand your attention today.</strong> Career progress is strong — your Product Roadmap milestone closes this week. Health signals a concern: the morning run streak broke on Day 4. Finance review is overdue by 12 days.
+        </p>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="hero-stat-val">3</div>
+            <div class="hero-stat-label">Due Today</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-val">11</div>
+            <div class="hero-stat-label">In Progress</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-val red">2</div>
+            <div class="hero-stat-label">Overdue</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-val">67</div>
+            <div class="hero-stat-label">Overall Health</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4-COLUMN GRID: 2+1+1 -->
+    <div class="columns-4">
+
+      <!-- COL 1–2: Today's Focus -->
+      <div class="col4 wide">
+        <span class="section-label">Today's Focus</span>
+        <div class="section-rule"></div>
+
+        <div class="task-article">
+          <div class="task-meta">
+            <span class="task-tag red">Urgent</span>
+            <span class="task-tag">Career</span>
+            <span class="task-byline">Due Today</span>
+          </div>
+          <div class="task-headline-row">
+            <span class="task-check"></span>
+            <h2 class="task-headline lead">Finish Product Roadmap Q2 Draft</h2>
+          </div>
+          <p class="task-summary">Final review pass before stakeholder meeting Thursday. Add competitive analysis section and timeline estimates for each initiative. This is blocking two downstream tasks.</p>
+          <div class="task-actions">
+            <span class="task-action primary">Open →</span>
+            <span class="task-action">Defer</span>
+            <span class="task-action">Complete</span>
+          </div>
+        </div>
+
+        <div class="task-article">
+          <div class="task-meta">
+            <span class="task-tag red">Overdue</span>
+            <span class="task-tag">Finance</span>
+            <span class="task-byline">Was Due Mar 11</span>
+          </div>
+          <div class="task-headline-row">
+            <span class="task-check"></span>
+            <h2 class="task-headline">Monthly Budget Review</h2>
+          </div>
+          <p class="task-summary">March reconciliation still pending. Subscriptions to audit: 3 unused services identified last quarter.</p>
+          <div class="task-actions">
+            <span class="task-action primary">Open →</span>
+            <span class="task-action">Defer</span>
+          </div>
+        </div>
+
+        <div class="task-article">
+          <div class="task-meta">
+            <span class="task-tag">Health</span>
+            <span class="task-byline">Daily Habit · Streak: 3</span>
+          </div>
+          <div class="task-headline-row">
+            <span class="task-check"></span>
+            <h2 class="task-headline">Morning Run — 5km</h2>
+          </div>
+          <div class="task-actions">
+            <span class="task-action primary">Log Run →</span>
+            <span class="task-action">Skip Day</span>
+          </div>
+        </div>
+
+        <div class="task-article">
+          <div class="task-meta">
+            <span class="task-tag outline">Learning</span>
+            <span class="task-byline">Chapter 4 of 12</span>
+          </div>
+          <div class="task-headline-row">
+            <span class="task-check done"></span>
+            <h2 class="task-headline done">Read "Thinking in Systems" — Ch. 4</h2>
+          </div>
+        </div>
+
+        <div class="task-article">
+          <div class="task-meta">
+            <span class="task-tag outline">Relationships</span>
+            <span class="task-byline">Recurring · Weekly</span>
+          </div>
+          <div class="task-headline-row">
+            <span class="task-check"></span>
+            <h2 class="task-headline">Call Mum — Sunday catchup (rescheduled)</h2>
+          </div>
+          <div class="task-actions">
+            <span class="task-action primary">Schedule →</span>
+            <span class="task-action">Complete</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- COL 3: Area Health -->
+      <div class="col4">
+        <span class="section-label">Area Health</span>
+        <div class="section-rule"></div>
+
+        <div class="area-card">
+          <div class="area-card-top">
+            <span class="area-name">Career</span>
+            <span class="area-score high">84</span>
+          </div>
+          <div class="area-bar-track">
+            <div class="area-bar-fill high" style="width:84%"></div>
+          </div>
+          <span class="area-meta">4 active tasks · 1 goal on track</span>
+        </div>
+
+        <div class="area-card">
+          <div class="area-card-top">
+            <span class="area-name">Health</span>
+            <span class="area-score high">78</span>
+          </div>
+          <div class="area-bar-track">
+            <div class="area-bar-fill high" style="width:78%"></div>
+          </div>
+          <span class="area-meta">2 habits · streak 3 days</span>
+        </div>
+
+        <div class="area-card">
+          <div class="area-card-top">
+            <span class="area-name">Finance</span>
+            <span class="area-score mid">61</span>
+          </div>
+          <div class="area-bar-track">
+            <div class="area-bar-fill mid" style="width:61%"></div>
+          </div>
+          <span class="area-meta">Budget review overdue</span>
+        </div>
+
+        <div class="area-card">
+          <div class="area-card-top">
+            <span class="area-name">Learning</span>
+            <span class="area-score mid">55</span>
+          </div>
+          <div class="area-bar-track">
+            <div class="area-bar-fill mid" style="width:55%"></div>
+          </div>
+          <span class="area-meta">3 active tasks · slowing</span>
+        </div>
+
+        <div class="area-card">
+          <div class="area-card-top">
+            <span class="area-name">Relationships</span>
+            <span class="area-score low">38</span>
+          </div>
+          <div class="area-bar-track">
+            <div class="area-bar-fill low" style="width:38%"></div>
+          </div>
+          <span class="area-meta">No activity in 14 days</span>
+        </div>
+
+        <div class="area-card">
+          <div class="area-card-top">
+            <span class="area-name">Creativity</span>
+            <span class="area-score high">72</span>
+          </div>
+          <div class="area-bar-track">
+            <div class="area-bar-fill high" style="width:72%"></div>
+          </div>
+          <span class="area-meta">2 projects in motion</span>
+        </div>
+
+        <!-- AI Coach -->
+        <div class="intel-panel">
+          <span class="intel-label">Intelligence</span>
+          <p class="intel-text">"Relationships has gone untouched for two weeks. One short action — even a brief message — breaks the decay cycle."</p>
+          <p class="intel-source">— Life OS Coach · Mar 23, 2026</p>
+        </div>
+      </div>
+
+      <!-- COL 4: Coming Up -->
+      <div class="col4">
+        <span class="section-label">Coming Up</span>
+        <div class="section-rule"></div>
+
+        <div class="upcoming-item">
+          <div class="upcoming-date-block">
+            <div class="upcoming-day">24</div>
+            <div class="upcoming-month">Mar</div>
+          </div>
+          <div>
+            <div class="upcoming-title">Stakeholder Review — Product Roadmap</div>
+            <div class="upcoming-area">Career · 2:00 PM</div>
+          </div>
+        </div>
+
+        <div class="upcoming-item">
+          <div class="upcoming-date-block">
+            <div class="upcoming-day">25</div>
+            <div class="upcoming-month">Mar</div>
+          </div>
+          <div>
+            <div class="upcoming-title">Gym — Lower Body Session</div>
+            <div class="upcoming-area">Health · Morning</div>
+          </div>
+        </div>
+
+        <div class="upcoming-item">
+          <div class="upcoming-date-block">
+            <div class="upcoming-day">26</div>
+            <div class="upcoming-month">Mar</div>
+          </div>
+          <div>
+            <div class="upcoming-title">Submit Tax Documents</div>
+            <div class="upcoming-area">Finance · Deadline</div>
+          </div>
+        </div>
+
+        <div class="upcoming-item">
+          <div class="upcoming-date-block">
+            <div class="upcoming-day">28</div>
+            <div class="upcoming-month">Mar</div>
+          </div>
+          <div>
+            <div class="upcoming-title">Weekly Review — Q1 Close</div>
+            <div class="upcoming-area">All Areas</div>
+          </div>
+        </div>
+
+        <div class="upcoming-item">
+          <div class="upcoming-date-block">
+            <div class="upcoming-day">31</div>
+            <div class="upcoming-month">Mar</div>
+          </div>
+          <div>
+            <div class="upcoming-title">Q1 Goal Retrospective</div>
+            <div class="upcoming-area">Goals · Quarter End</div>
+          </div>
+        </div>
+
+        <div class="upcoming-item">
+          <div class="upcoming-date-block">
+            <div class="upcoming-day">2</div>
+            <div class="upcoming-month">Apr</div>
+          </div>
+          <div>
+            <div class="upcoming-title">Start Language Learning — Spanish</div>
+            <div class="upcoming-area">Learning · New Goal</div>
+          </div>
+        </div>
+
+        <!-- Edition footer -->
+        <div style="margin-top: 28px; padding-top: 12px; border-top: 1px solid var(--rule-light);">
+          <span style="font-size: 9px; color: var(--ink-faint); letter-spacing: 0.5px;">
+            Personal Edition &nbsp;·&nbsp; Est. 2024<br>
+            Week 13 of 52 &nbsp;·&nbsp; Q1
+          </span>
+        </div>
+      </div>
+
+    </div><!-- /columns-4 -->
+
+  </main>
+</body>
+</html>

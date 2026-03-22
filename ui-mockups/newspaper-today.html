@@ -1,0 +1,198 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>LIFE OS  The Daily Log (Today)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700&family=Playfair+Display+SC:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--newsprint:#FAFAF5;--ink:#0D0D0D;--ink-mid:#2A2A2A;--ink-light:#555550;--ink-faint:#999990;--red:#C41E3A;--red-pale:rgba(196,30,58,0.07);--white:#FFFFFF;--rule:#0D0D0D;--rule-light:#CCCCBC;--col-gap:32px;}
+    body{background:var(--newsprint);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh;}
+    .top-stripe{height:4px;background:var(--ink);position:fixed;top:0;left:0;right:0;z-index:1000;}
+    header{background:var(--white);border-bottom:3px solid var(--ink);position:sticky;top:4px;z-index:100;}
+    .masthead-top{display:flex;align-items:center;justify-content:space-between;padding:0 64px;height:64px;border-bottom:1px solid var(--rule-light);}
+    .logo{font-family:'Playfair Display',serif;font-weight:900;font-size:32px;letter-spacing:-1px;text-transform:uppercase;color:var(--ink);line-height:1;}
+    .logo span{color:var(--red);}
+    .nav{display:flex;align-items:center;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-mid);}
+    .nav a{text-decoration:none;color:inherit;padding:0 18px;transition:color .1s;}
+    .nav a:hover,.nav a.active{color:var(--red);}
+    .nav .pipe{color:var(--rule-light);font-size:14px;font-weight:300;}
+    .masthead-r{display:flex;align-items:center;gap:20px;}
+    .m-date{font-size:11px;color:var(--ink-light);font-weight:500;}
+    .btn-new{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:white;background:var(--ink);border:none;padding:8px 16px;cursor:pointer;}
+    .btn-new:hover{background:var(--red);}
+    .edition-bar{display:flex;justify-content:space-between;padding:6px 64px;background:var(--newsprint);border-bottom:1px solid var(--rule-light);}
+    .edition-bar span{font-size:10px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.5px;}
+    .main{padding:0 64px 80px;}
+    .hero{padding:48px 0 32px;}
+    .h-kicker{display:flex;align-items:center;gap:16px;margin-bottom:12px;}
+    .h-label{font-size:10px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--red);}
+    .h-line{flex:1;height:1px;background:var(--rule-light);}
+    .h-headline{font-family:'Playfair Display',serif;font-weight:900;font-size:96px;line-height:0.85;letter-spacing:-3px;text-transform:uppercase;margin-bottom:24px;}
+    .h-sub{display:flex;justify-content:space-between;align-items:flex-end;border-top:2px solid var(--ink);border-bottom:1px solid var(--ink);padding:12px 0;margin-bottom:40px;}
+    .h-sub-l{font-size:13px;color:var(--ink-light);line-height:1.4;}
+    .h-sub-l strong{color:var(--ink);font-weight:700;}
+    .h-stats{display:flex;gap:48px;}
+    .h-stat{text-align:center;}
+    .h-stat-v{font-family:'Playfair Display',serif;font-size:32px;font-weight:800;line-height:1;}
+    .h-stat-l{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-faint);margin-top:4px;}
+    .v-rule{width:1px;height:24px;background:var(--rule-light);align-self:center;}
+    .cols{display:grid;grid-template-columns:8fr 4fr 3fr;gap:var(--col-gap);}
+    .col{position:relative;}
+    .col + .col::before{content:'';position:absolute;left:calc(var(--col-gap)/-2);top:0;bottom:0;width:1px;background:var(--rule-light);}
+    .sec-h{margin-bottom:20px;}
+    .sec-l{font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--red);display:block;margin-bottom:8px;}
+    .sec-r{width:100%;height:2px;background:var(--ink);}
+    .art{padding:16px 0;border-bottom:1px solid var(--rule-light);}
+    .art:last-child{border-bottom:none;}
+    .art.lead .art-h{font-size:32px;line-height:1.1;margin-bottom:12px;}
+    .art-m{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+    .art-tag{font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:white;background:var(--ink);padding:2px 7px;}
+    .art-tag.red{background:var(--red);}
+    .art-h{font-family:'Playfair Display',serif;font-size:20px;font-weight:800;line-height:1.2;margin-bottom:8px;cursor:pointer;}
+    .art-s{font-size:12px;color:var(--ink-light);line-height:1.6;margin-bottom:12px;}
+    .art-f{display:flex;gap:16px;}
+    .art-a{font-size:10px;font-weight:700;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.5px;cursor:pointer;}
+    .art-a:hover{color:var(--red);}
+    .chk{width:16px;height:16px;border:2px solid var(--ink);border-radius:50%;display:inline-block;vertical-align:middle;margin-right:8px;position:relative;}
+    .chk.done{background:var(--ink);}
+    .chk.done::after{content:'';position:absolute;top:1px;left:4px;width:4px;height:7px;border:solid white;border-width:0 2px 2px 0;transform:rotate(45deg);}
+    .area-r{padding:12px 0;border-bottom:1px solid var(--rule-light);}
+    .area-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;}
+    .area-n{font-family:'Playfair Display',serif;font-size:15px;font-weight:800;}
+    .area-v{font-family:'Playfair Display',serif;font-size:24px;font-weight:800;}
+    .area-bar{height:4px;background:var(--rule-light);margin-bottom:6px;}
+    .area-fill{height:100%;background:var(--ink);}
+    .area-fill.red{background:var(--red);}
+    .area-bot{font-size:11px;color:var(--ink-faint);display:flex;justify-content:space-between;}
+    .rout-r{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--rule-light);}
+    .rout-n{font-size:13px;color:var(--ink-mid);flex:1;}
+    .rout-t{font-size:10px;color:var(--ink-faint);font-weight:600;}
+    .ticker{position:fixed;bottom:0;left:0;right:0;height:36px;background:var(--ink);display:flex;align-items:center;overflow:hidden;z-index:1000;}
+    .ticker-l{background:var(--red);height:100%;padding:0 20px;display:flex;align-items:center;font-size:10px;font-weight:800;color:white;text-transform:uppercase;letter-spacing:2px;}
+    .ticker-t{flex:1;overflow:hidden;padding-left:20px;}
+    .ticker-c{display:flex;gap:60px;animation:scroll 40s linear infinite;white-space:nowrap;color:rgba(255,255,255,.7);font-size:12px;}
+    .ticker-c span{color:white;font-weight:600;}
+    @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  </style>
+</head>
+<body>
+<div class="top-stripe"></div>
+<header>
+  <div class="masthead-top">
+    <div class="logo">The Daily<span>Log</span></div>
+    <nav class="nav">
+      <a href="newspaper-today.html" class="active">Today</a><span class="pipe">|</span>
+      <a href="newspaper-backlog.html">Backlog</a><span class="pipe">|</span>
+      <a href="newspaper-goals.html">Goals</a><span class="pipe">|</span>
+      <a href="newspaper-areas.html">Areas</a><span class="pipe">|</span>
+      <a href="newspaper-schedule.html">Schedule</a>
+    </nav>
+    <div class="masthead-r">
+      <span class="m-date">Sunday, March 22, 2026</span>
+      <button class="btn-new">+ NEW ENTRY</button>
+    </div>
+  </div>
+  <div class="edition-bar">
+    <span>Vol. 1  No. 81  Personal Edition  Est. 2024</span>
+    <span>Week 12  81 Days into Year  Q1 Outlook</span>
+  </div>
+</header>
+<main class="main">
+  <section class="hero">
+    <div class="h-kicker"><span class="h-label">Front Page News</span><div class="h-line"></div></div>
+    <h1 class="h-headline">Deep Work<br>Leads Today.</h1>
+    <div class="h-sub">
+      <div class="h-sub-l">
+        The Q1 performance review submission remains the <strong>primary focus</strong> of today's efforts.<br>
+        Relationships sector faces <strong>critical stagnation</strong> at 41 index points.
+      </div>
+      <div class="h-stats">
+        <div class="h-stat"><div class="h-stat-v" style="color:var(--red)">3</div><div class="h-stat-l">Overdue</div></div>
+        <div class="v-rule"></div>
+        <div class="h-stat"><div class="h-stat-v">8</div><div class="h-stat-l">Active</div></div>
+        <div class="v-rule"></div>
+        <div class="h-stat"><div class="h-stat-v">12</div><div class="h-stat-l">Streak</div></div>
+      </div>
+    </div>
+    <div class="cols">
+      <div class="col">
+        <div class="sec-h"><span class="sec-l">Today's Focus</span><div class="sec-r"></div></div>
+        <div class="art lead">
+          <div class="art-m"><span class="art-tag red">Urgent</span><span class="art-a">Work &amp; Career</span></div>
+          <h2 class="art-h">Q1 Performance Review: Self-Assessment Submission</h2>
+          <p class="art-s">Final submission of quarterly goals and achievements to the board. Requires deep concentration and reflection on the last 12 weeks of productivity data.</p>
+          <div class="art-f"><span class="art-a">Mark Done</span><span class="art-a">Reschedule</span><span class="art-a">Details &rarr;</span></div>
+        </div>
+        <div class="art">
+          <div class="art-m"><span class="art-tag">Deadline</span><span class="art-a">Finance</span></div>
+          <h2 class="art-h">Transfer April Rent to Landlord</h2>
+          <p class="art-s">Standard monthly disbursement. Ensure bank confirmation is noted for personal registry.</p>
+          <div class="art-f"><span class="art-a">Mark Done</span><span class="art-a">Reschedule</span></div>
+        </div>
+        <div class="art" style="opacity:.5">
+          <div class="art-m"><span class="art-tag">Complete</span><span class="art-a">Health</span></div>
+          <h2 class="art-h"><div class="chk done"></div>Morning Run: 5km Tempo Pace</h2>
+          <p class="art-s">Completed at 07:30 AM. Average heart rate within threshold zones. Recovery initiated.</p>
+        </div>
+        <div class="art">
+          <div class="art-m"><span class="art-tag">Next Up</span><span class="art-a">Learning</span></div>
+          <h2 class="art-h"><div class="chk"></div>Chapter 4: Deep Work Course Module</h2>
+          <p class="art-s">Evening study session focusing on ritualized concentration and distraction management.</p>
+        </div>
+      </div>
+      <div class="col">
+        <div class="sec-h"><span class="sec-l">Index Performance</span><div class="sec-r"></div></div>
+        <div class="area-r">
+          <div class="area-top"><span class="area-n">Work &amp; Career</span><span class="area-v">87</span></div>
+          <div class="area-bar"><div class="area-fill" style="width:87%"></div></div>
+          <div class="area-bot"><span>5 Open Tasks</span><span>Bullish Peak</span></div>
+        </div>
+        <div class="area-r">
+          <div class="area-top"><span class="area-n">Health &amp; Wellness</span><span class="area-v">91</span></div>
+          <div class="area-bar"><div class="area-fill" style="width:91%"></div></div>
+          <div class="area-bot"><span>2 Open Tasks</span><span>Historical High</span></div>
+        </div>
+        <div class="area-r">
+          <div class="area-top"><span class="area-n">Relationships</span><span class="area-v" style="color:var(--red)">41</span></div>
+          <div class="area-bar"><div class="area-fill red" style="width:41%"></div></div>
+          <div class="area-bot" style="color:var(--red)"><span>CRITICAL LOW</span><span>Requires Action</span></div>
+        </div>
+        <div class="area-r">
+          <div class="area-top"><span class="area-n">Finance</span><span class="area-v">63</span></div>
+          <div class="area-bar"><div class="area-fill" style="width:63%"></div></div>
+          <div class="area-bot"><span>3 Open Tasks</span><span>Stable</span></div>
+        </div>
+        <div style="margin-top:32px; border:1px solid var(--rule-light); padding:20px; text-align:center;">
+          <div style="font-family:'Playfair Display',serif; font-style:italic; font-size:16px; margin-bottom:12px;">"Concentrate all your thoughts upon the work at hand. The sun's rays do not burn until brought to a focus."</div>
+          <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--ink-faint);"> Alexander Graham Bell</div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="sec-h"><span class="sec-l">Daily Rituals</span><div class="sec-r"></div></div>
+        <div class="rout-r"><div class="chk done"></div><span class="rout-n">Morning Pages</span><span class="rout-t">06:15</span></div>
+        <div class="rout-r"><div class="chk done"></div><span class="rout-n">5km Morning Run</span><span class="rout-t">07:30</span></div>
+        <div class="rout-r"><div class="chk"></div><span class="rout-n">Cold Shower</span><span class="rout-t">08:10</span></div>
+        <div class="rout-r"><div class="chk"></div><span class="rout-n">Review Priorities</span><span class="rout-t">08:30</span></div>
+        <div class="rout-r"><div class="chk"></div><span class="rout-n">Meditate (10 min)</span><span class="rout-t">PM</span></div>
+        <div class="rout-r"><div class="chk"></div><span class="rout-n">Read (30 min)</span><span class="rout-t">EVE</span></div>
+        <div class="rout-r"><div class="chk"></div><span class="rout-n">Evening Review</span><span class="rout-t">21:30</span></div>
+        <div style="background:var(--ink); color:white; padding:16px; margin-top:32px;">
+          <div style="font-size:9px; font-weight:800; color:var(--red); letter-spacing:2px; margin-bottom:8px;">NOTICES</div>
+          <div style="font-size:11px; line-height:1.5;">Tax return registry remains <strong>3 days overdue</strong>. Failure to file may lead to financial sector downgrade.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<div class="ticker">
+  <div class="ticker-l">Breaking</div>
+  <div class="ticker-t">
+    <div class="ticker-c">
+      <p><span>Relationship Index</span> hit historical low of 41 points  <span>Portfolio Redesign</span> enters 7th day of delay  <span>12-day</span> streak active in Ritual Registry  <span>Q1 Review</span> submission due in 8 hours  <span>Relationship Index</span> hit historical low of 41 points  <span>Portfolio Redesign</span> enters 7th day of delay  <span>12-day</span> streak active in Ritual Registry  <span>Q1 Review</span> submission due in 8 hours</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

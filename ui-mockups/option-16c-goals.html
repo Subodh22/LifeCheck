@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LIFE OS — Goals · Newspaper Editorial</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{
+      --newsprint:#FAFAF5;--ink:#0D0D0D;--ink-mid:#2A2A2A;
+      --ink-light:#555550;--ink-faint:#999990;--red:#C41E3A;
+      --white:#FFFFFF;--rule:#0D0D0D;--rule-light:#CCCCBC;
+    }
+    html,body{font-family:'Inter',sans-serif;background:var(--newsprint);color:var(--ink);-webkit-font-smoothing:antialiased;}
+    .top-stripe{height:4px;background:var(--red);}
+    .masthead{background:var(--white);border-bottom:1px solid var(--ink);position:sticky;top:0;z-index:100;}
+    .masthead-top{display:flex;align-items:center;justify-content:space-between;padding:0 64px;height:56px;border-bottom:1px solid var(--rule-light);}
+    .logo{font-family:'Playfair Display',serif;font-weight:900;font-size:22px;letter-spacing:-0.5px;text-transform:uppercase;}
+    .logo span{color:var(--red);}
+    .nav{display:flex;align-items:center;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-mid);}
+    .nav a{text-decoration:none;color:inherit;padding:0 18px;}
+    .nav a.active{color:var(--red);}
+    .nav .pipe{color:var(--rule-light);font-size:14px;}
+    .btn{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--white);background:var(--ink);border:none;padding:7px 14px;cursor:pointer;}
+    .edition-bar{display:flex;justify-content:space-between;padding:5px 64px;}
+    .edition-bar span{font-size:10px;color:var(--ink-faint);}
+    .main{padding:0 64px 80px;}
+
+    .page-hero{padding:36px 0 20px;border-bottom:2px solid var(--ink);margin-bottom:32px;}
+    .page-kicker{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:8px;}
+    .page-title{font-family:'Playfair Display',serif;font-weight:900;font-size:64px;line-height:0.95;letter-spacing:-2px;text-transform:uppercase;}
+    .page-sub{display:flex;justify-content:space-between;align-items:baseline;margin-top:14px;}
+    .page-sub-stats{display:flex;gap:32px;}
+    .stat-val{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;}
+    .stat-label{font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--ink-faint);margin-top:2px;}
+
+    .layout{display:grid;grid-template-columns:3fr 1fr;gap:48px;}
+
+    .section-divider{margin:32px 0 20px;display:flex;align-items:center;gap:12px;}
+    .section-divider-label{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--red);flex-shrink:0;}
+    .section-divider-line{flex:1;height:1px;background:var(--ink);}
+
+    .goal-feature{border-bottom:1px solid var(--rule-light);padding:22px 0;display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;}
+    .goal-feature:last-child{border-bottom:none;}
+    .goal-kicker{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
+    .goal-tag{font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:2px 7px;}
+    .goal-tag.yearly{background:var(--ink);color:var(--white);}
+    .goal-tag.on-track{background:#2A6E3C;color:var(--white);}
+    .goal-tag.behind{background:var(--red);color:var(--white);}
+    .goal-tag.moderate{border:1px solid var(--ink-faint);color:var(--ink-mid);}
+    .goal-area-label{font-size:10px;color:var(--ink-faint);letter-spacing:1px;text-transform:uppercase;}
+    .goal-title{font-family:'Playfair Display',serif;font-weight:800;font-size:22px;line-height:1.15;color:var(--ink);margin-bottom:8px;}
+    .goal-desc{font-size:11.5px;line-height:1.6;color:var(--ink-light);margin-bottom:12px;}
+    .goal-progress-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:5px;}
+    .goal-bar-track{height:3px;background:var(--rule-light);width:100%;margin-bottom:8px;}
+    .goal-bar-fill{height:100%;background:var(--ink);}
+    .goal-bar-fill.red{background:var(--red);}
+    .goal-bar-fill.gold{background:#C49A2A;}
+    .goal-stats-row{display:flex;gap:20px;}
+    .goal-mini-stat .val{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--ink);line-height:1;}
+    .goal-mini-stat .lbl{font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-faint);margin-top:2px;}
+    .goal-actions{display:flex;gap:12px;margin-top:12px;}
+    .goal-action{font-size:10px;font-weight:600;letter-spacing:0.5px;color:var(--ink-faint);border-bottom:1px solid transparent;cursor:pointer;padding-bottom:1px;}
+    .goal-action.primary{color:var(--ink);border-color:var(--ink);}
+
+    .milestone-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:8px;}
+    .milestone{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--rule-light);}
+    .milestone:last-child{border-bottom:none;}
+    .milestone-dot{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--ink);flex-shrink:0;margin-top:3px;}
+    .milestone-dot.done{background:var(--ink);}
+    .milestone-dot.active{background:var(--red);border-color:var(--red);}
+    .milestone-title{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:var(--ink);line-height:1.2;}
+    .milestone-meta{font-size:10px;color:var(--ink-faint);margin-top:2px;}
+
+    .panel-label{display:block;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:6px;}
+    .panel-rule{height:1px;background:var(--ink);margin-bottom:14px;}
+
+    .year-stat-box{background:var(--ink);padding:16px;margin-top:20px;}
+    .year-stat-box-title{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:12px;}
+    .year-stat-row{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.08);}
+    .year-stat-row:last-child{border-bottom:none;}
+    .year-stat-name{font-size:10px;color:rgba(255,255,255,0.5);}
+    .year-stat-val{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--white);}
+
+    .ticker{position:fixed;bottom:0;left:0;right:0;height:32px;background:var(--ink);display:flex;align-items:center;overflow:hidden;z-index:100;}
+    .ticker-label{flex-shrink:0;background:var(--red);height:100%;display:flex;align-items:center;padding:0 14px;font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--white);}
+    .ticker-track{flex:1;overflow:hidden;display:flex;align-items:center;padding-left:20px;}
+    .ticker-content{display:flex;gap:48px;animation:ticker-scroll 30s linear infinite;white-space:nowrap;}
+    .ticker-item{font-size:11px;color:rgba(255,255,255,0.65);}
+    .ticker-item span{color:var(--white);font-weight:500;}
+    .ticker-dot{color:var(--red);margin:0 4px;}
+    @keyframes ticker-scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+  </style>
+</head>
+<body>
+
+<div class="top-stripe"></div>
+<header class="masthead">
+  <div class="masthead-top">
+    <div class="logo">Life<span>OS</span></div>
+    <nav class="nav">
+      <a href="#">Today</a><span class="pipe">|</span>
+      <a href="#">Backlog</a><span class="pipe">|</span>
+      <a href="#" class="active">Goals</a><span class="pipe">|</span>
+      <a href="#">Schedule</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:20px;">
+      <span style="font-size:11px;color:var(--ink-light);">Sunday, March 22</span>
+      <button class="btn">+ New Goal</button>
+    </div>
+  </div>
+  <div class="edition-bar">
+    <span>Vol. 1, No. 81 &nbsp;·&nbsp; Personal Edition &nbsp;·&nbsp; Est. 2024</span>
+    <span>Week 12 of 52 &nbsp;·&nbsp; Q1 &nbsp;·&nbsp; 81 days into the year</span>
+  </div>
+</header>
+
+<main class="main">
+  <section class="page-hero">
+    <div class="page-kicker">Long-Range Objectives</div>
+    <h1 class="page-title">Your Goals.</h1>
+    <div class="page-sub">
+      <span style="font-size:12px;color:var(--ink-light);">
+        <strong style="color:var(--ink);">6 active goals</strong> across 4 areas &nbsp;·&nbsp;
+        <strong style="color:var(--ink);">2 on track</strong> &nbsp;·&nbsp;
+        <strong style="color:var(--red);">1 behind pace</strong>
+      </span>
+      <div class="page-sub-stats">
+        <div><div class="stat-val">6</div><div class="stat-label">Active</div></div>
+        <div><div class="stat-val">2</div><div class="stat-label">Achieved</div></div>
+        <div><div class="stat-val" style="color:var(--red);">1</div><div class="stat-label">Behind</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="layout">
+    <div>
+      <div class="section-divider">
+        <span class="section-divider-label">2026 Annual Goals</span>
+        <div class="section-divider-line"></div>
+      </div>
+
+      <!-- Goal 1 -->
+      <div class="goal-feature">
+        <div>
+          <div class="goal-kicker">
+            <span class="goal-tag yearly">Yearly</span>
+            <span class="goal-tag on-track">On Track</span>
+            <span class="goal-area-label">Health &amp; Fitness</span>
+          </div>
+          <div class="goal-title">Run a Half Marathon in under 2 hours</div>
+          <div class="goal-desc">Training block underway. 14-week plan with progressive mileage. Current long run is 16km. Race day is June 15 at the Sydney Half.</div>
+          <div class="goal-progress-label">Progress — 68%</div>
+          <div class="goal-bar-track"><div class="goal-bar-fill" style="width:68%"></div></div>
+          <div class="goal-stats-row">
+            <div class="goal-mini-stat"><div class="val">16km</div><div class="lbl">Long run</div></div>
+            <div class="goal-mini-stat"><div class="val">85d</div><div class="lbl">To race</div></div>
+            <div class="goal-mini-stat"><div class="val">Jun 15</div><div class="lbl">Race day</div></div>
+          </div>
+          <div class="goal-actions">
+            <span class="goal-action primary">Update Progress</span>
+            <span class="goal-action">View Tasks</span>
+            <span class="goal-action">Edit</span>
+          </div>
+        </div>
+        <div>
+          <div class="milestone-label">Quarterly Milestones</div>
+          <div class="milestone"><div class="milestone-dot done"></div><div><div class="milestone-title">Q1 — 10km under 55 min</div><div class="milestone-meta">Achieved Mar 2 · 53:47</div></div></div>
+          <div class="milestone"><div class="milestone-dot active"></div><div><div class="milestone-title">Q2 — 16km long run consistent</div><div class="milestone-meta">In progress · Due Jun 1</div></div></div>
+          <div class="milestone"><div class="milestone-dot"></div><div><div class="milestone-title">Race day: sub-2:00</div><div class="milestone-meta">Jun 15 · Sydney Half</div></div></div>
+        </div>
+      </div>
+
+      <!-- Goal 2 -->
+      <div class="goal-feature">
+        <div>
+          <div class="goal-kicker">
+            <span class="goal-tag yearly">Yearly</span>
+            <span class="goal-tag moderate">Moderate</span>
+            <span class="goal-area-label">Finance</span>
+          </div>
+          <div class="goal-title">Build $10,000 Emergency Fund</div>
+          <div class="goal-desc">Automating $500 fortnight transfers to high-interest savings. 45% reached — need to accelerate in Q2.</div>
+          <div class="goal-progress-label">Progress — $4,500 of $10,000 (45%)</div>
+          <div class="goal-bar-track"><div class="goal-bar-fill gold" style="width:45%"></div></div>
+          <div class="goal-stats-row">
+            <div class="goal-mini-stat"><div class="val">$500</div><div class="lbl">/ fortnight</div></div>
+            <div class="goal-mini-stat"><div class="val">$5,500</div><div class="lbl">Remaining</div></div>
+          </div>
+          <div class="goal-actions">
+            <span class="goal-action primary">Update Amount</span>
+            <span class="goal-action">View Tasks</span>
+          </div>
+        </div>
+        <div>
+          <div class="milestone-label">Quarterly Targets</div>
+          <div class="milestone"><div class="milestone-dot done"></div><div><div class="milestone-title">Q1 — Save $2,500</div><div class="milestone-meta">Achieved</div></div></div>
+          <div class="milestone"><div class="milestone-dot active"></div><div><div class="milestone-title">Q2 — Reach $5,500 total</div><div class="milestone-meta">In progress · Jun 30</div></div></div>
+          <div class="milestone"><div class="milestone-dot"></div><div><div class="milestone-title">Q3/Q4 — Full $10,000</div><div class="milestone-meta">Dec 31</div></div></div>
+        </div>
+      </div>
+
+      <!-- Goal 3: Behind -->
+      <div class="goal-feature">
+        <div>
+          <div class="goal-kicker">
+            <span class="goal-tag yearly">Yearly</span>
+            <span class="goal-tag behind">Behind Pace</span>
+            <span class="goal-area-label">Learning &amp; Growth</span>
+          </div>
+          <div class="goal-title">Read 24 Books This Year</div>
+          <div class="goal-desc">6 books in — need to average 2 per month but only hitting 0.75. Need to increase daily reading from 20 to 45 minutes.</div>
+          <div class="goal-progress-label">Progress — 6 of 24 books (25%)</div>
+          <div class="goal-bar-track"><div class="goal-bar-fill red" style="width:25%"></div></div>
+          <div class="goal-stats-row">
+            <div class="goal-mini-stat"><div class="val" style="color:var(--red);">6</div><div class="lbl">Read</div></div>
+            <div class="goal-mini-stat"><div class="val">18</div><div class="lbl">Remaining</div></div>
+            <div class="goal-mini-stat"><div class="val">2.0</div><div class="lbl">Needed/mo</div></div>
+          </div>
+          <div class="goal-actions">
+            <span class="goal-action primary">Update Count</span>
+            <span class="goal-action">Adjust Goal</span>
+          </div>
+        </div>
+        <div>
+          <div class="milestone-label">Recent Books</div>
+          <div class="milestone"><div class="milestone-dot done"></div><div><div class="milestone-title">Atomic Habits</div><div class="milestone-meta">Finished Jan 12</div></div></div>
+          <div class="milestone"><div class="milestone-dot done"></div><div><div class="milestone-title">Deep Work</div><div class="milestone-meta">Finished Feb 3</div></div></div>
+          <div class="milestone"><div class="milestone-dot active"></div><div><div class="milestone-title">Zero to One</div><div class="milestone-meta">Currently reading · 40%</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div>
+      <span class="panel-label">Year at a Glance</span>
+      <div class="panel-rule"></div>
+      <div style="text-align:center;padding:16px 0;">
+        <svg width="100" height="100" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="42" fill="none" stroke="var(--rule-light)" stroke-width="4"/>
+          <circle cx="50" cy="50" r="42" fill="none" stroke="var(--ink)" stroke-width="4"
+            stroke-dasharray="263.9" stroke-dashoffset="198" transform="rotate(-90 50 50)"/>
+          <text x="50" y="47" text-anchor="middle" fill="var(--ink)" font-family="'Playfair Display',serif" font-size="16" font-weight="700">23%</text>
+          <text x="50" y="60" text-anchor="middle" fill="var(--ink-faint)" font-family="'Inter',sans-serif" font-size="8">Year done</text>
+        </svg>
+        <div style="font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--ink-faint);margin-top:8px;">Week 12 of 52</div>
+      </div>
+      <div class="year-stat-box">
+        <div class="year-stat-box-title">2026 Summary</div>
+        <div class="year-stat-row"><span class="year-stat-name">Goals active</span><span class="year-stat-val">6</span></div>
+        <div class="year-stat-row"><span class="year-stat-name">Goals achieved</span><span class="year-stat-val" style="color:#E8C14D;">2</span></div>
+        <div class="year-stat-row"><span class="year-stat-name">On track</span><span class="year-stat-val">2</span></div>
+        <div class="year-stat-row"><span class="year-stat-name">Behind pace</span><span class="year-stat-val" style="color:var(--red);">1</span></div>
+        <div class="year-stat-row"><span class="year-stat-name">Avg. completion</span><span class="year-stat-val" style="color:#E8C14D;">46%</span></div>
+      </div>
+      <div style="border-left:3px solid var(--red);padding:8px 0 8px 14px;margin-top:24px;">
+        <div style="font-family:'Playfair Display',serif;font-style:italic;font-size:13px;line-height:1.4;color:var(--ink-mid);">"A goal without a plan is just a wish."</div>
+        <div style="font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--ink-faint);margin-top:6px;">— Antoine de Saint-Exupéry</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="ticker">
+  <div class="ticker-label">Live</div>
+  <div class="ticker-track"><div class="ticker-content">
+    <span class="ticker-item">Half Marathon — <span>16km long run achieved</span><span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Reading goal <span>behind pace</span> — 6 of 24 books<span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Emergency fund at <span>$4,500</span> of $10,000<span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Year is <span>23%</span> complete — Week 12 of 52<span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Half Marathon — <span>16km long run achieved</span><span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Reading goal <span>behind pace</span> — 6 of 24 books<span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Emergency fund at <span>$4,500</span> of $10,000<span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Year is <span>23%</span> complete — Week 12 of 52<span class="ticker-dot">◆</span></span>
+  </div></div>
+</div>
+</body>
+</html>

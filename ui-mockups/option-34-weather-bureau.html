@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LIFE OS — Weather Bureau</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900&family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--bg:#EFF4F9;--paper:#FFF;--ink:#0C1B33;--mid:#2E5782;--dim:#7A9AB8;--red:#C23B22;--amber:#D98B2A;--green:#247A46;--rule:#C8D8E8;}
+    body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+
+    .bureau{background:var(--ink);}
+    .bureau-top{display:flex;align-items:center;justify-content:space-between;padding:0 56px;height:44px;border-bottom:1px solid rgba(255,255,255,0.08);}
+    .bureau-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:900;color:white;text-transform:uppercase;}
+    .bureau-badge{font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.15);padding:2px 6px;margin-left:10px;}
+    .bureau-nav{display:flex;}
+    .bureau-nav a{font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.35);text-decoration:none;padding:0 18px;height:44px;display:flex;align-items:center;border-right:1px solid rgba(255,255,255,0.06);}
+    .bureau-nav a:last-child{border-right:none;}
+    .bureau-nav a.active{background:rgba(255,255,255,0.06);color:white;}
+    .bureau-sub{display:flex;align-items:center;justify-content:space-between;padding:0 56px;height:32px;}
+    .bureau-sub-left{font-size:10px;color:rgba(255,255,255,0.35);}
+    .bureau-btn{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;background:rgba(255,255,255,0.1);color:white;border:none;padding:4px 12px;cursor:pointer;}
+
+    .forecast{background:linear-gradient(135deg,#0C1B33 0%,#1A3A5C 60%,#0C2A3A 100%);padding:36px 56px;}
+    .fc-date{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:12px;}
+    .fc-grid{display:grid;grid-template-columns:80px 1fr 220px;gap:36px;align-items:center;}
+    .fc-icon{font-size:72px;line-height:1;text-align:center;}
+    .fc-icon-label{font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.35);text-align:center;margin-top:4px;}
+    .fc-title{font-family:'Playfair Display',serif;font-size:46px;font-weight:900;color:white;line-height:0.9;margin-bottom:10px;}
+    .fc-desc{font-size:12.5px;line-height:1.6;color:rgba(255,255,255,0.5);max-width:460px;}
+    .fc-alerts{margin-top:14px;display:flex;flex-direction:column;gap:5px;}
+    .fc-alert{font-size:10px;padding:4px 10px;border-left:3px solid;}
+    .fc-alert.danger{border-color:var(--red);color:#FF8A7A;}
+    .fc-alert.warn{border-color:var(--amber);color:#F5C774;}
+    .fc-alert.good{border-color:var(--green);color:#7AE0A4;}
+    .fc-dials{display:flex;flex-direction:column;gap:6px;}
+    .fc-dial{background:rgba(255,255,255,0.05);padding:8px 12px;border:1px solid rgba(255,255,255,0.06);}
+    .fc-dial-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px;}
+    .fc-dial-name{font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.35);}
+    .fc-dial-n{font-family:'Space Mono',monospace;font-size:16px;font-weight:700;color:white;}
+    .fc-dial-n.lo{color:#FF8A7A;}
+    .fc-dial-n.mid{color:#F5C774;}
+    .fc-bar{height:1.5px;background:rgba(255,255,255,0.08);}
+    .fc-bar-fill{height:100%;background:rgba(255,255,255,0.5);}
+    .fc-bar-fill.lo{background:var(--red);}
+    .fc-bar-fill.mid{background:var(--amber);}
+
+    .day-strip{background:var(--ink);border-top:1px solid rgba(255,255,255,0.06);display:flex;}
+    .day-card{flex:1;padding:12px 14px;text-align:center;border-right:1px solid rgba(255,255,255,0.06);cursor:pointer;}
+    .day-card:last-child{border-right:none;}
+    .day-card.today,.day-card:hover{background:rgba(255,255,255,0.05);}
+    .dc-day{font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:5px;}
+    .day-card.today .dc-day{color:white;}
+    .dc-icon{font-size:20px;margin-bottom:3px;}
+    .dc-temp{font-family:'Space Mono',monospace;font-size:14px;font-weight:700;color:white;}
+    .dc-temp span{font-size:9px;color:rgba(255,255,255,0.3);}
+    .dc-cond{font-size:8px;color:rgba(255,255,255,0.3);margin-top:2px;}
+
+    .body{display:grid;grid-template-columns:2fr 1fr;gap:0;}
+    .ps{padding:24px 32px;border-right:1px solid var(--rule);}
+    .sec-label{font-size:8px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--mid);display:block;margin-bottom:6px;}
+    .sec-rule{border-bottom:2px solid var(--ink);margin-bottom:16px;}
+
+    .warn-bar{background:var(--red);padding:8px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+    .warn-bar-text{font-size:10px;font-weight:700;letter-spacing:1px;color:white;}
+    .warn-bar-badge{font-family:'Space Mono',monospace;font-size:18px;font-weight:700;color:white;}
+
+    .front{background:var(--paper);border:1px solid var(--rule);padding:14px 16px;margin-bottom:8px;}
+    .front.urgent{border-left:4px solid var(--red);}
+    .front.done{opacity:0.45;}
+    .front-hdr{display:flex;align-items:center;gap:6px;margin-bottom:7px;}
+    .front-ico{font-size:16px;}
+    .front-type{font-size:7.5px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:2px 6px;}
+    .front-type.high{background:var(--red);color:white;}
+    .front-type.med{background:var(--ink);color:white;}
+    .front-type.low{border:1px solid var(--rule);color:var(--dim);}
+    .front-type.done{border:1px solid var(--rule);color:var(--rule);}
+    .front-area{font-size:8.5px;font-weight:600;color:var(--dim);}
+    .front-due{font-family:'Space Mono',monospace;font-size:8.5px;margin-left:auto;}
+    .front-due.late{color:var(--red);font-weight:700;}
+    .front-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;line-height:1.2;color:var(--ink);cursor:pointer;margin-bottom:4px;}
+    .front-title:hover{color:var(--mid);}
+    .front-title.done{text-decoration:line-through;color:var(--dim);}
+    .front-desc{font-size:11px;line-height:1.55;color:var(--dim);}
+    .front-footer{display:flex;gap:6px;margin-top:10px;}
+    .front-btn{font-size:8.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:5px 10px;border:none;cursor:pointer;}
+    .front-btn.confirm{background:var(--ink);color:white;}
+    .front-btn.confirm:hover{background:var(--mid);}
+    .front-btn.ghost{background:transparent;border:1px solid var(--rule);color:var(--dim);}
+    .front-btn.ghost:hover{border-color:var(--ink);color:var(--ink);}
+
+    .rp{padding:24px 24px;}
+    .sbox{background:var(--paper);border:1px solid var(--rule);padding:14px;margin-bottom:14px;}
+    .sbox-title{font-size:8px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--mid);margin-bottom:8px;border-bottom:1px solid var(--rule);padding-bottom:5px;}
+    .rread{display:flex;align-items:center;gap:7px;padding:6px 0;border-bottom:1px solid #EEF4F9;}
+    .rread:last-child{border-bottom:none;}
+    .rread-dot{width:9px;height:9px;border-radius:50%;border:2px solid var(--dim);flex-shrink:0;cursor:pointer;}
+    .rread-dot.done{border-color:var(--green);background:var(--green);}
+    .rread-name{font-size:11px;color:var(--dim);flex:1;}
+    .rread-name.done{text-decoration:line-through;color:var(--rule);}
+    .rread-time{font-family:'Space Mono',monospace;font-size:8.5px;color:var(--rule);}
+
+    .precip-row{padding:9px 0;border-bottom:1px solid #EEF4F9;}
+    .precip-row:last-child{border-bottom:none;}
+    .pr-hdr{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;}
+    .pr-name{font-size:11.5px;font-weight:500;color:var(--ink);}
+    .pr-pct{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;}
+    .pr-bar{height:3px;background:#EEF4F9;border-radius:2px;margin-bottom:2px;}
+    .pr-fill{height:100%;border-radius:2px;background:var(--mid);}
+    .pr-fill.lo{background:var(--red);}
+    .pr-fill.mid{background:var(--amber);}
+    .pr-meta{font-size:8.5px;color:var(--dim);}
+
+    .reading{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px solid #EEF4F9;}
+    .reading:last-child{border-bottom:none;}
+    .reading-k{font-size:10px;color:var(--dim);}
+    .reading-v{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;}
+    .reading-v.good{color:var(--green);}
+    .reading-v.warn{color:var(--amber);}
+
+    .ticker{position:fixed;bottom:0;left:0;right:0;height:28px;background:var(--mid);display:flex;align-items:center;overflow:hidden;}
+    .tlabel{flex-shrink:0;background:var(--ink);height:100%;display:flex;align-items:center;padding:0 14px;font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.6);}
+    .ttrack{flex:1;overflow:hidden;padding-left:16px;}
+    .tcontent{display:inline-flex;gap:44px;animation:scroll 30s linear infinite;white-space:nowrap;}
+    .ti{font-size:10px;color:rgba(255,255,255,0.65);}
+    .ti b{color:white;}
+    .td{color:rgba(255,255,255,0.3);margin:0 6px;}
+    @keyframes scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+  </style>
+</head>
+<body>
+<div class="bureau">
+  <div class="bureau-top">
+    <div><span class="bureau-name">Personal Life Bureau</span><span class="bureau-badge">LIFE-OS STATION</span></div>
+    <nav class="bureau-nav"><a href="#" class="active">TODAY</a><a href="#">BACKLOG</a><a href="#">GOALS</a><a href="#">SCHEDULE</a></nav>
+    <button class="bureau-btn">+ NEW TASK</button>
+  </div>
+  <div class="bureau-sub">
+    <span class="bureau-sub-left">Daily Outlook · Sunday 22 March 2026 · Week 12 · Vol. I No. 081 · Station: LIFEOBS-SYD · Last updated 08:30 AEST</span>
+  </div>
+</div>
+<div class="forecast">
+  <div class="fc-date">Daily Outlook — Sunday 22 March 2026 · Day 081 / Week 12 / Q1 2026</div>
+  <div class="fc-grid">
+    <div><div class="fc-icon">⛅</div><div class="fc-icon-label">Partly Productive</div></div>
+    <div>
+      <h1 class="fc-title">Day Ahead:<br>Mixed Pressure.</h1>
+      <p class="fc-desc">A high-pressure front of urgent tasks dominates. Turbulence expected around 17:00 deadline. Relationships sector at a 5-month cold-front low. Morning rituals providing solid foundation.</p>
+      <div class="fc-alerts">
+        <div class="fc-alert danger">⚠ STORM WARNING: Q1 Review expires at 17:00 — high severity</div>
+        <div class="fc-alert warn">⚠ ADVISORY: Relationships pressure at 41 — cold front deepening</div>
+        <div class="fc-alert good">✓ CLEAR: Fitness sector at 91 — 12-day streak active</div>
+      </div>
+    </div>
+    <div class="fc-dials">
+      <div class="fc-dial"><div class="fc-dial-top"><span class="fc-dial-name">Work</span><span class="fc-dial-n">87</span></div><div class="fc-bar"><div class="fc-bar-fill" style="width:87%"></div></div></div>
+      <div class="fc-dial"><div class="fc-dial-top"><span class="fc-dial-name">Health</span><span class="fc-dial-n">91</span></div><div class="fc-bar"><div class="fc-bar-fill" style="width:91%"></div></div></div>
+      <div class="fc-dial"><div class="fc-dial-top"><span class="fc-dial-name">Finance</span><span class="fc-dial-n mid">63</span></div><div class="fc-bar"><div class="fc-bar-fill mid" style="width:63%"></div></div></div>
+      <div class="fc-dial"><div class="fc-dial-top"><span class="fc-dial-name">Relations</span><span class="fc-dial-n lo">41</span></div><div class="fc-bar"><div class="fc-bar-fill lo" style="width:41%"></div></div></div>
+      <div class="fc-dial"><div class="fc-dial-top"><span class="fc-dial-name">Learning</span><span class="fc-dial-n mid">74</span></div><div class="fc-bar"><div class="fc-bar-fill mid" style="width:74%"></div></div></div>
+      <div class="fc-dial"><div class="fc-dial-top"><span class="fc-dial-name">Home</span><span class="fc-dial-n mid">58</span></div><div class="fc-bar"><div class="fc-bar-fill mid" style="width:58%"></div></div></div>
+    </div>
+  </div>
+</div>
+<div class="day-strip">
+  <div class="day-card today"><div class="dc-day">TODAY</div><div class="dc-icon">⛅</div><div class="dc-temp">8 <span>tasks</span></div><div class="dc-cond">Partly productive</div></div>
+  <div class="day-card"><div class="dc-day">MON</div><div class="dc-icon">☀️</div><div class="dc-temp">5 <span>tasks</span></div><div class="dc-cond">Clear outlook</div></div>
+  <div class="day-card"><div class="dc-day">TUE</div><div class="dc-icon">🌧</div><div class="dc-temp">7 <span>tasks</span></div><div class="dc-cond">Dentist front</div></div>
+  <div class="day-card"><div class="dc-day">WED</div><div class="dc-icon">⛅</div><div class="dc-temp">4 <span>tasks</span></div><div class="dc-cond">Moderate load</div></div>
+  <div class="day-card"><div class="dc-day">THU</div><div class="dc-icon">☀️</div><div class="dc-temp">3 <span>tasks</span></div><div class="dc-cond">Light pressure</div></div>
+  <div class="day-card"><div class="dc-day">FRI</div><div class="dc-icon">🌩</div><div class="dc-temp">6 <span>tasks</span></div><div class="dc-cond">Expenses storm</div></div>
+  <div class="day-card"><div class="dc-day">SAT</div><div class="dc-icon">🌤</div><div class="dc-temp">2 <span>tasks</span></div><div class="dc-cond">Rest &amp; recover</div></div>
+</div>
+<div class="body">
+  <div class="ps">
+    <span class="sec-label">Active Pressure Fronts</span><div class="sec-rule"></div>
+    <div class="warn-bar"><span class="warn-bar-text">⚠ SEVERE: 2 FRONTS PAST DUE — IMMEDIATE RESOLUTION</span><span class="warn-bar-badge">2</span></div>
+    <div class="front urgent">
+      <div class="front-hdr"><span class="front-ico">🔴</span><span class="front-type high">HIGH · P1</span><span class="front-area">Work Sector</span><span class="front-due late">EXPIRES 17:00</span></div>
+      <div class="front-title">Q1 Performance Review — Self-Assessment to HR Portal</div>
+      <div class="front-desc">Maximum pressure system. Annual HR documentation — Q1 achievements, Q2 objectives, peer signatures required. Portal closes 17:00 sharp. No extensions issued.</div>
+      <div class="front-footer"><button class="front-btn confirm">PRESSURE CLEARED ✓</button><button class="front-btn ghost">DEFER</button><button class="front-btn ghost">REROUTE</button></div>
+    </div>
+    <div class="front">
+      <div class="front-hdr"><span class="front-ico">🟡</span><span class="front-type med">MED · P2</span><span class="front-area">Finance Sector</span><span class="front-due late">EXPIRES 12:00</span></div>
+      <div class="front-title">Transfer April Rent — Monthly Financial Obligation</div>
+      <div class="front-desc">Time-specific pressure window. Enable receipt confirmation before close.</div>
+      <div class="front-footer"><button class="front-btn confirm">PRESSURE CLEARED ✓</button><button class="front-btn ghost">DEFER</button></div>
+    </div>
+    <div class="front done">
+      <div class="front-hdr"><span class="front-ico">✅</span><span class="front-type done">RESOLVED</span><span class="front-area">Health Sector</span><span class="front-due">07:30</span></div>
+      <div class="front-title done">Morning Run — 5km Tempo Pace</div>
+    </div>
+    <div class="front">
+      <div class="front-hdr"><span class="front-ico">🔵</span><span class="front-type low">LOW · P3</span><span class="front-area">Learning Sector</span><span class="front-due">EVENING</span></div>
+      <div class="front-title">Chapter 4 — Deep Work Module</div>
+      <div class="front-desc">45-minute evening reading front. Cornell notation. Consistent accumulation required.</div>
+      <div class="front-footer"><button class="front-btn confirm">PRESSURE CLEARED ✓</button><button class="front-btn ghost">DEFER</button></div>
+    </div>
+    <div class="front">
+      <div class="front-hdr"><span class="front-ico">🔵</span><span class="front-type low">LOW · P4</span><span class="front-area">Personal Sector</span><span class="front-due">FLEXIBLE</span></div>
+      <div class="front-title">Call Dad — Easter Weekend Planning</div>
+      <div class="front-footer"><button class="front-btn confirm">PRESSURE CLEARED ✓</button></div>
+    </div>
+  </div>
+  <div class="rp">
+    <div class="sbox">
+      <div class="sbox-title">Ritual Observations — 2 of 7</div>
+      <div class="rread"><div class="rread-dot done"></div><span class="rread-name done">Morning Pages</span><span class="rread-time">06:15</span></div>
+      <div class="rread"><div class="rread-dot done"></div><span class="rread-name done">5km Morning Run</span><span class="rread-time">07:30</span></div>
+      <div class="rread"><div class="rread-dot"></div><span class="rread-name">Cold Shower</span><span class="rread-time">08:10</span></div>
+      <div class="rread"><div class="rread-dot"></div><span class="rread-name">Review Priorities</span><span class="rread-time">08:30</span></div>
+      <div class="rread"><div class="rread-dot"></div><span class="rread-name">Meditate 10 min</span><span class="rread-time">AFT</span></div>
+      <div class="rread"><div class="rread-dot"></div><span class="rread-name">Read 30 min</span><span class="rread-time">EVE</span></div>
+      <div class="rread"><div class="rread-dot"></div><span class="rread-name">Evening Review</span><span class="rread-time">21:30</span></div>
+    </div>
+    <div class="sbox">
+      <div class="sbox-title">Goal Precipitation Forecast</div>
+      <div class="precip-row"><div class="pr-hdr"><span class="pr-name">Half Marathon</span><span class="pr-pct" style="color:var(--green)">68%</span></div><div class="pr-bar"><div class="pr-fill" style="width:68%"></div></div><div class="pr-meta">June 15 · On Track ↑</div></div>
+      <div class="precip-row"><div class="pr-hdr"><span class="pr-name">Emergency Fund</span><span class="pr-pct" style="color:var(--amber)">45%</span></div><div class="pr-bar"><div class="pr-fill mid" style="width:45%"></div></div><div class="pr-meta">$4,500/$10k · Moderate →</div></div>
+      <div class="precip-row"><div class="pr-hdr"><span class="pr-name">Read 24 Books</span><span class="pr-pct" style="color:var(--red)">25%</span></div><div class="pr-bar"><div class="pr-fill lo" style="width:25%"></div></div><div class="pr-meta">6 of 24 · Behind ↓</div></div>
+    </div>
+    <div class="sbox">
+      <div class="sbox-title">Weekly Station Readings</div>
+      <div class="reading"><span class="reading-k">Tasks completed</span><span class="reading-v good">17</span></div>
+      <div class="reading"><span class="reading-k">Completion rate</span><span class="reading-v warn">74%</span></div>
+      <div class="reading"><span class="reading-k">Ritual streak</span><span class="reading-v good">12d</span></div>
+      <div class="reading"><span class="reading-k">Focus hours</span><span class="reading-v good">18.5h</span></div>
+      <div class="reading"><span class="reading-k">Year position</span><span class="reading-v">23%</span></div>
+    </div>
+  </div>
+</div>
+<div class="ticker"><div class="tlabel">BUREAU FEED</div><div class="ttrack"><div class="tcontent">
+  <span class="ti">STREAK: <b>12-day</b> ritual observation active<span class="td">·</span></span>
+  <span class="ti">COLD FRONT: Relationships at <b>41</b> — advisory in effect<span class="td">·</span></span>
+  <span class="ti">ALERT: Q1 review expires at <b>17:00</b> today<span class="td">·</span></span>
+  <span class="ti"><b>17 fronts</b> cleared this week — 74% rate<span class="td">·</span></span>
+  <span class="ti">STREAK: <b>12-day</b> ritual observation active<span class="td">·</span></span>
+  <span class="ti">COLD FRONT: Relationships at <b>41</b> — advisory in effect<span class="td">·</span></span>
+  <span class="ti">ALERT: Q1 review expires at <b>17:00</b> today<span class="td">·</span></span>
+  <span class="ti"><b>17 fronts</b> cleared this week — 74% rate<span class="td">·</span></span>
+</div></div></div>
+</body>
+</html>

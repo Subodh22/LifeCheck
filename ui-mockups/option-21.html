@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Life OS — Bauhaus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red:    #E63329;
+      --blue:   #1B4FD8;
+      --yellow: #F5C518;
+      --black:  #111111;
+      --white:  #ffffff;
+      --gray:   #f0f0f0;
+      --gray2:  #d4d4d4;
+      --text:   #1a1a1a;
+    }
+
+    html, body {
+      height: 100%;
+      background: #e8e8e8;
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+    }
+
+    .shell {
+      display: flex;
+      height: 100vh;
+      max-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ─── SIDEBAR ─────────────────────────────────── */
+    .sidebar {
+      width: 220px;
+      min-width: 220px;
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    /* thick 4px red stripe at the very left edge */
+    .sidebar::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 4px;
+      background: var(--red);
+      z-index: 10;
+    }
+
+    .sidebar-inner {
+      padding: 28px 20px 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      flex: 1;
+    }
+
+    /* Logo row */
+    .logo-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .logo-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .logo-circle span {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 16px;
+      color: var(--white);
+      letter-spacing: 0.5px;
+      line-height: 1;
+    }
+
+    .logo-text {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 16px;
+      color: var(--black);
+      letter-spacing: 2px;
+    }
+
+    /* Nav */
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-bottom: 20px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--black);
+      cursor: pointer;
+      user-select: none;
+      position: relative;
+    }
+
+    .nav-item.active {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    .nav-item .nav-icon {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    /* Yellow divider bar */
+    .sidebar-divider {
+      width: 100%;
+      height: 4px;
+      background: var(--yellow);
+      margin: 20px 0 20px 0;
+    }
+
+    /* Areas */
+    .areas-label {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 13px;
+      color: var(--red);
+      letter-spacing: 3px;
+      margin-bottom: 12px;
+    }
+
+    .area-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .area-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .area-square {
+      width: 10px;
+      height: 10px;
+      flex-shrink: 0;
+      /* no border-radius — geometric squares */
+    }
+
+    .area-name {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--black);
+      letter-spacing: 0.2px;
+    }
+
+    .area-count {
+      margin-left: auto;
+      font-size: 11px;
+      color: #888;
+    }
+
+    /* ─── MAIN ────────────────────────────────────── */
+    .main {
+      flex: 1;
+      background: var(--white);
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .main-inner {
+      max-width: 860px;
+      padding: 48px 48px 80px 48px;
+      position: relative;
+    }
+
+    /* ─── HEADER ──────────────────────────────────── */
+    .header-block {
+      position: relative;
+      margin-bottom: 52px;
+      min-height: 110px;
+    }
+
+    /* large decorative yellow circle behind text */
+    .deco-circle-yellow {
+      position: absolute;
+      top: -18px;
+      left: -20px;
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: var(--yellow);
+      z-index: 0;
+    }
+
+    .header-text {
+      position: relative;
+      z-index: 1;
+    }
+
+    .greeting {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 72px;
+      line-height: 0.92;
+      color: var(--black);
+      letter-spacing: 2px;
+    }
+
+    .header-date {
+      font-size: 13px;
+      color: #666;
+      margin-top: 8px;
+      font-weight: 400;
+      letter-spacing: 0.3px;
+    }
+
+    /* small decorative black square top-right */
+    .deco-square-black {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 32px;
+      height: 32px;
+      background: var(--black);
+    }
+
+    /* ─── STATS ───────────────────────────────────── */
+    .stats-section {
+      margin-bottom: 56px;
+      position: relative;
+    }
+
+    .stats-label {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 11px;
+      letter-spacing: 4px;
+      color: #888;
+      margin-bottom: 20px;
+    }
+
+    /* Asymmetric stat composition */
+    .stats-composition {
+      display: flex;
+      align-items: flex-end;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .stat-block {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 16px 20px 14px 20px;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    /* Blue — In Progress — tall rectangle */
+    .stat-block.in-progress {
+      background: var(--blue);
+      width: 130px;
+      height: 110px;
+    }
+
+    /* Black — Done — shorter, narrower */
+    .stat-block.done {
+      background: var(--black);
+      width: 90px;
+      height: 76px;
+    }
+
+    /* Red — Overdue — medium */
+    .stat-block.overdue {
+      background: var(--red);
+      width: 110px;
+      height: 90px;
+    }
+
+    /* Yellow — Open — wide, shorter */
+    .stat-block.open {
+      background: var(--yellow);
+      width: 160px;
+      height: 64px;
+      flex-direction: row;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 20px;
+      justify-content: flex-start;
+    }
+
+    .stat-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 48px;
+      line-height: 1;
+      color: var(--white);
+    }
+
+    .stat-block.open .stat-number {
+      color: var(--black);
+      font-size: 40px;
+    }
+
+    .stat-label-text {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.75);
+      margin-top: 4px;
+    }
+
+    .stat-block.open .stat-label-text {
+      color: rgba(0,0,0,0.6);
+      margin-top: 0;
+    }
+
+    /* decorative red square accent next to stats */
+    .deco-square-red-sm {
+      width: 14px;
+      height: 14px;
+      background: var(--red);
+      align-self: flex-start;
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+
+    /* ─── GEOMETRIC SECTION DIVIDER ───────────────── */
+    .geo-divider {
+      position: relative;
+      height: 48px;
+      margin-bottom: 40px;
+      overflow: visible;
+    }
+
+    /* horizontal black bar */
+    .geo-divider::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--black);
+      transform: translateY(-50%);
+    }
+
+    /* quarter-circle via clip-path on right side */
+    .geo-divider .quarter-circle {
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 96px;
+      height: 48px;
+      background: var(--red);
+      clip-path: ellipse(96px 48px at 100% 100%);
+    }
+
+    /* yellow triangle on left */
+    .geo-divider .triangle {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 0 0 48px 48px;
+      border-color: transparent transparent var(--yellow) transparent;
+    }
+
+    /* Section label over divider */
+    .geo-divider .section-label {
+      position: absolute;
+      left: 56px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 18px;
+      letter-spacing: 5px;
+      color: var(--white);
+      background: var(--black);
+      padding: 0 14px;
+      z-index: 1;
+      line-height: 32px;
+    }
+
+    /* ─── TASKS ───────────────────────────────────── */
+    .tasks-section {
+      margin-bottom: 52px;
+      position: relative;
+    }
+
+    /* small decorative blue square top-right of tasks section */
+    .deco-blue-sq {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      width: 20px;
+      height: 20px;
+      background: var(--blue);
+    }
+
+    .task-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #ebebeb;
+    }
+
+    .task-row:last-child {
+      border-bottom: none;
+    }
+
+    /* area color square indicator */
+    .task-area-sq {
+      width: 10px;
+      height: 10px;
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+
+    .task-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 15px;
+      color: var(--red);
+      letter-spacing: 1px;
+      min-width: 28px;
+      flex-shrink: 0;
+      line-height: 1.4;
+    }
+
+    .task-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .task-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--black);
+      line-height: 1.4;
+    }
+
+    .task-title.done-task {
+      text-decoration: line-through;
+      color: #aaa;
+    }
+
+    .task-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 3px;
+    }
+
+    .task-project {
+      font-size: 11px;
+      color: #888;
+      font-weight: 400;
+    }
+
+    .task-due {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--red);
+    }
+
+    .task-status-sq {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .task-status-sq.status-done {
+      background: var(--black);
+    }
+
+    .task-status-sq.status-active {
+      background: var(--blue);
+    }
+
+    .task-status-sq.status-open {
+      border: 2px solid var(--gray2);
+    }
+
+    .task-status-sq.status-overdue {
+      background: var(--red);
+    }
+
+    .task-status-sq svg {
+      width: 10px;
+      height: 10px;
+    }
+
+    /* ─── HABITS SECTION ──────────────────────────── */
+    .habits-section {
+      position: relative;
+    }
+
+    /* decorative large circle outline top-right */
+    .deco-circle-outline {
+      position: absolute;
+      top: -40px;
+      right: -40px;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      border: 8px solid var(--yellow);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .habits-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .habit-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .habit-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--black);
+      width: 130px;
+      flex-shrink: 0;
+    }
+
+    .habit-dots {
+      display: flex;
+      gap: 4px;
+    }
+
+    .habit-dot {
+      width: 14px;
+      height: 14px;
+      /* squares, not circles */
+    }
+
+    .habit-dot.filled-blue   { background: var(--blue); }
+    .habit-dot.filled-red    { background: var(--red); }
+    .habit-dot.filled-yellow { background: var(--yellow); }
+    .habit-dot.filled-black  { background: var(--black); }
+    .habit-dot.filled-teal   { background: #00A896; }
+    .habit-dot.empty         { background: #e0e0e0; }
+
+    .habit-streak {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 16px;
+      color: var(--black);
+      margin-left: 6px;
+      letter-spacing: 1px;
+    }
+
+    /* day headers for habits */
+    .habit-days-header {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 10px;
+      padding-left: 140px;
+    }
+
+    .day-label {
+      width: 14px;
+      font-size: 9px;
+      font-weight: 700;
+      color: #aaa;
+      letter-spacing: 0.5px;
+      text-align: center;
+    }
+
+    /* ─── SCROLLBAR ───────────────────────────────── */
+    .main::-webkit-scrollbar { width: 4px; }
+    .main::-webkit-scrollbar-track { background: transparent; }
+    .main::-webkit-scrollbar-thumb { background: var(--gray2); }
+
+    .sidebar::-webkit-scrollbar { width: 3px; }
+    .sidebar::-webkit-scrollbar-thumb { background: var(--gray2); }
+
+    /* ─── ADD BUTTON ──────────────────────────────── */
+    .fab {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      width: 48px;
+      height: 48px;
+      background: var(--red);
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      line-height: 1;
+      z-index: 100;
+    }
+
+    /* ─── RESPONSIVE ──────────────────────────────── */
+    @media (max-width: 720px) {
+      .sidebar { width: 180px; min-width: 180px; }
+      .main-inner { padding: 28px 24px 60px 24px; }
+      .greeting { font-size: 52px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ─── SIDEBAR ─────────────────────────────── -->
+  <nav class="sidebar">
+    <div class="sidebar-inner">
+
+      <!-- Logo -->
+      <div class="logo-row">
+        <div class="logo-circle"><span>LO</span></div>
+        <span class="logo-text">LIFE OS</span>
+      </div>
+
+      <!-- Navigation -->
+      <div class="nav">
+        <div class="nav-item active">
+          <svg class="nav-icon" viewBox="0 0 18 18" fill="none">
+            <rect x="1" y="1" width="7" height="7" fill="currentColor"/>
+            <rect x="10" y="1" width="7" height="7" fill="currentColor"/>
+            <rect x="1" y="10" width="7" height="7" fill="currentColor"/>
+            <rect x="10" y="10" width="7" height="7" fill="currentColor"/>
+          </svg>
+          Today
+        </div>
+        <div class="nav-item">
+          <svg class="nav-icon" viewBox="0 0 18 18" fill="none">
+            <rect x="1" y="4" width="16" height="12" rx="0" stroke="currentColor" stroke-width="1.5"/>
+            <line x1="5" y1="1" x2="5" y2="6" stroke="currentColor" stroke-width="1.5"/>
+            <line x1="13" y1="1" x2="13" y2="6" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+          Tasks
+        </div>
+        <div class="nav-item">
+          <svg class="nav-icon" viewBox="0 0 18 18" fill="none">
+            <circle cx="9" cy="9" r="7.5" stroke="currentColor" stroke-width="1.5"/>
+            <line x1="9" y1="4" x2="9" y2="9" stroke="currentColor" stroke-width="1.5"/>
+            <line x1="9" y1="9" x2="13" y2="9" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+          Habits
+        </div>
+        <div class="nav-item">
+          <svg class="nav-icon" viewBox="0 0 18 18" fill="none">
+            <polyline points="1,14 6,8 10,11 14,4 17,6" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          </svg>
+          Progress
+        </div>
+        <div class="nav-item">
+          <svg class="nav-icon" viewBox="0 0 18 18" fill="none">
+            <rect x="2" y="2" width="14" height="14" rx="0" stroke="currentColor" stroke-width="1.5"/>
+            <line x1="6" y1="6" x2="12" y2="6" stroke="currentColor" stroke-width="1.5"/>
+            <line x1="6" y1="9" x2="12" y2="9" stroke="currentColor" stroke-width="1.5"/>
+            <line x1="6" y1="12" x2="10" y2="12" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+          Notes
+        </div>
+        <div class="nav-item">
+          <svg class="nav-icon" viewBox="0 0 18 18" fill="none">
+            <circle cx="9" cy="6" r="3.5" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M2 16c0-3.314 3.134-6 7-6s7 2.686 7 6" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          </svg>
+          Profile
+        </div>
+      </div>
+
+      <!-- Yellow divider bar -->
+      <div class="sidebar-divider"></div>
+
+      <!-- Areas -->
+      <div class="areas-label">AREAS</div>
+      <div class="area-list">
+        <div class="area-item">
+          <div class="area-square" style="background:#E63329;"></div>
+          <span class="area-name">Health</span>
+          <span class="area-count">12</span>
+        </div>
+        <div class="area-item">
+          <div class="area-square" style="background:#1B4FD8;"></div>
+          <span class="area-name">Work</span>
+          <span class="area-count">8</span>
+        </div>
+        <div class="area-item">
+          <div class="area-square" style="background:#F5C518;"></div>
+          <span class="area-name">Finance</span>
+          <span class="area-count">5</span>
+        </div>
+        <div class="area-item">
+          <div class="area-square" style="background:#00A896;"></div>
+          <span class="area-name">Learning</span>
+          <span class="area-count">7</span>
+        </div>
+        <div class="area-item">
+          <div class="area-square" style="background:#111111;"></div>
+          <span class="area-name">Personal</span>
+          <span class="area-count">4</span>
+        </div>
+      </div>
+
+    </div>
+  </nav>
+
+  <!-- ─── MAIN ─────────────────────────────────── -->
+  <main class="main">
+    <div class="main-inner">
+
+      <!-- Header -->
+      <div class="header-block">
+        <div class="deco-circle-yellow"></div>
+        <div class="deco-square-black"></div>
+        <div class="header-text">
+          <div class="greeting">GOOD<br>MORNING.</div>
+          <div class="header-date">Sunday, 22 March 2026 &nbsp;·&nbsp; Week 12</div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-section">
+        <div class="stats-label">TODAY AT A GLANCE</div>
+
+        <div class="stats-composition">
+
+          <!-- In Progress — Blue, tallest -->
+          <div class="stat-block in-progress">
+            <div class="stat-number">7</div>
+            <div class="stat-label-text">In Progress</div>
+          </div>
+
+          <!-- Done — Black, shorter -->
+          <div class="stat-block done">
+            <div class="stat-number">14</div>
+            <div class="stat-label-text">Done</div>
+          </div>
+
+          <!-- Overdue — Red, medium -->
+          <div class="stat-block overdue">
+            <div class="stat-number">3</div>
+            <div class="stat-label-text">Overdue</div>
+          </div>
+
+          <!-- Open — Yellow, wide flat -->
+          <div class="stat-block open">
+            <div class="stat-number">28</div>
+            <div class="stat-label-text">Open Tasks</div>
+          </div>
+
+          <!-- decorative small red square -->
+          <div class="deco-square-red-sm"></div>
+
+        </div>
+      </div>
+
+      <!-- Geometric section divider — TASKS -->
+      <div class="geo-divider">
+        <div class="triangle"></div>
+        <div class="section-label">TODAY&rsquo;S TASKS</div>
+        <div class="quarter-circle"></div>
+      </div>
+
+      <!-- Tasks -->
+      <div class="tasks-section">
+        <div class="deco-blue-sq"></div>
+
+        <!-- Task 1 -->
+        <div class="task-row">
+          <div class="task-area-sq" style="background:#E63329;"></div>
+          <div class="task-number">01</div>
+          <div class="task-content">
+            <div class="task-title">Morning workout — upper body push</div>
+            <div class="task-meta">
+              <span class="task-project">Health</span>
+              <span class="task-due">Overdue</span>
+            </div>
+          </div>
+          <div class="task-status-sq status-overdue">
+            <svg viewBox="0 0 10 10" fill="none">
+              <line x1="2" y1="2" x2="8" y2="8" stroke="white" stroke-width="1.5"/>
+              <line x1="8" y1="2" x2="2" y2="8" stroke="white" stroke-width="1.5"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Task 2 -->
+        <div class="task-row">
+          <div class="task-area-sq" style="background:#1B4FD8;"></div>
+          <div class="task-number">02</div>
+          <div class="task-content">
+            <div class="task-title">Review Q1 property acquisition brief</div>
+            <div class="task-meta">
+              <span class="task-project">Work</span>
+              <span style="font-size:11px;color:#aaa;">Due today</span>
+            </div>
+          </div>
+          <div class="task-status-sq status-active"></div>
+        </div>
+
+        <!-- Task 3 -->
+        <div class="task-row">
+          <div class="task-area-sq" style="background:#1B4FD8;"></div>
+          <div class="task-number">03</div>
+          <div class="task-content">
+            <div class="task-title done-task">Send revised DA drawings to council</div>
+            <div class="task-meta">
+              <span class="task-project">Work</span>
+            </div>
+          </div>
+          <div class="task-status-sq status-done">
+            <svg viewBox="0 0 10 10" fill="none">
+              <polyline points="1.5,5 4,7.5 8.5,2.5" stroke="white" stroke-width="1.5" fill="none"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Task 4 -->
+        <div class="task-row">
+          <div class="task-area-sq" style="background:#F5C518;"></div>
+          <div class="task-number">04</div>
+          <div class="task-content">
+            <div class="task-title">Review mortgage offset account strategy</div>
+            <div class="task-meta">
+              <span class="task-project">Finance</span>
+              <span style="font-size:11px;color:#aaa;">Due tomorrow</span>
+            </div>
+          </div>
+          <div class="task-status-sq status-open"></div>
+        </div>
+
+        <!-- Task 5 -->
+        <div class="task-row">
+          <div class="task-area-sq" style="background:#00A896;"></div>
+          <div class="task-number">05</div>
+          <div class="task-content">
+            <div class="task-title">Complete RMIT BH113 Chapter 4 reading</div>
+            <div class="task-meta">
+              <span class="task-project">Learning</span>
+              <span style="font-size:11px;color:#aaa;">Due today</span>
+            </div>
+          </div>
+          <div class="task-status-sq status-active"></div>
+        </div>
+
+        <!-- Task 6 -->
+        <div class="task-row">
+          <div class="task-area-sq" style="background:#111111;"></div>
+          <div class="task-number">06</div>
+          <div class="task-content">
+            <div class="task-title">Call Mum &amp; Dad — weekly check-in</div>
+            <div class="task-meta">
+              <span class="task-project">Personal</span>
+              <span style="font-size:11px;color:#aaa;">Evening</span>
+            </div>
+          </div>
+          <div class="task-status-sq status-open"></div>
+        </div>
+
+        <!-- Task 7 -->
+        <div class="task-row">
+          <div class="task-area-sq" style="background:#E63329;"></div>
+          <div class="task-number">07</div>
+          <div class="task-content">
+            <div class="task-title done-task">Log morning nutrition — protein target 180g</div>
+            <div class="task-meta">
+              <span class="task-project">Health</span>
+            </div>
+          </div>
+          <div class="task-status-sq status-done">
+            <svg viewBox="0 0 10 10" fill="none">
+              <polyline points="1.5,5 4,7.5 8.5,2.5" stroke="white" stroke-width="1.5" fill="none"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Task 8 -->
+        <div class="task-row">
+          <div class="task-area-sq" style="background:#1B4FD8;"></div>
+          <div class="task-number">08</div>
+          <div class="task-content">
+            <div class="task-title">Prepare site inspection checklist — 14 Duke St</div>
+            <div class="task-meta">
+              <span class="task-project">Work</span>
+              <span class="task-due">Overdue</span>
+            </div>
+          </div>
+          <div class="task-status-sq status-overdue">
+            <svg viewBox="0 0 10 10" fill="none">
+              <line x1="2" y1="2" x2="8" y2="8" stroke="white" stroke-width="1.5"/>
+              <line x1="8" y1="2" x2="2" y2="8" stroke="white" stroke-width="1.5"/>
+            </svg>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Geometric section divider — HABITS -->
+      <div class="geo-divider">
+        <div class="triangle"></div>
+        <div class="section-label">HABIT TRACKER</div>
+        <div class="quarter-circle"></div>
+      </div>
+
+      <!-- Habits -->
+      <div class="habits-section">
+        <div class="deco-circle-outline"></div>
+
+        <div class="habits-inner">
+
+          <!-- Day headers -->
+          <div class="habit-days-header">
+            <div class="day-label">M</div>
+            <div class="day-label">T</div>
+            <div class="day-label">W</div>
+            <div class="day-label">T</div>
+            <div class="day-label">F</div>
+            <div class="day-label">S</div>
+            <div class="day-label">S</div>
+          </div>
+
+          <!-- Habit rows -->
+          <div class="habit-row">
+            <div class="habit-label">Morning workout</div>
+            <div class="habit-dots">
+              <div class="habit-dot filled-red"></div>
+              <div class="habit-dot filled-red"></div>
+              <div class="habit-dot filled-red"></div>
+              <div class="habit-dot filled-red"></div>
+              <div class="habit-dot filled-red"></div>
+              <div class="habit-dot empty"></div>
+              <div class="habit-dot empty"></div>
+            </div>
+            <div class="habit-streak">5</div>
+          </div>
+
+          <div class="habit-row">
+            <div class="habit-label">Deep work block</div>
+            <div class="habit-dots">
+              <div class="habit-dot filled-blue"></div>
+              <div class="habit-dot filled-blue"></div>
+              <div class="habit-dot empty"></div>
+              <div class="habit-dot filled-blue"></div>
+              <div class="habit-dot filled-blue"></div>
+              <div class="habit-dot filled-blue"></div>
+              <div class="habit-dot empty"></div>
+            </div>
+            <div class="habit-streak">3</div>
+          </div>
+
+          <div class="habit-row">
+            <div class="habit-label">10k steps</div>
+            <div class="habit-dots">
+              <div class="habit-dot filled-red"></div>
+              <div class="habit-dot filled-red"></div>
+              <div class="habit-dot filled-red"></div>
+              <div class="habit-dot empty"></div>
+              <div class="habit-dot filled-red"></div>
+              <div class="habit-dot filled-red"></div>
+              <div class="habit-dot empty"></div>
+            </div>
+            <div class="habit-streak">2</div>
+          </div>
+
+          <div class="habit-row">
+            <div class="habit-label">Reading 30 min</div>
+            <div class="habit-dots">
+              <div class="habit-dot filled-teal"></div>
+              <div class="habit-dot filled-teal"></div>
+              <div class="habit-dot filled-teal"></div>
+              <div class="habit-dot filled-teal"></div>
+              <div class="habit-dot filled-teal"></div>
+              <div class="habit-dot filled-teal"></div>
+              <div class="habit-dot empty"></div>
+            </div>
+            <div class="habit-streak">6</div>
+          </div>
+
+          <div class="habit-row">
+            <div class="habit-label">Budget review</div>
+            <div class="habit-dots">
+              <div class="habit-dot filled-yellow"></div>
+              <div class="habit-dot empty"></div>
+              <div class="habit-dot empty"></div>
+              <div class="habit-dot filled-yellow"></div>
+              <div class="habit-dot empty"></div>
+              <div class="habit-dot empty"></div>
+              <div class="habit-dot empty"></div>
+            </div>
+            <div class="habit-streak">1</div>
+          </div>
+
+          <div class="habit-row">
+            <div class="habit-label">No social media AM</div>
+            <div class="habit-dots">
+              <div class="habit-dot filled-black"></div>
+              <div class="habit-dot filled-black"></div>
+              <div class="habit-dot filled-black"></div>
+              <div class="habit-dot filled-black"></div>
+              <div class="habit-dot filled-black"></div>
+              <div class="habit-dot filled-black"></div>
+              <div class="habit-dot empty"></div>
+            </div>
+            <div class="habit-streak">6</div>
+          </div>
+
+          <div class="habit-row">
+            <div class="habit-label">Protein &gt; 160g</div>
+            <div class="habit-dots">
+              <div class="habit-dot filled-red"></div>
+              <div class="habit-dot filled-red"></div>
+              <div class="habit-dot empty"></div>
+              <div class="habit-dot filled-red"></div>
+              <div class="habit-dot filled-red"></div>
+              <div class="habit-dot empty"></div>
+              <div class="habit-dot empty"></div>
+            </div>
+            <div class="habit-streak">2</div>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- /main-inner -->
+  </main>
+
+</div><!-- /shell -->
+
+<!-- FAB -->
+<div class="fab" title="Add task">+</div>
+
+</body>
+</html>

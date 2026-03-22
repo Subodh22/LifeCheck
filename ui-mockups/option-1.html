@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>Life OS — Today</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --blue: #007AFF;
+      --blue-tint: #EBF3FF;
+      --blue-light: rgba(0, 122, 255, 0.12);
+      --green: #34C759;
+      --red: #FF3B30;
+      --orange: #FF9500;
+      --purple: #AF52DE;
+      --gray-1: #1C1C1E;
+      --gray-2: #3A3A3C;
+      --gray-3: #636366;
+      --gray-4: #8E8E93;
+      --gray-5: #C7C7CC;
+      --gray-6: #E5E5EA;
+      --gray-7: #F2F2F7;
+      --gray-8: #F5F5F7;
+      --sidebar-w: 220px;
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    html, body {
+      height: 100%;
+      background: #fff;
+      font-family: var(--font);
+      color: var(--gray-1);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .app {
+      display: flex;
+      height: 100vh;
+      width: 100%;
+    }
+
+    /* ─── SIDEBAR ─────────────────────────────────── */
+
+    .sidebar {
+      width: var(--sidebar-w);
+      min-width: var(--sidebar-w);
+      height: 100vh;
+      background: var(--gray-8);
+      border-right: 1px solid var(--gray-6);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 20px 16px 18px;
+    }
+
+    .logo-mark {
+      width: 26px;
+      height: 26px;
+      background: var(--blue);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .logo-mark span {
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .logo-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gray-1);
+      letter-spacing: -0.01em;
+    }
+
+    .sidebar-new-btn {
+      margin: 0 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 12px;
+      background: rgba(0,0,0,0.055);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gray-3);
+      transition: background 0.12s;
+      width: calc(100% - 24px);
+      text-align: left;
+    }
+
+    .sidebar-new-btn:hover {
+      background: rgba(0,0,0,0.09);
+      color: var(--gray-2);
+    }
+
+    .sidebar-new-btn svg {
+      opacity: 0.55;
+      flex-shrink: 0;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      padding: 0 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 10px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--gray-2);
+      transition: background 0.1s;
+      border: none;
+      background: none;
+      font-family: var(--font);
+      width: 100%;
+      text-align: left;
+    }
+
+    .nav-item:hover {
+      background: rgba(0,0,0,0.06);
+    }
+
+    .nav-item.active {
+      background: var(--blue-tint);
+      color: var(--blue);
+    }
+
+    .nav-item.active svg {
+      color: var(--blue);
+    }
+
+    .nav-item svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      color: var(--gray-4);
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      background: var(--gray-5);
+      color: var(--gray-2);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: 10px;
+      min-width: 18px;
+      text-align: center;
+    }
+
+    .nav-item.active .nav-badge {
+      background: rgba(0,122,255,0.18);
+      color: var(--blue);
+    }
+
+    .sidebar-section {
+      margin-top: 20px;
+      padding: 0 18px 6px;
+    }
+
+    .sidebar-section-label {
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--gray-4);
+    }
+
+    .sidebar-areas {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      padding: 4px 8px 0;
+    }
+
+    .area-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 7px 10px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 13.5px;
+      font-weight: 400;
+      color: var(--gray-2);
+      transition: background 0.1s;
+    }
+
+    .area-item:hover {
+      background: rgba(0,0,0,0.06);
+    }
+
+    .area-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .area-name {
+      flex: 1;
+      font-size: 13.5px;
+    }
+
+    .area-health-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      padding: 12px 8px;
+      border-top: 1px solid var(--gray-6);
+    }
+
+    .settings-btn {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 10px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 13.5px;
+      font-weight: 400;
+      color: var(--gray-3);
+      transition: background 0.1s;
+      width: 100%;
+      border: none;
+      background: none;
+      font-family: var(--font);
+      text-align: left;
+    }
+
+    .settings-btn:hover {
+      background: rgba(0,0,0,0.06);
+      color: var(--gray-2);
+    }
+
+    .settings-btn svg {
+      width: 16px;
+      height: 16px;
+      color: var(--gray-4);
+      flex-shrink: 0;
+    }
+
+    /* ─── MAIN CONTENT ────────────────────────────── */
+
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      background: #fff;
+    }
+
+    .main-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 44px 48px 80px;
+    }
+
+    .page-date {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--gray-4);
+      letter-spacing: 0.01em;
+      margin-bottom: 6px;
+    }
+
+    .page-greeting {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--gray-1);
+      letter-spacing: -0.022em;
+      margin-bottom: 28px;
+      line-height: 1.1;
+    }
+
+    /* Stats row */
+    .stats-row {
+      display: flex;
+      align-items: baseline;
+      gap: 28px;
+      margin-bottom: 28px;
+    }
+
+    .stat {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .stat-num {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 12.5px;
+      font-weight: 400;
+      color: var(--gray-4);
+    }
+
+    .stat-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--gray-6);
+    }
+
+    .stat-blue  .stat-num { color: var(--blue); }
+    .stat-green .stat-num { color: var(--green); }
+    .stat-red   .stat-num { color: var(--red); }
+    .stat-dark  .stat-num { color: var(--gray-1); }
+
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: var(--gray-7);
+      margin-bottom: 28px;
+    }
+
+    /* Two column layout */
+    .content-cols {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 52px;
+      align-items: start;
+    }
+
+    /* Section header */
+    .section-header {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--gray-4);
+      margin-bottom: 10px;
+    }
+
+    /* Task list */
+    .task-list {
+      border-top: 1px solid var(--gray-7);
+    }
+
+    .task-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 0;
+      border-bottom: 1px solid var(--gray-7);
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+
+    .task-row:hover {
+      background: var(--gray-7);
+      margin: 0 -12px;
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+
+    .task-check {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid var(--gray-5);
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: border-color 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .task-row:hover .task-check {
+      border-color: var(--blue);
+    }
+
+    .task-check.done {
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .task-check.done::after {
+      content: '';
+      display: block;
+      width: 6px;
+      height: 3.5px;
+      border-left: 1.5px solid #fff;
+      border-bottom: 1.5px solid #fff;
+      transform: translateY(-1px) rotate(-45deg);
+    }
+
+    .task-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .task-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-1);
+      line-height: 1.35;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .task-name.done {
+      color: var(--gray-4);
+      text-decoration: line-through;
+      text-decoration-color: var(--gray-5);
+    }
+
+    .task-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .task-tag {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 1px 7px;
+      border-radius: 4px;
+    }
+
+    .task-tag.work     { background: rgba(0,122,255,0.10); color: #0060CC; }
+    .task-tag.personal { background: rgba(255,149,0,0.12); color: #C27400; }
+    .task-tag.learning { background: rgba(175,82,222,0.12); color: #8338AC; }
+    .task-tag.health   { background: rgba(52,199,89,0.12); color: #248A3D; }
+
+    .task-due {
+      font-size: 11.5px;
+      color: var(--gray-4);
+      font-weight: 400;
+    }
+
+    .task-due.overdue {
+      color: var(--red);
+      font-weight: 500;
+    }
+
+    .task-more {
+      flex-shrink: 0;
+      opacity: 0;
+      transition: opacity 0.1s;
+    }
+
+    .task-row:hover .task-more {
+      opacity: 1;
+    }
+
+    /* Right column */
+    .right-col {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    /* Daily Routines */
+    .routines-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .routine-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--gray-7);
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+
+    .routine-row:first-child {
+      border-top: 1px solid var(--gray-7);
+    }
+
+    .routine-row:hover {
+      background: var(--gray-7);
+      margin: 0 -10px;
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+
+    .routine-check {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 1.5px solid var(--gray-5);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .routine-check.done {
+      background: var(--blue);
+      border-color: var(--blue);
+    }
+
+    .routine-check.done::after {
+      content: '';
+      display: block;
+      width: 5px;
+      height: 3px;
+      border-left: 1.5px solid #fff;
+      border-bottom: 1.5px solid #fff;
+      transform: translateY(-1px) rotate(-45deg);
+    }
+
+    .routine-name {
+      flex: 1;
+      font-size: 13.5px;
+      font-weight: 400;
+      color: var(--gray-2);
+    }
+
+    .routine-name.done {
+      color: var(--gray-4);
+      text-decoration: line-through;
+      text-decoration-color: var(--gray-5);
+    }
+
+    .routine-streak {
+      font-size: 11px;
+      color: var(--gray-4);
+      font-weight: 500;
+    }
+
+    .routines-progress {
+      margin-top: 10px;
+    }
+
+    .routines-progress-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .routines-progress-label span:first-child {
+      font-size: 12px;
+      color: var(--gray-4);
+    }
+
+    .routines-progress-label span:last-child {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--blue);
+    }
+
+    .progress-bar-track {
+      height: 3px;
+      background: var(--gray-7);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--blue);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+
+    /* Area Health */
+    .area-health-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .area-health-item {}
+
+    .area-health-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .area-health-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .area-health-name {
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--gray-2);
+      flex: 1;
+    }
+
+    .area-health-score {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray-3);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .area-progress-track {
+      height: 2px;
+      background: var(--gray-7);
+      border-radius: 1px;
+      overflow: hidden;
+    }
+
+    .area-progress-fill {
+      height: 100%;
+      border-radius: 1px;
+    }
+
+    /* Scrollbar */
+    .main::-webkit-scrollbar {
+      width: 6px;
+    }
+    .main::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .main::-webkit-scrollbar-thumb {
+      background: var(--gray-6);
+      border-radius: 3px;
+    }
+    .main::-webkit-scrollbar-thumb:hover {
+      background: var(--gray-5);
+    }
+  </style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ─── SIDEBAR ───────────────────────────────── -->
+  <aside class="sidebar">
+
+    <div class="sidebar-logo">
+      <div class="logo-mark"><span>LO</span></div>
+      <span class="logo-text">Life OS</span>
+    </div>
+
+    <button class="sidebar-new-btn">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      New task
+    </button>
+
+    <nav class="sidebar-nav">
+
+      <button class="nav-item active">
+        <!-- Star / Today icon -->
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M8 1.5L9.854 5.258L14 5.854L11 8.78L11.708 12.908L8 10.958L4.292 12.908L5 8.78L2 5.854L6.146 5.258L8 1.5Z" fill="currentColor" opacity="0.9"/>
+        </svg>
+        Today
+        <span class="nav-badge">4</span>
+      </button>
+
+      <button class="nav-item">
+        <!-- Inbox icon -->
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <rect x="1.5" y="2.5" width="13" height="11" rx="1.5" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M1.5 9.5h3.5l1.5 2h3l1.5-2h3.5" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+        </svg>
+        Backlog
+        <span class="nav-badge">12</span>
+      </button>
+
+      <button class="nav-item">
+        <!-- Flag icon -->
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 2v12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M3 2.5h8.5l-2 3.5 2 3.5H3" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+        </svg>
+        Goals
+      </button>
+
+      <button class="nav-item">
+        <!-- Calendar icon -->
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <rect x="1.5" y="3" width="13" height="11.5" rx="1.5" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M1.5 6.5h13" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M5 1.5v2.5M11 1.5v2.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          <circle cx="5" cy="9.5" r="0.8" fill="currentColor"/>
+          <circle cx="8" cy="9.5" r="0.8" fill="currentColor"/>
+          <circle cx="11" cy="9.5" r="0.8" fill="currentColor"/>
+          <circle cx="5" cy="12" r="0.8" fill="currentColor"/>
+          <circle cx="8" cy="12" r="0.8" fill="currentColor"/>
+        </svg>
+        Schedule
+      </button>
+
+    </nav>
+
+    <div class="sidebar-section">
+      <span class="sidebar-section-label">Areas</span>
+    </div>
+
+    <div class="sidebar-areas">
+
+      <div class="area-item">
+        <div class="area-dot" style="background:#34C759;"></div>
+        <span class="area-name">Health</span>
+        <div class="area-health-dot" style="background:#34C759;"></div>
+      </div>
+
+      <div class="area-item">
+        <div class="area-dot" style="background:#007AFF;"></div>
+        <span class="area-name">Work</span>
+        <div class="area-health-dot" style="background:#FF9500;"></div>
+      </div>
+
+      <div class="area-item">
+        <div class="area-dot" style="background:#AF52DE;"></div>
+        <span class="area-name">Learning</span>
+        <div class="area-health-dot" style="background:#34C759;"></div>
+      </div>
+
+      <div class="area-item">
+        <div class="area-dot" style="background:#FF9500;"></div>
+        <span class="area-name">Personal</span>
+        <div class="area-health-dot" style="background:#FF9500;"></div>
+      </div>
+
+    </div>
+
+    <div class="sidebar-bottom">
+      <button class="settings-btn">
+        <svg viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M8 1v1.5M8 13.5V15M15 8h-1.5M2.5 8H1M12.364 3.636l-1.06 1.06M4.696 11.304l-1.06 1.06M12.364 12.364l-1.06-1.06M4.696 4.696l-1.06-1.06" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        Settings
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ─── MAIN ──────────────────────────────────── -->
+  <main class="main">
+    <div class="main-inner">
+
+      <div class="page-date">Monday, March 22</div>
+      <h1 class="page-greeting">Good morning.</h1>
+
+      <!-- Stats row -->
+      <div class="stats-row">
+        <div class="stat stat-blue">
+          <span class="stat-num">3</span>
+          <span class="stat-label">In progress</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat stat-green">
+          <span class="stat-num">8</span>
+          <span class="stat-label">Completed</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat stat-red">
+          <span class="stat-num">2</span>
+          <span class="stat-label">Overdue</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat stat-dark">
+          <span class="stat-num">15</span>
+          <span class="stat-label">Open</span>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Two column layout -->
+      <div class="content-cols">
+
+        <!-- Left: Tasks -->
+        <div class="left-col">
+
+          <div class="section-header">Today's Focus</div>
+
+          <div class="task-list">
+
+            <!-- Task 1 -->
+            <div class="task-row">
+              <div class="task-check"></div>
+              <div class="task-body">
+                <div class="task-name">Quarterly business review</div>
+                <div class="task-meta">
+                  <span class="task-tag work">Work</span>
+                  <span class="task-due">Mar 22</span>
+                </div>
+              </div>
+              <div class="task-more">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <circle cx="2" cy="7" r="1.2" fill="#8E8E93"/>
+                  <circle cx="7" cy="7" r="1.2" fill="#8E8E93"/>
+                  <circle cx="12" cy="7" r="1.2" fill="#8E8E93"/>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Task 2 -->
+            <div class="task-row">
+              <div class="task-check"></div>
+              <div class="task-body">
+                <div class="task-name">Call the dentist</div>
+                <div class="task-meta">
+                  <span class="task-tag personal">Personal</span>
+                  <span class="task-due">Mar 22</span>
+                </div>
+              </div>
+              <div class="task-more">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <circle cx="2" cy="7" r="1.2" fill="#8E8E93"/>
+                  <circle cx="7" cy="7" r="1.2" fill="#8E8E93"/>
+                  <circle cx="12" cy="7" r="1.2" fill="#8E8E93"/>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Task 3 — overdue -->
+            <div class="task-row">
+              <div class="task-check"></div>
+              <div class="task-body">
+                <div class="task-name">Review open pull requests</div>
+                <div class="task-meta">
+                  <span class="task-tag work">Work</span>
+                  <span class="task-due overdue">Mar 21 · overdue</span>
+                </div>
+              </div>
+              <div class="task-more">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <circle cx="2" cy="7" r="1.2" fill="#8E8E93"/>
+                  <circle cx="7" cy="7" r="1.2" fill="#8E8E93"/>
+                  <circle cx="12" cy="7" r="1.2" fill="#8E8E93"/>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Task 4 -->
+            <div class="task-row">
+              <div class="task-check"></div>
+              <div class="task-body">
+                <div class="task-name">Read chapter 5 — Atomic Habits</div>
+                <div class="task-meta">
+                  <span class="task-tag learning">Learning</span>
+                  <span class="task-due">Mar 23</span>
+                </div>
+              </div>
+              <div class="task-more">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <circle cx="2" cy="7" r="1.2" fill="#8E8E93"/>
+                  <circle cx="7" cy="7" r="1.2" fill="#8E8E93"/>
+                  <circle cx="12" cy="7" r="1.2" fill="#8E8E93"/>
+                </svg>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Right: Routines + Area Health -->
+        <div class="right-col">
+
+          <!-- Daily Routines -->
+          <div>
+            <div class="section-header">Daily Routines</div>
+
+            <div class="routines-list">
+
+              <div class="routine-row">
+                <div class="routine-check done"></div>
+                <span class="routine-name done">Meditate</span>
+                <span class="routine-streak">14d</span>
+              </div>
+
+              <div class="routine-row">
+                <div class="routine-check done"></div>
+                <span class="routine-name done">Exercise</span>
+                <span class="routine-streak">7d</span>
+              </div>
+
+              <div class="routine-row">
+                <div class="routine-check"></div>
+                <span class="routine-name">Read 30 mins</span>
+                <span class="routine-streak">3d</span>
+              </div>
+
+              <div class="routine-row">
+                <div class="routine-check"></div>
+                <span class="routine-name">No sugar</span>
+                <span class="routine-streak">1d</span>
+              </div>
+
+            </div>
+
+            <div class="routines-progress">
+              <div class="routines-progress-label">
+                <span>2 of 4 done</span>
+                <span>50%</span>
+              </div>
+              <div class="progress-bar-track">
+                <div class="progress-bar-fill" style="width: 50%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Area Health -->
+          <div>
+            <div class="section-header">Area Health</div>
+
+            <div class="area-health-list">
+
+              <div class="area-health-item">
+                <div class="area-health-header">
+                  <div class="area-health-dot" style="background:#34C759;"></div>
+                  <span class="area-health-name">Health</span>
+                  <span class="area-health-score">87</span>
+                </div>
+                <div class="area-progress-track">
+                  <div class="area-progress-fill" style="width:87%; background:#34C759;"></div>
+                </div>
+              </div>
+
+              <div class="area-health-item">
+                <div class="area-health-header">
+                  <div class="area-health-dot" style="background:#007AFF;"></div>
+                  <span class="area-health-name">Work</span>
+                  <span class="area-health-score">62</span>
+                </div>
+                <div class="area-progress-track">
+                  <div class="area-progress-fill" style="width:62%; background:#007AFF;"></div>
+                </div>
+              </div>
+
+              <div class="area-health-item">
+                <div class="area-health-header">
+                  <div class="area-health-dot" style="background:#AF52DE;"></div>
+                  <span class="area-health-name">Learning</span>
+                  <span class="area-health-score">74</span>
+                </div>
+                <div class="area-progress-track">
+                  <div class="area-progress-fill" style="width:74%; background:#AF52DE;"></div>
+                </div>
+              </div>
+
+              <div class="area-health-item">
+                <div class="area-health-header">
+                  <div class="area-health-dot" style="background:#FF9500;"></div>
+                  <span class="area-health-name">Personal</span>
+                  <span class="area-health-score">55</span>
+                </div>
+                <div class="area-progress-track">
+                  <div class="area-progress-fill" style="width:55%; background:#FF9500;"></div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Life OS — Warm Editorial</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --cream:        #F2EDE4;
+      --cream-card:   #FDFAF6;
+      --cream-border: #DDD4C4;
+      --espresso:     #1E1A17;
+      --espresso-mid: #3E342C;
+      --espresso-deep: #2A2319;
+      --muted:        #7A6F65;
+      --warm-white:   #F0EAE0;
+      --label:        #B8A898;
+      --amber:        #B5691E;
+      --amber-dim:    rgba(181, 105, 30, 0.10);
+      --amber-line:   rgba(181, 105, 30, 0.35);
+      --sidebar-w:    200px;
+      --font-serif:   'Playfair Display', Georgia, serif;
+      --font-sans:    'DM Sans', system-ui, sans-serif;
+    }
+
+    html, body {
+      width: 1280px;
+      min-height: 100vh;
+      background: var(--cream);
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── LAYOUT ────────────────────────────────────── */
+
+    .shell {
+      display: flex;
+      width: 1280px;
+      min-height: 100vh;
+    }
+
+    /* ─── SIDEBAR ───────────────────────────────────── */
+
+    .sidebar {
+      width: var(--sidebar-w);
+      min-height: 100vh;
+      background: var(--espresso);
+      display: flex;
+      flex-direction: column;
+      padding: 32px 0 24px;
+      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .sidebar-logo {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 15px;
+      color: var(--warm-white);
+      letter-spacing: 0.02em;
+      padding: 0 22px;
+      margin-bottom: 36px;
+      opacity: 0.92;
+    }
+
+    .nav-section {
+      flex: 1;
+    }
+
+    .nav-item {
+      display: block;
+      padding: 9px 22px 9px 24px;
+      font-family: var(--font-sans);
+      font-weight: 400;
+      font-size: 13.5px;
+      color: var(--muted);
+      text-decoration: none;
+      line-height: 1.5;
+      border-left: 2px solid transparent;
+      transition: color 0.15s, background 0.15s;
+      cursor: pointer;
+    }
+
+    .nav-item:hover {
+      color: #A89A8D;
+      background: rgba(255,255,255,0.03);
+    }
+
+    .nav-item.active {
+      color: var(--amber);
+      border-left-color: var(--amber);
+      background: rgba(181, 105, 30, 0.07);
+    }
+
+    .nav-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.05);
+      margin: 20px 22px;
+    }
+
+    .nav-group-label {
+      font-family: var(--font-sans);
+      font-size: 9.5px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--espresso-mid);
+      padding: 0 24px;
+      margin-bottom: 10px;
+    }
+
+    .area-dot {
+      display: inline-block;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      margin-right: 8px;
+      position: relative;
+      top: -1px;
+    }
+
+    .sidebar-bottom {
+      padding: 0 22px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding-top: 20px;
+    }
+
+    .sidebar-settings {
+      font-family: var(--font-sans);
+      font-size: 11.5px;
+      font-weight: 300;
+      color: #4A3F38;
+      cursor: pointer;
+      letter-spacing: 0.01em;
+      transition: color 0.15s;
+    }
+
+    .sidebar-settings:hover {
+      color: var(--muted);
+    }
+
+    /* ─── MAIN CONTENT ──────────────────────────────── */
+
+    .main {
+      flex: 1;
+      background: var(--cream);
+      padding: 52px 56px 80px;
+      overflow-y: auto;
+    }
+
+    .main-inner {
+      max-width: 800px;
+    }
+
+    /* ─── HEADER ────────────────────────────────────── */
+
+    .date-label {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--label);
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .greeting {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 44px;
+      color: var(--espresso);
+      line-height: 1.18;
+      letter-spacing: -0.01em;
+      margin-bottom: 40px;
+    }
+
+    /* ─── STATS STRIP ───────────────────────────────── */
+
+    .stats-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: var(--cream-card);
+      border: 1px solid var(--cream-border);
+      border-radius: 6px;
+      margin-bottom: 44px;
+      overflow: hidden;
+    }
+
+    .stat-cell {
+      padding: 20px 22px;
+      border-right: 1px solid var(--cream-border);
+    }
+
+    .stat-cell:last-child {
+      border-right: none;
+    }
+
+    .stat-number {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      font-size: 30px;
+      color: var(--espresso);
+      line-height: 1;
+      margin-bottom: 6px;
+      letter-spacing: -0.02em;
+    }
+
+    .stat-number span.amber {
+      color: var(--amber);
+    }
+
+    .stat-label {
+      font-family: var(--font-sans);
+      font-size: 10px;
+      font-weight: 400;
+      color: var(--label);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ─── SECTION LABEL ─────────────────────────────── */
+
+    .section-label {
+      font-family: var(--font-sans);
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--label);
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    /* ─── TWO-COLUMN LAYOUT ─────────────────────────── */
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 32px;
+      align-items: start;
+    }
+
+    /* ─── TASK LIST ─────────────────────────────────── */
+
+    .task-group {
+      margin-bottom: 28px;
+    }
+
+    .task-card {
+      background: var(--cream-card);
+      border: 1px solid var(--cream-border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .task-row {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--cream-border);
+      transition: background 0.1s;
+      cursor: pointer;
+    }
+
+    .task-row:last-child {
+      border-bottom: none;
+    }
+
+    .task-row:hover {
+      background: rgba(181, 105, 30, 0.025);
+    }
+
+    .task-check {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 1.5px solid var(--cream-border);
+      flex-shrink: 0;
+      position: relative;
+      transition: border-color 0.15s;
+    }
+
+    .task-row:hover .task-check {
+      border-color: var(--amber-line);
+    }
+
+    .task-check.done {
+      background: var(--cream-border);
+      border-color: var(--cream-border);
+    }
+
+    .task-check.done::after {
+      content: '';
+      display: block;
+      width: 4px;
+      height: 7px;
+      border: 1.5px solid var(--label);
+      border-top: none;
+      border-left: none;
+      transform: rotate(45deg);
+      position: absolute;
+      top: 1px;
+      left: 4.5px;
+    }
+
+    .task-text {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--espresso);
+      line-height: 1.45;
+      flex: 1;
+    }
+
+    .task-text.done {
+      text-decoration: line-through;
+      color: var(--label);
+      font-weight: 300;
+    }
+
+    .task-area-tag {
+      font-family: var(--font-sans);
+      font-size: 10px;
+      font-weight: 400;
+      color: var(--label);
+      letter-spacing: 0.04em;
+      background: rgba(181, 105, 30, 0.07);
+      border: 1px solid rgba(181, 105, 30, 0.15);
+      border-radius: 3px;
+      padding: 2px 7px;
+      white-space: nowrap;
+    }
+
+    .task-area-tag.work {
+      background: rgba(62, 52, 44, 0.06);
+      border-color: rgba(62, 52, 44, 0.12);
+      color: #7A6F65;
+    }
+
+    .task-add-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 16px;
+      margin-top: 8px;
+      cursor: pointer;
+      opacity: 0.45;
+      transition: opacity 0.15s;
+    }
+
+    .task-add-row:hover {
+      opacity: 0.75;
+    }
+
+    .task-add-icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 1.5px dashed var(--label);
+      flex-shrink: 0;
+    }
+
+    .task-add-text {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--label);
+    }
+
+    /* ─── RIGHT COLUMN ──────────────────────────────── */
+
+    .right-col {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* ─── HABIT CARD ────────────────────────────────── */
+
+    .side-card {
+      background: var(--cream-card);
+      border: 1px solid var(--cream-border);
+      border-radius: 6px;
+      padding: 20px;
+    }
+
+    .side-card-label {
+      font-family: var(--font-sans);
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--label);
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    .habit-row {
+      margin-bottom: 14px;
+    }
+
+    .habit-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .habit-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .habit-name {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--espresso);
+    }
+
+    .habit-count {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 300;
+      color: var(--label);
+    }
+
+    .habit-bar-track {
+      height: 1px;
+      background: var(--cream-border);
+      border-radius: 1px;
+      overflow: visible;
+      position: relative;
+    }
+
+    .habit-bar-fill {
+      height: 1px;
+      background: var(--amber);
+      border-radius: 1px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition: width 0.3s ease;
+    }
+
+    .habit-dots {
+      display: flex;
+      gap: 4px;
+      margin-top: 7px;
+    }
+
+    .habit-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--cream-border);
+    }
+
+    .habit-dot.done {
+      background: var(--amber);
+      opacity: 0.7;
+    }
+
+    .habit-dot.today {
+      background: var(--amber);
+    }
+
+    /* ─── AREA HEALTH ───────────────────────────────── */
+
+    .area-health-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(221, 212, 196, 0.5);
+    }
+
+    .area-health-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .area-health-left {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .area-color-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .area-health-name {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--espresso);
+    }
+
+    .area-health-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .area-mini-bar {
+      width: 60px;
+      height: 3px;
+      background: var(--cream-border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .area-mini-fill {
+      height: 100%;
+      border-radius: 2px;
+    }
+
+    .area-pct {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 300;
+      color: var(--label);
+      width: 28px;
+      text-align: right;
+    }
+
+    /* ─── QUOTE FOOTER ──────────────────────────────── */
+
+    .page-footer {
+      margin-top: 52px;
+      padding-top: 28px;
+      border-top: 1px solid var(--cream-border);
+    }
+
+    .footer-quote {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 15px;
+      color: var(--label);
+      line-height: 1.6;
+      letter-spacing: 0.01em;
+    }
+
+    .footer-attribution {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 300;
+      color: #C8BAA8;
+      margin-top: 6px;
+      letter-spacing: 0.04em;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+
+    <!-- ── SIDEBAR ─────────────────────────────────── -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">Life OS</div>
+
+      <nav class="nav-section">
+        <a class="nav-item active">Today</a>
+        <a class="nav-item">Backlog</a>
+        <a class="nav-item">Goals</a>
+        <a class="nav-item">Schedule</a>
+
+        <div class="nav-divider"></div>
+
+        <div class="nav-group-label">Areas</div>
+        <a class="nav-item">
+          <span class="area-dot" style="background:#B5691E;"></span>Work
+        </a>
+        <a class="nav-item">
+          <span class="area-dot" style="background:#5A7A5E;"></span>Health
+        </a>
+        <a class="nav-item">
+          <span class="area-dot" style="background:#6B7FA8;"></span>Learning
+        </a>
+        <a class="nav-item">
+          <span class="area-dot" style="background:#9B6B9B;"></span>Creative
+        </a>
+        <a class="nav-item">
+          <span class="area-dot" style="background:#C49A6C;"></span>Personal
+        </a>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="sidebar-settings">Settings</div>
+      </div>
+    </aside>
+
+    <!-- ── MAIN ────────────────────────────────────── -->
+    <main class="main">
+      <div class="main-inner">
+
+        <!-- Header -->
+        <div class="date-label">Monday, March 22</div>
+        <h1 class="greeting">Good morning.</h1>
+
+        <!-- Stats Strip -->
+        <div class="stats-strip">
+          <div class="stat-cell">
+            <div class="stat-number">4</div>
+            <div class="stat-label">Open Today</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-number"><span class="amber">3</span></div>
+            <div class="stat-label">Habits Done</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-number">12</div>
+            <div class="stat-label">Open Tasks</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-number">67<span style="font-size:18px;color:var(--label);">%</span></div>
+            <div class="stat-label">Week Focus</div>
+          </div>
+        </div>
+
+        <!-- Two-column content -->
+        <div class="content-grid">
+
+          <!-- Left: Tasks -->
+          <div class="left-col">
+
+            <!-- Today's Focus -->
+            <div class="task-group">
+              <div class="section-label">Today's Focus</div>
+              <div class="task-card">
+
+                <div class="task-row">
+                  <div class="task-check done"></div>
+                  <div class="task-text done">Review Q1 contractor invoices</div>
+                  <div class="task-area-tag work">Work</div>
+                </div>
+
+                <div class="task-row">
+                  <div class="task-check done"></div>
+                  <div class="task-text done">Morning run — 5km</div>
+                  <div class="task-area-tag" style="background:rgba(90,122,94,0.07);border-color:rgba(90,122,94,0.15);color:#7A9A7E;">Health</div>
+                </div>
+
+                <div class="task-row">
+                  <div class="task-check"></div>
+                  <div class="task-text">Draft site acquisition brief — Thornbury lot</div>
+                  <div class="task-area-tag work">Work</div>
+                </div>
+
+                <div class="task-row">
+                  <div class="task-check"></div>
+                  <div class="task-text">Call conveyancer re: settlement extension</div>
+                  <div class="task-area-tag work">Work</div>
+                </div>
+
+                <div class="task-row">
+                  <div class="task-check"></div>
+                  <div class="task-text">Read Chapter 4 — Property Feasibility</div>
+                  <div class="task-area-tag" style="background:rgba(107,127,168,0.07);border-color:rgba(107,127,168,0.15);color:#8A9EC0;">Learning</div>
+                </div>
+
+                <div class="task-row">
+                  <div class="task-check"></div>
+                  <div class="task-text">Block two hours for deep work this afternoon</div>
+                  <div class="task-area-tag">Personal</div>
+                </div>
+
+              </div>
+
+              <div class="task-add-row">
+                <div class="task-add-icon"></div>
+                <div class="task-add-text">Add to today</div>
+              </div>
+            </div>
+
+            <!-- This Week -->
+            <div class="task-group">
+              <div class="section-label">Later This Week</div>
+              <div class="task-card">
+
+                <div class="task-row">
+                  <div class="task-check"></div>
+                  <div class="task-text">Submit planning permit response — Wednesday</div>
+                  <div class="task-area-tag work">Work</div>
+                </div>
+
+                <div class="task-row">
+                  <div class="task-check"></div>
+                  <div class="task-text">Weekly review — Friday morning</div>
+                  <div class="task-area-tag">Personal</div>
+                </div>
+
+                <div class="task-row">
+                  <div class="task-check"></div>
+                  <div class="task-text">Finish BH113 assignment draft</div>
+                  <div class="task-area-tag" style="background:rgba(107,127,168,0.07);border-color:rgba(107,127,168,0.15);color:#8A9EC0;">Learning</div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right: Habits + Area Health -->
+          <div class="right-col">
+
+            <!-- Habits -->
+            <div class="side-card">
+              <div class="side-card-label">Habits</div>
+
+              <div class="habit-row">
+                <div class="habit-header">
+                  <div class="habit-name">Morning run</div>
+                  <div class="habit-count">5 / 7</div>
+                </div>
+                <div class="habit-bar-track">
+                  <div class="habit-bar-fill" style="width: 71%;"></div>
+                </div>
+                <div class="habit-dots">
+                  <div class="habit-dot done"></div>
+                  <div class="habit-dot done"></div>
+                  <div class="habit-dot done"></div>
+                  <div class="habit-dot done"></div>
+                  <div class="habit-dot today"></div>
+                  <div class="habit-dot"></div>
+                  <div class="habit-dot"></div>
+                </div>
+              </div>
+
+              <div class="habit-row">
+                <div class="habit-header">
+                  <div class="habit-name">Deep reading</div>
+                  <div class="habit-count">4 / 7</div>
+                </div>
+                <div class="habit-bar-track">
+                  <div class="habit-bar-fill" style="width: 57%;"></div>
+                </div>
+                <div class="habit-dots">
+                  <div class="habit-dot done"></div>
+                  <div class="habit-dot done"></div>
+                  <div class="habit-dot"></div>
+                  <div class="habit-dot done"></div>
+                  <div class="habit-dot done"></div>
+                  <div class="habit-dot"></div>
+                  <div class="habit-dot"></div>
+                </div>
+              </div>
+
+              <div class="habit-row">
+                <div class="habit-header">
+                  <div class="habit-name">No phone — morning</div>
+                  <div class="habit-count">3 / 7</div>
+                </div>
+                <div class="habit-bar-track">
+                  <div class="habit-bar-fill" style="width: 43%;"></div>
+                </div>
+                <div class="habit-dots">
+                  <div class="habit-dot done"></div>
+                  <div class="habit-dot done"></div>
+                  <div class="habit-dot"></div>
+                  <div class="habit-dot"></div>
+                  <div class="habit-dot done"></div>
+                  <div class="habit-dot"></div>
+                  <div class="habit-dot"></div>
+                </div>
+              </div>
+
+              <div class="habit-row">
+                <div class="habit-header">
+                  <div class="habit-name">Journaling</div>
+                  <div class="habit-count">7 / 7</div>
+                </div>
+                <div class="habit-bar-track">
+                  <div class="habit-bar-fill" style="width: 100%;"></div>
+                </div>
+                <div class="habit-dots">
+                  <div class="habit-dot done"></div>
+                  <div class="habit-dot done"></div>
+                  <div class="habit-dot done"></div>
+                  <div class="habit-dot done"></div>
+                  <div class="habit-dot done"></div>
+                  <div class="habit-dot today"></div>
+                  <div class="habit-dot done"></div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Area Health -->
+            <div class="side-card">
+              <div class="side-card-label">Area Health</div>
+
+              <div class="area-health-row">
+                <div class="area-health-left">
+                  <div class="area-color-dot" style="background:#B5691E;"></div>
+                  <div class="area-health-name">Work</div>
+                </div>
+                <div class="area-health-right">
+                  <div class="area-mini-bar">
+                    <div class="area-mini-fill" style="width:80%;background:#B5691E;opacity:0.55;"></div>
+                  </div>
+                  <div class="area-pct">80%</div>
+                </div>
+              </div>
+
+              <div class="area-health-row">
+                <div class="area-health-left">
+                  <div class="area-color-dot" style="background:#5A7A5E;"></div>
+                  <div class="area-health-name">Health</div>
+                </div>
+                <div class="area-health-right">
+                  <div class="area-mini-bar">
+                    <div class="area-mini-fill" style="width:71%;background:#5A7A5E;opacity:0.6;"></div>
+                  </div>
+                  <div class="area-pct">71%</div>
+                </div>
+              </div>
+
+              <div class="area-health-row">
+                <div class="area-health-left">
+                  <div class="area-color-dot" style="background:#6B7FA8;"></div>
+                  <div class="area-health-name">Learning</div>
+                </div>
+                <div class="area-health-right">
+                  <div class="area-mini-bar">
+                    <div class="area-mini-fill" style="width:57%;background:#6B7FA8;opacity:0.6;"></div>
+                  </div>
+                  <div class="area-pct">57%</div>
+                </div>
+              </div>
+
+              <div class="area-health-row">
+                <div class="area-health-left">
+                  <div class="area-color-dot" style="background:#9B6B9B;"></div>
+                  <div class="area-health-name">Creative</div>
+                </div>
+                <div class="area-health-right">
+                  <div class="area-mini-bar">
+                    <div class="area-mini-fill" style="width:28%;background:#9B6B9B;opacity:0.55;"></div>
+                  </div>
+                  <div class="area-pct">28%</div>
+                </div>
+              </div>
+
+              <div class="area-health-row">
+                <div class="area-health-left">
+                  <div class="area-color-dot" style="background:#C49A6C;"></div>
+                  <div class="area-health-name">Personal</div>
+                </div>
+                <div class="area-health-right">
+                  <div class="area-mini-bar">
+                    <div class="area-mini-fill" style="width:62%;background:#C49A6C;opacity:0.6;"></div>
+                  </div>
+                  <div class="area-pct">62%</div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Footer quote -->
+        <div class="page-footer">
+          <div class="footer-quote">"The secret of getting ahead is getting started."</div>
+          <div class="footer-attribution">— Mark Twain</div>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+</body>
+</html>

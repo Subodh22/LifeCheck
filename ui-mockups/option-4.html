@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Life OS — Today</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #FFFFFF;
+    color: #111;
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .app {
+    display: flex;
+    width: 1280px;
+    height: 100vh;
+    margin: 0 auto;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: 240px;
+    min-width: 240px;
+    height: 100vh;
+    background: #FBFBFB;
+    border-right: 1px solid #EFEFEF;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .sidebar-top {
+    padding: 20px 16px 0;
+  }
+
+  .app-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #111;
+    letter-spacing: -0.01em;
+    padding: 8px 8px;
+    display: block;
+  }
+
+  .new-task-link {
+    display: block;
+    font-size: 12px;
+    color: #AAA;
+    padding: 4px 8px 12px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.1s;
+  }
+
+  .new-task-link:hover {
+    color: #555;
+  }
+
+  .nav-divider {
+    height: 1px;
+    background: #EFEFEF;
+    margin: 0 8px 12px;
+  }
+
+  .nav-section {
+    padding: 0 8px;
+    margin-bottom: 4px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.1s;
+    user-select: none;
+  }
+
+  .nav-item:hover {
+    background: #F0F0F0;
+  }
+
+  .nav-item.active {
+    background: #F0F0F0;
+  }
+
+  .nav-item.active .nav-label {
+    color: #111;
+    font-weight: 500;
+  }
+
+  .nav-icon {
+    font-size: 14px;
+    line-height: 1;
+    width: 18px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .nav-label {
+    font-size: 13.5px;
+    color: #888;
+    font-weight: 400;
+  }
+
+  .nav-item.active .nav-label {
+    color: #111;
+  }
+
+  .nav-count {
+    margin-left: auto;
+    font-size: 11px;
+    color: #BBB;
+    font-weight: 400;
+  }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: #BBB;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 14px 16px 6px;
+  }
+
+  .area-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 16px;
+    cursor: pointer;
+    transition: background 0.1s;
+    border-radius: 4px;
+    margin: 0 8px;
+  }
+
+  .area-item:hover {
+    background: #F0F0F0;
+  }
+
+  .area-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .area-name {
+    font-size: 13px;
+    color: #666;
+    font-weight: 400;
+  }
+
+  .sidebar-bottom {
+    margin-top: auto;
+    padding: 12px 16px 20px;
+    border-top: 1px solid #EFEFEF;
+  }
+
+  .settings-link {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    color: #BBB;
+    cursor: pointer;
+    transition: color 0.1s;
+    padding: 4px 0;
+  }
+
+  .settings-link:hover {
+    color: #777;
+  }
+
+  /* ── Main ── */
+  .main {
+    flex: 1;
+    height: 100vh;
+    overflow-y: auto;
+    background: #FFFFFF;
+  }
+
+  .content {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 60px 60px 80px;
+  }
+
+  .date-line {
+    font-size: 12px;
+    color: #999;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    margin-bottom: 10px;
+  }
+
+  .greeting {
+    font-size: 36px;
+    font-weight: 600;
+    color: #111;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 10px;
+  }
+
+  .greeting-sub {
+    font-size: 14px;
+    color: #999;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  .greeting-sub strong {
+    color: #555;
+    font-weight: 500;
+  }
+
+  .section-gap {
+    height: 40px;
+  }
+
+  .section-header {
+    font-size: 11px;
+    font-weight: 500;
+    color: #BBB;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    margin-bottom: 2px;
+  }
+
+  /* ── Two-column layout ── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: 60px;
+    align-items: start;
+  }
+
+  /* ── Task list ── */
+  .task-list {
+    margin-top: 0;
+  }
+
+  .task-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.1s;
+    position: relative;
+  }
+
+  .task-row:hover {
+    background: #F9F9F9;
+  }
+
+  .task-row + .task-row {
+    border-top: 1px solid #F5F5F5;
+  }
+
+  .task-check {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1.5px solid #D5D5D5;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    position: relative;
+  }
+
+  .task-check:hover {
+    border-color: #4A6FA5;
+  }
+
+  .task-check.done {
+    border-color: #4A6FA5;
+    background: #4A6FA5;
+  }
+
+  .task-check.done::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+    display: block;
+  }
+
+  .task-body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .task-name {
+    font-size: 14.5px;
+    color: #111;
+    font-weight: 400;
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .task-name.done-text {
+    color: #BBB;
+    text-decoration: line-through;
+    text-decoration-color: #CCC;
+  }
+
+  .task-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 2px;
+  }
+
+  .tag-chip {
+    font-size: 11px;
+    color: #999;
+    background: #F3F3F3;
+    border-radius: 3px;
+    padding: 1px 6px;
+    font-weight: 400;
+  }
+
+  .task-date {
+    font-size: 11.5px;
+    color: #CCC;
+    font-weight: 400;
+  }
+
+  .task-date.overdue {
+    color: #C0726A;
+  }
+
+  .task-priority {
+    font-size: 11px;
+    color: #BBB;
+    font-weight: 400;
+  }
+
+  /* Overdue section */
+  .overdue-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 500;
+    color: #C0726A;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    margin-bottom: 2px;
+    opacity: 0.8;
+  }
+
+  .overdue-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #C0726A;
+    opacity: 0.7;
+  }
+
+  /* Section divider */
+  .section-divider {
+    height: 1px;
+    background: #F0F0F0;
+    margin: 28px 0;
+  }
+
+  /* ── Right column ── */
+  .right-col {
+    padding-top: 0;
+  }
+
+  .right-section {
+    margin-bottom: 32px;
+  }
+
+  .right-section-header {
+    font-size: 11px;
+    font-weight: 500;
+    color: #BBB;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    margin-bottom: 8px;
+  }
+
+  /* Habits */
+  .habit-row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 6px 0;
+    cursor: pointer;
+    transition: opacity 0.1s;
+  }
+
+  .habit-row:hover {
+    opacity: 0.7;
+  }
+
+  .habit-check {
+    width: 15px;
+    height: 15px;
+    border-radius: 3px;
+    border: 1.5px solid #D8D8D8;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .habit-check.done {
+    border-color: #4A6FA5;
+    background: #4A6FA5;
+  }
+
+  .habit-check.done::after {
+    content: '✓';
+    font-size: 9px;
+    color: white;
+    line-height: 1;
+    font-weight: 600;
+  }
+
+  .habit-name {
+    font-size: 13px;
+    color: #444;
+    font-weight: 400;
+  }
+
+  .habit-name.done-text {
+    color: #BBB;
+  }
+
+  .habit-streak {
+    margin-left: auto;
+    font-size: 11px;
+    color: #CCC;
+  }
+
+  /* Area health */
+  .area-health-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 0;
+  }
+
+  .area-health-name {
+    font-size: 12.5px;
+    color: #666;
+    width: 72px;
+    flex-shrink: 0;
+  }
+
+  .area-bar-track {
+    flex: 1;
+    height: 3px;
+    background: #F0F0F0;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .area-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+
+  .area-health-pct {
+    font-size: 11.5px;
+    color: #BBB;
+    width: 26px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  /* Quick capture */
+  .quick-capture {
+    margin-top: 28px;
+  }
+
+  .capture-input {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #EFEFEF;
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    color: #444;
+    padding: 6px 0 8px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .capture-input::placeholder {
+    color: #CCC;
+  }
+
+  .capture-input:focus {
+    border-color: #4A6FA5;
+  }
+
+  /* Focus task (pinned) */
+  .focus-block {
+    background: #FAFAFA;
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 24px;
+  }
+
+  .focus-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: #BBB;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    margin-bottom: 8px;
+  }
+
+  .focus-task-name {
+    font-size: 15px;
+    color: #222;
+    font-weight: 500;
+    line-height: 1.4;
+    margin-bottom: 4px;
+  }
+
+  .focus-task-sub {
+    font-size: 12px;
+    color: #AAA;
+  }
+
+  /* Scrollbar */
+  .main::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .main::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .main::-webkit-scrollbar-thumb {
+    background: #E8E8E8;
+    border-radius: 3px;
+  }
+
+  .main::-webkit-scrollbar-thumb:hover {
+    background: #D0D0D0;
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <span class="app-name">Life OS</span>
+      <a class="new-task-link" href="#">+ New task</a>
+      <div class="nav-divider"></div>
+    </div>
+
+    <nav class="nav-section">
+      <div class="nav-item active">
+        <span class="nav-icon">📋</span>
+        <span class="nav-label">Today</span>
+        <span class="nav-count">5</span>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">📝</span>
+        <span class="nav-label">Backlog</span>
+        <span class="nav-count">18</span>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">🎯</span>
+        <span class="nav-label">Goals</span>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">📅</span>
+        <span class="nav-label">Schedule</span>
+      </div>
+    </nav>
+
+    <div class="section-label">Areas</div>
+
+    <div class="area-item">
+      <div class="area-dot" style="background:#7BA7A0;"></div>
+      <span class="area-name">Work</span>
+    </div>
+    <div class="area-item">
+      <div class="area-dot" style="background:#A09BC0;"></div>
+      <span class="area-name">Health</span>
+    </div>
+    <div class="area-item">
+      <div class="area-dot" style="background:#C0A97B;"></div>
+      <span class="area-name">Finance</span>
+    </div>
+    <div class="area-item">
+      <div class="area-dot" style="background:#C07B8A;"></div>
+      <span class="area-name">Relationships</span>
+    </div>
+    <div class="area-item">
+      <div class="area-dot" style="background:#7BA0C0;"></div>
+      <span class="area-name">Learning</span>
+    </div>
+
+    <div class="sidebar-bottom">
+      <div class="settings-link">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+        Settings
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── Main ── -->
+  <main class="main">
+    <div class="content">
+
+      <p class="date-line">Sunday, 22 March 2026</p>
+      <h1 class="greeting">Good morning.</h1>
+      <p class="greeting-sub">You have <strong>3 tasks due today</strong> and 2 overdue.</p>
+
+      <div class="section-gap"></div>
+
+      <!-- Focus block -->
+      <div class="focus-block">
+        <div class="focus-label">Pinned focus</div>
+        <div class="focus-task-name">Review Q1 portfolio performance report</div>
+        <div class="focus-task-sub">Work · Due today</div>
+      </div>
+
+      <div class="two-col">
+
+        <!-- Left: Tasks -->
+        <div>
+
+          <!-- Overdue -->
+          <div class="overdue-header">
+            <div class="overdue-dot"></div>
+            Overdue
+          </div>
+
+          <div class="task-list" style="margin-bottom: 28px;">
+            <div class="task-row">
+              <div class="task-check"></div>
+              <div class="task-body">
+                <div class="task-name">Send follow-up email to broker re: Block 4</div>
+                <div class="task-meta">
+                  <span class="tag-chip">Work</span>
+                  <span class="task-date overdue">Mar 20</span>
+                </div>
+              </div>
+            </div>
+            <div class="task-row">
+              <div class="task-check"></div>
+              <div class="task-body">
+                <div class="task-name">Schedule physio appointment</div>
+                <div class="task-meta">
+                  <span class="tag-chip">Health</span>
+                  <span class="task-date overdue">Mar 21</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Today's focus -->
+          <div class="section-header">Today's focus</div>
+
+          <div class="task-list">
+            <div class="task-row">
+              <div class="task-check"></div>
+              <div class="task-body">
+                <div class="task-name">Review Q1 portfolio performance report</div>
+                <div class="task-meta">
+                  <span class="tag-chip">Work</span>
+                  <span class="task-date">Today</span>
+                </div>
+              </div>
+            </div>
+            <div class="task-row">
+              <div class="task-check done"></div>
+              <div class="task-body">
+                <div class="task-name done-text">Morning run — 5km</div>
+                <div class="task-meta">
+                  <span class="tag-chip">Health</span>
+                  <span class="task-date">Done 7:14 am</span>
+                </div>
+              </div>
+            </div>
+            <div class="task-row">
+              <div class="task-check"></div>
+              <div class="task-body">
+                <div class="task-name">Transfer $3,500 to offset account</div>
+                <div class="task-meta">
+                  <span class="tag-chip">Finance</span>
+                  <span class="task-date">Today</span>
+                </div>
+              </div>
+            </div>
+            <div class="task-row">
+              <div class="task-check"></div>
+              <div class="task-body">
+                <div class="task-name">Read 30 pages — Property Development</div>
+                <div class="task-meta">
+                  <span class="tag-chip">Learning</span>
+                  <span class="task-date">Today</span>
+                </div>
+              </div>
+            </div>
+            <div class="task-row">
+              <div class="task-check done"></div>
+              <div class="task-body">
+                <div class="task-name done-text">Weekly review — journal entry</div>
+                <div class="task-meta">
+                  <span class="tag-chip">Relationships</span>
+                  <span class="task-date">Done 8:02 am</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-divider"></div>
+
+          <!-- Quick capture -->
+          <div class="quick-capture">
+            <input class="capture-input" type="text" placeholder="Capture a thought…">
+          </div>
+
+        </div>
+
+        <!-- Right column -->
+        <div class="right-col">
+
+          <!-- Habits -->
+          <div class="right-section">
+            <div class="right-section-header">Habits</div>
+
+            <div class="habit-row">
+              <div class="habit-check done"></div>
+              <span class="habit-name done-text">Morning run</span>
+              <span class="habit-streak">12d</span>
+            </div>
+            <div class="habit-row">
+              <div class="habit-check done"></div>
+              <span class="habit-name done-text">Meditate 10 min</span>
+              <span class="habit-streak">5d</span>
+            </div>
+            <div class="habit-row">
+              <div class="habit-check"></div>
+              <span class="habit-name">Cold shower</span>
+              <span class="habit-streak">3d</span>
+            </div>
+            <div class="habit-row">
+              <div class="habit-check"></div>
+              <span class="habit-name">No phone before 8am</span>
+              <span class="habit-streak">1d</span>
+            </div>
+            <div class="habit-row">
+              <div class="habit-check"></div>
+              <span class="habit-name">Read before bed</span>
+              <span class="habit-streak">7d</span>
+            </div>
+          </div>
+
+          <!-- Area health -->
+          <div class="right-section">
+            <div class="right-section-header">Area health</div>
+
+            <div class="area-health-row">
+              <span class="area-health-name">Work</span>
+              <div class="area-bar-track">
+                <div class="area-bar-fill" style="width:78%; background:#7BA7A0;"></div>
+              </div>
+              <span class="area-health-pct">78</span>
+            </div>
+            <div class="area-health-row">
+              <span class="area-health-name">Health</span>
+              <div class="area-bar-track">
+                <div class="area-bar-fill" style="width:65%; background:#A09BC0;"></div>
+              </div>
+              <span class="area-health-pct">65</span>
+            </div>
+            <div class="area-health-row">
+              <span class="area-health-name">Finance</span>
+              <div class="area-bar-track">
+                <div class="area-bar-fill" style="width:82%; background:#C0A97B;"></div>
+              </div>
+              <span class="area-health-pct">82</span>
+            </div>
+            <div class="area-health-row">
+              <span class="area-health-name">People</span>
+              <div class="area-bar-track">
+                <div class="area-bar-fill" style="width:45%; background:#C07B8A;"></div>
+              </div>
+              <span class="area-health-pct">45</span>
+            </div>
+            <div class="area-health-row">
+              <span class="area-health-name">Learning</span>
+              <div class="area-bar-track">
+                <div class="area-bar-fill" style="width:60%; background:#7BA0C0;"></div>
+              </div>
+              <span class="area-health-pct">60</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+</div>
+
+<script>
+  // Toggle task checkboxes
+  document.querySelectorAll('.task-check').forEach(check => {
+    check.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const isDone = this.classList.toggle('done');
+      const taskName = this.closest('.task-row').querySelector('.task-name');
+      if (taskName) taskName.classList.toggle('done-text', isDone);
+    });
+  });
+
+  // Toggle habit checkboxes
+  document.querySelectorAll('.habit-check').forEach(check => {
+    check.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const isDone = this.classList.toggle('done');
+      const habitName = this.closest('.habit-row').querySelector('.habit-name');
+      if (habitName) habitName.classList.toggle('done-text', isDone);
+    });
+  });
+</script>
+
+</body>
+</html>

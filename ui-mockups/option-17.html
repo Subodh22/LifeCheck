@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LIFE OS — Swiss International Typographic Style</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  :root {
+    --black: #000000;
+    --white: #FFFFFF;
+    --red: #FF0000;
+    --gray-light: #F0F0F0;
+    --gray-mid: #C8C8C8;
+    --margin-col: 120px;
+    --rule-width: 2px;
+    --base: 8px;
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--white);
+    font-family: 'Roboto Condensed', Arial Narrow, sans-serif;
+    font-size: 14px;
+    line-height: 1;
+    color: var(--black);
+    overflow-x: hidden;
+  }
+
+  /* ── LAYOUT SHELL ── */
+  .shell {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+  }
+
+  /* ── LEFT MARGIN COLUMN ── */
+  .margin-col {
+    width: var(--margin-col);
+    min-height: 100vh;
+    background: var(--white);
+    border-right: var(--rule-width) solid var(--black);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .margin-brand {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--black);
+    padding: 32px 0 0 0;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .margin-section {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--red);
+    padding: 20px 0 0 0;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .margin-divider {
+    width: 40px;
+    height: 1px;
+    background: var(--gray-mid);
+    margin: 24px 0;
+  }
+
+  .margin-nav {
+    margin-top: auto;
+    padding-bottom: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .margin-nav-item {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--black);
+    text-decoration: none;
+    padding: 8px 0;
+    white-space: nowrap;
+    opacity: 0.35;
+    transition: opacity 0.15s;
+    cursor: pointer;
+  }
+
+  .margin-nav-item:hover,
+  .margin-nav-item.active {
+    opacity: 1;
+    color: var(--red);
+  }
+
+  .margin-nav-item.active {
+    opacity: 1;
+  }
+
+  /* ── MAIN CONTENT ── */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: var(--white);
+    min-height: 100vh;
+    overflow-y: auto;
+  }
+
+  /* Top red rule */
+  .top-rule {
+    width: 100%;
+    height: 3px;
+    background: var(--red);
+    flex-shrink: 0;
+  }
+
+  /* ── HEADER ZONE ── */
+  .header-zone {
+    padding: 40px 56px 0 56px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 40px;
+  }
+
+  .greeting-block {
+    flex: 1;
+  }
+
+  .greeting-sup {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gray-mid);
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .greeting-text {
+    font-size: 80px;
+    font-weight: 900;
+    line-height: 0.9;
+    text-transform: uppercase;
+    color: var(--black);
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+
+  .greeting-sub {
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    color: var(--gray-mid);
+    margin-top: 16px;
+    text-transform: uppercase;
+  }
+
+  /* Stat column beside greeting */
+  .stat-column {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    padding-top: 8px;
+    flex-shrink: 0;
+    min-width: 160px;
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    padding: 12px 0;
+    border-top: 1px solid var(--gray-mid);
+    width: 100%;
+  }
+
+  .stat-item:last-child {
+    border-bottom: 1px solid var(--gray-mid);
+  }
+
+  .stat-number {
+    font-size: 48px;
+    font-weight: 900;
+    line-height: 1;
+    color: var(--black);
+    letter-spacing: -0.02em;
+  }
+
+  .stat-number.red {
+    color: var(--red);
+  }
+
+  .stat-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gray-mid);
+    margin-top: 2px;
+  }
+
+  /* ── SECTION RULE ── */
+  .section-rule {
+    width: calc(100% - 112px);
+    margin: 32px 56px 0;
+    height: var(--rule-width);
+    background: var(--black);
+    flex-shrink: 0;
+  }
+
+  .section-rule.red {
+    background: var(--red);
+    height: 1px;
+  }
+
+  /* ── SECTION HEADER ── */
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    padding: 0 56px;
+    margin-top: 24px;
+  }
+
+  .section-title {
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--black);
+  }
+
+  .section-count {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--red);
+  }
+
+  .section-meta {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    color: var(--gray-mid);
+    text-transform: uppercase;
+    margin-left: auto;
+  }
+
+  /* ── TASK TABLE ── */
+  .task-table-wrap {
+    padding: 0 56px;
+    margin-top: 16px;
+  }
+
+  .task-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .task-table thead tr {
+    background: var(--black);
+    color: var(--white);
+  }
+
+  .task-table thead th {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    text-align: left;
+    padding: 10px 14px;
+    white-space: nowrap;
+  }
+
+  .task-table thead th:first-child {
+    width: 52px;
+    text-align: center;
+  }
+
+  .task-table tbody tr {
+    border-bottom: 1px solid var(--gray-mid);
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+
+  .task-table tbody tr:hover {
+    background: var(--gray-light);
+  }
+
+  .task-table tbody tr.done {
+    opacity: 0.4;
+  }
+
+  .task-table tbody td {
+    padding: 13px 14px;
+    vertical-align: middle;
+  }
+
+  .task-num {
+    font-size: 12px;
+    font-weight: 900;
+    color: var(--red);
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.05em;
+  }
+
+  .task-num.done-num {
+    color: var(--gray-mid);
+  }
+
+  .task-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--black);
+    letter-spacing: 0.02em;
+  }
+
+  .task-name.done-text {
+    text-decoration: line-through;
+    color: var(--gray-mid);
+  }
+
+  .task-area {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--black);
+    white-space: nowrap;
+  }
+
+  .task-priority {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .task-priority.p1 { color: var(--red); }
+  .task-priority.p2 { color: var(--black); }
+  .task-priority.p3 { color: var(--gray-mid); }
+
+  .task-date {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    color: var(--gray-mid);
+    white-space: nowrap;
+    text-transform: uppercase;
+  }
+
+  .task-date.overdue {
+    color: var(--red);
+    font-weight: 700;
+  }
+
+  /* ── ROUTINES SECTION ── */
+  .routines-wrap {
+    padding: 0 56px;
+    margin-top: 8px;
+  }
+
+  .routine-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border-bottom: 1px solid var(--gray-mid);
+    padding: 14px 0;
+  }
+
+  .routine-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--black);
+    text-transform: uppercase;
+    min-width: 200px;
+    flex-shrink: 0;
+  }
+
+  .routine-time {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray-mid);
+    min-width: 100px;
+    flex-shrink: 0;
+  }
+
+  .habit-strip {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+    flex: 1;
+  }
+
+  .habit-sq {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--black);
+    flex-shrink: 0;
+  }
+
+  .habit-sq.done {
+    background: var(--black);
+  }
+
+  .habit-sq.red {
+    background: var(--red);
+    border-color: var(--red);
+  }
+
+  .routine-pct {
+    font-size: 11px;
+    font-weight: 900;
+    color: var(--black);
+    letter-spacing: 0.05em;
+    margin-left: 16px;
+    min-width: 40px;
+    text-align: right;
+  }
+
+  /* ── AREA HEALTH ── */
+  .area-health-wrap {
+    padding: 0 56px;
+    margin-top: 8px;
+    margin-bottom: 56px;
+  }
+
+  .area-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border-bottom: 1px solid var(--gray-light);
+    padding: 12px 0;
+  }
+
+  .area-name {
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--black);
+    min-width: 140px;
+    flex-shrink: 0;
+  }
+
+  .area-bar-track {
+    flex: 1;
+    height: 6px;
+    background: var(--gray-light);
+    position: relative;
+    border: 1px solid var(--gray-mid);
+  }
+
+  .area-bar-fill {
+    height: 100%;
+    background: var(--black);
+  }
+
+  .area-bar-fill.red {
+    background: var(--red);
+  }
+
+  .area-pct {
+    font-size: 13px;
+    font-weight: 900;
+    color: var(--red);
+    min-width: 52px;
+    text-align: right;
+    padding-left: 16px;
+    letter-spacing: 0.05em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .area-tasks {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray-mid);
+    min-width: 80px;
+    text-align: right;
+    padding-left: 16px;
+  }
+
+  /* ── FOOTER RULE ── */
+  .footer-rule {
+    width: calc(100% - 112px);
+    margin: 0 56px;
+    height: 1px;
+    background: var(--gray-mid);
+  }
+
+  .footer-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 56px;
+    margin-top: 0;
+  }
+
+  .footer-meta {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gray-mid);
+  }
+
+  .footer-meta span {
+    color: var(--black);
+  }
+
+  /* Hover state for area rows */
+  .area-row:hover .area-name {
+    color: var(--red);
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ── LEFT MARGIN COLUMN ── -->
+  <div class="margin-col">
+    <span class="margin-brand">LIFE OS</span>
+    <div class="margin-divider"></div>
+    <span class="margin-section">TODAY</span>
+
+    <nav class="margin-nav">
+      <a class="margin-nav-item active">TODAY</a>
+      <a class="margin-nav-item">TASKS</a>
+      <a class="margin-nav-item">HABITS</a>
+      <a class="margin-nav-item">AREAS</a>
+      <a class="margin-nav-item">LOG</a>
+    </nav>
+  </div>
+
+  <!-- ── MAIN CONTENT ── -->
+  <div class="main">
+
+    <!-- 3px red top rule -->
+    <div class="top-rule"></div>
+
+    <!-- ── HEADER ZONE ── -->
+    <div class="header-zone">
+      <div class="greeting-block">
+        <span class="greeting-sup">Sunday · 22 March 2026 · Week 12</span>
+        <div class="greeting-text">GOOD<br>MORNING.</div>
+        <div class="greeting-sub">Subodh &nbsp;—&nbsp; 3 critical tasks · 2 overdue</div>
+      </div>
+
+      <div class="stat-column">
+        <div class="stat-item">
+          <span class="stat-number">3</span>
+          <span class="stat-label">Due Today</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">8</span>
+          <span class="stat-label">Open Tasks</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number red">2</span>
+          <span class="stat-label">Overdue</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">15</span>
+          <span class="stat-label">Streak Days</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SECTION RULE ── -->
+    <div class="section-rule"></div>
+
+    <!-- ── TASK TABLE HEADER ── -->
+    <div class="section-header">
+      <span class="section-title">Tasks</span>
+      <span class="section-count">3 Due Today</span>
+      <span class="section-meta">Sorted by priority</span>
+    </div>
+
+    <!-- ── TASK TABLE ── -->
+    <div class="task-table-wrap">
+      <table class="task-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Task</th>
+            <th>Area</th>
+            <th>Priority</th>
+            <th>Due</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="task-num">01</td>
+            <td class="task-name">Review Q1 property acquisition brief</td>
+            <td class="task-area">Work</td>
+            <td class="task-priority p1">P1</td>
+            <td class="task-date overdue">19 Mar — Overdue</td>
+          </tr>
+          <tr>
+            <td class="task-num">02</td>
+            <td class="task-name">Submit RMIT BH113 feasibility assignment</td>
+            <td class="task-area">Study</td>
+            <td class="task-priority p1">P1</td>
+            <td class="task-date overdue">21 Mar — Overdue</td>
+          </tr>
+          <tr>
+            <td class="task-num">03</td>
+            <td class="task-name">Call mortgage broker re: site B pre-approval</td>
+            <td class="task-area">Finance</td>
+            <td class="task-priority p1">P1</td>
+            <td class="task-date">Today</td>
+          </tr>
+          <tr>
+            <td class="task-num">04</td>
+            <td class="task-name">Draft planning permit checklist for Lot 7</td>
+            <td class="task-area">Work</td>
+            <td class="task-priority p2">P2</td>
+            <td class="task-date">23 Mar</td>
+          </tr>
+          <tr>
+            <td class="task-num">05</td>
+            <td class="task-name">Read chapters 4–5: Site Analysis methods</td>
+            <td class="task-area">Study</td>
+            <td class="task-priority p2">P2</td>
+            <td class="task-date">24 Mar</td>
+          </tr>
+          <tr>
+            <td class="task-num">06</td>
+            <td class="task-name">Update project tracker with March costs</td>
+            <td class="task-area">Finance</td>
+            <td class="task-priority p3">P3</td>
+            <td class="task-date">25 Mar</td>
+          </tr>
+          <tr class="done">
+            <td class="task-num done-num">07</td>
+            <td class="task-name done-text">Book structural engineer site visit</td>
+            <td class="task-area">Work</td>
+            <td class="task-priority p2">P2</td>
+            <td class="task-date">20 Mar</td>
+          </tr>
+          <tr class="done">
+            <td class="task-num done-num">08</td>
+            <td class="task-name done-text">Morning run + training session</td>
+            <td class="task-area">Health</td>
+            <td class="task-priority p3">P3</td>
+            <td class="task-date">Today</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── SECTION RULE ── -->
+    <div class="section-rule" style="margin-top: 32px;"></div>
+
+    <!-- ── ROUTINES ── -->
+    <div class="section-header">
+      <span class="section-title">Routines</span>
+      <span class="section-count">4 habits · 15-day streak</span>
+      <span class="section-meta">This week</span>
+    </div>
+
+    <div class="routines-wrap">
+
+      <!-- Morning Routine -->
+      <div class="routine-row">
+        <span class="routine-label">Morning</span>
+        <span class="routine-time">06:00</span>
+        <div class="habit-strip">
+          <!-- Mon–Sun: M T W T F S S -->
+          <div class="habit-sq done"></div><!-- Mon -->
+          <div class="habit-sq done"></div><!-- Tue -->
+          <div class="habit-sq done"></div><!-- Wed -->
+          <div class="habit-sq done"></div><!-- Thu -->
+          <div class="habit-sq done"></div><!-- Fri -->
+          <div class="habit-sq red"></div><!-- Sat today -->
+          <div class="habit-sq"></div><!-- Sun -->
+        </div>
+        <span class="routine-pct">86%</span>
+      </div>
+
+      <!-- Study -->
+      <div class="routine-row">
+        <span class="routine-label">Deep Work</span>
+        <span class="routine-time">08:30</span>
+        <div class="habit-strip">
+          <div class="habit-sq done"></div>
+          <div class="habit-sq done"></div>
+          <div class="habit-sq done"></div>
+          <div class="habit-sq"></div>
+          <div class="habit-sq done"></div>
+          <div class="habit-sq red"></div>
+          <div class="habit-sq"></div>
+        </div>
+        <span class="routine-pct">71%</span>
+      </div>
+
+      <!-- Exercise -->
+      <div class="routine-row">
+        <span class="routine-label">Training</span>
+        <span class="routine-time">17:30</span>
+        <div class="habit-strip">
+          <div class="habit-sq done"></div>
+          <div class="habit-sq done"></div>
+          <div class="habit-sq done"></div>
+          <div class="habit-sq done"></div>
+          <div class="habit-sq done"></div>
+          <div class="habit-sq done"></div>
+          <div class="habit-sq"></div>
+        </div>
+        <span class="routine-pct">100%</span>
+      </div>
+
+      <!-- Reading -->
+      <div class="routine-row">
+        <span class="routine-label">Reading</span>
+        <span class="routine-time">21:00</span>
+        <div class="habit-strip">
+          <div class="habit-sq done"></div>
+          <div class="habit-sq"></div>
+          <div class="habit-sq done"></div>
+          <div class="habit-sq done"></div>
+          <div class="habit-sq"></div>
+          <div class="habit-sq red"></div>
+          <div class="habit-sq"></div>
+        </div>
+        <span class="routine-pct">57%</span>
+      </div>
+
+    </div>
+
+    <!-- ── SECTION RULE ── -->
+    <div class="section-rule" style="margin-top: 32px;"></div>
+
+    <!-- ── AREA HEALTH ── -->
+    <div class="section-header">
+      <span class="section-title">Area Health</span>
+      <span class="section-count">6 Areas</span>
+      <span class="section-meta">% tasks completed this month</span>
+    </div>
+
+    <div class="area-health-wrap">
+
+      <div class="area-row">
+        <span class="area-name">Work</span>
+        <div class="area-bar-track">
+          <div class="area-bar-fill" style="width: 72%"></div>
+        </div>
+        <span class="area-pct">72%</span>
+        <span class="area-tasks">18 / 25 tasks</span>
+      </div>
+
+      <div class="area-row">
+        <span class="area-name">Finance</span>
+        <div class="area-bar-track">
+          <div class="area-bar-fill" style="width: 55%"></div>
+        </div>
+        <span class="area-pct">55%</span>
+        <span class="area-tasks">11 / 20 tasks</span>
+      </div>
+
+      <div class="area-row">
+        <span class="area-name">Study</span>
+        <div class="area-bar-track">
+          <div class="area-bar-fill red" style="width: 38%"></div>
+        </div>
+        <span class="area-pct">38%</span>
+        <span class="area-tasks">6 / 16 tasks</span>
+      </div>
+
+      <div class="area-row">
+        <span class="area-name">Health</span>
+        <div class="area-bar-track">
+          <div class="area-bar-fill" style="width: 90%"></div>
+        </div>
+        <span class="area-pct">90%</span>
+        <span class="area-tasks">9 / 10 tasks</span>
+      </div>
+
+      <div class="area-row">
+        <span class="area-name">Personal</span>
+        <div class="area-bar-track">
+          <div class="area-bar-fill" style="width: 60%"></div>
+        </div>
+        <span class="area-pct">60%</span>
+        <span class="area-tasks">6 / 10 tasks</span>
+      </div>
+
+      <div class="area-row">
+        <span class="area-name">Relationships</span>
+        <div class="area-bar-track">
+          <div class="area-bar-fill" style="width: 80%"></div>
+        </div>
+        <span class="area-pct">80%</span>
+        <span class="area-tasks">8 / 10 tasks</span>
+      </div>
+
+    </div>
+
+    <!-- ── FOOTER ── -->
+    <div class="footer-rule"></div>
+    <div class="footer-bar">
+      <span class="footer-meta">Life OS &nbsp;—&nbsp; <span>Swiss Grid System</span></span>
+      <span class="footer-meta"><span>22.03.2026</span> &nbsp;·&nbsp; 07:14</span>
+      <span class="footer-meta">Week <span>12</span> · Q1 2026</span>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

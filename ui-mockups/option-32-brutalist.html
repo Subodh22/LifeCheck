@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LIFE OS — Brutalist Edition</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--bg:#E8E4D9;--ink:#080808;--red:#CC0000;--yellow:#F5D800;--white:#FFFFFF;}
+    html{font-size:16px;}
+    body{background:var(--bg);color:var(--ink);font-family:'Space Mono',monospace;overflow-x:hidden;}
+
+    /* ══ FULL-BLEED HEADER ══ */
+    .header{background:var(--ink);padding:0;}
+    .header-inner{display:grid;grid-template-columns:1fr 1fr;min-height:280px;}
+    .h-left{padding:32px 40px;border-right:4px solid var(--red);display:flex;flex-direction:column;justify-content:space-between;}
+    .h-nav{display:flex;gap:0;flex-wrap:wrap;}
+    .h-nav a{font-family:'Inter',sans-serif;font-size:9px;font-weight:900;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.3);text-decoration:none;padding:4px 12px;border:1px solid rgba(255,255,255,0.1);margin:0 4px 4px 0;}
+    .h-nav a.active{background:var(--red);border-color:var(--red);color:white;}
+    .h-logo{font-family:'Bebas Neue',cursive;font-size:120px;line-height:0.85;color:var(--white);letter-spacing:-2px;}
+    .h-logo em{color:var(--red);font-style:normal;display:block;}
+    .h-right{padding:32px 40px;display:flex;flex-direction:column;}
+    .h-stats-label{font-family:'Inter',sans-serif;font-size:9px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:16px;}
+    .h-stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;flex:1;}
+    .hst{background:rgba(255,255,255,0.04);display:flex;flex-direction:column;justify-content:flex-end;padding:16px;}
+    .hst-n{font-family:'Bebas Neue',cursive;font-size:72px;line-height:0.85;color:white;}
+    .hst-n.red{color:var(--red);}
+    .hst-n.yellow{color:var(--yellow);}
+    .hst-l{font-family:'Inter',sans-serif;font-size:8px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-top:4px;}
+
+    /* ══ RED BANNER ══ */
+    .red-banner{background:var(--red);padding:8px 40px;display:flex;align-items:center;justify-content:space-between;}
+    .rb-date{font-family:'Bebas Neue',cursive;font-size:20px;color:white;letter-spacing:1px;}
+    .rb-right{display:flex;align-items:center;gap:16px;}
+    .rb-new{font-family:'Inter',sans-serif;font-size:9px;font-weight:900;letter-spacing:2px;text-transform:uppercase;background:white;color:var(--red);border:none;padding:6px 14px;cursor:pointer;}
+
+    /* ══ BODY GRID ══ */
+    .body{display:grid;grid-template-columns:3fr 1px 2fr;background:var(--ink);}
+    .divider{background:var(--red);}
+    .left{padding:0;}
+    .right{padding:0;}
+
+    /* ══ OVERDUE ALERT BAR ══ */
+    .alert-bar{background:var(--red);padding:12px 36px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid white;}
+    .alert-bar-text{font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;color:white;}
+    .alert-bar-count{font-family:'Bebas Neue',cursive;font-size:40px;color:white;line-height:1;}
+
+    /* ══ TASK BLOCKS ══ */
+    .task-block{padding:24px 36px;border-bottom:1px solid rgba(255,255,255,0.08);}
+    .task-block.urgent{border-left:6px solid var(--red);}
+    .task-block.done{opacity:0.35;}
+    .tb-num{font-family:'Bebas Neue',cursive;font-size:64px;color:rgba(255,255,255,0.06);line-height:1;margin-bottom:-20px;}
+    .tb-meta{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+    .tb-tag{font-family:'Inter',sans-serif;font-size:8px;font-weight:900;letter-spacing:2px;text-transform:uppercase;padding:3px 8px;}
+    .tb-tag.p1{background:var(--red);color:white;}
+    .tb-tag.p2{background:white;color:var(--ink);}
+    .tb-tag.p3{border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.4);}
+    .tb-tag.done-t{border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.2);}
+    .tb-area{font-family:'Inter',sans-serif;font-size:9px;color:rgba(255,255,255,0.3);letter-spacing:1px;text-transform:uppercase;}
+    .tb-due{font-family:'Space Mono',monospace;font-size:9px;color:var(--red);letter-spacing:1px;margin-left:auto;}
+    .tb-title{font-family:'Inter',sans-serif;font-size:18px;font-weight:900;line-height:1.15;color:white;cursor:pointer;transition:color 0.15s;}
+    .tb-title:hover{color:var(--red);}
+    .tb-title.done{text-decoration:line-through;color:rgba(255,255,255,0.2);}
+    .tb-desc{font-family:'Space Mono',monospace;font-size:10px;line-height:1.6;color:rgba(255,255,255,0.35);margin-top:8px;}
+    .tb-actions{display:flex;gap:0;margin-top:14px;}
+    .tb-btn{font-family:'Inter',sans-serif;font-size:9px;font-weight:900;letter-spacing:2px;text-transform:uppercase;padding:8px 16px;border:none;cursor:pointer;transition:all 0.15s;}
+    .tb-btn.primary{background:var(--yellow);color:var(--ink);}
+    .tb-btn.primary:hover{background:white;}
+    .tb-btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.4);}
+    .tb-btn.ghost:hover{border-color:white;color:white;}
+
+    /* ══ RIGHT PANEL ══ */
+    .rp-section{padding:24px 28px;border-bottom:1px solid rgba(255,255,255,0.08);}
+    .rp-label{font-family:'Inter',sans-serif;font-size:8px;font-weight:900;letter-spacing:4px;text-transform:uppercase;color:var(--red);margin-bottom:12px;display:block;}
+
+    /* Health grid — big numbers */
+    .health-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;}
+    .hg-cell{background:rgba(255,255,255,0.03);padding:12px;position:relative;overflow:hidden;}
+    .hg-cell::before{content:attr(data-score);position:absolute;bottom:-10px;right:-4px;font-family:'Bebas Neue',cursive;font-size:64px;color:rgba(255,255,255,0.04);line-height:1;}
+    .hg-name{font-family:'Inter',sans-serif;font-size:9px;font-weight:600;color:rgba(255,255,255,0.4);letter-spacing:0.5px;margin-bottom:4px;}
+    .hg-score{font-family:'Bebas Neue',cursive;font-size:36px;line-height:1;color:white;}
+    .hg-score.lo{color:var(--red);}
+    .hg-score.mid{color:var(--yellow);}
+    .hg-bar{height:2px;background:rgba(255,255,255,0.08);margin-top:6px;}
+    .hg-bar-fill{height:100%;background:white;}
+    .hg-bar-fill.lo{background:var(--red);}
+    .hg-bar-fill.mid{background:var(--yellow);}
+
+    /* Routine list */
+    .routine-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+    .routine-row:last-child{border-bottom:none;}
+    .r-check{width:14px;height:14px;border:2px solid rgba(255,255,255,0.2);cursor:pointer;flex-shrink:0;}
+    .r-check.done{background:var(--yellow);border-color:var(--yellow);}
+    .r-name{font-family:'Space Mono',monospace;font-size:10px;color:rgba(255,255,255,0.45);flex:1;}
+    .r-name.done{text-decoration:line-through;color:rgba(255,255,255,0.2);}
+    .r-time{font-family:'Space Mono',monospace;font-size:9px;color:rgba(255,255,255,0.2);}
+
+    /* Stats row */
+    .stat-row{display:flex;align-items:baseline;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+    .stat-row:last-child{border-bottom:none;}
+    .stat-k{font-family:'Space Mono',monospace;font-size:9px;color:rgba(255,255,255,0.3);}
+    .stat-v{font-family:'Bebas Neue',cursive;font-size:22px;color:white;}
+    .stat-v.gold{color:var(--yellow);}
+
+    /* ══ YELLOW TICKER ══ */
+    .ticker{position:fixed;bottom:0;left:0;right:0;height:32px;background:var(--yellow);display:flex;align-items:center;overflow:hidden;}
+    .tlabel{flex-shrink:0;background:var(--ink);height:100%;display:flex;align-items:center;padding:0 16px;font-family:'Bebas Neue',cursive;font-size:18px;letter-spacing:2px;color:var(--yellow);}
+    .ttrack{flex:1;overflow:hidden;padding-left:20px;}
+    .tcontent{display:inline-flex;gap:48px;animation:scroll 25s linear infinite;white-space:nowrap;}
+    .ti{font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.5px;color:var(--ink);}
+    .td{color:var(--red);margin:0 8px;font-weight:900;}
+    @keyframes scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <div class="h-left">
+      <nav class="h-nav">
+        <a href="#" class="active">Today</a>
+        <a href="#">Backlog</a>
+        <a href="#">Goals</a>
+        <a href="#">Schedule</a>
+        <a href="#">Areas</a>
+      </nav>
+      <div>
+        <div class="h-logo">Life<em>OS</em></div>
+      </div>
+    </div>
+    <div class="h-right">
+      <div class="h-stats-label">Today at a glance</div>
+      <div class="h-stats-grid">
+        <div class="hst"><div class="hst-n">8</div><div class="hst-l">Tasks Today</div></div>
+        <div class="hst"><div class="hst-n red">3</div><div class="hst-l">Overdue</div></div>
+        <div class="hst"><div class="hst-n yellow">12</div><div class="hst-l">Day Streak</div></div>
+        <div class="hst"><div class="hst-n">72%</div><div class="hst-l">Week Rate</div></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- RED BANNER -->
+<div class="red-banner">
+  <div class="rb-date">Sunday 22 March 2026 / Week 12 / Day 81</div>
+  <div class="rb-right">
+    <span style="font-family:'Space Mono',monospace;font-size:10px;color:rgba(255,255,255,0.6);">Personal Edition · Vol. I No. 81</span>
+    <button class="rb-new">+ New Task</button>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="body">
+  <!-- LEFT -->
+  <div class="left">
+    <div class="alert-bar">
+      <div class="alert-bar-text">⚠ ITEMS OVERDUE — IMMEDIATE ACTION REQUIRED</div>
+      <div class="alert-bar-count">3</div>
+    </div>
+
+    <div class="task-block urgent">
+      <div class="tb-num">01</div>
+      <div class="tb-meta">
+        <span class="tb-tag p1">URGENT · P1</span>
+        <span class="tb-area">Work</span>
+        <span class="tb-due">DUE 17:00</span>
+      </div>
+      <div class="tb-title">Q1 Performance Review — Self-Assessment Submission Deadline Today</div>
+      <div class="tb-desc">Annual HR documentation. Cover all Q1 achievements, development areas, Q2 objectives. Peer signatures required. Portal closes at 5 PM sharp.</div>
+      <div class="tb-actions">
+        <button class="tb-btn primary">MARK DONE</button>
+        <button class="tb-btn ghost">RESCHEDULE</button>
+        <button class="tb-btn ghost">DELEGATE</button>
+      </div>
+    </div>
+
+    <div class="task-block">
+      <div class="tb-num">02</div>
+      <div class="tb-meta">
+        <span class="tb-tag p2">HIGH · P2</span>
+        <span class="tb-area">Finance</span>
+        <span class="tb-due">DUE 12:00</span>
+      </div>
+      <div class="tb-title">Transfer April Rent to Landlord Account</div>
+      <div class="tb-desc">Online banking transfer. Enable receipt notification before closing.</div>
+      <div class="tb-actions">
+        <button class="tb-btn primary">MARK DONE</button>
+        <button class="tb-btn ghost">RESCHEDULE</button>
+      </div>
+    </div>
+
+    <div class="task-block done">
+      <div class="tb-num">03</div>
+      <div class="tb-meta">
+        <span class="tb-tag done-t">DONE</span>
+        <span class="tb-area">Health</span>
+        <span class="tb-due" style="color:rgba(255,255,255,0.2);">07:30</span>
+      </div>
+      <div class="tb-title done">Morning Run — 5km Tempo Pace</div>
+    </div>
+
+    <div class="task-block">
+      <div class="tb-num">04</div>
+      <div class="tb-meta">
+        <span class="tb-tag p3">MED · P3</span>
+        <span class="tb-area">Learning</span>
+        <span class="tb-due">EVENING</span>
+      </div>
+      <div class="tb-title">Chapter 4 — Deep Work Course Module</div>
+      <div class="tb-desc">45-minute focused session. No phone. Cornell notes.</div>
+      <div class="tb-actions">
+        <button class="tb-btn primary">MARK DONE</button>
+        <button class="tb-btn ghost">RESCHEDULE</button>
+      </div>
+    </div>
+
+    <div class="task-block">
+      <div class="tb-num">05</div>
+      <div class="tb-meta">
+        <span class="tb-tag p3">LOW · P4</span>
+        <span class="tb-area">Personal</span>
+        <span class="tb-due">FLEXIBLE</span>
+      </div>
+      <div class="tb-title">Call Dad — Easter Weekend Plans</div>
+      <div class="tb-actions">
+        <button class="tb-btn primary">MARK DONE</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- RIGHT -->
+  <div class="right">
+    <!-- Area Health - big grid -->
+    <div class="rp-section">
+      <span class="rp-label">Area Health Index</span>
+      <div class="health-grid">
+        <div class="hg-cell" data-score="87"><div class="hg-name">Work</div><div class="hg-score">87</div><div class="hg-bar"><div class="hg-bar-fill" style="width:87%"></div></div></div>
+        <div class="hg-cell" data-score="91"><div class="hg-name">Health</div><div class="hg-score">91</div><div class="hg-bar"><div class="hg-bar-fill" style="width:91%"></div></div></div>
+        <div class="hg-cell" data-score="63"><div class="hg-name">Finance</div><div class="hg-score mid">63</div><div class="hg-bar"><div class="hg-bar-fill mid" style="width:63%"></div></div></div>
+        <div class="hg-cell" data-score="41"><div class="hg-name">Relationships</div><div class="hg-score lo">41</div><div class="hg-bar"><div class="hg-bar-fill lo" style="width:41%"></div></div></div>
+        <div class="hg-cell" data-score="74"><div class="hg-name">Learning</div><div class="hg-score mid">74</div><div class="hg-bar"><div class="hg-bar-fill mid" style="width:74%"></div></div></div>
+        <div class="hg-cell" data-score="58"><div class="hg-name">Home</div><div class="hg-score mid">58</div><div class="hg-bar"><div class="hg-bar-fill mid" style="width:58%"></div></div></div>
+      </div>
+    </div>
+
+    <!-- Routines -->
+    <div class="rp-section">
+      <span class="rp-label">Rituals — 2 of 7</span>
+      <div class="routine-row"><div class="r-check done"></div><span class="r-name done">Morning Pages (3 pages)</span><span class="r-time">06:15</span></div>
+      <div class="routine-row"><div class="r-check done"></div><span class="r-name done">5km Run</span><span class="r-time">07:30</span></div>
+      <div class="routine-row"><div class="r-check"></div><span class="r-name">Cold Shower (2 min)</span><span class="r-time">08:10</span></div>
+      <div class="routine-row"><div class="r-check"></div><span class="r-name">Review Priorities</span><span class="r-time">08:30</span></div>
+      <div class="routine-row"><div class="r-check"></div><span class="r-name">Meditate (10 min)</span><span class="r-time">AFT</span></div>
+      <div class="routine-row"><div class="r-check"></div><span class="r-name">Read (30 min)</span><span class="r-time">EVE</span></div>
+      <div class="routine-row"><div class="r-check"></div><span class="r-name">Evening Review</span><span class="r-time">21:30</span></div>
+    </div>
+
+    <!-- Week Stats -->
+    <div class="rp-section">
+      <span class="rp-label">Week Performance</span>
+      <div class="stat-row"><span class="stat-k">Completed</span><span class="stat-v">17</span></div>
+      <div class="stat-row"><span class="stat-k">Rate</span><span class="stat-v gold">74%</span></div>
+      <div class="stat-row"><span class="stat-k">Streak</span><span class="stat-v gold">12d</span></div>
+      <div class="stat-row"><span class="stat-k">Focus</span><span class="stat-v gold">18.5h</span></div>
+      <div class="stat-row"><span class="stat-k">Backlog</span><span class="stat-v">47</span></div>
+    </div>
+
+    <!-- Goals -->
+    <div class="rp-section">
+      <span class="rp-label">Live Goals</span>
+      <div style="margin-bottom:14px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-family:'Space Mono',monospace;font-size:10px;color:rgba(255,255,255,0.5);">Half Marathon</span><span style="font-family:'Bebas Neue',cursive;font-size:20px;color:white;">68%</span></div>
+        <div style="height:2px;background:rgba(255,255,255,0.08);"><div style="height:100%;width:68%;background:white;"></div></div>
+        <div style="font-family:'Space Mono',monospace;font-size:9px;color:rgba(255,255,255,0.25);margin-top:3px;">June 15 · On Track</div>
+      </div>
+      <div style="margin-bottom:14px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-family:'Space Mono',monospace;font-size:10px;color:rgba(255,255,255,0.5);">Emergency Fund</span><span style="font-family:'Bebas Neue',cursive;font-size:20px;color:var(--yellow);">45%</span></div>
+        <div style="height:2px;background:rgba(255,255,255,0.08);"><div style="height:100%;width:45%;background:var(--yellow);"></div></div>
+        <div style="font-family:'Space Mono',monospace;font-size:9px;color:rgba(255,255,255,0.25);margin-top:3px;">$4,500/$10k · Moderate</div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-family:'Space Mono',monospace;font-size:10px;color:rgba(255,255,255,0.5);">Read 24 Books</span><span style="font-family:'Bebas Neue',cursive;font-size:20px;color:var(--red);">25%</span></div>
+        <div style="height:2px;background:rgba(255,255,255,0.08);"><div style="height:100%;width:25%;background:var(--red);"></div></div>
+        <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--red);margin-top:3px;">6 of 24 · Behind pace</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="ticker">
+  <div class="tlabel">LIVE</div>
+  <div class="ttrack"><div class="tcontent">
+    <span class="ti">12-DAY STREAK ACTIVE<span class="td">▶</span></span>
+    <span class="ti">RELATIONSHIPS AT 41 — CRITICAL<span class="td">▶</span></span>
+    <span class="ti">Q1 REVIEW DUE IN 8 HOURS<span class="td">▶</span></span>
+    <span class="ti">17 TASKS DONE THIS WEEK<span class="td">▶</span></span>
+    <span class="ti">WEEK 12 OF 52 — 23% OF YEAR<span class="td">▶</span></span>
+    <span class="ti">12-DAY STREAK ACTIVE<span class="td">▶</span></span>
+    <span class="ti">RELATIONSHIPS AT 41 — CRITICAL<span class="td">▶</span></span>
+    <span class="ti">Q1 REVIEW DUE IN 8 HOURS<span class="td">▶</span></span>
+    <span class="ti">17 TASKS DONE THIS WEEK<span class="td">▶</span></span>
+    <span class="ti">WEEK 12 OF 52 — 23% OF YEAR<span class="td">▶</span></span>
+  </div></div>
+</div>
+</body>
+</html>

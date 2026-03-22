@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LIFE OS — Annual Report</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--bg:#FAFAFA;--ink:#0A0A0A;--mid:#444;--dim:#888;--rule:#E0E0E0;--red:#B8001F;--blue:#1A2F5A;--gold:#C5950A;}
+    body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+    /* SIDEBAR + MAIN LAYOUT */
+    .layout{display:grid;grid-template-columns:220px 1fr;min-height:100vh;}
+    /* SIDEBAR */
+    .sidebar{background:var(--blue);padding:28px 20px;position:sticky;top:0;height:100vh;overflow-y:auto;}
+    .sb-logo{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:white;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+    .sb-logo span{color:#E2BF4A;}
+    .sb-tagline{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:32px;}
+    .sb-section{margin-bottom:24px;}
+    .sb-slabel{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:8px;display:block;}
+    .sb-nav a{display:block;font-size:11px;font-weight:500;color:rgba(255,255,255,0.6);text-decoration:none;padding:7px 10px;border-radius:2px;margin-bottom:2px;transition:all 0.15s;letter-spacing:0.3px;}
+    .sb-nav a.active{background:rgba(255,255,255,0.12);color:white;}
+    .sb-nav a:hover{color:white;}
+    .sb-stat{padding:14px;background:rgba(255,255,255,0.06);margin-top:20px;}
+    .sb-stat-n{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:white;line-height:1;}
+    .sb-stat-n.warn{color:#E2BF4A;}
+    .sb-stat-n.danger{color:#E05050;}
+    .sb-stat-l{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-top:4px;}
+    .sb-divider{height:1px;background:rgba(255,255,255,0.08);margin:16px 0;}
+    /* MAIN */
+    .main{overflow-y:auto;}
+    /* TOP BAR */
+    .topbar{display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:52px;border-bottom:1px solid var(--rule);background:white;position:sticky;top:0;z-index:10;}
+    .tb-title{font-size:12px;font-weight:600;color:var(--ink);letter-spacing:0.5px;}
+    .tb-right{display:flex;align-items:center;gap:16px;}
+    .tb-date{font-size:10px;color:var(--dim);}
+    .tb-btn{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;background:var(--ink);color:white;border:none;padding:6px 14px;cursor:pointer;}
+    /* CONTENT */
+    .content{padding:40px 48px 80px;}
+    /* EXEC SUMMARY */
+    .exec-title{font-family:'Playfair Display',serif;font-size:48px;font-weight:900;line-height:0.95;color:var(--ink);margin-bottom:6px;}
+    .exec-issue{font-size:10px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:16px;}
+    .exec-strip{background:var(--blue);padding:16px 24px;display:flex;gap:0;margin:20px 0;}
+    .es-stat{flex:1;text-align:center;border-right:1px solid rgba(255,255,255,0.1);padding:0 16px;}
+    .es-stat:last-child{border-right:none;}
+    .es-n{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;color:white;line-height:1;}
+    .es-n.warn{color:#E2BF4A;}
+    .es-n.danger{color:#E05050;}
+    .es-l{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-top:4px;}
+    /* GRID */
+    .grid{display:grid;grid-template-columns:2fr 1fr;gap:32px;margin-top:32px;}
+    .card{background:white;border:1px solid var(--rule);padding:24px;}
+    .card-title{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:10px;}
+    .card-rule{height:1px;background:var(--ink);margin-bottom:18px;}
+    /* Tasks */
+    .task{padding:12px 0;border-bottom:1px solid var(--rule);}
+    .task:last-child{border-bottom:none;}
+    .task-hdr{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+    .tdot{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--ink);cursor:pointer;flex-shrink:0;}
+    .tdot.done{background:var(--ink);}
+    .task-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--ink);cursor:pointer;}
+    .task-title:hover{color:var(--red);}
+    .task-title.done{text-decoration:line-through;color:var(--dim);}
+    .task-meta{font-size:9.5px;color:var(--dim);display:flex;gap:10px;margin-top:3px;}
+    .task-meta .area{font-weight:600;color:var(--mid);}
+    .task-meta .due{color:var(--red);}
+    .task-acts{display:flex;gap:10px;margin-top:6px;}
+    .ta{font-size:9px;font-weight:600;letter-spacing:0.5px;color:var(--dim);cursor:pointer;border-bottom:1px solid transparent;padding-bottom:1px;}
+    .ta:hover,.ta.p{color:var(--ink);border-color:var(--ink);}
+    .ptag{display:inline-block;font-size:7.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:1.5px 5px;}
+    .ptag.p1{background:var(--red);color:white;}
+    .ptag.p2{background:var(--ink);color:white;}
+    .ptag.p3{border:1px solid var(--dim);color:var(--dim);}
+    /* Bar chart style area health */
+    .bar-chart{display:flex;align-items:flex-end;gap:8px;height:100px;margin-bottom:12px;}
+    .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;}
+    .bar-fill{width:100%;background:var(--blue);transition:height 0.3s;}
+    .bar-fill.lo{background:var(--red);}
+    .bar-fill.mid{background:var(--gold);}
+    .bar-label-n{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:var(--ink);margin-top:4px;}
+    .bar-label-l{font-size:7.5px;color:var(--dim);text-align:center;margin-top:2px;line-height:1.2;}
+    /* Goals */
+    .grow{padding:12px 0;border-bottom:1px solid var(--rule);}
+    .grow:last-child{border-bottom:none;}
+    .grow-hdr{display:flex;justify-content:space-between;margin-bottom:6px;}
+    .grow-name{font-size:12px;font-weight:600;color:var(--ink);}
+    .grow-pct{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;}
+    .grow-bar{height:3px;background:var(--rule);margin-bottom:4px;}
+    .grow-fill{height:100%;background:var(--blue);}
+    .grow-fill.lo{background:var(--red);}
+    .grow-fill.mid{background:var(--gold);}
+    .grow-meta{font-size:9px;color:var(--dim);display:flex;justify-content:space-between;}
+    /* Routines */
+    .ritem{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--rule);}
+    .ritem:last-child{border-bottom:none;}
+    .rdot{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--ink);flex-shrink:0;cursor:pointer;}
+    .rdot.done{background:var(--blue);}
+    .rname{font-size:11.5px;color:var(--mid);flex:1;}
+    .rname.done{text-decoration:line-through;color:var(--dim);}
+    .rtime{font-size:9px;color:var(--dim);}
+    /* KPI box */
+    .kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--rule);border:1px solid var(--rule);}
+    .kpi{background:var(--bg);padding:14px;text-align:center;}
+    .kpi-n{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--ink);line-height:1;}
+    .kpi-n.warn{color:var(--gold);}
+    .kpi-n.danger{color:var(--red);}
+    .kpi-l{font-size:8px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);margin-top:4px;}
+    /* Ticker */
+    .ticker{position:fixed;bottom:0;left:220px;right:0;height:28px;background:var(--blue);display:flex;align-items:center;overflow:hidden;}
+    .tlabel{flex-shrink:0;padding:0 12px;font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#E2BF4A;border-right:1px solid rgba(255,255,255,0.1);}
+    .ttrack{flex:1;overflow:hidden;padding-left:14px;}
+    .tcontent{display:inline-flex;gap:44px;animation:scroll 30s linear infinite;white-space:nowrap;}
+    .ti{font-size:10px;color:rgba(255,255,255,0.55);}
+    .ti b{color:white;}
+    .td{color:#E2BF4A;margin:0 6px;}
+    @keyframes scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+  </style>
+</head>
+<body>
+<div class="layout">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-logo">Life<span>OS</span></div>
+    <div class="sb-tagline">Personal Annual Report</div>
+    <div class="sb-section">
+      <span class="sb-slabel">Navigation</span>
+      <div class="sb-nav">
+        <a href="#" class="active">Today's Briefing</a>
+        <a href="#">Task Backlog</a>
+        <a href="#">Goal Registry</a>
+        <a href="#">Weekly Schedule</a>
+        <a href="#">Area Reports</a>
+        <a href="#">Performance Review</a>
+      </div>
+    </div>
+    <div class="sb-divider"></div>
+    <div class="sb-slabel">Quick Stats</div>
+    <div class="sb-stat"><div class="sb-stat-n">72%</div><div class="sb-stat-l">Week Completion</div></div>
+    <div class="sb-stat" style="margin-top:8px;"><div class="sb-stat-n warn">12d</div><div class="sb-stat-l">Routine Streak</div></div>
+    <div class="sb-stat" style="margin-top:8px;"><div class="sb-stat-n danger">3</div><div class="sb-stat-l">Overdue</div></div>
+    <div class="sb-divider"></div>
+    <div style="font-size:9px;color:rgba(255,255,255,0.3);line-height:1.6;">
+      Vol. I · No. 81<br>Week 12 of 52<br>Q1 2026<br>Day 81 of 365
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <span class="tb-title">Today's Briefing — Sunday, March 22, 2026</span>
+      <div class="tb-right">
+        <span class="tb-date">Week 12 · Q1 2026</span>
+        <button class="tb-btn">+ New Task</button>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="exec-issue">Executive Briefing · Issue No. 81</div>
+      <h1 class="exec-title">Good Morning.</h1>
+      <p style="font-size:13px;color:var(--mid);line-height:1.65;max-width:640px;margin-top:12px;">Eight tasks on the docket. One critical deadline: Q1 Performance Review at 5 PM. The Relationships area has hit a 5-month low at 41. Two of seven rituals already completed before 8:30 AM. Strong start to the week despite the backlog.</p>
+
+      <div class="exec-strip">
+        <div class="es-stat"><div class="es-n">8</div><div class="es-l">Scheduled</div></div>
+        <div class="es-stat"><div class="es-n danger">3</div><div class="es-l">Overdue</div></div>
+        <div class="es-stat"><div class="es-n warn">2/7</div><div class="es-l">Routines</div></div>
+        <div class="es-stat"><div class="es-n warn">72%</div><div class="es-l">Week Goal</div></div>
+        <div class="es-stat"><div class="es-n">47</div><div class="es-l">Total Backlog</div></div>
+      </div>
+
+      <div class="grid">
+        <!-- LEFT -->
+        <div>
+          <div class="card">
+            <div class="card-title">Today's Focus</div>
+            <div class="card-rule"></div>
+            <div class="task">
+              <div class="task-hdr"><div class="tdot"></div><span class="ptag p1">P1</span><span class="task-title">Q1 Performance Review — Self-Assessment Submission</span></div>
+              <div class="task-meta"><span class="area">Work</span><span class="due">5:00 PM deadline</span></div>
+              <div class="task-acts"><span class="ta p">Mark Done</span><span class="ta">Reschedule</span><span class="ta">Delegate</span></div>
+            </div>
+            <div class="task">
+              <div class="task-hdr"><div class="tdot"></div><span class="ptag p2">P2</span><span class="task-title">Transfer April Rent Payment</span></div>
+              <div class="task-meta"><span class="area">Finance</span><span>Due noon</span></div>
+              <div class="task-acts"><span class="ta p">Mark Done</span><span class="ta">Reschedule</span></div>
+            </div>
+            <div class="task">
+              <div class="task-hdr"><div class="tdot done"></div><span class="ptag p3">Done</span><span class="task-title done">Morning Run — 5km Tempo Pace</span></div>
+              <div class="task-meta"><span class="area">Health</span><span>7:30 AM</span></div>
+            </div>
+            <div class="task">
+              <div class="task-hdr"><div class="tdot"></div><span class="ptag p3">P3</span><span class="task-title">Complete Chapter 4 — Deep Work Module</span></div>
+              <div class="task-meta"><span class="area">Learning</span><span>Evening</span></div>
+              <div class="task-acts"><span class="ta p">Mark Done</span><span class="ta">Reschedule</span></div>
+            </div>
+            <div class="task">
+              <div class="task-hdr"><div class="tdot"></div><span class="ptag p3">P4</span><span class="task-title">Call Dad — Easter Weekend Plans</span></div>
+              <div class="task-meta"><span class="area">Personal</span><span>Flexible</span></div>
+              <div class="task-acts"><span class="ta p">Mark Done</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:24px;">
+            <div class="card-title">Area Health — Bar Chart</div>
+            <div class="card-rule"></div>
+            <div class="bar-chart">
+              <div class="bar-col"><div class="bar-fill" style="height:87px;"></div><div class="bar-label-n">87</div><div class="bar-label-l">Work</div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:91px;"></div><div class="bar-label-n">91</div><div class="bar-label-l">Health</div></div>
+              <div class="bar-col"><div class="bar-fill mid" style="height:63px;"></div><div class="bar-label-n">63</div><div class="bar-label-l">Finance</div></div>
+              <div class="bar-col"><div class="bar-fill lo" style="height:41px;"></div><div class="bar-label-n">41</div><div class="bar-label-l">Relat.</div></div>
+              <div class="bar-col"><div class="bar-fill mid" style="height:74px;"></div><div class="bar-label-n">74</div><div class="bar-label-l">Learning</div></div>
+              <div class="bar-col"><div class="bar-fill mid" style="height:58px;"></div><div class="bar-label-n">58</div><div class="bar-label-l">Home</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT -->
+        <div>
+          <div class="card">
+            <div class="card-title">KPIs at a Glance</div>
+            <div class="card-rule"></div>
+            <div class="kpi-grid">
+              <div class="kpi"><div class="kpi-n">17</div><div class="kpi-l">Done This Week</div></div>
+              <div class="kpi"><div class="kpi-n warn">74%</div><div class="kpi-l">Completion Rate</div></div>
+              <div class="kpi"><div class="kpi-n warn">12d</div><div class="kpi-l">Streak</div></div>
+              <div class="kpi"><div class="kpi-n danger">3</div><div class="kpi-l">Overdue</div></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:16px;">
+            <div class="card-title">Daily Routines — 2/7</div>
+            <div class="card-rule"></div>
+            <div class="ritem"><div class="rdot done"></div><span class="rname done">Morning Pages</span><span class="rtime">6:15</span></div>
+            <div class="ritem"><div class="rdot done"></div><span class="rname done">5km Morning Run</span><span class="rtime">7:30</span></div>
+            <div class="ritem"><div class="rdot"></div><span class="rname">Cold Shower</span><span class="rtime">8:10</span></div>
+            <div class="ritem"><div class="rdot"></div><span class="rname">Review Priorities</span><span class="rtime">8:30</span></div>
+            <div class="ritem"><div class="rdot"></div><span class="rname">Meditate 10 min</span><span class="rtime">Aft</span></div>
+            <div class="ritem"><div class="rdot"></div><span class="rname">Read 30 min</span><span class="rtime">Eve</span></div>
+            <div class="ritem"><div class="rdot"></div><span class="rname">Evening Review</span><span class="rtime">9:30</span></div>
+          </div>
+
+          <div class="card" style="margin-top:16px;">
+            <div class="card-title">Goal Progress</div>
+            <div class="card-rule"></div>
+            <div class="grow"><div class="grow-hdr"><span class="grow-name">Half Marathon</span><span class="grow-pct">68%</span></div><div class="grow-bar"><div class="grow-fill" style="width:68%"></div></div><div class="grow-meta"><span>Jun 15</span><span style="color:#2A6E3C;">On Track</span></div></div>
+            <div class="grow"><div class="grow-hdr"><span class="grow-name">Emergency Fund</span><span class="grow-pct warn" style="color:var(--gold);">45%</span></div><div class="grow-bar"><div class="grow-fill mid" style="width:45%"></div></div><div class="grow-meta"><span>$4,500/$10k</span><span style="color:var(--gold);">Moderate</span></div></div>
+            <div class="grow"><div class="grow-hdr"><span class="grow-name">Read 24 Books</span><span class="grow-pct" style="color:var(--red);">25%</span></div><div class="grow-bar"><div class="grow-fill lo" style="width:25%"></div></div><div class="grow-meta"><span>6 of 24</span><span style="color:var(--red);">Behind</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="ticker"><div class="tlabel">LIVE</div><div class="ttrack"><div class="tcontent">
+  <span class="ti"><b>12-day</b> routine streak active<span class="td">—</span></span>
+  <span class="ti">Relationships at <b>41</b> — critical low<span class="td">—</span></span>
+  <span class="ti">Q1 Review due in <b>8 hours</b><span class="td">—</span></span>
+  <span class="ti"><b>17 tasks</b> completed this week<span class="td">—</span></span>
+  <span class="ti"><b>12-day</b> routine streak active<span class="td">—</span></span>
+  <span class="ti">Relationships at <b>41</b> — critical low<span class="td">—</span></span>
+  <span class="ti">Q1 Review due in <b>8 hours</b><span class="td">—</span></span>
+  <span class="ti"><b>17 tasks</b> completed this week<span class="td">—</span></span>
+</div></div></div>
+</body>
+</html>

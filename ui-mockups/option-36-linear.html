@@ -1,0 +1,217 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Life OS  Linear Style</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html,body{height:100%;overflow:hidden;}
+    :root{--bg:#0F0F10;--surf:#161618;--surf2:#1C1C1E;--surf3:#222224;--b:#2A2A2E;--b2:#333338;--t:#E8E8EA;--t2:#8E8E93;--t3:#48484D;--acc:#7C6AF6;--red:#FF453A;--green:#32D74B;--amb:#FF9F0A;}
+    body{background:var(--bg);color:var(--t);font-family:'Inter',system-ui,sans-serif;font-size:13px;display:flex;height:100vh;}
+    .sb{width:220px;background:var(--surf);border-right:1px solid var(--b);display:flex;flex-direction:column;flex-shrink:0;}
+    .sb-top{padding:14px 10px 8px;border-bottom:1px solid var(--b);}
+    .ws{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;cursor:pointer;margin-bottom:6px;}
+    .ws:hover{background:var(--surf2);}
+    .ws-icon{width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,var(--acc),#A78BFA);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;}
+    .ws-name{font-size:13px;font-weight:600;flex:1;}
+    .search{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:6px;background:var(--surf2);border:1px solid var(--b);cursor:text;}
+    .search-t{font-size:12px;color:var(--t3);flex:1;}
+    .search-kbd{font-size:10px;color:var(--t3);background:var(--surf3);padding:1px 5px;border-radius:3px;}
+    .sb-sec{padding:14px 8px 4px;}
+    .sb-lbl{font-size:10px;font-weight:600;color:var(--t3);letter-spacing:.5px;text-transform:uppercase;padding:0 4px;margin-bottom:4px;}
+    .sbi{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:5px;cursor:pointer;color:var(--t2);transition:all .1s;}
+    .sbi:hover{background:var(--surf2);color:var(--t);}
+    .sbi.active{background:var(--surf3);color:var(--t);}
+    .sbi-ico{width:15px;text-align:center;flex-shrink:0;font-size:13px;}
+    .sbi-lbl{font-size:13px;flex:1;}
+    .sbi-cnt{font-size:11px;color:var(--t3);background:var(--surf3);padding:1px 6px;border-radius:10px;}
+    .sbi-cnt.red{background:rgba(255,69,58,.15);color:var(--red);}
+    .div{height:1px;background:var(--b);margin:8px 10px;}
+    .sb-bot{margin-top:auto;padding:10px;border-top:1px solid var(--b);}
+    .av{display:flex;align-items:center;gap:8px;padding:5px 4px;cursor:pointer;}
+    .av-c{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--acc),#A78BFA);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;}
+    .av-n{font-size:12px;font-weight:500;}
+    .av-s{font-size:10px;color:var(--t3);}
+    .main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+    .tb{height:44px;border-bottom:1px solid var(--b);display:flex;align-items:center;padding:0 20px;gap:12px;flex-shrink:0;}
+    .tb-title{font-size:13px;font-weight:600;}
+    .tb-pill{font-size:11px;color:var(--t2);background:var(--surf2);padding:2px 8px;border-radius:20px;border:1px solid var(--b);}
+    .tb-acts{margin-left:auto;display:flex;gap:8px;}
+    .tb-btn{font-size:12px;font-weight:500;color:var(--t2);background:var(--surf2);border:1px solid var(--b);padding:4px 10px;border-radius:5px;cursor:pointer;}
+    .tb-btn:hover{color:var(--t);}
+    .content{flex:1;overflow-y:auto;}
+    .grp-hdr{display:flex;align-items:center;gap:6px;padding:8px 20px;position:sticky;top:0;background:var(--bg);z-index:1;}
+    .grp-toggle{color:var(--t3);font-size:10px;}
+    .grp-lbl{font-size:12px;font-weight:600;color:var(--t2);}
+    .grp-badge{font-size:11px;color:var(--t3);background:var(--surf2);padding:1px 6px;border-radius:10px;}
+    .grp-badge.red{background:rgba(255,69,58,.12);color:var(--red);}
+    .grp-add{margin-left:auto;font-size:11px;color:var(--t3);cursor:pointer;opacity:0;}
+    .grp-hdr:hover .grp-add{opacity:1;}
+    .task{display:flex;align-items:center;padding:0 20px;height:34px;border-bottom:1px solid transparent;transition:background .08s;cursor:pointer;position:relative;}
+    .task:hover{background:var(--surf2);}
+    .task:hover .t-acts{opacity:1;}
+    .task.done{opacity:.4;}
+    .t-chk{width:32px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .t-circ{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--b2);cursor:pointer;transition:all .15s;}
+    .t-circ:hover{border-color:var(--acc);}
+    .t-circ.done{background:var(--acc);border-color:var(--acc);}
+    .t-circ.p1{border-color:var(--red);}
+    .t-circ.p1:hover{background:var(--red);}
+    .t-title{flex:1;font-size:13px;color:var(--t);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
+    .t-title.done{text-decoration:line-through;color:var(--t3);}
+    .t-meta{display:flex;align-items:center;gap:6px;flex-shrink:0;margin-left:16px;}
+    .t-dot{width:6px;height:6px;border-radius:50%;}
+    .t-area{font-size:11px;color:var(--t3);}
+    .t-due{font-size:11px;color:var(--t3);}
+    .t-due.ov{color:var(--red);}
+    .t-due.td{color:var(--amb);}
+    .t-pri{width:16px;height:16px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:10px;}
+    .t-pri.p1{background:rgba(255,69,58,.15);color:var(--red);}
+    .t-pri.p2{background:rgba(255,159,10,.15);color:var(--amb);}
+    .t-acts{opacity:0;display:flex;align-items:center;gap:2px;position:absolute;right:20px;background:var(--surf2);border:1px solid var(--b);border-radius:5px;padding:2px 4px;}
+    .t-act{font-size:11px;color:var(--t2);padding:2px 6px;border-radius:3px;cursor:pointer;}
+    .t-act:hover{color:var(--t);background:var(--surf3);}
+    .rp{width:272px;background:var(--surf);border-left:1px solid var(--b);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;}
+    .rp-hdr{padding:14px 16px;border-bottom:1px solid var(--b);font-size:12px;font-weight:600;color:var(--t2);}
+    .rp-sec{padding:12px 16px;border-bottom:1px solid var(--b);}
+    .rp-lbl{font-size:10px;font-weight:600;color:var(--t3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;}
+    .ring-wrap{position:relative;width:60px;height:60px;flex-shrink:0;}
+    .ring-wrap svg{transform:rotate(-90deg);}
+    .ring-mid{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;}
+    .prog-row{display:flex;align-items:center;gap:14px;}
+    .prog-info{}
+    .prog-lbl{font-size:12px;font-weight:500;margin-bottom:2px;}
+    .prog-sub{font-size:11px;color:var(--t3);}
+    .stat{display:flex;justify-content:space-between;padding:4px 0;}
+    .stat-k{font-size:12px;color:var(--t2);}
+    .stat-v{font-size:12px;font-weight:600;}
+    .stat-v.g{color:var(--green);}
+    .stat-v.r{color:var(--red);}
+    .stat-v.a{color:var(--amb);}
+    .a-row{display:flex;align-items:center;gap:7px;padding:3px 0;}
+    .a-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+    .a-name{font-size:11.5px;color:var(--t2);flex:1;}
+    .a-bar{flex:2;height:3px;background:var(--surf3);border-radius:2px;overflow:hidden;}
+    .a-fill{height:100%;border-radius:2px;}
+    .a-score{font-size:11px;font-weight:600;width:22px;text-align:right;}
+    .a-score.lo{color:var(--red);}
+    .h-row{display:flex;align-items:center;gap:6px;padding:4px 0;}
+    .h-dot{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--b2);cursor:pointer;flex-shrink:0;}
+    .h-dot.done{background:var(--acc);border-color:var(--acc);}
+    .h-name{font-size:11.5px;color:var(--t2);flex:1;}
+    .h-time{font-size:10px;color:var(--t3);}
+    .rp-quote{padding:12px 16px;font-size:11.5px;font-style:italic;color:var(--t3);line-height:1.6;}
+    ::-webkit-scrollbar{width:4px;}
+    ::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px;}
+    .goal-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--b);padding-bottom:8px;margin-bottom:4px;}
+    .goal-row:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+    .g-ring{position:relative;width:36px;height:36px;flex-shrink:0;}
+    .g-ring svg{transform:rotate(-90deg);}
+    .g-ring-mid{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;}
+    .g-info{flex:1;}
+    .g-name{font-size:12px;font-weight:500;color:var(--t);}
+    .g-meta{font-size:10px;color:var(--t3);margin-top:2px;}
+  </style>
+</head>
+<body>
+<div class="sb">
+  <div class="sb-top">
+    <div class="ws"><div class="ws-icon">L</div><div class="ws-name">Life OS</div><span style="color:var(--t3);font-size:10px;"></span></div>
+    <div class="search"><span style="color:var(--t3);font-size:12px;"></span><span class="search-t">Search or jump to...</span><span class="search-kbd">K</span></div>
+  </div>
+  <div class="sb-sec">
+    <div class="sbi active"><span class="sbi-ico"></span><span class="sbi-lbl">My Tasks</span><span class="sbi-cnt">8</span></div>
+    <div class="sbi"><span class="sbi-ico"></span><span class="sbi-lbl">Inbox</span><span class="sbi-cnt red">3</span></div>
+    <div class="sbi"><span class="sbi-ico"></span><span class="sbi-lbl">Today</span></div>
+    <div class="sbi"><span class="sbi-ico"></span><span class="sbi-lbl">Backlog</span><span class="sbi-cnt">47</span></div>
+    <div class="sbi"><span class="sbi-ico"></span><span class="sbi-lbl">Goals</span><span class="sbi-cnt">3</span></div>
+  </div>
+  <div class="div"></div>
+  <div class="sb-sec">
+    <div class="sb-lbl">Areas</div>
+    <div class="sbi"><span class="sbi-ico" style="color:#7C6AF6"></span><span class="sbi-lbl">Work</span><span class="sbi-cnt">5</span></div>
+    <div class="sbi"><span class="sbi-ico" style="color:#32D74B"></span><span class="sbi-lbl">Health</span><span class="sbi-cnt">2</span></div>
+    <div class="sbi"><span class="sbi-ico" style="color:#FF9F0A"></span><span class="sbi-lbl">Finance</span><span class="sbi-cnt">3</span></div>
+    <div class="sbi"><span class="sbi-ico" style="color:#FF453A"></span><span class="sbi-lbl">Relationships</span><span class="sbi-cnt red">4</span></div>
+    <div class="sbi"><span class="sbi-ico" style="color:#64D2FF"></span><span class="sbi-lbl">Learning</span><span class="sbi-cnt">2</span></div>
+    <div class="sbi"><span class="sbi-ico" style="color:#BF5AF2"></span><span class="sbi-lbl">Home &amp; Admin</span><span class="sbi-cnt">3</span></div>
+  </div>
+  <div class="sb-bot">
+    <div class="av"><div class="av-c">S</div><div><div class="av-n">Subodh M.</div><div class="av-s">Week 12  Day 81</div></div></div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="tb">
+    <span class="tb-title">My Tasks</span>
+    <span class="tb-pill">Today</span>
+    <div class="tb-acts">
+      <button class="tb-btn"> Filter</button>
+      <button class="tb-btn"> Group</button>
+      <button class="tb-btn" style="background:var(--acc);color:#fff;border-color:var(--acc);"> New Task</button>
+    </div>
+  </div>
+  <div class="content">
+    <div class="grp-hdr"><span class="grp-toggle"></span><span class="grp-lbl">Overdue</span><span class="grp-badge red">2</span><span class="grp-add">+ Add</span></div>
+    <div class="task"><div class="t-chk"><div class="t-circ p1"></div></div><span class="t-title">Update portfolio website  copy &amp; redesign</span><div class="t-meta"><div class="t-dot" style="background:#7C6AF6"></div><span class="t-area">Work</span><span class="t-due ov">+6d overdue</span><div class="t-pri p1">!</div></div><div class="t-acts"><span class="t-act">Done</span><span class="t-act">Edit</span><span class="t-act"></span></div></div>
+    <div class="task"><div class="t-chk"><div class="t-circ p1"></div></div><span class="t-title">File 202425 tax return</span><div class="t-meta"><div class="t-dot" style="background:#FF9F0A"></div><span class="t-area">Finance</span><span class="t-due ov">+3d overdue</span><div class="t-pri p1">!</div></div><div class="t-acts"><span class="t-act">Done</span><span class="t-act">Edit</span></div></div>
+    <div class="grp-hdr" style="margin-top:4px;"><span class="grp-toggle"></span><span class="grp-lbl">Today</span><span class="grp-badge">5</span><span class="grp-add">+ Add</span></div>
+    <div class="task"><div class="t-chk"><div class="t-circ p1"></div></div><span class="t-title">Q1 Performance Review  Self-Assessment Submission</span><div class="t-meta"><div class="t-dot" style="background:#7C6AF6"></div><span class="t-area">Work</span><span class="t-due td">Today 5:00 PM</span><div class="t-pri p1">!</div></div><div class="t-acts"><span class="t-act">Done</span><span class="t-act">Edit</span><span class="t-act"></span></div></div>
+    <div class="task"><div class="t-chk"><div class="t-circ"></div></div><span class="t-title">Transfer April rent to landlord</span><div class="t-meta"><div class="t-dot" style="background:#FF9F0A"></div><span class="t-area">Finance</span><span class="t-due td">Today 12:00 PM</span><div class="t-pri p2"></div></div><div class="t-acts"><span class="t-act">Done</span><span class="t-act">Edit</span></div></div>
+    <div class="task done"><div class="t-chk"><div class="t-circ done"></div></div><span class="t-title done">Morning run  5km tempo pace</span><div class="t-meta"><div class="t-dot" style="background:#32D74B"></div><span class="t-area">Health</span><span class="t-due" style="color:var(--green)">Done 7:30 AM</span></div></div>
+    <div class="task"><div class="t-chk"><div class="t-circ"></div></div><span class="t-title">Chapter 4  Deep Work course module</span><div class="t-meta"><div class="t-dot" style="background:#64D2FF"></div><span class="t-area">Learning</span><span class="t-due">This evening</span></div><div class="t-acts"><span class="t-act">Done</span><span class="t-act">Edit</span></div></div>
+    <div class="task"><div class="t-chk"><div class="t-circ"></div></div><span class="t-title">Call Dad  Easter weekend plans</span><div class="t-meta"><div class="t-dot" style="background:#FF453A"></div><span class="t-area">Relationships</span><span class="t-due">Flexible</span></div><div class="t-acts"><span class="t-act">Done</span><span class="t-act">Edit</span></div></div>
+    <div class="grp-hdr" style="margin-top:4px;"><span class="grp-toggle" style="transform:none;"></span><span class="grp-lbl">This week</span><span class="grp-badge">6</span><span class="grp-add">+ Add</span></div>
+    <div style="padding:32px 20px;font-size:12px;color:var(--t3);">Sun 22 Mar 2026  Week 12 of 52  Q1  Day 81</div>
+  </div>
+</div>
+
+<div class="rp">
+  <div class="rp-hdr">Today's snapshot</div>
+  <div class="rp-sec">
+    <div class="rp-lbl">Day Progress</div>
+    <div class="prog-row">
+      <div class="ring-wrap">
+        <svg width="60" height="60" viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" fill="none" stroke="#2A2A2E" stroke-width="5"/><circle cx="30" cy="30" r="24" fill="none" stroke="#7C6AF6" stroke-width="5" stroke-dasharray="150.8" stroke-dashoffset="93" stroke-linecap="round"/></svg>
+        <div class="ring-mid">38%</div>
+      </div>
+      <div class="prog-info"><div class="prog-lbl">3 / 8 tasks done</div><div class="prog-sub" style="color:var(--red);margin-top:3px;">2 overdue</div><div class="prog-sub">12d streak </div></div>
+    </div>
+  </div>
+  <div class="rp-sec">
+    <div class="rp-lbl">Week</div>
+    <div class="stat"><span class="stat-k">Completed</span><span class="stat-v g">17</span></div>
+    <div class="stat"><span class="stat-k">Completion rate</span><span class="stat-v a">74%</span></div>
+    <div class="stat"><span class="stat-k">Streak</span><span class="stat-v g">12d</span></div>
+    <div class="stat"><span class="stat-k">Overdue</span><span class="stat-v r">3</span></div>
+  </div>
+  <div class="rp-sec">
+    <div class="rp-lbl">Area Health</div>
+    <div class="a-row"><div class="a-dot" style="background:#7C6AF6"></div><span class="a-name">Work</span><div class="a-bar"><div class="a-fill" style="width:87%;background:#7C6AF6"></div></div><span class="a-score">87</span></div>
+    <div class="a-row"><div class="a-dot" style="background:#32D74B"></div><span class="a-name">Health</span><div class="a-bar"><div class="a-fill" style="width:91%;background:#32D74B"></div></div><span class="a-score">91</span></div>
+    <div class="a-row"><div class="a-dot" style="background:#FF9F0A"></div><span class="a-name">Finance</span><div class="a-bar"><div class="a-fill" style="width:63%;background:#FF9F0A"></div></div><span class="a-score">63</span></div>
+    <div class="a-row"><div class="a-dot" style="background:#FF453A"></div><span class="a-name">Relations</span><div class="a-bar"><div class="a-fill" style="width:41%;background:#FF453A"></div></div><span class="a-score lo">41</span></div>
+    <div class="a-row"><div class="a-dot" style="background:#64D2FF"></div><span class="a-name">Learning</span><div class="a-bar"><div class="a-fill" style="width:74%;background:#64D2FF"></div></div><span class="a-score">74</span></div>
+    <div class="a-row"><div class="a-dot" style="background:#BF5AF2"></div><span class="a-name">Home</span><div class="a-bar"><div class="a-fill" style="width:58%;background:#BF5AF2"></div></div><span class="a-score">58</span></div>
+  </div>
+  <div class="rp-sec">
+    <div class="rp-lbl">Habits  2 / 7</div>
+    <div class="h-row"><div class="h-dot done"></div><span class="h-name">Morning pages</span><span class="h-time">6:15</span></div>
+    <div class="h-row"><div class="h-dot done"></div><span class="h-name">5km run</span><span class="h-time">7:30</span></div>
+    <div class="h-row"><div class="h-dot"></div><span class="h-name">Cold shower</span><span class="h-time">8:10</span></div>
+    <div class="h-row"><div class="h-dot"></div><span class="h-name">Review priorities</span><span class="h-time">8:30</span></div>
+    <div class="h-row"><div class="h-dot"></div><span class="h-name">Meditate 10min</span><span class="h-time">Aft</span></div>
+    <div class="h-row"><div class="h-dot"></div><span class="h-name">Read 30min</span><span class="h-time">Eve</span></div>
+    <div class="h-row"><div class="h-dot"></div><span class="h-name">Evening review</span><span class="h-time">9:30</span></div>
+  </div>
+  <div class="rp-sec">
+    <div class="rp-lbl">Goals</div>
+    <div class="goal-row"><div class="g-ring"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="#1C1C1E" stroke-width="4"/><circle cx="18" cy="18" r="14" fill="none" stroke="#32D74B" stroke-width="4" stroke-dasharray="87.9" stroke-dashoffset="28.2" stroke-linecap="round"/></svg><div class="g-ring-mid" style="color:var(--green);font-size:9px;">68%</div></div><div class="g-info"><div class="g-name">Half Marathon</div><div class="g-meta">Jun 15  On track</div></div></div>
+    <div class="goal-row"><div class="g-ring"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="#1C1C1E" stroke-width="4"/><circle cx="18" cy="18" r="14" fill="none" stroke="#FF9F0A" stroke-width="4" stroke-dasharray="87.9" stroke-dashoffset="48.3" stroke-linecap="round"/></svg><div class="g-ring-mid" style="color:var(--amb);font-size:9px;">45%</div></div><div class="g-info"><div class="g-name">Emergency Fund</div><div class="g-meta">$4.5k / $10k</div></div></div>
+    <div class="goal-row"><div class="g-ring"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="#1C1C1E" stroke-width="4"/><circle cx="18" cy="18" r="14" fill="none" stroke="#FF453A" stroke-width="4" stroke-dasharray="87.9" stroke-dashoffset="65.9" stroke-linecap="round"/></svg><div class="g-ring-mid" style="color:var(--red);font-size:9px;">25%</div></div><div class="g-info"><div class="g-name">Read 24 Books</div><div class="g-meta" style="color:var(--red);">6/24  Behind</div></div></div>
+  </div>
+  <div class="rp-quote">"The secret of getting ahead is getting started."  Mark Twain</div>
+</div>
+</body>
+</html>
