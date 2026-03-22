@@ -8,29 +8,36 @@ const SCOPES = [
 ].join(" ");
 
 export async function GET(request: NextRequest) {
-  const { userId } = await auth();
-  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  try {
+    const { userId } = await auth();
+    if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const clientId = process.env.GOOGLE_CLIENT_ID;
-  if (!clientId) {
-    return NextResponse.json({ error: "Google Calendar not configured" }, { status: 500 });
+    const clientId = process.env.GOOGLE_CLIENT_ID;
+    if (!clientId) {
+      return NextResponse.json({ error: "GOOGLE_CLIENT_ID not set" }, { status: 500 });
+    }
+
+    const origin      = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") ?? request.nextUrl.origin;
+    const redirectUri = `${origin}/api/calendar/callback`;
+
+    const params = new URLSearchParams({
+      client_id:     clientId,
+      redirect_uri:  redirectUri,
+      response_type: "code",
+      scope:         SCOPES,
+      access_type:   "offline",
+      prompt:        "consent",
+      state:         userId,
+    });
+
+    return NextResponse.redirect(
+      `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`
+    );
+  } catch (err) {
+    console.error("[/api/calendar] error:", err);
+    return NextResponse.json(
+      { error: String(err) },
+      { status: 500 }
+    );
   }
-
-  // Use explicit APP_URL in production, derive from request in local dev
-  const origin = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") ?? request.nextUrl.origin;
-  const redirectUri = `${origin}/api/calendar/callback`;
-
-  const params = new URLSearchParams({
-    client_id:     clientId,
-    redirect_uri:  redirectUri,
-    response_type: "code",
-    scope:         SCOPES,
-    access_type:   "offline",
-    prompt:        "consent",
-    state:         userId,
-  });
-
-  return NextResponse.redirect(
-    `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`
-  );
 }
