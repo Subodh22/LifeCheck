@@ -68,7 +68,7 @@ export default function BacklogPage() {
   const handleMove = async (taskId: Id<"tasks">, status: Status) => {
     setMovingTask(taskId);
     try {
-      await updateStatus({ id: taskId, status });
+      await updateStatus({ id: taskId, status: status as "backlog" | "todo" | "in_progress" | "blocked" | "done" });
     } finally {
       setMovingTask(null);
     }
