@@ -10,9 +10,9 @@ import { useState } from "react";
 import CreateTaskModal from "@/components/CreateTaskModal";
 
 const STATUS_META: Record<string, { label: string; dot: string; bg: string; text: string }> = {
-  backlog:     { label: "Backlog",     dot: "#C4C4C2", bg: "#C4C4C218", text: "#C4C4C2" },
+  backlog:     { label: "Backlog",     dot: "#94A3B8", bg: "#94A3B818", text: "#94A3B8" },
   todo:        { label: "To Do",       dot: "#4A9EE0", bg: "#4A9EE018", text: "#4A9EE0" },
-  in_progress: { label: "In Progress", dot: "#2383E2", bg: "#2383E218", text: "#2383E2" },
+  in_progress: { label: "In Progress", dot: "#2563EB", bg: "#2563EB18", text: "#2563EB" },
   blocked:     { label: "Blocked",     dot: "#E85538", bg: "#E8553818", text: "#E85538" },
   done:        { label: "Done",        dot: "#4CAF6B", bg: "#4CAF6B18", text: "#4CAF6B" },
 };
@@ -20,8 +20,8 @@ const STATUS_META: Record<string, { label: string; dot: string; bg: string; text
 const PRIORITY_META = {
   urgent: { icon: <Zap size={11} />,    color: "#E85538", label: "Urgent" },
   high:   { icon: <ArrowUp size={11} />, color: "#E8A838", label: "High"   },
-  medium: { icon: <Minus size={11} />,   color: "#2383E2", label: "Medium" },
-  low:    { icon: <Minus size={11} />,   color: "#9B9A97", label: "Low"    },
+  medium: { icon: <Minus size={11} />,   color: "#2563EB", label: "Medium" },
+  low:    { icon: <Minus size={11} />,   color: "#64748B", label: "Low"    },
 } as const;
 
 type Priority = keyof typeof PRIORITY_META;
@@ -75,18 +75,18 @@ export default function BacklogPage() {
   };
 
   return (
-    <div className="h-full flex flex-col bg-[#FFFFFF]">
+    <div className="h-full flex flex-col bg-[#F7F8FA]">
       {/* Page header */}
-      <div className="px-6 py-3 border-b border-[#E3E3E1] flex items-center justify-between shrink-0">
+      <div className="px-6 py-3 border-b border-[#E2E8F0] bg-[#FFFFFF] flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
-          <h1 className="font-ui text-[14px] font-medium text-[#191919]">Backlog</h1>
-          <span className="font-ui text-[11px] text-[#C4C4C2] bg-[#F0F0EE] border border-[#E3E3E1] px-2 py-0.5 rounded-full">
+          <h1 className="font-ui text-[14px] font-medium text-[#0F172A]">Backlog</h1>
+          <span className="font-ui text-[11px] text-[#94A3B8] bg-[#F1F5F9] border border-[#E2E8F0] px-2 py-0.5 rounded-full">
             {filtered.length} issues
           </span>
         </div>
         <button
           onClick={() => setCreateOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-[#2383E2] rounded font-ui text-[12px] font-medium text-[#FFFFFF] hover:bg-[#1a73d1] transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-[#2563EB] rounded font-ui text-[12px] font-medium text-[#FFFFFF] hover:bg-[#1D4ED8] transition-colors"
         >
           <Plus size={12} />
           Create issue
@@ -94,33 +94,33 @@ export default function BacklogPage() {
       </div>
 
       {/* Filter bar */}
-      <div className="px-6 py-2.5 border-b border-[#E3E3E1] flex items-center gap-2.5 shrink-0 flex-wrap">
+      <div className="px-6 py-2.5 border-b border-[#E2E8F0] bg-[#FFFFFF] flex items-center gap-2.5 shrink-0 flex-wrap">
         {/* Search */}
-        <div className="flex items-center gap-2 bg-[#F7F7F5] border border-[#E3E3E1] rounded px-2.5 py-1.5 w-56">
-          <Search size={12} className="text-[#C4C4C2] shrink-0" />
+        <div className="flex items-center gap-2 bg-[#F7F8FA] border border-[#E2E8F0] rounded px-2.5 py-1.5 w-56">
+          <Search size={12} className="text-[#94A3B8] shrink-0" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search issues…"
-            className="bg-transparent font-ui text-[12px] text-[#191919] placeholder:text-[#C4C4C2] outline-none w-full"
+            className="bg-transparent font-ui text-[12px] text-[#0F172A] placeholder:text-[#94A3B8] outline-none w-full"
           />
         </div>
 
-        <Filter size={12} className="text-[#C4C4C2]" />
+        <Filter size={12} className="text-[#94A3B8]" />
 
         {/* Status filter */}
         <div className="relative">
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as Status | "")}
-            className="appearance-none bg-[#F7F7F5] border border-[#E3E3E1] rounded px-2.5 py-1.5 font-ui text-[12px] text-[#9B9A97] outline-none cursor-pointer pr-7"
+            className="appearance-none bg-[#F7F8FA] border border-[#E2E8F0] rounded px-2.5 py-1.5 font-ui text-[12px] text-[#64748B] outline-none cursor-pointer pr-7"
           >
             <option value="">Status</option>
             {Object.entries(STATUS_META).map(([k, v]) => (
               <option key={k} value={k}>{v.label}</option>
             ))}
           </select>
-          <ChevronDown size={11} className="absolute right-2 top-1/2 -translate-y-1/2 text-[#C4C4C2] pointer-events-none" />
+          <ChevronDown size={11} className="absolute right-2 top-1/2 -translate-y-1/2 text-[#94A3B8] pointer-events-none" />
         </div>
 
         {/* Priority filter */}
@@ -128,14 +128,14 @@ export default function BacklogPage() {
           <select
             value={priorityFilter}
             onChange={(e) => setPriorityFilter(e.target.value as Priority | "")}
-            className="appearance-none bg-[#F7F7F5] border border-[#E3E3E1] rounded px-2.5 py-1.5 font-ui text-[12px] text-[#9B9A97] outline-none cursor-pointer pr-7"
+            className="appearance-none bg-[#F7F8FA] border border-[#E2E8F0] rounded px-2.5 py-1.5 font-ui text-[12px] text-[#64748B] outline-none cursor-pointer pr-7"
           >
             <option value="">Priority</option>
             {Object.entries(PRIORITY_META).map(([k, v]) => (
               <option key={k} value={k}>{v.label}</option>
             ))}
           </select>
-          <ChevronDown size={11} className="absolute right-2 top-1/2 -translate-y-1/2 text-[#C4C4C2] pointer-events-none" />
+          <ChevronDown size={11} className="absolute right-2 top-1/2 -translate-y-1/2 text-[#94A3B8] pointer-events-none" />
         </div>
 
         {/* Area filter */}
@@ -144,14 +144,14 @@ export default function BacklogPage() {
             <select
               value={areaFilter}
               onChange={(e) => setAreaFilter(e.target.value)}
-              className="appearance-none bg-[#F7F7F5] border border-[#E3E3E1] rounded px-2.5 py-1.5 font-ui text-[12px] text-[#9B9A97] outline-none cursor-pointer pr-7"
+              className="appearance-none bg-[#F7F8FA] border border-[#E2E8F0] rounded px-2.5 py-1.5 font-ui text-[12px] text-[#64748B] outline-none cursor-pointer pr-7"
             >
               <option value="">Area</option>
               {areas.map((a) => (
                 <option key={a._id} value={a._id}>{a.name}</option>
               ))}
             </select>
-            <ChevronDown size={11} className="absolute right-2 top-1/2 -translate-y-1/2 text-[#C4C4C2] pointer-events-none" />
+            <ChevronDown size={11} className="absolute right-2 top-1/2 -translate-y-1/2 text-[#94A3B8] pointer-events-none" />
           </div>
         )}
 
@@ -162,7 +162,7 @@ export default function BacklogPage() {
             "px-2.5 py-1.5 border rounded font-ui text-[12px] transition-colors",
             showDone
               ? "border-[#4CAF6B] text-[#4CAF6B] bg-[#4CAF6B18]"
-              : "border-[#E3E3E1] text-[#C4C4C2] hover:text-[#9B9A97]"
+              : "border-[#E2E8F0] text-[#94A3B8] hover:text-[#64748B]"
           )}
         >
           {showDone ? "Hiding done" : "Show done"}
@@ -180,21 +180,21 @@ export default function BacklogPage() {
       </div>
 
       {/* Table */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto bg-[#FFFFFF]">
         {/* Column headers */}
-        <div className="grid grid-cols-[20px_1fr_130px_110px_110px_90px] gap-4 px-6 py-2 border-b border-[#E3E3E1] bg-[#F7F7F5] sticky top-0 z-10">
+        <div className="grid grid-cols-[20px_1fr_130px_110px_110px_90px] gap-4 px-6 py-2 border-b border-[#E2E8F0] bg-[#FFFFFF] sticky top-0 z-10">
           <div />
-          <span className="font-ui text-[11px] tracking-[0.15em] uppercase text-[#C4C4C2]">Issue</span>
-          <span className="font-ui text-[11px] tracking-[0.15em] uppercase text-[#C4C4C2]">Status</span>
-          <span className="font-ui text-[11px] tracking-[0.15em] uppercase text-[#C4C4C2]">Priority</span>
-          <span className="font-ui text-[11px] tracking-[0.15em] uppercase text-[#C4C4C2]">Area</span>
-          <span className="font-ui text-[11px] tracking-[0.15em] uppercase text-[#C4C4C2]">Due</span>
+          <span className="font-ui text-[11px] tracking-[0.15em] uppercase text-[#94A3B8]">Issue</span>
+          <span className="font-ui text-[11px] tracking-[0.15em] uppercase text-[#94A3B8]">Status</span>
+          <span className="font-ui text-[11px] tracking-[0.15em] uppercase text-[#94A3B8]">Priority</span>
+          <span className="font-ui text-[11px] tracking-[0.15em] uppercase text-[#94A3B8]">Area</span>
+          <span className="font-ui text-[11px] tracking-[0.15em] uppercase text-[#94A3B8]">Due</span>
         </div>
 
         {sorted.length === 0 ? (
           <div className="text-center py-16">
-            <p className="font-ui text-sm text-[#9B9A97]">No issues match your filters.</p>
-            <p className="font-ui text-xs text-[#C4C4C2] mt-1">Try adjusting your filters or create a new issue.</p>
+            <p className="font-ui text-sm text-[#64748B]">No issues match your filters.</p>
+            <p className="font-ui text-xs text-[#94A3B8] mt-1">Try adjusting your filters or create a new issue.</p>
           </div>
         ) : (
           sorted.map((task) => {
@@ -206,7 +206,7 @@ export default function BacklogPage() {
             return (
               <div
                 key={task._id}
-                className="grid grid-cols-[20px_1fr_130px_110px_110px_90px] gap-4 px-6 py-2.5 border-b border-[#E8E8E6] hover:bg-[#F7F7F5] transition-colors cursor-pointer items-center group"
+                className="grid grid-cols-[20px_1fr_130px_110px_110px_90px] gap-4 px-6 py-2.5 border-b border-[#E2E8F0] hover:bg-[#F1F5F9] transition-colors cursor-pointer items-center group"
               >
                 {/* Priority icon */}
                 <span style={{ color: pri.color }} className="flex items-center justify-center">
@@ -215,8 +215,8 @@ export default function BacklogPage() {
 
                 {/* Issue title + key */}
                 <div className="min-w-0">
-                  <p className="font-ui text-[13px] text-[#191919] truncate leading-snug">{task.title}</p>
-                  <p className="font-ui text-[11px] text-[#C4C4C2] mt-0.5">
+                  <p className="font-ui text-[13px] text-[#0F172A] truncate leading-snug">{task.title}</p>
+                  <p className="font-ui text-[11px] text-[#94A3B8] mt-0.5">
                     {taskArea ? issueKey(taskArea.name, task._id) : task._id.slice(-6).toUpperCase()}
                   </p>
                 </div>
@@ -228,7 +228,7 @@ export default function BacklogPage() {
                     onClick={(e) => e.stopPropagation()}
                     onChange={(e) => handleMove(task._id, e.target.value as Status)}
                     disabled={movingTask === task._id}
-                    className="appearance-none w-full rounded px-2 py-0.5 font-ui text-[11px] outline-none cursor-pointer border border-transparent hover:border-[#D5D5D3] transition-colors"
+                    className="appearance-none w-full rounded px-2 py-0.5 font-ui text-[11px] outline-none cursor-pointer border border-transparent hover:border-[#CBD5E1] transition-colors"
                     style={{ backgroundColor: status.bg, color: status.text }}
                   >
                     {Object.entries(STATUS_META).map(([k, v]) => (
@@ -252,11 +252,11 @@ export default function BacklogPage() {
                     {taskArea.name}
                   </span>
                 ) : (
-                  <span className="font-ui text-[11px] text-[#C4C4C2]">—</span>
+                  <span className="font-ui text-[11px] text-[#94A3B8]">—</span>
                 )}
 
                 {/* Due date */}
-                <span className={cn("font-ui text-[12px]", isOverdue ? "text-[#E85538]" : "text-[#9B9A97]")}>
+                <span className={cn("font-ui text-[12px]", isOverdue ? "text-[#E85538]" : "text-[#64748B]")}>
                   {task.dueDate ? format(new Date(task.dueDate), "d MMM") : "—"}
                 </span>
               </div>

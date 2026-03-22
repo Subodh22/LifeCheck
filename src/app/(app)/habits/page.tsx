@@ -23,7 +23,7 @@ const DOW_LABELS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
 const FREQ_CONFIG = {
   daily:     { label: "Daily",     sub: "True habit — daily automaticity",            accent: "#4A9EE0" },
   weekly:    { label: "Weekly",    sub: "Habit — one or more sessions per week",       accent: "#4CAF6B" },
-  monthly:   { label: "Monthly",   sub: "Ritual — deliberate monthly practice",        accent: "#2383E2" },
+  monthly:   { label: "Monthly",   sub: "Ritual — deliberate monthly practice",        accent: "#2563EB" },
   quarterly: { label: "Quarterly", sub: "Review — quarterly reflection or checkpoint", accent: "#E8A838" },
   yearly:    { label: "Yearly",    sub: "Milestone — annual commitment or review",     accent: "#E85538" },
 } as const;
@@ -73,8 +73,8 @@ function DayCell({
           : isToday
             ? "border-[#4A9EE0] text-[#4A9EE0] hover:bg-[#4A9EE018]"
             : isFuture
-              ? "border-[#E8E8E6] text-[#E3E3E1] cursor-not-allowed"
-              : "border-[#E3E3E1] text-[#C4C4C2] hover:border-[#9B9A97]"
+              ? "border-[#E2E8F0] text-[#E2E8F0] cursor-not-allowed"
+              : "border-[#E2E8F0] text-[#94A3B8] hover:border-[#64748B]"
       )}
     >
       {done && <Check size={11} strokeWidth={2.5} />}
@@ -94,12 +94,12 @@ function SessionDots({ completed, target, onAdd, onRemove }: {
             onClick={i < completed ? onRemove : onAdd}
             className={cn(
               "w-5 h-5 rounded-full border transition-all",
-              i < completed ? "bg-[#4CAF6B] border-[#4CAF6B]" : "border-[#E3E3E1] hover:border-[#4CAF6B]"
+              i < completed ? "bg-[#4CAF6B] border-[#4CAF6B]" : "border-[#E2E8F0] hover:border-[#4CAF6B]"
             )}
           />
         ))}
       </div>
-      <span className={cn("font-ui text-[11px] tabular-nums", completed >= target ? "text-[#4CAF6B]" : "text-[#9B9A97]")}>
+      <span className={cn("font-ui text-[11px] tabular-nums", completed >= target ? "text-[#4CAF6B]" : "text-[#64748B]")}>
         {completed}/{target}
       </span>
     </div>
@@ -118,8 +118,8 @@ function PeriodCell({ label, sub, done, isFuture, onToggle, accent }: {
         done
           ? "border-[#4CAF6B] bg-[#4CAF6B18] text-[#4CAF6B]"
           : isFuture
-            ? "border-[#E8E8E6] text-[#E3E3E1] cursor-not-allowed"
-            : "border-[#E3E3E1] text-[#9B9A97] hover:border-[#D5D5D3] hover:text-[#6F6E69]"
+            ? "border-[#E2E8F0] text-[#E2E8F0] cursor-not-allowed"
+            : "border-[#E2E8F0] text-[#64748B] hover:border-[#CBD5E1] hover:text-[#475569]"
       )}
       style={done ? {} : { borderColor: undefined }}
     >
@@ -203,21 +203,21 @@ function HabitWizard({ userId, areas, initialFreq, onClose }: WizardProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="w-[500px] bg-[#F7F7F5] border border-[#E3E3E1] rounded-lg overflow-hidden">
+      <div className="w-[500px] bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg overflow-hidden">
 
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#E3E3E1]">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[#E2E8F0]">
           <div>
-            <p className="font-ui text-[14px] font-semibold text-[#191919]">New Routine</p>
-            <p className="font-ui text-[11px] text-[#9B9A97] mt-0.5">{STEP_LABELS[step - 1]} · Step {step} of 5</p>
+            <p className="font-ui text-[14px] font-semibold text-[#0F172A]">New Routine</p>
+            <p className="font-ui text-[11px] text-[#64748B] mt-0.5">{STEP_LABELS[step - 1]} · Step {step} of 5</p>
           </div>
-          <button onClick={onClose} className="text-[#9B9A97] hover:text-[#191919] transition-colors"><X size={14} /></button>
+          <button onClick={onClose} className="text-[#64748B] hover:text-[#0F172A] transition-colors"><X size={14} /></button>
         </div>
 
         {/* Progress bar */}
-        <div className="h-[2px] bg-[#E8E8E6]">
+        <div className="h-[2px] bg-[#EFF6FF]">
           <div
-            className="h-full bg-[#2383E2] transition-all duration-300"
+            className="h-full bg-[#2563EB] transition-all duration-300"
             style={{ width: `${(step / 5) * 100}%` }}
           />
         </div>
@@ -229,8 +229,8 @@ function HabitWizard({ userId, areas, initialFreq, onClose }: WizardProps) {
           {step === 1 && (
             <div className="space-y-4">
               <div>
-                <p className="font-ui text-[13px] text-[#191919] mb-1">Which area of your life is this for?</p>
-                <p className="font-ui text-[11px] text-[#9B9A97] mb-3">
+                <p className="font-ui text-[13px] text-[#0F172A] mb-1">Which area of your life is this for?</p>
+                <p className="font-ui text-[11px] text-[#64748B] mb-3">
                   Habits work best when rooted in a clear life domain.
                 </p>
                 <div className="grid grid-cols-2 gap-2">
@@ -241,8 +241,8 @@ function HabitWizard({ userId, areas, initialFreq, onClose }: WizardProps) {
                       className={cn(
                         "flex items-center gap-2.5 px-3 py-2.5 rounded border text-left transition-colors",
                         areaId === a._id
-                          ? "border-[#2383E2] bg-[#2383E20F]"
-                          : "border-[#E3E3E1] hover:border-[#D5D5D3]"
+                          ? "border-[#2563EB] bg-[#2563EB0F]"
+                          : "border-[#E2E8F0] hover:border-[#CBD5E1]"
                       )}
                     >
                       {a.icon ? (
@@ -250,26 +250,26 @@ function HabitWizard({ userId, areas, initialFreq, onClose }: WizardProps) {
                       ) : (
                         <span className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ backgroundColor: a.color }} />
                       )}
-                      <span className="font-ui text-[13px] text-[#191919] truncate">{a.name}</span>
+                      <span className="font-ui text-[13px] text-[#0F172A] truncate">{a.name}</span>
                     </button>
                   ))}
                 </div>
               </div>
 
               <div>
-                <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-1.5 block">
+                <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#64748B] mb-1.5 block">
                   Identity (optional — Clear 2018)
                 </label>
-                <div className="flex items-center gap-0 bg-[#FFFFFF] border border-[#E3E3E1] rounded overflow-hidden focus-within:border-[#D5D5D3]">
-                  <span className="font-ui text-[12px] text-[#C4C4C2] pl-3 shrink-0 whitespace-nowrap">I am becoming someone who</span>
+                <div className="flex items-center gap-0 bg-[#FFFFFF] border border-[#E2E8F0] rounded overflow-hidden focus-within:border-[#CBD5E1]">
+                  <span className="font-ui text-[12px] text-[#94A3B8] pl-3 shrink-0 whitespace-nowrap">I am becoming someone who</span>
                   <input
                     value={identity}
                     onChange={(e) => setIdentity(e.target.value)}
                     placeholder="meditates daily"
-                    className="flex-1 bg-transparent px-2 py-2.5 font-ui text-[13px] text-[#191919] placeholder:text-[#C4C4C2] outline-none"
+                    className="flex-1 bg-transparent px-2 py-2.5 font-ui text-[13px] text-[#0F172A] placeholder:text-[#94A3B8] outline-none"
                   />
                 </div>
-                <p className="font-ui text-[11px] text-[#C4C4C2] mt-1.5">
+                <p className="font-ui text-[11px] text-[#94A3B8] mt-1.5">
                   Identity-based framing increases long-term habit retention (Clear 2018).
                 </p>
               </div>
@@ -280,7 +280,7 @@ function HabitWizard({ userId, areas, initialFreq, onClose }: WizardProps) {
           {step === 2 && (
             <div className="space-y-4">
               <div>
-                <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-1.5 block">
+                <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#64748B] mb-1.5 block">
                   Specific behavior
                 </label>
                 <input
@@ -288,15 +288,15 @@ function HabitWizard({ userId, areas, initialFreq, onClose }: WizardProps) {
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="e.g. Meditate for 10 minutes"
                   autoFocus
-                  className="w-full bg-[#FFFFFF] border border-[#E3E3E1] rounded px-3 py-2.5 font-ui text-[13px] text-[#191919] placeholder:text-[#C4C4C2] outline-none focus:border-[#D5D5D3]"
+                  className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded px-3 py-2.5 font-ui text-[13px] text-[#0F172A] placeholder:text-[#94A3B8] outline-none focus:border-[#CBD5E1]"
                 />
-                <p className="font-ui text-[11px] text-[#C4C4C2] mt-1.5">
+                <p className="font-ui text-[11px] text-[#94A3B8] mt-1.5">
                   Be specific. "Exercise" fails. "30-min walk after lunch" succeeds (Gollwitzer 1999).
                 </p>
               </div>
 
               <div>
-                <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-2 block">
+                <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#64748B] mb-2 block">
                   Cadence
                 </label>
                 <div className="space-y-1.5">
@@ -308,16 +308,16 @@ function HabitWizard({ userId, areas, initialFreq, onClose }: WizardProps) {
                         onClick={() => setFreq(f)}
                         className={cn(
                           "w-full flex items-center gap-3 px-3 py-2.5 rounded border text-left transition-colors",
-                          freq === f ? "border-[#2383E2] bg-[#2383E20F]" : "border-[#E3E3E1] hover:border-[#D5D5D3]"
+                          freq === f ? "border-[#2563EB] bg-[#2563EB0F]" : "border-[#E2E8F0] hover:border-[#CBD5E1]"
                         )}
                       >
                         <span
                           className="w-2 h-2 rounded-full shrink-0"
-                          style={{ backgroundColor: freq === f ? c.accent : "#E3E3E1" }}
+                          style={{ backgroundColor: freq === f ? c.accent : "#E2E8F0" }}
                         />
                         <div>
-                          <p className="font-ui text-[13px] text-[#191919]">{c.label}</p>
-                          <p className="font-ui text-[11px] text-[#9B9A97]">{c.sub}</p>
+                          <p className="font-ui text-[13px] text-[#0F172A]">{c.label}</p>
+                          <p className="font-ui text-[11px] text-[#64748B]">{c.sub}</p>
                         </div>
                       </button>
                     );
@@ -331,8 +331,8 @@ function HabitWizard({ userId, areas, initialFreq, onClose }: WizardProps) {
           {step === 3 && (
             <div className="space-y-4">
               <div>
-                <p className="font-ui text-[13px] text-[#191919] mb-1">When will you do this?</p>
-                <p className="font-ui text-[11px] text-[#9B9A97] mb-4">
+                <p className="font-ui text-[13px] text-[#0F172A] mb-1">When will you do this?</p>
+                <p className="font-ui text-[11px] text-[#64748B] mb-4">
                   Specificity doubles follow-through. "Monday morning" outperforms "sometime this week" (Gollwitzer 1999).
                 </p>
               </div>
@@ -341,7 +341,7 @@ function HabitWizard({ userId, areas, initialFreq, onClose }: WizardProps) {
               {freq === "daily" && (
                 <div className="space-y-4">
                   <div>
-                    <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-2 block">Time of day</label>
+                    <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#64748B] mb-2 block">Time of day</label>
                     <div className="grid grid-cols-4 gap-2">
                       {(["morning","midday","evening","anytime"] as TimeOfDay[]).map((t) => (
                         <button
@@ -349,7 +349,7 @@ function HabitWizard({ userId, areas, initialFreq, onClose }: WizardProps) {
                           onClick={() => setTimeOfDay(t)}
                           className={cn(
                             "py-2 rounded border font-ui text-[12px] capitalize transition-colors",
-                            timeOfDay === t ? "border-[#4A9EE0] text-[#4A9EE0] bg-[#4A9EE018]" : "border-[#E3E3E1] text-[#9B9A97] hover:border-[#D5D5D3]"
+                            timeOfDay === t ? "border-[#4A9EE0] text-[#4A9EE0] bg-[#4A9EE018]" : "border-[#E2E8F0] text-[#64748B] hover:border-[#CBD5E1]"
                           )}
                         >
                           {t}
@@ -358,19 +358,19 @@ function HabitWizard({ userId, areas, initialFreq, onClose }: WizardProps) {
                     </div>
                   </div>
                   <div>
-                    <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-1.5 block">
+                    <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#64748B] mb-1.5 block">
                       Anchor cue (Fogg 2020)
                     </label>
-                    <div className="flex items-center gap-0 bg-[#FFFFFF] border border-[#E3E3E1] rounded overflow-hidden focus-within:border-[#D5D5D3]">
-                      <span className="font-ui text-[12px] text-[#C4C4C2] pl-3 shrink-0">After I</span>
+                    <div className="flex items-center gap-0 bg-[#FFFFFF] border border-[#E2E8F0] rounded overflow-hidden focus-within:border-[#CBD5E1]">
+                      <span className="font-ui text-[12px] text-[#94A3B8] pl-3 shrink-0">After I</span>
                       <input
                         value={anchor}
                         onChange={(e) => setAnchor(e.target.value)}
                         placeholder="drink my morning coffee"
-                        className="flex-1 bg-transparent px-2 py-2.5 font-ui text-[13px] text-[#191919] placeholder:text-[#C4C4C2] outline-none"
+                        className="flex-1 bg-transparent px-2 py-2.5 font-ui text-[13px] text-[#0F172A] placeholder:text-[#94A3B8] outline-none"
                       />
                     </div>
-                    <p className="font-ui text-[11px] text-[#C4C4C2] mt-1.5">
+                    <p className="font-ui text-[11px] text-[#94A3B8] mt-1.5">
                       Link to an existing routine. Stacking increases habit durability 2-3×.
                     </p>
                   </div>
@@ -381,7 +381,7 @@ function HabitWizard({ userId, areas, initialFreq, onClose }: WizardProps) {
               {freq === "weekly" && (
                 <div className="space-y-4">
                   <div>
-                    <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-2 block">Sessions per week</label>
+                    <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#64748B] mb-2 block">Sessions per week</label>
                     <div className="flex items-center gap-1.5">
                       {[1,2,3,4,5,6,7].map((n) => (
                         <button
@@ -389,7 +389,7 @@ function HabitWizard({ userId, areas, initialFreq, onClose }: WizardProps) {
                           onClick={() => setTargetDays(n)}
                           className={cn(
                             "w-9 h-9 rounded border font-ui text-[13px] font-medium transition-colors",
-                            targetDays === n ? "border-[#2383E2] text-[#2383E2] bg-[#2383E218]" : "border-[#E3E3E1] text-[#9B9A97] hover:border-[#D5D5D3]"
+                            targetDays === n ? "border-[#2563EB] text-[#2563EB] bg-[#2563EB18]" : "border-[#E2E8F0] text-[#64748B] hover:border-[#CBD5E1]"
                           )}
                         >
                           {n}
@@ -398,7 +398,7 @@ function HabitWizard({ userId, areas, initialFreq, onClose }: WizardProps) {
                     </div>
                   </div>
                   <div>
-                    <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-2 block">Preferred day</label>
+                    <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#64748B] mb-2 block">Preferred day</label>
                     <div className="grid grid-cols-7 gap-1">
                       {DOW_LABELS.map((d, i) => (
                         <button
@@ -406,7 +406,7 @@ function HabitWizard({ userId, areas, initialFreq, onClose }: WizardProps) {
                           onClick={() => setDayOfWeek(i)}
                           className={cn(
                             "py-2 rounded border font-ui text-[11px] transition-colors",
-                            dayOfWeek === i ? "border-[#4CAF6B] text-[#4CAF6B] bg-[#4CAF6B18]" : "border-[#E3E3E1] text-[#9B9A97] hover:border-[#D5D5D3]"
+                            dayOfWeek === i ? "border-[#4CAF6B] text-[#4CAF6B] bg-[#4CAF6B18]" : "border-[#E2E8F0] text-[#64748B] hover:border-[#CBD5E1]"
                           )}
                         >
                           {d}
@@ -415,7 +415,7 @@ function HabitWizard({ userId, areas, initialFreq, onClose }: WizardProps) {
                     </div>
                   </div>
                   <div>
-                    <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-2 block">Time of day</label>
+                    <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#64748B] mb-2 block">Time of day</label>
                     <div className="grid grid-cols-4 gap-2">
                       {(["morning","midday","evening","anytime"] as TimeOfDay[]).map((t) => (
                         <button
@@ -423,7 +423,7 @@ function HabitWizard({ userId, areas, initialFreq, onClose }: WizardProps) {
                           onClick={() => setTimeOfDay(t)}
                           className={cn(
                             "py-2 rounded border font-ui text-[12px] capitalize transition-colors",
-                            timeOfDay === t ? "border-[#4A9EE0] text-[#4A9EE0] bg-[#4A9EE018]" : "border-[#E3E3E1] text-[#9B9A97] hover:border-[#D5D5D3]"
+                            timeOfDay === t ? "border-[#4A9EE0] text-[#4A9EE0] bg-[#4A9EE018]" : "border-[#E2E8F0] text-[#64748B] hover:border-[#CBD5E1]"
                           )}
                         >
                           {t}
@@ -438,7 +438,7 @@ function HabitWizard({ userId, areas, initialFreq, onClose }: WizardProps) {
               {freq === "monthly" && (
                 <div className="space-y-4">
                   <div>
-                    <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-2 block">Day of month</label>
+                    <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#64748B] mb-2 block">Day of month</label>
                     <div className="grid grid-cols-7 gap-1.5">
                       {Array.from({length: 28}, (_, i) => i + 1).map((d) => (
                         <button
@@ -446,22 +446,22 @@ function HabitWizard({ userId, areas, initialFreq, onClose }: WizardProps) {
                           onClick={() => setDayOfMonth(d)}
                           className={cn(
                             "h-8 rounded border font-ui text-[12px] tabular-nums transition-colors",
-                            dayOfMonth === d ? "border-[#2383E2] text-[#2383E2] bg-[#2383E218]" : "border-[#E3E3E1] text-[#9B9A97] hover:border-[#D5D5D3]"
+                            dayOfMonth === d ? "border-[#2563EB] text-[#2563EB] bg-[#2563EB18]" : "border-[#E2E8F0] text-[#64748B] hover:border-[#CBD5E1]"
                           )}
                         >
                           {d}
                         </button>
                       ))}
                     </div>
-                    <p className="font-ui text-[11px] text-[#C4C4C2] mt-2">Capped at 28 to avoid month-end edge cases.</p>
+                    <p className="font-ui text-[11px] text-[#94A3B8] mt-2">Capped at 28 to avoid month-end edge cases.</p>
                   </div>
                   <div>
-                    <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-1.5 block">Anchor (optional)</label>
+                    <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#64748B] mb-1.5 block">Anchor (optional)</label>
                     <input
                       value={anchor}
                       onChange={(e) => setAnchor(e.target.value)}
                       placeholder="e.g. First Sunday of the month"
-                      className="w-full bg-[#FFFFFF] border border-[#E3E3E1] rounded px-3 py-2.5 font-ui text-[13px] text-[#191919] placeholder:text-[#C4C4C2] outline-none focus:border-[#D5D5D3]"
+                      className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded px-3 py-2.5 font-ui text-[13px] text-[#0F172A] placeholder:text-[#94A3B8] outline-none focus:border-[#CBD5E1]"
                     />
                   </div>
                 </div>
@@ -471,7 +471,7 @@ function HabitWizard({ userId, areas, initialFreq, onClose }: WizardProps) {
               {freq === "quarterly" && (
                 <div className="space-y-4">
                   <div>
-                    <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-2 block">Month within quarter</label>
+                    <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#64748B] mb-2 block">Month within quarter</label>
                     <div className="grid grid-cols-3 gap-2">
                       {[1,2,3].map((m) => (
                         <button
@@ -479,14 +479,14 @@ function HabitWizard({ userId, areas, initialFreq, onClose }: WizardProps) {
                           onClick={() => setMonthOfQuarter(m)}
                           className={cn(
                             "py-3 rounded border font-ui text-[13px] transition-colors",
-                            monthOfQuarter === m ? "border-[#E8A838] text-[#E8A838] bg-[#E8A83818]" : "border-[#E3E3E1] text-[#9B9A97] hover:border-[#D5D5D3]"
+                            monthOfQuarter === m ? "border-[#E8A838] text-[#E8A838] bg-[#E8A83818]" : "border-[#E2E8F0] text-[#64748B] hover:border-[#CBD5E1]"
                           )}
                         >
                           Month {m}
                         </button>
                       ))}
                     </div>
-                    <p className="font-ui text-[11px] text-[#C4C4C2] mt-2">
+                    <p className="font-ui text-[11px] text-[#94A3B8] mt-2">
                       Month 1 = Jan/Apr/Jul/Oct · Month 2 = Feb/May/Aug/Nov · Month 3 = Mar/Jun/Sep/Dec
                     </p>
                   </div>
@@ -496,7 +496,7 @@ function HabitWizard({ userId, areas, initialFreq, onClose }: WizardProps) {
               {/* Yearly schedule */}
               {freq === "yearly" && (
                 <div>
-                  <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-2 block">Month</label>
+                  <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#64748B] mb-2 block">Month</label>
                   <div className="grid grid-cols-4 gap-2">
                     {MONTH_LABELS.map((m, i) => (
                       <button
@@ -504,7 +504,7 @@ function HabitWizard({ userId, areas, initialFreq, onClose }: WizardProps) {
                         onClick={() => setMonth(i + 1)}
                         className={cn(
                           "py-2 rounded border font-ui text-[12px] transition-colors",
-                          month === i + 1 ? "border-[#E85538] text-[#E85538] bg-[#E8553818]" : "border-[#E3E3E1] text-[#9B9A97] hover:border-[#D5D5D3]"
+                          month === i + 1 ? "border-[#E85538] text-[#E85538] bg-[#E8553818]" : "border-[#E2E8F0] text-[#64748B] hover:border-[#CBD5E1]"
                         )}
                       >
                         {m}
@@ -520,36 +520,36 @@ function HabitWizard({ userId, areas, initialFreq, onClose }: WizardProps) {
           {step === 4 && (
             <div className="space-y-4">
               <div>
-                <p className="font-ui text-[13px] text-[#191919] mb-1">What will get in your way?</p>
-                <p className="font-ui text-[11px] text-[#9B9A97] mb-4">
+                <p className="font-ui text-[13px] text-[#0F172A] mb-1">What will get in your way?</p>
+                <p className="font-ui text-[11px] text-[#64748B] mb-4">
                   Mental contrasting (WOOP) outperforms positive thinking alone by 2× in forming durable habits (Oettingen 2014).
                 </p>
               </div>
               <div>
-                <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-1.5 block">
+                <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#64748B] mb-1.5 block">
                   Most likely obstacle
                 </label>
                 <input
                   value={obstacle}
                   onChange={(e) => setObstacle(e.target.value)}
                   placeholder="e.g. I feel tired and skip it"
-                  className="w-full bg-[#FFFFFF] border border-[#E3E3E1] rounded px-3 py-2.5 font-ui text-[13px] text-[#191919] placeholder:text-[#C4C4C2] outline-none focus:border-[#D5D5D3]"
+                  className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded px-3 py-2.5 font-ui text-[13px] text-[#0F172A] placeholder:text-[#94A3B8] outline-none focus:border-[#CBD5E1]"
                 />
               </div>
               <div>
-                <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-1.5 block">
+                <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#64748B] mb-1.5 block">
                   If–then plan (Gollwitzer 1999)
                 </label>
-                <div className="flex items-center gap-0 bg-[#FFFFFF] border border-[#E3E3E1] rounded overflow-hidden focus-within:border-[#D5D5D3]">
-                  <span className="font-ui text-[12px] text-[#C4C4C2] pl-3 shrink-0 whitespace-nowrap">If {obstacle.trim() ? `"${obstacle.trim()}"` : "[obstacle]"}, then</span>
+                <div className="flex items-center gap-0 bg-[#FFFFFF] border border-[#E2E8F0] rounded overflow-hidden focus-within:border-[#CBD5E1]">
+                  <span className="font-ui text-[12px] text-[#94A3B8] pl-3 shrink-0 whitespace-nowrap">If {obstacle.trim() ? `"${obstacle.trim()}"` : "[obstacle]"}, then</span>
                   <input
                     value={ifThen}
                     onChange={(e) => setIfThen(e.target.value)}
                     placeholder="I will do 5 min instead"
-                    className="flex-1 bg-transparent px-2 py-2.5 font-ui text-[13px] text-[#191919] placeholder:text-[#C4C4C2] outline-none"
+                    className="flex-1 bg-transparent px-2 py-2.5 font-ui text-[13px] text-[#0F172A] placeholder:text-[#94A3B8] outline-none"
                   />
                 </div>
-                <p className="font-ui text-[11px] text-[#C4C4C2] mt-1.5">
+                <p className="font-ui text-[11px] text-[#94A3B8] mt-1.5">
                   Specific if-then plans improve follow-through by 200–300% (Gollwitzer &amp; Sheeran 2006).
                 </p>
               </div>
@@ -560,13 +560,13 @@ function HabitWizard({ userId, areas, initialFreq, onClose }: WizardProps) {
           {step === 5 && (
             <div className="space-y-4">
               <div>
-                <p className="font-ui text-[13px] text-[#191919] mb-1">What is your "worst day" version?</p>
-                <p className="font-ui text-[11px] text-[#9B9A97] mb-4">
+                <p className="font-ui text-[13px] text-[#0F172A] mb-1">What is your "worst day" version?</p>
+                <p className="font-ui text-[11px] text-[#64748B] mb-4">
                   Tiny Habits (Fogg 2020): define a minimum version for low-energy days. Keeping the chain unbroken matters more than intensity — missing twice in a row breaks habit formation (Lally et al. 2010).
                 </p>
               </div>
               <div>
-                <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-1.5 block">
+                <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#64748B] mb-1.5 block">
                   Minimum version — bad day fallback
                 </label>
                 <input
@@ -578,30 +578,30 @@ function HabitWizard({ userId, areas, initialFreq, onClose }: WizardProps) {
                     : freq === "monthly" ? "e.g. Just open the journal"
                     : "e.g. Read one page of notes"
                   }
-                  className="w-full bg-[#FFFFFF] border border-[#E3E3E1] rounded px-3 py-2.5 font-ui text-[13px] text-[#191919] placeholder:text-[#C4C4C2] outline-none focus:border-[#D5D5D3]"
+                  className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded px-3 py-2.5 font-ui text-[13px] text-[#0F172A] placeholder:text-[#94A3B8] outline-none focus:border-[#CBD5E1]"
                 />
               </div>
 
               {/* Summary */}
-              <div className="bg-[#F7F7F5] border border-[#E8E8E6] rounded p-4 space-y-2">
-                <p className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#C4C4C2] mb-2">Summary</p>
+              <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded p-4 space-y-2">
+                <p className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#94A3B8] mb-2">Summary</p>
                 {identity && (
-                  <p className="font-ui text-[12px] text-[#9B9A97]">
-                    <span className="text-[#C4C4C2]">Identity: </span>I am becoming someone who {identity}
+                  <p className="font-ui text-[12px] text-[#64748B]">
+                    <span className="text-[#94A3B8]">Identity: </span>I am becoming someone who {identity}
                   </p>
                 )}
-                <p className="font-ui text-[12px] text-[#191919]">{title}</p>
-                <p className="font-ui text-[12px] text-[#9B9A97]">
-                  <span className="text-[#C4C4C2]">Cadence: </span>{FREQ_CONFIG[freq].label}
+                <p className="font-ui text-[12px] text-[#0F172A]">{title}</p>
+                <p className="font-ui text-[12px] text-[#64748B]">
+                  <span className="text-[#94A3B8]">Cadence: </span>{FREQ_CONFIG[freq].label}
                 </p>
                 {obstacle && (
-                  <p className="font-ui text-[12px] text-[#9B9A97]">
-                    <span className="text-[#C4C4C2]">If obstacle: </span>{ifThen || "—"}
+                  <p className="font-ui text-[12px] text-[#64748B]">
+                    <span className="text-[#94A3B8]">If obstacle: </span>{ifThen || "—"}
                   </p>
                 )}
                 {minimum && (
-                  <p className="font-ui text-[12px] text-[#9B9A97]">
-                    <span className="text-[#C4C4C2]">Bad-day version: </span>{minimum}
+                  <p className="font-ui text-[12px] text-[#64748B]">
+                    <span className="text-[#94A3B8]">Bad-day version: </span>{minimum}
                   </p>
                 )}
               </div>
@@ -610,10 +610,10 @@ function HabitWizard({ userId, areas, initialFreq, onClose }: WizardProps) {
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-4 border-t border-[#E3E3E1] flex items-center justify-between">
+        <div className="px-5 py-4 border-t border-[#E2E8F0] flex items-center justify-between">
           <button
             onClick={() => step > 1 ? setStep((s) => (s - 1) as 1|2|3|4|5) : onClose()}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded border border-[#E3E3E1] font-ui text-[13px] text-[#9B9A97] hover:text-[#191919] transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded border border-[#E2E8F0] font-ui text-[13px] text-[#64748B] hover:text-[#0F172A] transition-colors"
           >
             <ArrowLeft size={13} />
             {step === 1 ? "Cancel" : "Back"}
@@ -623,7 +623,7 @@ function HabitWizard({ userId, areas, initialFreq, onClose }: WizardProps) {
             <button
               onClick={() => setStep((s) => (s + 1) as 1|2|3|4|5)}
               disabled={!canNext[step]}
-              className="flex items-center gap-1.5 px-4 py-1.5 rounded bg-[#2383E2] font-ui text-[13px] font-medium text-[#FFFFFF] hover:bg-[#D4B55A] disabled:opacity-40 transition-colors"
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded bg-[#2563EB] font-ui text-[13px] font-medium text-[#FFFFFF] hover:bg-[#D4B55A] disabled:opacity-40 transition-colors"
             >
               Next
               <ArrowRight size={13} />
@@ -718,12 +718,12 @@ export default function HabitsPage() {
     <div className="h-full flex flex-col bg-[#FFFFFF]">
 
       {/* Header */}
-      <div className="px-7 py-5 border-b border-[#E3E3E1] shrink-0">
+      <div className="px-7 py-5 border-b border-[#E2E8F0] shrink-0">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="font-ui text-[22px] font-semibold text-[#191919]">Habits &amp; Routines</h1>
+          <h1 className="font-ui text-[22px] font-semibold text-[#0F172A]">Habits &amp; Routines</h1>
           <button
             onClick={() => setWizardOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 border border-[#2383E2] text-[#2383E2] rounded font-ui text-[12px] hover:bg-[rgba(35,131,226,0.10)] transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 border border-[#2563EB] text-[#2563EB] rounded font-ui text-[12px] hover:bg-[rgba(37,99,235,0.10)] transition-colors"
           >
             <Plus size={12} />
             New Routine
@@ -741,13 +741,13 @@ export default function HabitsPage() {
                 className={cn(
                   "flex items-center gap-1.5 px-3 py-1.5 rounded font-ui text-[12px] transition-colors",
                   activeTab === key
-                    ? "bg-[#E8E8E6] text-[#191919]"
-                    : "text-[#9B9A97] hover:text-[#6F6E69] hover:bg-[#F0F0EE]"
+                    ? "bg-[#EFF6FF] text-[#0F172A]"
+                    : "text-[#64748B] hover:text-[#475569] hover:bg-[#F1F5F9]"
                 )}
               >
                 {label}
                 {count > 0 && (
-                  <span className={cn("font-ui text-[11px] tabular-nums", activeTab === key ? "text-[#9B9A97]" : "text-[#C4C4C2]")}>
+                  <span className={cn("font-ui text-[11px] tabular-nums", activeTab === key ? "text-[#64748B]" : "text-[#94A3B8]")}>
                     {count}
                   </span>
                 )}
@@ -761,17 +761,17 @@ export default function HabitsPage() {
           <div className="flex items-center gap-3 mt-3">
             <button
               onClick={() => setWeekOffset((v) => v - 1)}
-              className="w-7 h-7 flex items-center justify-center rounded border border-[#E3E3E1] text-[#9B9A97] hover:text-[#191919] hover:border-[#D5D5D3] transition-colors"
+              className="w-7 h-7 flex items-center justify-center rounded border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A] hover:border-[#CBD5E1] transition-colors"
             >
               <ChevronLeft size={14} />
             </button>
-            <span className="font-ui text-[13px] text-[#191919] w-48 text-center">
+            <span className="font-ui text-[13px] text-[#0F172A] w-48 text-center">
               {format(weekDays[0], "d MMM")} – {format(weekDays[6], "d MMM yyyy")}
             </span>
             <button
               onClick={() => setWeekOffset((v) => v + 1)}
               disabled={weekOffset >= 0}
-              className="w-7 h-7 flex items-center justify-center rounded border border-[#E3E3E1] text-[#9B9A97] hover:text-[#191919] hover:border-[#D5D5D3] disabled:opacity-30 transition-colors"
+              className="w-7 h-7 flex items-center justify-center rounded border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A] hover:border-[#CBD5E1] disabled:opacity-30 transition-colors"
             >
               <ChevronRight size={14} />
             </button>
@@ -787,15 +787,15 @@ export default function HabitsPage() {
           <div className="flex items-center gap-3 mt-3">
             <button
               onClick={() => setYearOffset((v) => v - 1)}
-              className="w-7 h-7 flex items-center justify-center rounded border border-[#E3E3E1] text-[#9B9A97] hover:text-[#191919] hover:border-[#D5D5D3] transition-colors"
+              className="w-7 h-7 flex items-center justify-center rounded border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A] hover:border-[#CBD5E1] transition-colors"
             >
               <ChevronLeft size={14} />
             </button>
-            <span className="font-ui text-[13px] text-[#191919] w-16 text-center tabular-nums">{viewYear}</span>
+            <span className="font-ui text-[13px] text-[#0F172A] w-16 text-center tabular-nums">{viewYear}</span>
             <button
               onClick={() => setYearOffset((v) => v + 1)}
               disabled={yearOffset >= 0}
-              className="w-7 h-7 flex items-center justify-center rounded border border-[#E3E3E1] text-[#9B9A97] hover:text-[#191919] hover:border-[#D5D5D3] disabled:opacity-30 transition-colors"
+              className="w-7 h-7 flex items-center justify-center rounded border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A] hover:border-[#CBD5E1] disabled:opacity-30 transition-colors"
             >
               <ChevronRight size={14} />
             </button>
@@ -817,14 +817,14 @@ export default function HabitsPage() {
             {tabHabits.length > 0 && (
               <div>
                 {/* Column headers */}
-                <div className="grid grid-cols-[1fr_repeat(7,36px)_40px] gap-1 px-7 py-2 bg-[#F7F7F5] border-b border-[#E3E3E1] sticky top-0 z-10">
+                <div className="grid grid-cols-[1fr_repeat(7,36px)_40px] gap-1 px-7 py-2 bg-[#FFFFFF] border-b border-[#E2E8F0] sticky top-0 z-10">
                   <div />
                   {weekDays.map((day, i) => {
                     const isToday = toIso(day) === TODAY;
                     return (
                       <div key={i} className="flex flex-col items-center gap-0.5">
-                        <span className={cn("font-ui text-[11px] uppercase tracking-[0.08em]", isToday ? "text-[#4A9EE0]" : "text-[#C4C4C2]")}>{DAY_LABELS[i]}</span>
-                        <span className={cn("font-ui text-[11px] tabular-nums", isToday ? "text-[#4A9EE0] font-semibold" : "text-[#C4C4C2]")}>{format(day, "d")}</span>
+                        <span className={cn("font-ui text-[11px] uppercase tracking-[0.08em]", isToday ? "text-[#4A9EE0]" : "text-[#94A3B8]")}>{DAY_LABELS[i]}</span>
+                        <span className={cn("font-ui text-[11px] tabular-nums", isToday ? "text-[#4A9EE0] font-semibold" : "text-[#94A3B8]")}>{format(day, "d")}</span>
                       </div>
                     );
                   })}
@@ -834,11 +834,11 @@ export default function HabitsPage() {
                   const area = areaMap[habit.areaId];
                   const doneThisWeek = weekDays.filter((d) => isWeekDone(habit._id, toIso(d))).length;
                   return (
-                    <div key={habit._id} className="grid grid-cols-[1fr_repeat(7,36px)_40px] gap-1 px-7 py-3 border-b border-[#E8E8E6] hover:bg-[#F7F7F5] transition-colors items-center group">
+                    <div key={habit._id} className="grid grid-cols-[1fr_repeat(7,36px)_40px] gap-1 px-7 py-3 border-b border-[#E2E8F0] hover:bg-[#FFFFFF] transition-colors items-center group">
                       <div className="flex items-center gap-2.5 min-w-0">
                         {area?.icon && <span className="text-[13px] shrink-0">{area.icon}</span>}
                         <div className="min-w-0">
-                          <p className="font-ui text-[13px] text-[#191919] truncate">{habit.title}</p>
+                          <p className="font-ui text-[13px] text-[#0F172A] truncate">{habit.title}</p>
                           {area && <p className="font-ui text-[11px] truncate" style={{ color: area.color }}>{area.name}</p>}
                         </div>
                         {habit.currentStreak > 0 && (
@@ -863,7 +863,7 @@ export default function HabitsPage() {
                       })}
                       <button
                         onClick={() => archiveHabit({ id: habit._id })}
-                        className="opacity-0 group-hover:opacity-100 flex justify-center text-[#C4C4C2] hover:text-[#E85538] transition-all"
+                        className="opacity-0 group-hover:opacity-100 flex justify-center text-[#94A3B8] hover:text-[#E85538] transition-all"
                       >
                         <MoreHorizontal size={13} />
                       </button>
@@ -883,11 +883,11 @@ export default function HabitsPage() {
               const done   = weekCount(habit._id);
               const target = habit.targetDaysPerWeek ?? 3;
               return (
-                <div key={habit._id} className="flex items-center gap-4 px-7 py-4 border-b border-[#E8E8E6] hover:bg-[#F7F7F5] transition-colors group">
+                <div key={habit._id} className="flex items-center gap-4 px-7 py-4 border-b border-[#E2E8F0] hover:bg-[#FFFFFF] transition-colors group">
                   <div className="flex items-center gap-2.5 min-w-0 flex-1">
                     {area?.icon && <span className="text-[14px] shrink-0">{area.icon}</span>}
                     <div className="min-w-0">
-                      <p className="font-ui text-[13px] text-[#191919] truncate">{habit.title}</p>
+                      <p className="font-ui text-[13px] text-[#0F172A] truncate">{habit.title}</p>
                       {area && <p className="font-ui text-[11px] truncate" style={{ color: area.color }}>{area.name}</p>}
                     </div>
                     {habit.currentStreak > 0 && (
@@ -905,7 +905,7 @@ export default function HabitsPage() {
                   />
                   <button
                     onClick={() => archiveHabit({ id: habit._id })}
-                    className="opacity-0 group-hover:opacity-100 text-[#C4C4C2] hover:text-[#E85538] transition-all"
+                    className="opacity-0 group-hover:opacity-100 text-[#94A3B8] hover:text-[#E85538] transition-all"
                   >
                     <MoreHorizontal size={13} />
                   </button>
@@ -921,16 +921,16 @@ export default function HabitsPage() {
             {tabHabits.map((habit) => {
               const area = areaMap[habit.areaId];
               return (
-                <div key={habit._id} className="px-7 py-4 border-b border-[#E8E8E6] hover:bg-[#F7F7F5] transition-colors group">
+                <div key={habit._id} className="px-7 py-4 border-b border-[#E2E8F0] hover:bg-[#FFFFFF] transition-colors group">
                   <div className="flex items-center gap-2.5 mb-3">
                     {area?.icon && <span className="text-[14px]">{area.icon}</span>}
                     <div className="flex-1 min-w-0">
-                      <p className="font-ui text-[13px] text-[#191919] truncate">{habit.title}</p>
+                      <p className="font-ui text-[13px] text-[#0F172A] truncate">{habit.title}</p>
                       {area && <p className="font-ui text-[11px]" style={{ color: area.color }}>{area.name}</p>}
                     </div>
                     <button
                       onClick={() => archiveHabit({ id: habit._id })}
-                      className="opacity-0 group-hover:opacity-100 text-[#C4C4C2] hover:text-[#E85538] transition-all"
+                      className="opacity-0 group-hover:opacity-100 text-[#94A3B8] hover:text-[#E85538] transition-all"
                     >
                       <MoreHorizontal size={13} />
                     </button>
@@ -950,9 +950,9 @@ export default function HabitsPage() {
                           className={cn(
                             "flex flex-col items-center gap-0.5 px-2 py-1.5 rounded border transition-all",
                             done ? "border-[#4CAF6B] bg-[#4CAF6B18] text-[#4CAF6B]"
-                              : isFuture ? "border-[#E8E8E6] text-[#E3E3E1] cursor-not-allowed"
-                              : isCurrent ? "border-[#2383E2] text-[#2383E2]"
-                              : "border-[#E3E3E1] text-[#9B9A97] hover:border-[#D5D5D3]"
+                              : isFuture ? "border-[#E2E8F0] text-[#E2E8F0] cursor-not-allowed"
+                              : isCurrent ? "border-[#2563EB] text-[#2563EB]"
+                              : "border-[#E2E8F0] text-[#64748B] hover:border-[#CBD5E1]"
                           )}
                         >
                           <span className="font-ui text-[11px]">{MONTH_LABELS[i]}</span>
@@ -973,16 +973,16 @@ export default function HabitsPage() {
             {tabHabits.map((habit) => {
               const area = areaMap[habit.areaId];
               return (
-                <div key={habit._id} className="px-7 py-4 border-b border-[#E8E8E6] hover:bg-[#F7F7F5] transition-colors group">
+                <div key={habit._id} className="px-7 py-4 border-b border-[#E2E8F0] hover:bg-[#FFFFFF] transition-colors group">
                   <div className="flex items-center gap-2.5 mb-3">
                     {area?.icon && <span className="text-[14px]">{area.icon}</span>}
                     <div className="flex-1 min-w-0">
-                      <p className="font-ui text-[13px] text-[#191919] truncate">{habit.title}</p>
+                      <p className="font-ui text-[13px] text-[#0F172A] truncate">{habit.title}</p>
                       {area && <p className="font-ui text-[11px]" style={{ color: area.color }}>{area.name}</p>}
                     </div>
                     <button
                       onClick={() => archiveHabit({ id: habit._id })}
-                      className="opacity-0 group-hover:opacity-100 text-[#C4C4C2] hover:text-[#E85538] transition-all"
+                      className="opacity-0 group-hover:opacity-100 text-[#94A3B8] hover:text-[#E85538] transition-all"
                     >
                       <MoreHorizontal size={13} />
                     </button>
@@ -1001,9 +1001,9 @@ export default function HabitsPage() {
                           className={cn(
                             "flex flex-col items-center gap-1 px-5 py-3 rounded border transition-all",
                             done ? "border-[#4CAF6B] bg-[#4CAF6B18] text-[#4CAF6B]"
-                              : isFuture ? "border-[#E8E8E6] text-[#E3E3E1] cursor-not-allowed"
+                              : isFuture ? "border-[#E2E8F0] text-[#E2E8F0] cursor-not-allowed"
                               : isCurrent ? "border-[#E8A838] text-[#E8A838]"
-                              : "border-[#E3E3E1] text-[#9B9A97] hover:border-[#D5D5D3]"
+                              : "border-[#E2E8F0] text-[#64748B] hover:border-[#CBD5E1]"
                           )}
                         >
                           <span className="font-ui text-[13px] font-medium">{ql}</span>
@@ -1028,11 +1028,11 @@ export default function HabitsPage() {
               const done = isYearDone(habit._id, canonical);
               const isFuture = viewYear > nowYear;
               return (
-                <div key={habit._id} className="flex items-center gap-4 px-7 py-4 border-b border-[#E8E8E6] hover:bg-[#F7F7F5] transition-colors group">
+                <div key={habit._id} className="flex items-center gap-4 px-7 py-4 border-b border-[#E2E8F0] hover:bg-[#FFFFFF] transition-colors group">
                   <div className="flex items-center gap-2.5 min-w-0 flex-1">
                     {area?.icon && <span className="text-[14px] shrink-0">{area.icon}</span>}
                     <div className="min-w-0">
-                      <p className="font-ui text-[13px] text-[#191919] truncate">{habit.title}</p>
+                      <p className="font-ui text-[13px] text-[#0F172A] truncate">{habit.title}</p>
                       {area && <p className="font-ui text-[11px]" style={{ color: area.color }}>{area.name}</p>}
                     </div>
                   </div>
@@ -1042,15 +1042,15 @@ export default function HabitsPage() {
                     className={cn(
                       "w-8 h-8 rounded border flex items-center justify-center transition-all shrink-0",
                       done ? "bg-[#4CAF6B] border-[#4CAF6B] text-[#FFFFFF]"
-                        : isFuture ? "border-[#E8E8E6] text-[#E3E3E1] cursor-not-allowed"
-                        : "border-[#E3E3E1] text-[#C4C4C2] hover:border-[#2383E2] hover:text-[#2383E2]"
+                        : isFuture ? "border-[#E2E8F0] text-[#E2E8F0] cursor-not-allowed"
+                        : "border-[#E2E8F0] text-[#94A3B8] hover:border-[#2563EB] hover:text-[#2563EB]"
                     )}
                   >
                     {done && <Check size={14} strokeWidth={2.5} />}
                   </button>
                   <button
                     onClick={() => archiveHabit({ id: habit._id })}
-                    className="opacity-0 group-hover:opacity-100 text-[#C4C4C2] hover:text-[#E85538] transition-all"
+                    className="opacity-0 group-hover:opacity-100 text-[#94A3B8] hover:text-[#E85538] transition-all"
                   >
                     <MoreHorizontal size={13} />
                   </button>
@@ -1063,11 +1063,11 @@ export default function HabitsPage() {
         {/* Empty state */}
         {tabHabits.length === 0 && (
           <div className="px-7 py-20 flex flex-col items-center text-center">
-            <div className="w-10 h-10 rounded border border-[#E3E3E1] flex items-center justify-center mb-4">
-              <Flame size={18} className="text-[#C4C4C2]" />
+            <div className="w-10 h-10 rounded border border-[#E2E8F0] flex items-center justify-center mb-4">
+              <Flame size={18} className="text-[#94A3B8]" />
             </div>
-            <p className="font-ui text-[15px] text-[#9B9A97] mb-1">No {FREQ_CONFIG[activeTab].label.toLowerCase()} routines yet</p>
-            <p className="font-ui text-[12px] text-[#C4C4C2] mb-6 max-w-[280px]">
+            <p className="font-ui text-[15px] text-[#64748B] mb-1">No {FREQ_CONFIG[activeTab].label.toLowerCase()} routines yet</p>
+            <p className="font-ui text-[12px] text-[#94A3B8] mb-6 max-w-[280px]">
               {activeTab === "daily"     && "Daily habits build automaticity — the actions that happen without thinking (Clear 2018)."}
               {activeTab === "weekly"    && "Weekly habits form with consistent repetition across several months (Lally et al. 2010)."}
               {activeTab === "monthly"   && "Monthly rituals create deliberate touch points for reflection and renewal."}
@@ -1076,7 +1076,7 @@ export default function HabitsPage() {
             </p>
             <button
               onClick={() => setWizardOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 border border-[#2383E2] text-[#2383E2] rounded font-ui text-[13px] hover:bg-[rgba(35,131,226,0.10)] transition-colors"
+              className="flex items-center gap-2 px-4 py-2 border border-[#2563EB] text-[#2563EB] rounded font-ui text-[13px] hover:bg-[rgba(37,99,235,0.10)] transition-colors"
             >
               <Plus size={13} />
               Add {FREQ_CONFIG[activeTab].label} Routine

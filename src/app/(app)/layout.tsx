@@ -11,7 +11,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex h-screen bg-[#FFFFFF] overflow-hidden">
+    <div className="flex h-screen bg-[#F7F8FA] overflow-hidden">
       <Sidebar userId={userId ?? ""} />
       <main className="flex-1 overflow-auto">{children}</main>
     </div>
