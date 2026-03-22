@@ -25,26 +25,26 @@ export default function SettingsPage() {
   return (
     <div className="p-8 max-w-2xl mx-auto">
       <div className="mb-8">
-        <h1 className="font-display text-3xl italic text-[#F2EEE8] mb-1">
+        <h1 className="font-display text-3xl font-semibold text-[#191919] mb-1">
           Settings
         </h1>
-        <p className="text-[#6B6760] font-ui text-sm">
+        <p className="text-[#9B9A97] font-ui text-sm">
           Account and preferences
         </p>
       </div>
 
       {/* Account */}
       <section className="mb-8">
-        <h2 className="text-[#6B6760] font-ui text-[11px] tracking-[0.2em] uppercase mb-3">
+        <h2 className="text-[#9B9A97] font-ui text-[11px] tracking-[0.2em] uppercase mb-3">
           Account
         </h2>
-        <div className="border border-[#2A2A2E] rounded p-4 bg-[#111113] flex items-center gap-4">
+        <div className="border border-[#E3E3E1] rounded p-4 bg-[#F7F7F5] flex items-center gap-4">
           <UserButton />
           <div>
-            <p className="font-ui text-sm text-[#F2EEE8]">
+            <p className="font-ui text-sm text-[#191919]">
               {user?.fullName ?? "User"}
             </p>
-            <p className="font-ui text-xs text-[#6B6760]">
+            <p className="font-ui text-xs text-[#9B9A97]">
               {user?.emailAddresses[0]?.emailAddress}
             </p>
           </div>
@@ -53,27 +53,27 @@ export default function SettingsPage() {
 
       {/* System */}
       <section className="mb-8">
-        <h2 className="text-[#6B6760] font-ui text-[11px] tracking-[0.2em] uppercase mb-3">
+        <h2 className="text-[#9B9A97] font-ui text-[11px] tracking-[0.2em] uppercase mb-3">
           System
         </h2>
-        <div className="border border-[#2A2A2E] rounded p-4 bg-[#111113]">
-          <p className="font-ui text-[13px] text-[#F2EEE8] mb-1">
-            Pulse Dark — Life OS
+        <div className="border border-[#E3E3E1] rounded p-4 bg-[#F7F7F5]">
+          <p className="font-ui text-[13px] text-[#191919] mb-1">
+            Notion-style Light — Life OS
           </p>
-          <p className="font-ui text-xs text-[#6B6760]">
-            Dark luxury design system · Cormorant Garamond + Outfit
+          <p className="font-ui text-xs text-[#9B9A97]">
+            Clean light design system · Inter + Outfit
           </p>
         </div>
       </section>
 
       {/* Danger zone */}
       <section>
-        <h2 className="text-[#6B6760] font-ui text-[11px] tracking-[0.2em] uppercase mb-3">
+        <h2 className="text-[#9B9A97] font-ui text-[11px] tracking-[0.2em] uppercase mb-3">
           Danger Zone
         </h2>
-        <div className="border border-[#E8553820] rounded p-4 bg-[#111113]">
-          <p className="font-ui text-[13px] text-[#F2EEE8] mb-1">Reset all data</p>
-          <p className="font-ui text-xs text-[#6B6760] mb-4">
+        <div className="border border-[#E8553820] rounded p-4 bg-[#F7F7F5]">
+          <p className="font-ui text-[13px] text-[#191919] mb-1">Reset all data</p>
+          <p className="font-ui text-xs text-[#9B9A97] mb-4">
             Permanently deletes all your areas, goals, tasks, habits, and history. Cannot be undone.
           </p>
 
@@ -90,7 +90,7 @@ export default function SettingsPage() {
               </button>
               <button
                 onClick={() => setConfirming(false)}
-                className="font-ui text-[12px] text-[#6B6760] hover:text-[#F2EEE8] transition-colors"
+                className="font-ui text-[12px] text-[#9B9A97] hover:text-[#191919] transition-colors"
               >
                 Cancel
               </button>

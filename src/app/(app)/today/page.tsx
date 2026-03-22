@@ -17,8 +17,8 @@ import { cn } from "@/lib/utils";
 const PRIORITY_META = {
   urgent: { icon: <Zap size={11} />,    color: "#E85538" },
   high:   { icon: <ArrowUp size={11} />, color: "#E8A838" },
-  medium: { icon: <Minus size={11} />,   color: "#C9A84C" },
-  low:    { icon: <Minus size={11} />,   color: "#6B6760" },
+  medium: { icon: <Minus size={11} />,   color: "#2383E2" },
+  low:    { icon: <Minus size={11} />,   color: "#9B9A97" },
 } as const;
 
 type Priority = keyof typeof PRIORITY_META;
@@ -87,10 +87,10 @@ export default function TodayPage() {
 
         {/* Header */}
         <div className="mb-6">
-          <p className="font-ui text-[11px] text-[#3A3A3E] tracking-[0.15em] uppercase mb-1">
+          <p className="font-ui text-[11px] text-[#C4C4C2] tracking-[0.15em] uppercase mb-1">
             {format(new Date(), "EEEE, d MMMM yyyy")}
           </p>
-          <h1 className="font-display text-[32px] italic text-[#F2EEE8] leading-tight [text-wrap:balance]">
+          <h1 className="font-display text-[32px] font-semibold text-[#191919] leading-tight [text-wrap:balance]">
             {greeting}.
           </h1>
         </div>
@@ -101,8 +101,8 @@ export default function TodayPage() {
             {
               label: "In Progress",
               value: inProgress.length,
-              icon: <Circle size={14} className="text-[#C9A84C]" />,
-              color: "#C9A84C",
+              icon: <Circle size={14} className="text-[#2383E2]" />,
+              color: "#2383E2",
             },
             {
               label: "Completed",
@@ -114,7 +114,7 @@ export default function TodayPage() {
               label: "Overdue",
               value: overdue.length,
               icon: <AlertCircle size={14} className="text-[#E85538]" />,
-              color: overdue.length > 0 ? "#E85538" : "#3A3A3E",
+              color: overdue.length > 0 ? "#E85538" : "#C4C4C2",
             },
             {
               label: "Open Tasks",
@@ -123,9 +123,9 @@ export default function TodayPage() {
               color: "#4A9EE0",
             },
           ].map(({ label, value, icon, color }) => (
-            <div key={label} className="bg-[#111113] border border-[#2A2A2E] rounded p-3.5">
+            <div key={label} className="bg-[#F7F7F5] border border-[#E3E3E1] rounded p-3.5">
               <div className="flex items-center justify-between mb-2">
-                <span className="font-ui text-[11px] text-[#6B6760] uppercase tracking-[0.1em]">{label}</span>
+                <span className="font-ui text-[11px] text-[#9B9A97] uppercase tracking-[0.1em]">{label}</span>
                 {icon}
               </div>
               <span className="font-ui text-[24px] font-medium tabular-nums" style={{ color }}>{value}</span>
@@ -141,24 +141,24 @@ export default function TodayPage() {
             {/* Today's Focus — tasks due today */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <h2 className="font-ui text-[11px] font-medium text-[#6B6760] uppercase tracking-[0.15em]">
+                <h2 className="font-ui text-[11px] font-medium text-[#9B9A97] uppercase tracking-[0.15em]">
                   Today&apos;s Focus
                 </h2>
-                <span className="font-ui text-[11px] text-[#3A3A3E]">{today.length} issues</span>
+                <span className="font-ui text-[11px] text-[#C4C4C2]">{today.length} issues</span>
               </div>
 
-              <div className="border border-[#2A2A2E] rounded overflow-hidden">
-                <div className="grid grid-cols-[20px_1fr_90px_70px] gap-3 px-4 py-2 bg-[#0D0D0F] border-b border-[#2A2A2E]">
+              <div className="border border-[#E3E3E1] rounded overflow-hidden">
+                <div className="grid grid-cols-[20px_1fr_90px_70px] gap-3 px-4 py-2 bg-[#F7F7F5] border-b border-[#E3E3E1]">
                   <div />
-                  <span className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#3A3A3E]">Issue</span>
-                  <span className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#3A3A3E]">Area</span>
-                  <span className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#3A3A3E]">Due</span>
+                  <span className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#C4C4C2]">Issue</span>
+                  <span className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#C4C4C2]">Area</span>
+                  <span className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#C4C4C2]">Due</span>
                 </div>
 
                 {today.length === 0 ? (
-                  <div className="px-4 py-8 text-center bg-[#111113]">
-                    <p className="font-ui text-[13px] text-[#6B6760]">No priority tasks for today.</p>
-                    <p className="font-ui text-[11px] text-[#3A3A3E] mt-1">Add due dates to surface tasks here.</p>
+                  <div className="px-4 py-8 text-center bg-[#F7F7F5]">
+                    <p className="font-ui text-[13px] text-[#9B9A97]">No priority tasks for today.</p>
+                    <p className="font-ui text-[11px] text-[#C4C4C2] mt-1">Add due dates to surface tasks here.</p>
                   </div>
                 ) : (
                   today.map((task) => {
@@ -169,7 +169,7 @@ export default function TodayPage() {
                     return (
                       <div
                         key={task._id}
-                        className="grid grid-cols-[20px_1fr_90px_70px] gap-3 px-4 py-2.5 border-b border-[#1E1E21] last:border-0 bg-[#111113] hover:bg-[#18181B] transition-colors items-center"
+                        className="grid grid-cols-[20px_1fr_90px_70px] gap-3 px-4 py-2.5 border-b border-[#E8E8E6] last:border-0 bg-[#F7F7F5] hover:bg-[#F0F0EE] transition-colors items-center"
                       >
                         <button
                           onClick={() => handleComplete(task._id, isDone)}
@@ -181,7 +181,7 @@ export default function TodayPage() {
                         </button>
                         <p className={cn(
                           "font-ui text-[13px] truncate",
-                          isDone ? "text-[#3A3A3E] line-through" : "text-[#F2EEE8]"
+                          isDone ? "text-[#C4C4C2] line-through" : "text-[#191919]"
                         )}>
                           {task.title}
                         </p>
@@ -195,7 +195,7 @@ export default function TodayPage() {
                         ) : <span />}
                         <span className={cn(
                           "font-ui text-[11px]",
-                          isOverdue ? "text-[#E85538]" : "text-[#6B6760]"
+                          isOverdue ? "text-[#E85538]" : "text-[#9B9A97]"
                         )}>
                           {task.dueDate ? format(new Date(task.dueDate), "d MMM") : "—"}
                         </span>
@@ -214,7 +214,7 @@ export default function TodayPage() {
                   <h2 className="font-ui text-[11px] font-medium text-[#E85538] uppercase tracking-[0.15em]">
                     Overdue
                   </h2>
-                  <span className="font-ui text-[11px] text-[#3A3A3E]">{overdue.length}</span>
+                  <span className="font-ui text-[11px] text-[#C4C4C2]">{overdue.length}</span>
                 </div>
                 <div className="border border-[#E8553820] rounded overflow-hidden">
                   {overdue.slice(0, 5).map((task) => {
@@ -223,10 +223,10 @@ export default function TodayPage() {
                     return (
                       <div
                         key={task._id}
-                        className="flex items-center gap-3 px-4 py-2.5 border-b border-[#1E1E21] last:border-0 bg-[#111113] hover:bg-[#18181B] transition-colors"
+                        className="flex items-center gap-3 px-4 py-2.5 border-b border-[#E8E8E6] last:border-0 bg-[#F7F7F5] hover:bg-[#F0F0EE] transition-colors"
                       >
                         <span style={{ color: pri.color }}>{pri.icon}</span>
-                        <span className="flex-1 font-ui text-[13px] text-[#F2EEE8] truncate">{task.title}</span>
+                        <span className="flex-1 font-ui text-[13px] text-[#191919] truncate">{task.title}</span>
                         {area && (
                           <span
                             className="font-ui text-[11px] px-1.5 py-0.5 rounded shrink-0"
@@ -242,8 +242,8 @@ export default function TodayPage() {
                     );
                   })}
                   {overdue.length > 5 && (
-                    <div className="px-4 py-2 bg-[#111113] border-t border-[#1E1E21]">
-                      <span className="font-ui text-[11px] text-[#6B6760]">+{overdue.length - 5} more overdue</span>
+                    <div className="px-4 py-2 bg-[#F7F7F5] border-t border-[#E8E8E6]">
+                      <span className="font-ui text-[11px] text-[#9B9A97]">+{overdue.length - 5} more overdue</span>
                     </div>
                   )}
                 </div>
@@ -259,17 +259,17 @@ export default function TodayPage() {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-1.5">
-                    <Flame size={11} className="text-[#C9A84C]" />
-                    <h2 className="font-ui text-[11px] font-medium text-[#6B6760] uppercase tracking-[0.15em]">
+                    <Flame size={11} className="text-[#2383E2]" />
+                    <h2 className="font-ui text-[11px] font-medium text-[#9B9A97] uppercase tracking-[0.15em]">
                       Daily Routines
                     </h2>
                   </div>
-                  <span className="font-ui text-[11px] text-[#3A3A3E] tabular-nums">
+                  <span className="font-ui text-[11px] text-[#C4C4C2] tabular-nums">
                     {habitsDoneToday}/{dailyHabits.length}
                   </span>
                 </div>
 
-                <div className="border border-[#2A2A2E] rounded overflow-hidden">
+                <div className="border border-[#E3E3E1] rounded overflow-hidden">
                   {dailyHabits.map((habit, i) => {
                     const isDone     = completedTodayIds.has(habit._id);
                     const isToggling = togglingHabit === habit._id;
@@ -277,27 +277,27 @@ export default function TodayPage() {
                       <div
                         key={habit._id}
                         className={cn(
-                          "flex items-center gap-3 px-3.5 py-2.5 bg-[#111113] hover:bg-[#18181B] transition-colors",
-                          i > 0 && "border-t border-[#1E1E21]"
+                          "flex items-center gap-3 px-3.5 py-2.5 bg-[#F7F7F5] hover:bg-[#F0F0EE] transition-colors",
+                          i > 0 && "border-t border-[#E8E8E6]"
                         )}
                       >
                         <button
                           onClick={() => handleToggleHabit(habit._id)}
                           disabled={isToggling}
                           className="flex items-center justify-center shrink-0 transition-opacity hover:opacity-80"
-                          style={{ color: isDone ? "#4CAF6B" : "#3A3A3E" }}
+                          style={{ color: isDone ? "#4CAF6B" : "#C4C4C2" }}
                         >
                           {isDone ? <CheckCircle2 size={14} /> : <Circle size={14} />}
                         </button>
                         <span className={cn(
                           "flex-1 font-ui text-[13px] truncate",
-                          isDone ? "text-[#3A3A3E] line-through" : "text-[#F2EEE8]"
+                          isDone ? "text-[#C4C4C2] line-through" : "text-[#191919]"
                         )}>
                           {habit.title}
                         </span>
                         {/* Streak indicator (Seinfeld "don't break the chain") */}
                         {(habit.currentStreak ?? 0) > 0 && (
-                          <span className="font-ui text-[11px] text-[#C9A84C] shrink-0 tabular-nums">
+                          <span className="font-ui text-[11px] text-[#2383E2] shrink-0 tabular-nums">
                             {habit.currentStreak}d
                           </span>
                         )}
@@ -309,16 +309,16 @@ export default function TodayPage() {
                 {/* Progress bar for today's routines */}
                 {dailyHabits.length > 0 && (
                   <div className="mt-1.5 flex items-center gap-2">
-                    <div className="flex-1 h-0.5 bg-[#2A2A2E] rounded-full overflow-hidden">
+                    <div className="flex-1 h-0.5 bg-[#E3E3E1] rounded-full overflow-hidden">
                       <div
                         className="h-full rounded-full transition-all"
                         style={{
                           width: `${Math.round((habitsDoneToday / dailyHabits.length) * 100)}%`,
-                          backgroundColor: habitsDoneToday === dailyHabits.length ? "#4CAF6B" : "#C9A84C",
+                          backgroundColor: habitsDoneToday === dailyHabits.length ? "#4CAF6B" : "#2383E2",
                         }}
                       />
                     </div>
-                    <span className="font-ui text-[11px] text-[#3A3A3E] tabular-nums shrink-0">
+                    <span className="font-ui text-[11px] text-[#C4C4C2] tabular-nums shrink-0">
                       {Math.round((habitsDoneToday / dailyHabits.length) * 100)}%
                     </span>
                   </div>
@@ -328,13 +328,13 @@ export default function TodayPage() {
 
             {/* Area Health */}
             <div>
-              <h2 className="font-ui text-[11px] font-medium text-[#6B6760] uppercase tracking-[0.15em] mb-2">
+              <h2 className="font-ui text-[11px] font-medium text-[#9B9A97] uppercase tracking-[0.15em] mb-2">
                 Area Health
               </h2>
-              <div className="border border-[#2A2A2E] rounded overflow-hidden">
+              <div className="border border-[#E3E3E1] rounded overflow-hidden">
                 {areas.length === 0 ? (
                   <div className="p-5 text-center">
-                    <p className="font-ui text-[13px] text-[#6B6760]">No areas yet.</p>
+                    <p className="font-ui text-[13px] text-[#9B9A97]">No areas yet.</p>
                   </div>
                 ) : (
                   areas.map((area, i) => {
@@ -344,14 +344,14 @@ export default function TodayPage() {
                       <div
                         key={area._id}
                         className={cn(
-                          "flex items-center gap-3 px-4 py-3 bg-[#111113] hover:bg-[#18181B] transition-colors cursor-pointer",
-                          i > 0 && "border-t border-[#1E1E21]"
+                          "flex items-center gap-3 px-4 py-3 bg-[#F7F7F5] hover:bg-[#F0F0EE] transition-colors cursor-pointer",
+                          i > 0 && "border-t border-[#E8E8E6]"
                         )}
                       >
                         <span className="w-2 h-2 rounded-sm shrink-0" style={{ backgroundColor: area.color }} />
-                        <span className="font-ui text-[13px] text-[#F2EEE8] flex-1 truncate">{area.name}</span>
+                        <span className="font-ui text-[13px] text-[#191919] flex-1 truncate">{area.name}</span>
                         <div className="flex items-center gap-2 shrink-0">
-                          <div className="w-14 h-1 bg-[#2A2A2E] rounded-full overflow-hidden">
+                          <div className="w-14 h-1 bg-[#E3E3E1] rounded-full overflow-hidden">
                             <div
                               className="h-full rounded-full transition-all"
                               style={{ width: `${score}%`, backgroundColor: color }}

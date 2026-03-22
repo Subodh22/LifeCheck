@@ -41,12 +41,12 @@ interface WizardArea {
 const AREA_TEMPLATES = [
   { id: "fitness",  name: "Health & Fitness", icon: "🏃", color: "#4CAF6B", category: "Health",        description: "Workouts, nutrition, wellness" },
   { id: "work",     name: "Work & Career",    icon: "💼", color: "#4A9EE0", category: "Work",           description: "Projects, career goals, deliverables" },
-  { id: "guitar",   name: "Creative",         icon: "🎸", color: "#C9A84C", category: "Creative",      description: "Music, art, writing, hobbies" },
+  { id: "guitar",   name: "Creative",         icon: "🎸", color: "#2383E2", category: "Creative",      description: "Music, art, writing, hobbies" },
   { id: "travel",   name: "Travel",           icon: "✈️", color: "#E85538", category: "Travel",        description: "Trips, adventures, planning" },
   { id: "finance",  name: "Finance",          icon: "💰", color: "#E8A838", category: "Finance",       description: "Budget, savings, investments" },
   { id: "learning", name: "Learning",         icon: "📚", color: "#9B59B6", category: "Learning",      description: "Courses, books, skills" },
   { id: "social",   name: "Relationships",    icon: "🤝", color: "#E8538A", category: "Relationships", description: "Family, friends, social goals" },
-  { id: "home",     name: "Home & Life",      icon: "🏠", color: "#6B6760", category: "Home",          description: "Household, admin, personal" },
+  { id: "home",     name: "Home & Life",      icon: "🏠", color: "#9B9A97", category: "Home",          description: "Household, admin, personal" },
 ];
 
 // ── Smart task suggestions ───────────────────────────────────────────────────
@@ -254,14 +254,14 @@ function suggestTasks(templateId: string, goal: string, metric: string, targetVa
 const PRI_META: Record<Priority, { icon: React.ReactNode; color: string; label: string }> = {
   urgent: { icon: <Zap size={10} />,     color: "#E85538", label: "Urgent" },
   high:   { icon: <ArrowUp size={10} />, color: "#E8A838", label: "High" },
-  medium: { icon: <Minus size={10} />,   color: "#C9A84C", label: "Medium" },
-  low:    { icon: <Minus size={10} />,   color: "#6B6760", label: "Low" },
+  medium: { icon: <Minus size={10} />,   color: "#2383E2", label: "Medium" },
+  low:    { icon: <Minus size={10} />,   color: "#9B9A97", label: "Low" },
 };
 
 const FREQ_META: Record<Frequency, { label: string; color: string; bg: string }> = {
   daily:  { label: "Daily",  color: "#4A9EE0", bg: "#4A9EE018" },
-  weekly: { label: "Weekly", color: "#C9A84C", bg: "#C9A84C18" },
-  once:   { label: "One-off",color: "#6B6760", bg: "#6B676018" },
+  weekly: { label: "Weekly", color: "#2383E2", bg: "#2383E218" },
+  once:   { label: "One-off",color: "#9B9A97", bg: "#9B9A9718" },
 };
 
 // ── Main page ─────────────────────────────────────────────────────────────────
@@ -399,14 +399,14 @@ export default function OnboardingPage() {
   const totalEnabledTasks = areas.reduce((s, a) => s + a.tasks.filter((t) => t.enabled && t.title.trim()).length, 0);
 
   return (
-    <div className="min-h-screen bg-[#0A0A0B] flex flex-col">
+    <div className="min-h-screen bg-[#FFFFFF] flex flex-col">
       {/* Top bar */}
-      <div className="border-b border-[#2A2A2E] px-8 py-3 flex items-center justify-between shrink-0">
+      <div className="border-b border-[#E3E3E1] px-8 py-3 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2.5">
-          <div className="w-5 h-5 rounded bg-[#C9A84C] flex items-center justify-center">
-            <span className="font-ui font-medium text-[11px] text-[#0A0A0B]">LO</span>
+          <div className="w-5 h-5 rounded bg-[#2383E2] flex items-center justify-center">
+            <span className="font-ui font-medium text-[11px] text-[#FFFFFF]">LO</span>
           </div>
-          <span className="font-ui text-[13px] font-medium text-[#F2EEE8]">Life OS</span>
+          <span className="font-ui text-[13px] font-medium text-[#191919]">Life OS</span>
         </div>
 
         {/* Steps */}
@@ -415,14 +415,14 @@ export default function OnboardingPage() {
             <div key={i} className="flex items-center gap-1">
               <div className={cn(
                 "flex items-center gap-1.5 px-2.5 py-1 rounded-full font-ui text-[11px] transition-colors",
-                i < step  ? "bg-[#C9A84C20] text-[#C9A84C]" :
-                i === step ? "bg-[#F2EEE820] text-[#F2EEE8]" :
-                             "text-[#3A3A3E]"
+                i < step  ? "bg-[#2383E220] text-[#2383E2]" :
+                i === step ? "bg-[#19191920] text-[#191919]" :
+                             "text-[#C4C4C2]"
               )}>
                 {i < step ? <Check size={10} /> : <span>{i + 1}</span>}
                 {label}
               </div>
-              {i < STEPS.length - 1 && <ChevronRight size={11} className="text-[#2A2A2E]" />}
+              {i < STEPS.length - 1 && <ChevronRight size={11} className="text-[#E3E3E1]" />}
             </div>
           ))}
         </div>
@@ -433,11 +433,11 @@ export default function OnboardingPage() {
       {/* ── STEP 0: Choose areas ─────────────────────────────────────────── */}
       {step === 0 && (
         <div className="flex-1 flex flex-col items-center justify-center px-8 py-12">
-          <p className="font-ui text-[12px] tracking-[0.2em] uppercase text-[#C9A84C] mb-3">Step 1</p>
-          <h1 className="font-display text-[40px] italic text-[#F2EEE8] mb-2 text-center">
+          <p className="font-ui text-[12px] tracking-[0.2em] uppercase text-[#2383E2] mb-3">Step 1</p>
+          <h1 className="font-display text-[40px] font-semibold text-[#191919] mb-2 text-center">
             What do you want to improve?
           </h1>
-          <p className="font-ui text-[14px] text-[#6B6760] mb-10 text-center">
+          <p className="font-ui text-[14px] text-[#9B9A97] mb-10 text-center">
             Pick the areas of your life you want to track. You can add more later.
           </p>
 
@@ -451,13 +451,13 @@ export default function OnboardingPage() {
                   className={cn(
                     "flex flex-col items-start gap-2 p-4 rounded border transition-all text-left relative",
                     isSelected
-                      ? "border-[#C9A84C] bg-[#C9A84C08]"
-                      : "border-[#2A2A2E] bg-[#111113] hover:border-[#333338]"
+                      ? "border-[#2383E2] bg-[#2383E208]"
+                      : "border-[#E3E3E1] bg-[#F7F7F5] hover:border-[#D5D5D3]"
                   )}
                 >
                   {isSelected && (
-                    <div className="absolute top-2.5 right-2.5 w-4 h-4 rounded-full bg-[#C9A84C] flex items-center justify-center">
-                      <Check size={9} className="text-[#0A0A0B]" />
+                    <div className="absolute top-2.5 right-2.5 w-4 h-4 rounded-full bg-[#2383E2] flex items-center justify-center">
+                      <Check size={9} className="text-[#FFFFFF]" />
                     </div>
                   )}
                   <div
@@ -467,8 +467,8 @@ export default function OnboardingPage() {
                     {tpl.icon}
                   </div>
                   <div>
-                    <p className="font-ui text-[13px] font-medium text-[#F2EEE8]">{tpl.name}</p>
-                    <p className="font-ui text-[11px] text-[#6B6760] mt-0.5">{tpl.description}</p>
+                    <p className="font-ui text-[13px] font-medium text-[#191919]">{tpl.name}</p>
+                    <p className="font-ui text-[11px] text-[#9B9A97] mt-0.5">{tpl.description}</p>
                   </div>
                 </button>
               );
@@ -478,7 +478,7 @@ export default function OnboardingPage() {
           <button
             onClick={goToGoals}
             disabled={selected.length === 0}
-            className="flex items-center gap-2 px-6 py-3 bg-[#C9A84C] rounded font-ui text-[14px] font-medium text-[#0A0A0B] hover:bg-[#D4B458] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="flex items-center gap-2 px-6 py-3 bg-[#2383E2] rounded font-ui text-[14px] font-medium text-[#FFFFFF] hover:bg-[#1a73d1] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
             Continue with {selected.length} area{selected.length !== 1 ? "s" : ""}
             <ChevronRight size={15} />
@@ -498,12 +498,12 @@ export default function OnboardingPage() {
                   "w-2 h-2 rounded-full transition-all",
                   i === areaIdx ? "w-6 rounded-full" : ""
                 )}
-                style={{ backgroundColor: i <= areaIdx ? a.color : "#2A2A2E" }}
+                style={{ backgroundColor: i <= areaIdx ? a.color : "#E3E3E1" }}
               />
             ))}
           </div>
 
-          <p className="font-ui text-[12px] tracking-[0.2em] uppercase text-[#6B6760] mb-2">
+          <p className="font-ui text-[12px] tracking-[0.2em] uppercase text-[#9B9A97] mb-2">
             Area {areaIdx + 1} of {areas.length}
           </p>
 
@@ -514,28 +514,28 @@ export default function OnboardingPage() {
             {areas[areaIdx].icon}
           </div>
 
-          <h1 className="font-display text-[36px] italic text-[#F2EEE8] mb-1 text-center">
+          <h1 className="font-display text-[36px] font-semibold text-[#191919] mb-1 text-center">
             {areas[areaIdx].name}
           </h1>
-          <p className="font-ui text-[13px] text-[#6B6760] mb-8 text-center">
+          <p className="font-ui text-[13px] text-[#9B9A97] mb-8 text-center">
             What&apos;s your main goal here, and how will you measure it?
           </p>
 
           <div className="w-full max-w-[540px] space-y-4">
             {/* Area name */}
             <div>
-              <label className="block font-ui text-[11px] tracking-[0.15em] uppercase text-[#6B6760] mb-1.5">Area name</label>
+              <label className="block font-ui text-[11px] tracking-[0.15em] uppercase text-[#9B9A97] mb-1.5">Area name</label>
               <input
                 value={areas[areaIdx].name}
                 onChange={(e) => updateArea(areaIdx, { name: e.target.value })}
-                className="w-full bg-[#111113] border border-[#2A2A2E] rounded px-3 py-2.5 font-ui text-[14px] text-[#F2EEE8] outline-none focus:border-[#C9A84C] transition-colors"
+                className="w-full bg-[#F7F7F5] border border-[#E3E3E1] rounded px-3 py-2.5 font-ui text-[14px] text-[#191919] outline-none focus:border-[#2383E2] transition-colors"
               />
             </div>
 
             {/* Goal */}
             <div>
-              <label className="block font-ui text-[11px] tracking-[0.15em] uppercase text-[#6B6760] mb-1.5">
-                Main goal <span className="normal-case tracking-normal text-[#3A3A3E]">— what do you want to achieve?</span>
+              <label className="block font-ui text-[11px] tracking-[0.15em] uppercase text-[#9B9A97] mb-1.5">
+                Main goal <span className="normal-case tracking-normal text-[#C4C4C2]">— what do you want to achieve?</span>
               </label>
               <input
                 autoFocus
@@ -550,14 +550,14 @@ export default function OnboardingPage() {
                   areas[areaIdx].templateId === "learning"? "e.g. Complete React course" :
                   "e.g. What does success look like?"
                 }
-                className="w-full bg-[#111113] border border-[#2A2A2E] rounded px-3 py-2.5 font-ui text-[14px] text-[#F2EEE8] placeholder:text-[#3A3A3E] outline-none focus:border-[#C9A84C] transition-colors"
+                className="w-full bg-[#F7F7F5] border border-[#E3E3E1] rounded px-3 py-2.5 font-ui text-[14px] text-[#191919] placeholder:text-[#C4C4C2] outline-none focus:border-[#2383E2] transition-colors"
               />
             </div>
 
             {/* Metric row */}
             <div className="grid grid-cols-3 gap-3">
               <div>
-                <label className="block font-ui text-[11px] tracking-[0.15em] uppercase text-[#6B6760] mb-1.5">
+                <label className="block font-ui text-[11px] tracking-[0.15em] uppercase text-[#9B9A97] mb-1.5">
                   Metric
                 </label>
                 <input
@@ -569,11 +569,11 @@ export default function OnboardingPage() {
                     areas[areaIdx].templateId === "finance" ? "$ saved" :
                     "e.g. kg, $, score…"
                   }
-                  className="w-full bg-[#111113] border border-[#2A2A2E] rounded px-3 py-2.5 font-ui text-[13px] text-[#F2EEE8] placeholder:text-[#3A3A3E] outline-none focus:border-[#C9A84C] transition-colors"
+                  className="w-full bg-[#F7F7F5] border border-[#E3E3E1] rounded px-3 py-2.5 font-ui text-[13px] text-[#191919] placeholder:text-[#C4C4C2] outline-none focus:border-[#2383E2] transition-colors"
                 />
               </div>
               <div>
-                <label className="block font-ui text-[11px] tracking-[0.15em] uppercase text-[#6B6760] mb-1.5">
+                <label className="block font-ui text-[11px] tracking-[0.15em] uppercase text-[#9B9A97] mb-1.5">
                   Current value
                 </label>
                 <input
@@ -581,11 +581,11 @@ export default function OnboardingPage() {
                   value={areas[areaIdx].currentValue}
                   onChange={(e) => updateArea(areaIdx, { currentValue: e.target.value })}
                   placeholder={areas[areaIdx].templateId === "fitness" ? "18" : "0"}
-                  className="w-full bg-[#111113] border border-[#2A2A2E] rounded px-3 py-2.5 font-ui text-[13px] text-[#F2EEE8] placeholder:text-[#3A3A3E] outline-none focus:border-[#C9A84C] transition-colors"
+                  className="w-full bg-[#F7F7F5] border border-[#E3E3E1] rounded px-3 py-2.5 font-ui text-[13px] text-[#191919] placeholder:text-[#C4C4C2] outline-none focus:border-[#2383E2] transition-colors"
                 />
               </div>
               <div>
-                <label className="block font-ui text-[11px] tracking-[0.15em] uppercase text-[#6B6760] mb-1.5">
+                <label className="block font-ui text-[11px] tracking-[0.15em] uppercase text-[#9B9A97] mb-1.5">
                   Target value
                 </label>
                 <input
@@ -593,21 +593,21 @@ export default function OnboardingPage() {
                   value={areas[areaIdx].targetValue}
                   onChange={(e) => updateArea(areaIdx, { targetValue: e.target.value })}
                   placeholder={areas[areaIdx].templateId === "fitness" ? "10" : "100"}
-                  className="w-full bg-[#111113] border border-[#2A2A2E] rounded px-3 py-2.5 font-ui text-[13px] text-[#F2EEE8] placeholder:text-[#3A3A3E] outline-none focus:border-[#C9A84C] transition-colors"
+                  className="w-full bg-[#F7F7F5] border border-[#E3E3E1] rounded px-3 py-2.5 font-ui text-[13px] text-[#191919] placeholder:text-[#C4C4C2] outline-none focus:border-[#2383E2] transition-colors"
                 />
               </div>
             </div>
 
             {/* Deadline */}
             <div>
-              <label className="block font-ui text-[11px] tracking-[0.15em] uppercase text-[#6B6760] mb-1.5">
-                Target deadline <span className="normal-case tracking-normal text-[#3A3A3E]">— optional</span>
+              <label className="block font-ui text-[11px] tracking-[0.15em] uppercase text-[#9B9A97] mb-1.5">
+                Target deadline <span className="normal-case tracking-normal text-[#C4C4C2]">— optional</span>
               </label>
               <input
                 type="date"
                 value={areas[areaIdx].deadline}
                 onChange={(e) => updateArea(areaIdx, { deadline: e.target.value })}
-                className="w-full bg-[#111113] border border-[#2A2A2E] rounded px-3 py-2.5 font-ui text-[13px] text-[#F2EEE8] outline-none focus:border-[#C9A84C] transition-colors [color-scheme:dark]"
+                className="w-full bg-[#F7F7F5] border border-[#E3E3E1] rounded px-3 py-2.5 font-ui text-[13px] text-[#191919] outline-none focus:border-[#2383E2] transition-colors [color-scheme:light]"
               />
             </div>
           </div>
@@ -616,7 +616,7 @@ export default function OnboardingPage() {
           <div className="flex items-center gap-3 mt-8">
             <button
               onClick={() => areaIdx > 0 ? setAreaIdx(areaIdx - 1) : setStep(0)}
-              className="flex items-center gap-2 px-4 py-2 border border-[#2A2A2E] rounded font-ui text-[13px] text-[#6B6760] hover:text-[#F2EEE8] hover:border-[#333338] transition-colors"
+              className="flex items-center gap-2 px-4 py-2 border border-[#E3E3E1] rounded font-ui text-[13px] text-[#9B9A97] hover:text-[#191919] hover:border-[#D5D5D3] transition-colors"
             >
               <ChevronLeft size={14} />
               Back
@@ -624,7 +624,7 @@ export default function OnboardingPage() {
             <button
               onClick={nextAreaGoal}
               disabled={!areas[areaIdx].goal.trim()}
-              className="flex items-center gap-2 px-6 py-2 bg-[#C9A84C] rounded font-ui text-[13px] font-medium text-[#0A0A0B] hover:bg-[#D4B458] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              className="flex items-center gap-2 px-6 py-2 bg-[#2383E2] rounded font-ui text-[13px] font-medium text-[#FFFFFF] hover:bg-[#1a73d1] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
             >
               {areaIdx < areas.length - 1 ? `Next: ${areas[areaIdx + 1].name}` : "Build my action plan"}
               <ChevronRight size={14} />
@@ -637,15 +637,15 @@ export default function OnboardingPage() {
       {step === 2 && (
         <div className="flex-1 flex flex-col overflow-hidden">
           <div className="text-center pt-8 pb-4 shrink-0">
-            <p className="font-ui text-[12px] tracking-[0.2em] uppercase text-[#C9A84C] mb-2">Step 3</p>
-            <h1 className="font-display text-[36px] italic text-[#F2EEE8] mb-1">Your action plan</h1>
-            <p className="font-ui text-[13px] text-[#6B6760]">
+            <p className="font-ui text-[12px] tracking-[0.2em] uppercase text-[#2383E2] mb-2">Step 3</p>
+            <h1 className="font-display text-[36px] font-semibold text-[#191919] mb-1">Your action plan</h1>
+            <p className="font-ui text-[13px] text-[#9B9A97]">
               Toggle tasks on/off, edit titles, and add your own. Checked tasks will be created.
             </p>
           </div>
 
           {/* Area tabs */}
-          <div className="flex items-center gap-1 px-8 border-b border-[#2A2A2E] shrink-0">
+          <div className="flex items-center gap-1 px-8 border-b border-[#E3E3E1] shrink-0">
             {areas.map((a, i) => (
               <button
                 key={i}
@@ -653,13 +653,13 @@ export default function OnboardingPage() {
                 className={cn(
                   "flex items-center gap-2 px-3 py-2.5 font-ui text-[13px] border-b-2 transition-colors",
                   areaIdx === i
-                    ? "border-[#C9A84C] text-[#F2EEE8]"
-                    : "border-transparent text-[#6B6760] hover:text-[#C4C0BA]"
+                    ? "border-[#2383E2] text-[#191919]"
+                    : "border-transparent text-[#9B9A97] hover:text-[#6F6E69]"
                 )}
               >
                 <span>{a.icon}</span>
                 {a.name}
-                <span className="font-ui text-[11px] text-[#3A3A3E] bg-[#18181B] px-1.5 py-0.5 rounded-full">
+                <span className="font-ui text-[11px] text-[#C4C4C2] bg-[#F0F0EE] px-1.5 py-0.5 rounded-full">
                   {a.tasks.filter((t) => t.enabled && t.title.trim()).length}
                 </span>
               </button>
@@ -671,14 +671,14 @@ export default function OnboardingPage() {
             {areas[areaIdx] && (
               <div className="max-w-[700px] mx-auto">
                 {/* Area goal recap */}
-                <div className="flex items-center justify-between mb-5 p-3 bg-[#111113] border border-[#2A2A2E] rounded">
+                <div className="flex items-center justify-between mb-5 p-3 bg-[#F7F7F5] border border-[#E3E3E1] rounded">
                   <div>
-                    <p className="font-ui text-[11px] text-[#3A3A3E] uppercase tracking-[0.12em] mb-0.5">Goal</p>
-                    <p className="font-ui text-[13px] text-[#F2EEE8]">{areas[areaIdx].goal || "—"}</p>
+                    <p className="font-ui text-[11px] text-[#C4C4C2] uppercase tracking-[0.12em] mb-0.5">Goal</p>
+                    <p className="font-ui text-[13px] text-[#191919]">{areas[areaIdx].goal || "—"}</p>
                   </div>
                   {areas[areaIdx].metric && (
                     <div className="text-right">
-                      <p className="font-ui text-[11px] text-[#3A3A3E] uppercase tracking-[0.12em] mb-0.5">Target</p>
+                      <p className="font-ui text-[11px] text-[#C4C4C2] uppercase tracking-[0.12em] mb-0.5">Target</p>
                       <p className="font-ui text-[13px]" style={{ color: areas[areaIdx].color }}>
                         {areas[areaIdx].currentValue} → {areas[areaIdx].targetValue} {areas[areaIdx].metric}
                       </p>
@@ -686,7 +686,7 @@ export default function OnboardingPage() {
                   )}
                   <button
                     onClick={() => regenerateTasks(areaIdx)}
-                    className="flex items-center gap-1.5 px-2.5 py-1.5 border border-[#2A2A2E] rounded font-ui text-[11px] text-[#6B6760] hover:text-[#F2EEE8] transition-colors"
+                    className="flex items-center gap-1.5 px-2.5 py-1.5 border border-[#E3E3E1] rounded font-ui text-[11px] text-[#9B9A97] hover:text-[#191919] transition-colors"
                   >
                     <RefreshCw size={11} />
                     Regenerate
@@ -707,13 +707,13 @@ export default function OnboardingPage() {
                           >
                             {meta.label}
                           </span>
-                          <span className="font-ui text-[11px] text-[#3A3A3E]">
+                          <span className="font-ui text-[11px] text-[#C4C4C2]">
                             {freqTasks.filter((t) => t.enabled && t.title.trim()).length} active
                           </span>
                         </div>
                         <button
                           onClick={() => addTask(areaIdx, freq)}
-                          className="flex items-center gap-1 font-ui text-[11px] text-[#3A3A3E] hover:text-[#6B6760] transition-colors"
+                          className="flex items-center gap-1 font-ui text-[11px] text-[#C4C4C2] hover:text-[#9B9A97] transition-colors"
                         >
                           <Plus size={11} />
                           Add {freq}
@@ -723,8 +723,8 @@ export default function OnboardingPage() {
                       {/* Task rows */}
                       <div className="space-y-1">
                         {freqTasks.length === 0 && (
-                          <div className="border border-dashed border-[#2A2A2E] rounded px-4 py-3 text-center">
-                            <p className="font-ui text-[12px] text-[#3A3A3E]">No {freq} tasks — add one above</p>
+                          <div className="border border-dashed border-[#E3E3E1] rounded px-4 py-3 text-center">
+                            <p className="font-ui text-[12px] text-[#C4C4C2]">No {freq} tasks — add one above</p>
                           </div>
                         )}
                         {freqTasks.map((task) => {
@@ -734,7 +734,7 @@ export default function OnboardingPage() {
                               key={task.id}
                               className={cn(
                                 "flex items-center gap-3 px-3 py-2 rounded border transition-colors",
-                                task.enabled ? "border-[#2A2A2E] bg-[#111113]" : "border-[#1E1E21] bg-transparent opacity-50"
+                                task.enabled ? "border-[#E3E3E1] bg-[#F7F7F5]" : "border-[#E8E8E6] bg-transparent opacity-50"
                               )}
                             >
                               {/* Toggle */}
@@ -742,10 +742,10 @@ export default function OnboardingPage() {
                                 onClick={() => toggleTask(areaIdx, task.id)}
                                 className={cn(
                                   "w-4 h-4 rounded border flex items-center justify-center shrink-0 transition-colors",
-                                  task.enabled ? "border-[#C9A84C] bg-[#C9A84C20]" : "border-[#2A2A2E]"
+                                  task.enabled ? "border-[#2383E2] bg-[#2383E220]" : "border-[#E3E3E1]"
                                 )}
                               >
-                                {task.enabled && <Check size={9} className="text-[#C9A84C]" />}
+                                {task.enabled && <Check size={9} className="text-[#2383E2]" />}
                               </button>
 
                               {/* Title */}
@@ -753,7 +753,7 @@ export default function OnboardingPage() {
                                 value={task.title}
                                 onChange={(e) => editTask(areaIdx, task.id, e.target.value)}
                                 placeholder="Task title…"
-                                className="flex-1 bg-transparent font-ui text-[13px] text-[#F2EEE8] placeholder:text-[#3A3A3E] outline-none"
+                                className="flex-1 bg-transparent font-ui text-[13px] text-[#191919] placeholder:text-[#C4C4C2] outline-none"
                               />
 
                               {/* Priority */}
@@ -777,7 +777,7 @@ export default function OnboardingPage() {
                               {/* Delete */}
                               <button
                                 onClick={() => removeTask(areaIdx, task.id)}
-                                className="text-[#2A2A2E] hover:text-[#E85538] transition-colors"
+                                className="text-[#E3E3E1] hover:text-[#E85538] transition-colors"
                               >
                                 <Trash2 size={12} />
                               </button>
@@ -793,21 +793,21 @@ export default function OnboardingPage() {
           </div>
 
           {/* Footer nav */}
-          <div className="border-t border-[#2A2A2E] px-8 py-4 flex items-center justify-between shrink-0">
+          <div className="border-t border-[#E3E3E1] px-8 py-4 flex items-center justify-between shrink-0">
             <button
               onClick={() => { setAreaIdx(areas.length - 1); setStep(1); }}
-              className="flex items-center gap-2 px-4 py-2 border border-[#2A2A2E] rounded font-ui text-[13px] text-[#6B6760] hover:text-[#F2EEE8] transition-colors"
+              className="flex items-center gap-2 px-4 py-2 border border-[#E3E3E1] rounded font-ui text-[13px] text-[#9B9A97] hover:text-[#191919] transition-colors"
             >
               <ChevronLeft size={14} />
               Back
             </button>
             <div className="flex items-center gap-3">
-              <span className="font-ui text-[12px] text-[#6B6760]">
+              <span className="font-ui text-[12px] text-[#9B9A97]">
                 {totalEnabledTasks} tasks across {areas.length} areas
               </span>
               <button
                 onClick={() => setStep(3)}
-                className="flex items-center gap-2 px-6 py-2 bg-[#C9A84C] rounded font-ui text-[13px] font-medium text-[#0A0A0B] hover:bg-[#D4B458] transition-colors"
+                className="flex items-center gap-2 px-6 py-2 bg-[#2383E2] rounded font-ui text-[13px] font-medium text-[#FFFFFF] hover:bg-[#1a73d1] transition-colors"
               >
                 Review & launch
                 <ChevronRight size={14} />
@@ -821,9 +821,9 @@ export default function OnboardingPage() {
       {step === 3 && (
         <div className="flex-1 overflow-y-auto px-8 py-10">
           <div className="max-w-[660px] mx-auto">
-            <p className="font-ui text-[12px] tracking-[0.2em] uppercase text-[#C9A84C] mb-2 text-center">Step 4</p>
-            <h1 className="font-display text-[36px] italic text-[#F2EEE8] mb-2 text-center">Ready to launch</h1>
-            <p className="font-ui text-[13px] text-[#6B6760] mb-8 text-center">
+            <p className="font-ui text-[12px] tracking-[0.2em] uppercase text-[#2383E2] mb-2 text-center">Step 4</p>
+            <h1 className="font-display text-[36px] font-semibold text-[#191919] mb-2 text-center">Ready to launch</h1>
+            <p className="font-ui text-[13px] text-[#9B9A97] mb-8 text-center">
               Here&apos;s everything that will be created in your Life OS.
             </p>
 
@@ -834,9 +834,9 @@ export default function OnboardingPage() {
                 const weekly = a.tasks.filter((t) => t.enabled && t.title.trim() && t.frequency === "weekly");
                 const once   = a.tasks.filter((t) => t.enabled && t.title.trim() && t.frequency === "once");
                 return (
-                  <div key={i} className="border border-[#2A2A2E] rounded bg-[#111113] overflow-hidden">
+                  <div key={i} className="border border-[#E3E3E1] rounded bg-[#F7F7F5] overflow-hidden">
                     {/* Card header */}
-                    <div className="flex items-center gap-3 px-5 py-3.5 border-b border-[#2A2A2E]">
+                    <div className="flex items-center gap-3 px-5 py-3.5 border-b border-[#E3E3E1]">
                       <div
                         className="w-8 h-8 rounded flex items-center justify-center text-[18px] shrink-0"
                         style={{ backgroundColor: `${a.color}20` }}
@@ -844,12 +844,12 @@ export default function OnboardingPage() {
                         {a.icon}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-ui text-[13px] font-semibold text-[#F2EEE8]">{a.name}</p>
-                        <p className="font-ui text-[11px] text-[#6B6760] truncate">{a.goal || "No goal set"}</p>
+                        <p className="font-ui text-[13px] font-semibold text-[#191919]">{a.name}</p>
+                        <p className="font-ui text-[11px] text-[#9B9A97] truncate">{a.goal || "No goal set"}</p>
                       </div>
                       {a.metric && (
                         <div className="text-right shrink-0">
-                          <p className="font-ui text-[11px] text-[#3A3A3E] uppercase tracking-wider">Target</p>
+                          <p className="font-ui text-[11px] text-[#C4C4C2] uppercase tracking-wider">Target</p>
                           <p className="font-ui text-[13px] font-medium" style={{ color: a.color }}>
                             {a.targetValue} {a.metric}
                           </p>
@@ -858,27 +858,27 @@ export default function OnboardingPage() {
                     </div>
 
                     {/* Task counts */}
-                    <div className="grid grid-cols-3 divide-x divide-[#2A2A2E]">
+                    <div className="grid grid-cols-3 divide-x divide-[#E3E3E1]">
                       {[
                         { label: "Daily",   tasks: daily,  color: "#4A9EE0" },
-                        { label: "Weekly",  tasks: weekly, color: "#C9A84C" },
-                        { label: "One-off", tasks: once,   color: "#6B6760" },
+                        { label: "Weekly",  tasks: weekly, color: "#2383E2" },
+                        { label: "One-off", tasks: once,   color: "#9B9A97" },
                       ].map(({ label, tasks: ts, color }) => (
                         <div key={label} className="px-4 py-3">
                           <p className="font-ui text-[11px] uppercase tracking-[0.1em] mb-1" style={{ color }}>
                             {label}
                           </p>
                           {ts.length === 0 ? (
-                            <p className="font-ui text-[11px] text-[#3A3A3E]">—</p>
+                            <p className="font-ui text-[11px] text-[#C4C4C2]">—</p>
                           ) : (
                             <ul className="space-y-0.5">
                               {ts.slice(0, 3).map((t) => (
-                                <li key={t.id} className="font-ui text-[11px] text-[#6B6760] truncate">
+                                <li key={t.id} className="font-ui text-[11px] text-[#9B9A97] truncate">
                                   · {t.title}
                                 </li>
                               ))}
                               {ts.length > 3 && (
-                                <li className="font-ui text-[11px] text-[#3A3A3E]">+{ts.length - 3} more</li>
+                                <li className="font-ui text-[11px] text-[#C4C4C2]">+{ts.length - 3} more</li>
                               )}
                             </ul>
                           )}
@@ -893,13 +893,13 @@ export default function OnboardingPage() {
             {/* Totals */}
             <div className="grid grid-cols-3 gap-3 mb-8">
               {[
-                { label: "Spaces",    value: areas.length,                                           color: "#C9A84C" },
+                { label: "Spaces",    value: areas.length,                                           color: "#2383E2" },
                 { label: "Goals",     value: areas.length,                                           color: "#4CAF6B" },
                 { label: "Tasks",     value: totalEnabledTasks,                                      color: "#4A9EE0" },
               ].map(({ label, value, color }) => (
-                <div key={label} className="border border-[#2A2A2E] rounded p-4 bg-[#111113] text-center">
+                <div key={label} className="border border-[#E3E3E1] rounded p-4 bg-[#F7F7F5] text-center">
                   <p className="font-ui text-[28px] font-bold" style={{ color }}>{value}</p>
-                  <p className="font-ui text-[11px] text-[#6B6760] uppercase tracking-[0.1em]">{label}</p>
+                  <p className="font-ui text-[11px] text-[#9B9A97] uppercase tracking-[0.1em]">{label}</p>
                 </div>
               ))}
             </div>
@@ -908,7 +908,7 @@ export default function OnboardingPage() {
             <div className="flex items-center justify-center gap-3">
               <button
                 onClick={() => setStep(2)}
-                className="flex items-center gap-2 px-4 py-2.5 border border-[#2A2A2E] rounded font-ui text-[13px] text-[#6B6760] hover:text-[#F2EEE8] transition-colors"
+                className="flex items-center gap-2 px-4 py-2.5 border border-[#E3E3E1] rounded font-ui text-[13px] text-[#9B9A97] hover:text-[#191919] transition-colors"
               >
                 <ChevronLeft size={14} />
                 Edit plan
@@ -916,7 +916,7 @@ export default function OnboardingPage() {
               <button
                 onClick={handleLaunch}
                 disabled={saving}
-                className="flex items-center gap-3 px-8 py-3 bg-[#C9A84C] rounded font-ui text-[15px] font-semibold text-[#0A0A0B] hover:bg-[#D4B458] disabled:opacity-40 transition-colors"
+                className="flex items-center gap-3 px-8 py-3 bg-[#2383E2] rounded font-ui text-[15px] font-semibold text-[#FFFFFF] hover:bg-[#1a73d1] disabled:opacity-40 transition-colors"
               >
                 {saving ? "Creating your workspace…" : "Launch Life OS"}
                 {!saving && <ChevronRight size={15} />}

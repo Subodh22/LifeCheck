@@ -43,8 +43,8 @@ const TIMEFRAMES: { id: Timeframe; label: string; short: string }[] = [
 const STATUS_META: Record<GoalStatus, { icon: React.ReactNode; color: string; label: string }> = {
   active:    { icon: <Clock size={11} />,        color: "#4A9EE0", label: "Active"    },
   achieved:  { icon: <CheckCircle2 size={11} />, color: "#4CAF6B", label: "Achieved"  },
-  paused:    { icon: <PauseCircle size={11} />,  color: "#C9A84C", label: "Paused"    },
-  abandoned: { icon: <XCircle size={11} />,      color: "#3A3A3E", label: "Abandoned" },
+  paused:    { icon: <PauseCircle size={11} />,  color: "#2383E2", label: "Paused"    },
+  abandoned: { icon: <XCircle size={11} />,      color: "#C4C4C2", label: "Abandoned" },
 };
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -56,7 +56,7 @@ function pct(goal: Goal) {
 
 function progressColor(p: number) {
   if (p >= 100) return "#4CAF6B";
-  if (p >= 66)  return "#C9A84C";
+  if (p >= 66)  return "#2383E2";
   if (p >= 33)  return "#E8A838";
   return "#E85538";
 }
@@ -184,21 +184,21 @@ function YearlyGoalWizard({ userId, areas, defaultAreaId, onClose }: YearlyWizar
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-      <div className="w-[540px] bg-[#111113] border border-[#2A2A2E] rounded-lg overflow-hidden max-h-[92vh] flex flex-col">
+      <div className="w-[540px] bg-[#F7F7F5] border border-[#E3E3E1] rounded-lg overflow-hidden max-h-[92vh] flex flex-col">
 
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#2A2A2E] shrink-0">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[#E3E3E1] shrink-0">
           <div>
-            <p className="font-ui text-[14px] font-semibold text-[#F2EEE8]">Set a {year} Yearly Goal</p>
-            <p className="font-ui text-[11px] text-[#3A3A3E] mt-0.5">Step {step} of {TOTAL}</p>
+            <p className="font-ui text-[14px] font-semibold text-[#191919]">Set a {year} Yearly Goal</p>
+            <p className="font-ui text-[11px] text-[#C4C4C2] mt-0.5">Step {step} of {TOTAL}</p>
           </div>
-          <button onClick={onClose} className="text-[#3A3A3E] hover:text-[#6B6760]"><X size={14} /></button>
+          <button onClick={onClose} className="text-[#C4C4C2] hover:text-[#9B9A97]"><X size={14} /></button>
         </div>
 
         {/* Step progress bar */}
-        <div className="h-0.5 bg-[#18181B] shrink-0">
+        <div className="h-0.5 bg-[#F0F0EE] shrink-0">
           <div
-            className="h-full bg-[#C9A84C] transition-all duration-300"
+            className="h-full bg-[#2383E2] transition-all duration-300"
             style={{ width: `${(step / TOTAL) * 100}%` }}
           />
         </div>
@@ -210,25 +210,25 @@ function YearlyGoalWizard({ userId, areas, defaultAreaId, onClose }: YearlyWizar
           {step === 1 && (
             <>
               <div>
-                <p className="font-ui text-[18px] font-semibold text-[#F2EEE8] mb-1">
+                <p className="font-ui text-[18px] font-semibold text-[#191919] mb-1">
                   What will be true on Dec 31?
                 </p>
-                <p className="font-ui text-[12px] text-[#6B6760] leading-relaxed">
+                <p className="font-ui text-[12px] text-[#9B9A97] leading-relaxed">
                   Write it as a concrete outcome — not a habit. Not &ldquo;I will work out more&rdquo; but &ldquo;I will weigh 85kg&rdquo; or &ldquo;I will have $200k saved.&rdquo;
                 </p>
               </div>
               <div>
-                <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#6B6760] mb-1.5 block">Goal statement</label>
+                <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-1.5 block">Goal statement</label>
                 <input
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder={`e.g. Hit $500k revenue · Run 5km in 24 min · 10% body fat`}
-                  className="w-full bg-[#0A0A0B] border border-[#2A2A2E] rounded px-3 py-2.5 font-ui text-[14px] text-[#F2EEE8] placeholder:text-[#3A3A3E] outline-none focus:border-[#333338]"
+                  className="w-full bg-[#FFFFFF] border border-[#E3E3E1] rounded px-3 py-2.5 font-ui text-[14px] text-[#191919] placeholder:text-[#C4C4C2] outline-none focus:border-[#D5D5D3]"
                   autoFocus
                 />
               </div>
               <div>
-                <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#6B6760] mb-1.5 block">Life area</label>
+                <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-1.5 block">Life area</label>
                 <div className="grid grid-cols-2 gap-2">
                   {areas.map((a) => (
                     <button
@@ -237,8 +237,8 @@ function YearlyGoalWizard({ userId, areas, defaultAreaId, onClose }: YearlyWizar
                       className={cn(
                         "flex items-center gap-2 px-3 py-2 rounded border font-ui text-[13px] transition-colors text-left",
                         areaId === a._id
-                          ? "border-[#C9A84C] text-[#F2EEE8] bg-[#C9A84C0C]"
-                          : "border-[#2A2A2E] text-[#6B6760] hover:border-[#333338] hover:text-[#C4C0BA]"
+                          ? "border-[#2383E2] text-[#191919] bg-[#2383E20C]"
+                          : "border-[#E3E3E1] text-[#9B9A97] hover:border-[#D5D5D3] hover:text-[#6F6E69]"
                       )}
                     >
                       {a.icon && <span>{a.icon}</span>}
@@ -254,15 +254,15 @@ function YearlyGoalWizard({ userId, areas, defaultAreaId, onClose }: YearlyWizar
           {step === 2 && (
             <>
               <div>
-                <p className="font-ui text-[18px] font-semibold text-[#F2EEE8] mb-1">
+                <p className="font-ui text-[18px] font-semibold text-[#191919] mb-1">
                   Why does this matter?
                 </p>
-                <p className="font-ui text-[12px] text-[#6B6760] leading-relaxed">
+                <p className="font-ui text-[12px] text-[#9B9A97] leading-relaxed">
                   Research shows goals with a clear &ldquo;why&rdquo; are 3× more likely to be achieved. Connect this to something bigger than the number.
                 </p>
               </div>
               <div>
-                <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#6B6760] mb-1.5 block">
+                <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-1.5 block">
                   Why it matters to you
                 </label>
                 <textarea
@@ -270,21 +270,21 @@ function YearlyGoalWizard({ userId, areas, defaultAreaId, onClose }: YearlyWizar
                   onChange={(e) => setMotivation(e.target.value)}
                   placeholder="e.g. Financial freedom means I can choose my work. This proves the business model works."
                   rows={3}
-                  className="w-full bg-[#0A0A0B] border border-[#2A2A2E] rounded px-3 py-2.5 font-ui text-[13px] text-[#F2EEE8] placeholder:text-[#3A3A3E] outline-none focus:border-[#333338] resize-none leading-relaxed"
+                  className="w-full bg-[#FFFFFF] border border-[#E3E3E1] rounded px-3 py-2.5 font-ui text-[13px] text-[#191919] placeholder:text-[#C4C4C2] outline-none focus:border-[#D5D5D3] resize-none leading-relaxed"
                   autoFocus
                 />
               </div>
               <div>
-                <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#6B6760] mb-1.5 block">
+                <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-1.5 block">
                   The 80% version (what does &ldquo;good enough&rdquo; look like?)
                 </label>
                 <input
                   value={eightyPct}
                   onChange={(e) => setEightyPct(e.target.value)}
                   placeholder="e.g. $400k revenue — enough to replace my salary"
-                  className="w-full bg-[#0A0A0B] border border-[#2A2A2E] rounded px-3 py-2.5 font-ui text-[13px] text-[#F2EEE8] placeholder:text-[#3A3A3E] outline-none focus:border-[#333338]"
+                  className="w-full bg-[#FFFFFF] border border-[#E3E3E1] rounded px-3 py-2.5 font-ui text-[13px] text-[#191919] placeholder:text-[#C4C4C2] outline-none focus:border-[#D5D5D3]"
                 />
-                <p className="font-ui text-[11px] text-[#3A3A3E] mt-1.5">
+                <p className="font-ui text-[11px] text-[#C4C4C2] mt-1.5">
                   Knowing your floor prevents all-or-nothing thinking and keeps you motivated even when you&apos;re behind.
                 </p>
               </div>
@@ -295,54 +295,54 @@ function YearlyGoalWizard({ userId, areas, defaultAreaId, onClose }: YearlyWizar
           {step === 3 && (
             <>
               <div>
-                <p className="font-ui text-[18px] font-semibold text-[#F2EEE8] mb-1">
+                <p className="font-ui text-[18px] font-semibold text-[#191919] mb-1">
                   How will you measure it?
                 </p>
-                <p className="font-ui text-[12px] text-[#6B6760] leading-relaxed">
+                <p className="font-ui text-[12px] text-[#9B9A97] leading-relaxed">
                   A goal without a number is a wish. Optionally add a metric so you can track progress and get quarterly breakdowns automatically.
                 </p>
               </div>
               <div>
-                <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#6B6760] mb-1.5 block">
-                  Metric name <span className="normal-case text-[#3A3A3E]">(optional)</span>
+                <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-1.5 block">
+                  Metric name <span className="normal-case text-[#C4C4C2]">(optional)</span>
                 </label>
                 <input
                   value={metric}
                   onChange={(e) => setMetric(e.target.value)}
                   placeholder="revenue ($) · body fat % · sessions · books read"
-                  className="w-full bg-[#0A0A0B] border border-[#2A2A2E] rounded px-3 py-2.5 font-ui text-[13px] text-[#F2EEE8] placeholder:text-[#3A3A3E] outline-none focus:border-[#333338]"
+                  className="w-full bg-[#FFFFFF] border border-[#E3E3E1] rounded px-3 py-2.5 font-ui text-[13px] text-[#191919] placeholder:text-[#C4C4C2] outline-none focus:border-[#D5D5D3]"
                   autoFocus
                 />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#6B6760] mb-1.5 block">Current value</label>
+                  <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-1.5 block">Current value</label>
                   <input
                     type="number"
                     value={currentValue}
                     onChange={(e) => setCurrentValue(e.target.value)}
                     placeholder="0"
-                    className="w-full bg-[#0A0A0B] border border-[#2A2A2E] rounded px-3 py-2.5 font-ui text-[13px] text-[#F2EEE8] outline-none focus:border-[#333338]"
+                    className="w-full bg-[#FFFFFF] border border-[#E3E3E1] rounded px-3 py-2.5 font-ui text-[13px] text-[#191919] outline-none focus:border-[#D5D5D3]"
                   />
                 </div>
                 <div>
-                  <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#6B6760] mb-1.5 block">Target by Dec 31</label>
+                  <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-1.5 block">Target by Dec 31</label>
                   <input
                     type="number"
                     value={targetValue}
                     onChange={(e) => setTargetValue(e.target.value)}
                     placeholder="500000"
-                    className="w-full bg-[#0A0A0B] border border-[#2A2A2E] rounded px-3 py-2.5 font-ui text-[13px] text-[#F2EEE8] placeholder:text-[#3A3A3E] outline-none focus:border-[#333338]"
+                    className="w-full bg-[#FFFFFF] border border-[#E3E3E1] rounded px-3 py-2.5 font-ui text-[13px] text-[#191919] placeholder:text-[#C4C4C2] outline-none focus:border-[#D5D5D3]"
                   />
                 </div>
               </div>
               {metric && targetValue && (
-                <div className="rounded border border-[#2A2A2E] bg-[#0A0A0B] px-4 py-3">
-                  <p className="font-ui text-[12px] text-[#6B6760]">
-                    You need to grow <span className="text-[#C9A84C] font-semibold">
+                <div className="rounded border border-[#E3E3E1] bg-[#FFFFFF] px-4 py-3">
+                  <p className="font-ui text-[12px] text-[#9B9A97]">
+                    You need to grow <span className="text-[#2383E2] font-semibold">
                       {fmtValue(Number(targetValue) - (Number(currentValue) || 0))} {metric}
                     </span> this year — or about&nbsp;
-                    <span className="text-[#C9A84C] font-semibold">
+                    <span className="text-[#2383E2] font-semibold">
                       {fmtValue(Math.round((Number(targetValue) - (Number(currentValue) || 0)) / 52))} {metric}
                     </span> per week.
                   </p>
@@ -355,36 +355,36 @@ function YearlyGoalWizard({ userId, areas, defaultAreaId, onClose }: YearlyWizar
           {step === 4 && (
             <>
               <div>
-                <p className="font-ui text-[18px] font-semibold text-[#F2EEE8] mb-1">
+                <p className="font-ui text-[18px] font-semibold text-[#191919] mb-1">
                   What could derail this?
                 </p>
-                <p className="font-ui text-[12px] text-[#6B6760] leading-relaxed">
+                <p className="font-ui text-[12px] text-[#9B9A97] leading-relaxed">
                   Pre-mortem thinking: imagine it&apos;s December and you missed this goal. What went wrong? Research shows people who name obstacles in advance are significantly more likely to hit goals (Oettingen, 2014).
                 </p>
               </div>
               <div>
-                <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#6B6760] mb-1.5 block">
-                  Biggest obstacle or constraint <span className="normal-case text-[#3A3A3E]">(optional)</span>
+                <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-1.5 block">
+                  Biggest obstacle or constraint <span className="normal-case text-[#C4C4C2]">(optional)</span>
                 </label>
                 <textarea
                   value={constraint}
                   onChange={(e) => setConstraint(e.target.value)}
                   placeholder="e.g. I consistently underestimate how long client work takes, leaving no time to build new revenue streams."
                   rows={3}
-                  className="w-full bg-[#0A0A0B] border border-[#2A2A2E] rounded px-3 py-2.5 font-ui text-[13px] text-[#F2EEE8] placeholder:text-[#3A3A3E] outline-none focus:border-[#333338] resize-none leading-relaxed"
+                  className="w-full bg-[#FFFFFF] border border-[#E3E3E1] rounded px-3 py-2.5 font-ui text-[13px] text-[#191919] placeholder:text-[#C4C4C2] outline-none focus:border-[#D5D5D3] resize-none leading-relaxed"
                   autoFocus
                 />
               </div>
-              <div className="rounded border border-[#1E1E21] bg-[#0A0A0B] px-4 py-3 space-y-1.5">
-                <p className="font-ui text-[11px] uppercase tracking-[0.1em] text-[#3A3A3E]">Your {year} goal summary</p>
-                <p className="font-ui text-[14px] font-semibold text-[#F2EEE8]">{title}</p>
+              <div className="rounded border border-[#E8E8E6] bg-[#FFFFFF] px-4 py-3 space-y-1.5">
+                <p className="font-ui text-[11px] uppercase tracking-[0.1em] text-[#C4C4C2]">Your {year} goal summary</p>
+                <p className="font-ui text-[14px] font-semibold text-[#191919]">{title}</p>
                 {metric && targetValue && (
-                  <p className="font-ui text-[12px] text-[#6B6760]">
-                    Target: <span className="text-[#C9A84C]">{fmtValue(Number(targetValue))} {metric}</span>
+                  <p className="font-ui text-[12px] text-[#9B9A97]">
+                    Target: <span className="text-[#2383E2]">{fmtValue(Number(targetValue))} {metric}</span>
                   </p>
                 )}
                 {motivation && (
-                  <p className="font-ui text-[12px] text-[#6B6760] leading-relaxed italic">&ldquo;{motivation}&rdquo;</p>
+                  <p className="font-ui text-[12px] text-[#9B9A97] leading-relaxed italic">&ldquo;{motivation}&rdquo;</p>
                 )}
               </div>
             </>
@@ -394,10 +394,10 @@ function YearlyGoalWizard({ userId, areas, defaultAreaId, onClose }: YearlyWizar
           {step === 5 && (
             <>
               <div>
-                <p className="font-ui text-[18px] font-semibold text-[#F2EEE8] mb-1">
+                <p className="font-ui text-[18px] font-semibold text-[#191919] mb-1">
                   Quarterly milestones
                 </p>
-                <p className="font-ui text-[12px] text-[#6B6760] leading-relaxed">
+                <p className="font-ui text-[12px] text-[#9B9A97] leading-relaxed">
                   Breaking a yearly goal into quarters forces you to commit to a pace, not just a destination. Edit titles and targets to match your actual plan.
                 </p>
               </div>
@@ -405,7 +405,7 @@ function YearlyGoalWizard({ userId, areas, defaultAreaId, onClose }: YearlyWizar
               {/* Split type selector */}
               {metric && targetValue && (
                 <div>
-                  <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#6B6760] mb-2 block">Progress pattern</label>
+                  <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-2 block">Progress pattern</label>
                   <div className="grid grid-cols-3 gap-2">
                     {([
                       { id: "even" as SplitType,        label: "Even",        sub: "25 · 50 · 75 · 100%" },
@@ -418,12 +418,12 @@ function YearlyGoalWizard({ userId, areas, defaultAreaId, onClose }: YearlyWizar
                         className={cn(
                           "rounded border px-3 py-2 text-left transition-colors",
                           splitType === s.id
-                            ? "border-[#C9A84C] bg-[#C9A84C0C]"
-                            : "border-[#2A2A2E] hover:border-[#333338]"
+                            ? "border-[#2383E2] bg-[#2383E20C]"
+                            : "border-[#E3E3E1] hover:border-[#D5D5D3]"
                         )}
                       >
-                        <p className={cn("font-ui text-[12px] font-medium", splitType === s.id ? "text-[#C9A84C]" : "text-[#C4C0BA]")}>{s.label}</p>
-                        <p className="font-ui text-[10px] text-[#3A3A3E] mt-0.5 tabular-nums">{s.sub}</p>
+                        <p className={cn("font-ui text-[12px] font-medium", splitType === s.id ? "text-[#2383E2]" : "text-[#6F6E69]")}>{s.label}</p>
+                        <p className="font-ui text-[10px] text-[#C4C4C2] mt-0.5 tabular-nums">{s.sub}</p>
                       </button>
                     ))}
                   </div>
@@ -433,9 +433,9 @@ function YearlyGoalWizard({ userId, areas, defaultAreaId, onClose }: YearlyWizar
               {/* Quarter cards */}
               <div className="space-y-2">
                 {quarters.map((q, i) => (
-                  <div key={i} className="rounded border border-[#2A2A2E] bg-[#0A0A0B] px-4 py-3 space-y-2">
+                  <div key={i} className="rounded border border-[#E3E3E1] bg-[#FFFFFF] px-4 py-3 space-y-2">
                     <div className="flex items-center gap-2">
-                      <span className="font-ui text-[11px] uppercase tracking-[0.1em] text-[#3A3A3E] shrink-0">
+                      <span className="font-ui text-[11px] uppercase tracking-[0.1em] text-[#C4C4C2] shrink-0">
                         {QUARTER_LABELS[i]}
                       </span>
                     </div>
@@ -443,19 +443,19 @@ function YearlyGoalWizard({ userId, areas, defaultAreaId, onClose }: YearlyWizar
                       value={q.title}
                       onChange={(e) => updateQuarter(i, "title", e.target.value)}
                       placeholder="Milestone title"
-                      className="w-full bg-[#111113] border border-[#1E1E21] rounded px-2.5 py-1.5 font-ui text-[13px] text-[#F2EEE8] placeholder:text-[#3A3A3E] outline-none focus:border-[#2A2A2E]"
+                      className="w-full bg-[#F7F7F5] border border-[#E8E8E6] rounded px-2.5 py-1.5 font-ui text-[13px] text-[#191919] placeholder:text-[#C4C4C2] outline-none focus:border-[#E3E3E1]"
                     />
                     {metric && (
                       <div className="flex items-center gap-2">
-                        <span className="font-ui text-[11px] text-[#3A3A3E] shrink-0">Target:</span>
+                        <span className="font-ui text-[11px] text-[#C4C4C2] shrink-0">Target:</span>
                         <input
                           type="number"
                           value={q.targetValue ?? ""}
                           onChange={(e) => updateQuarter(i, "targetValue", e.target.value)}
                           placeholder="—"
-                          className="w-24 bg-[#111113] border border-[#1E1E21] rounded px-2.5 py-1 font-ui text-[12px] text-[#C9A84C] outline-none focus:border-[#2A2A2E] tabular-nums"
+                          className="w-24 bg-[#F7F7F5] border border-[#E8E8E6] rounded px-2.5 py-1 font-ui text-[12px] text-[#2383E2] outline-none focus:border-[#E3E3E1] tabular-nums"
                         />
-                        <span className="font-ui text-[11px] text-[#3A3A3E]">{metric}</span>
+                        <span className="font-ui text-[11px] text-[#C4C4C2]">{metric}</span>
                       </div>
                     )}
                   </div>
@@ -466,10 +466,10 @@ function YearlyGoalWizard({ userId, areas, defaultAreaId, onClose }: YearlyWizar
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-[#2A2A2E] flex items-center justify-between shrink-0">
+        <div className="px-6 py-4 border-t border-[#E3E3E1] flex items-center justify-between shrink-0">
           <button
             onClick={() => step > 1 ? setStep(step - 1) : onClose()}
-            className="flex items-center gap-1.5 font-ui text-[13px] text-[#6B6760] hover:text-[#F2EEE8] transition-colors"
+            className="flex items-center gap-1.5 font-ui text-[13px] text-[#9B9A97] hover:text-[#191919] transition-colors"
           >
             <ArrowLeft size={13} />
             {step > 1 ? "Back" : "Cancel"}
@@ -488,7 +488,7 @@ function YearlyGoalWizard({ userId, areas, defaultAreaId, onClose }: YearlyWizar
             <button
               onClick={handleCreate}
               disabled={saving || !canNext()}
-              className="flex items-center gap-1.5 px-4 py-1.5 bg-[#C9A84C] rounded font-ui text-[13px] font-medium text-[#0A0A0B] hover:bg-[#D9B85C] disabled:opacity-40 transition-colors"
+              className="flex items-center gap-1.5 px-4 py-1.5 bg-[#2383E2] rounded font-ui text-[13px] font-medium text-[#FFFFFF] hover:bg-[#D9B85C] disabled:opacity-40 transition-colors"
             >
               {saving ? "Creating…" : `Create ${year} goal`}
               <ArrowRight size={13} />
@@ -565,38 +565,38 @@ function GoalModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="w-[480px] bg-[#111113] border border-[#2A2A2E] rounded-lg overflow-hidden max-h-[90vh] flex flex-col">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#2A2A2E] shrink-0">
-          <p className="font-ui text-[14px] font-semibold text-[#F2EEE8]">{goal ? "Edit Goal" : "New Goal"}</p>
-          <button onClick={onClose} className="text-[#6B6760] hover:text-[#F2EEE8]"><X size={14} /></button>
+      <div className="w-[480px] bg-[#F7F7F5] border border-[#E3E3E1] rounded-lg overflow-hidden max-h-[90vh] flex flex-col">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[#E3E3E1] shrink-0">
+          <p className="font-ui text-[14px] font-semibold text-[#191919]">{goal ? "Edit Goal" : "New Goal"}</p>
+          <button onClick={onClose} className="text-[#9B9A97] hover:text-[#191919]"><X size={14} /></button>
         </div>
 
         <div className="px-5 py-4 space-y-4 overflow-y-auto">
           <div>
-            <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#6B6760] mb-1.5 block">Goal</label>
+            <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-1.5 block">Goal</label>
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Hit $500k revenue, Run 5km under 25 min…"
-              className="w-full bg-[#0A0A0B] border border-[#2A2A2E] rounded px-3 py-2 font-ui text-[13px] text-[#F2EEE8] placeholder:text-[#3A3A3E] outline-none focus:border-[#333338]"
+              className="w-full bg-[#FFFFFF] border border-[#E3E3E1] rounded px-3 py-2 font-ui text-[13px] text-[#191919] placeholder:text-[#C4C4C2] outline-none focus:border-[#D5D5D3]"
               autoFocus
             />
           </div>
 
           <div>
-            <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#6B6760] mb-1.5 block">Description</label>
+            <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-1.5 block">Description</label>
             <textarea
               value={desc}
               onChange={(e) => setDesc(e.target.value)}
               placeholder="Why does this goal matter? What does success look like? Any context or strategy…"
               rows={3}
-              className="w-full bg-[#0A0A0B] border border-[#2A2A2E] rounded px-3 py-2 font-ui text-[13px] text-[#F2EEE8] placeholder:text-[#3A3A3E] outline-none focus:border-[#333338] resize-none leading-relaxed"
+              className="w-full bg-[#FFFFFF] border border-[#E3E3E1] rounded px-3 py-2 font-ui text-[13px] text-[#191919] placeholder:text-[#C4C4C2] outline-none focus:border-[#D5D5D3] resize-none leading-relaxed"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#6B6760] mb-1.5 block">Timeframe</label>
+              <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-1.5 block">Timeframe</label>
               <div className="grid grid-cols-4 gap-1">
                 {TIMEFRAMES.map((tf) => (
                   <button
@@ -606,7 +606,7 @@ function GoalModal({
                       "py-1.5 rounded border font-ui text-[11px] font-medium transition-colors",
                       timeframe === tf.id
                         ? "border-[#4A9EE0] text-[#4A9EE0] bg-[#4A9EE018]"
-                        : "border-[#2A2A2E] text-[#6B6760] hover:border-[#333338]"
+                        : "border-[#E3E3E1] text-[#9B9A97] hover:border-[#D5D5D3]"
                     )}
                   >
                     {tf.short}
@@ -615,11 +615,11 @@ function GoalModal({
               </div>
             </div>
             <div>
-              <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#6B6760] mb-1.5 block">Area</label>
+              <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-1.5 block">Area</label>
               <select
                 value={areaId}
                 onChange={(e) => setAreaId(e.target.value as Id<"areas">)}
-                className="w-full bg-[#0A0A0B] border border-[#2A2A2E] rounded px-3 py-2 font-ui text-[12px] text-[#F2EEE8] outline-none cursor-pointer"
+                className="w-full bg-[#FFFFFF] border border-[#E3E3E1] rounded px-3 py-2 font-ui text-[12px] text-[#191919] outline-none cursor-pointer"
               >
                 {areas.map((a) => <option key={a._id} value={a._id}>{a.icon} {a.name}</option>)}
               </select>
@@ -628,13 +628,13 @@ function GoalModal({
 
           {eligible.length > 0 && (
             <div>
-              <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#6B6760] mb-1.5 block">
+              <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-1.5 block">
                 Contributes to
               </label>
               <select
                 value={parentId}
                 onChange={(e) => setParentId(e.target.value as Id<"goals">)}
-                className="w-full bg-[#0A0A0B] border border-[#2A2A2E] rounded px-3 py-2 font-ui text-[12px] text-[#F2EEE8] outline-none cursor-pointer"
+                className="w-full bg-[#FFFFFF] border border-[#E3E3E1] rounded px-3 py-2 font-ui text-[12px] text-[#191919] outline-none cursor-pointer"
               >
                 <option value="">— None —</option>
                 {eligible.map((g) => (
@@ -645,50 +645,50 @@ function GoalModal({
           )}
 
           <div>
-            <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#6B6760] mb-1.5 block">Metric</label>
+            <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-1.5 block">Metric</label>
             <input
               value={metric}
               onChange={(e) => setMetric(e.target.value)}
               placeholder="revenue ($), body fat %, sessions, books…"
-              className="w-full bg-[#0A0A0B] border border-[#2A2A2E] rounded px-3 py-2 font-ui text-[13px] text-[#F2EEE8] placeholder:text-[#3A3A3E] outline-none focus:border-[#333338]"
+              className="w-full bg-[#FFFFFF] border border-[#E3E3E1] rounded px-3 py-2 font-ui text-[13px] text-[#191919] placeholder:text-[#C4C4C2] outline-none focus:border-[#D5D5D3]"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#6B6760] mb-1.5 block">Current</label>
+              <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-1.5 block">Current</label>
               <input
                 type="number"
                 value={current}
                 onChange={(e) => setCurrent(e.target.value)}
-                className="w-full bg-[#0A0A0B] border border-[#2A2A2E] rounded px-3 py-2 font-ui text-[13px] text-[#F2EEE8] outline-none focus:border-[#333338]"
+                className="w-full bg-[#FFFFFF] border border-[#E3E3E1] rounded px-3 py-2 font-ui text-[13px] text-[#191919] outline-none focus:border-[#D5D5D3]"
               />
             </div>
             <div>
-              <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#6B6760] mb-1.5 block">Target</label>
+              <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-1.5 block">Target</label>
               <input
                 type="number"
                 value={target}
                 onChange={(e) => setTarget(e.target.value)}
                 placeholder="500000"
-                className="w-full bg-[#0A0A0B] border border-[#2A2A2E] rounded px-3 py-2 font-ui text-[13px] text-[#F2EEE8] placeholder:text-[#3A3A3E] outline-none focus:border-[#333338]"
+                className="w-full bg-[#FFFFFF] border border-[#E3E3E1] rounded px-3 py-2 font-ui text-[13px] text-[#191919] placeholder:text-[#C4C4C2] outline-none focus:border-[#D5D5D3]"
               />
             </div>
           </div>
 
           <div>
-            <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#6B6760] mb-1.5 block">Due date</label>
+            <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] mb-1.5 block">Due date</label>
             <input
               type="date"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
-              className="w-full bg-[#0A0A0B] border border-[#2A2A2E] rounded px-3 py-2 font-ui text-[12px] text-[#F2EEE8] outline-none [color-scheme:dark]"
+              className="w-full bg-[#FFFFFF] border border-[#E3E3E1] rounded px-3 py-2 font-ui text-[12px] text-[#191919] outline-none [color-scheme:light]"
             />
           </div>
         </div>
 
-        <div className="px-5 py-4 border-t border-[#2A2A2E] flex justify-end gap-2 shrink-0">
-          <button onClick={onClose} className="px-4 py-1.5 rounded border border-[#2A2A2E] font-ui text-[13px] text-[#6B6760] hover:text-[#F2EEE8]">
+        <div className="px-5 py-4 border-t border-[#E3E3E1] flex justify-end gap-2 shrink-0">
+          <button onClick={onClose} className="px-4 py-1.5 rounded border border-[#E3E3E1] font-ui text-[13px] text-[#9B9A97] hover:text-[#191919]">
             Cancel
           </button>
           <button
@@ -778,12 +778,12 @@ function GoalDetailPanel({ goal, allGoals, areas, relatedTasks, onClose, onEdit,
   const childTf = tfIdx >= 0 && tfIdx < 3 ? order[tfIdx + 1] : null;
 
   return (
-    <div className="w-[320px] shrink-0 border-l border-[#2A2A2E] bg-[#0D0D0F] flex flex-col h-full overflow-hidden">
+    <div className="w-[320px] shrink-0 border-l border-[#E3E3E1] bg-[#F7F7F5] flex flex-col h-full overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[#2A2A2E] shrink-0">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-[#E3E3E1] shrink-0">
         <div className="flex items-center gap-2">
           {goal.timeframe && (
-            <span className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#3A3A3E] bg-[#18181B] border border-[#2A2A2E] px-2 py-0.5 rounded">
+            <span className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#C4C4C2] bg-[#F0F0EE] border border-[#E3E3E1] px-2 py-0.5 rounded">
               {goal.timeframe}
             </span>
           )}
@@ -794,13 +794,13 @@ function GoalDetailPanel({ goal, allGoals, areas, relatedTasks, onClose, onEdit,
           )}
         </div>
         <div className="flex items-center gap-1.5">
-          <button onClick={onEdit} className="text-[#3A3A3E] hover:text-[#6B6760] transition-colors p-1">
+          <button onClick={onEdit} className="text-[#C4C4C2] hover:text-[#9B9A97] transition-colors p-1">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
             </svg>
           </button>
-          <button onClick={onClose} className="text-[#6B6760] hover:text-[#F2EEE8] transition-colors p-1">
+          <button onClick={onClose} className="text-[#9B9A97] hover:text-[#191919] transition-colors p-1">
             <X size={13} />
           </button>
         </div>
@@ -811,7 +811,7 @@ function GoalDetailPanel({ goal, allGoals, areas, relatedTasks, onClose, onEdit,
 
         {/* Title + status */}
         <div className="px-4 pt-4 pb-3">
-          <h2 className="font-ui text-[16px] font-semibold text-[#F2EEE8] leading-snug mb-2">{goal.title}</h2>
+          <h2 className="font-ui text-[16px] font-semibold text-[#191919] leading-snug mb-2">{goal.title}</h2>
           <div className="flex items-center gap-2 flex-wrap">
             <select
               value={goal.status}
@@ -826,7 +826,7 @@ function GoalDetailPanel({ goal, allGoals, areas, relatedTasks, onClose, onEdit,
               ))}
             </select>
             {goal.dueDate && (
-              <span className={cn("flex items-center gap-1 font-ui text-[11px]", isOver ? "text-[#E85538]" : "text-[#6B6760]")}>
+              <span className={cn("flex items-center gap-1 font-ui text-[11px]", isOver ? "text-[#E85538]" : "text-[#9B9A97]")}>
                 <Calendar size={11} />
                 {format(new Date(goal.dueDate), "d MMM yyyy")}
               </span>
@@ -836,12 +836,12 @@ function GoalDetailPanel({ goal, allGoals, areas, relatedTasks, onClose, onEdit,
 
         {/* Progress */}
         {goal.targetValue !== undefined && (
-          <div className="px-4 pb-4 border-b border-[#2A2A2E]">
+          <div className="px-4 pb-4 border-b border-[#E3E3E1]">
             <div className="flex items-center justify-between mb-1.5">
-              <span className="font-ui text-[11px] uppercase tracking-[0.1em] text-[#3A3A3E]">Progress</span>
+              <span className="font-ui text-[11px] uppercase tracking-[0.1em] text-[#C4C4C2]">Progress</span>
               <span className="font-ui text-[12px] font-semibold tabular-nums" style={{ color: pColor }}>{p}%</span>
             </div>
-            <div className="h-2 bg-[#2A2A2E] rounded-full overflow-hidden mb-2">
+            <div className="h-2 bg-[#E3E3E1] rounded-full overflow-hidden mb-2">
               <div className="h-full rounded-full transition-all" style={{ width: `${p}%`, backgroundColor: pColor }} />
             </div>
             <div className="flex items-center justify-between">
@@ -853,20 +853,20 @@ function GoalDetailPanel({ goal, allGoals, areas, relatedTasks, onClose, onEdit,
                   onChange={(e) => setCurrentInput(e.target.value)}
                   onBlur={saveProgress}
                   onKeyDown={(e) => { if (e.key === "Enter") saveProgress(); if (e.key === "Escape") setEditingVal(false); }}
-                  className="w-24 bg-[#18181B] border border-[#4A9EE0] rounded px-2 py-0.5 font-ui text-[12px] text-[#F2EEE8] outline-none tabular-nums"
+                  className="w-24 bg-[#F0F0EE] border border-[#4A9EE0] rounded px-2 py-0.5 font-ui text-[12px] text-[#191919] outline-none tabular-nums"
                   autoFocus
                 />
               ) : (
                 <button
                   onClick={() => { setCurrentInput(String(goal.currentValue ?? 0)); setEditingVal(true); }}
-                  className="font-ui text-[12px] text-[#6B6760] hover:text-[#F2EEE8] tabular-nums transition-colors flex items-center gap-1"
+                  className="font-ui text-[12px] text-[#9B9A97] hover:text-[#191919] tabular-nums transition-colors flex items-center gap-1"
                 >
                   <TrendingUp size={11} />
                   {goal.currentValue !== undefined ? fmtValue(goal.currentValue) : "0"}
                   {goal.targetMetric ? ` ${goal.targetMetric}` : ""}
                 </button>
               )}
-              <span className="font-ui text-[11px] text-[#3A3A3E]">
+              <span className="font-ui text-[11px] text-[#C4C4C2]">
                 of {fmtValue(goal.targetValue)}{goal.targetMetric ? ` ${goal.targetMetric}` : ""}
               </span>
             </div>
@@ -874,8 +874,8 @@ function GoalDetailPanel({ goal, allGoals, areas, relatedTasks, onClose, onEdit,
         )}
 
         {/* Description */}
-        <div className="px-4 py-4 border-b border-[#2A2A2E]">
-          <p className="font-ui text-[11px] uppercase tracking-[0.1em] text-[#3A3A3E] mb-2">Description</p>
+        <div className="px-4 py-4 border-b border-[#E3E3E1]">
+          <p className="font-ui text-[11px] uppercase tracking-[0.1em] text-[#C4C4C2] mb-2">Description</p>
           {editingDesc ? (
             <textarea
               value={desc}
@@ -884,15 +884,15 @@ function GoalDetailPanel({ goal, allGoals, areas, relatedTasks, onClose, onEdit,
               onKeyDown={(e) => { if (e.key === "Escape") { setDesc(goal.description ?? ""); setEditingDesc(false); } }}
               rows={5}
               placeholder="Why does this goal matter? Strategy, context, success criteria…"
-              className="w-full bg-[#18181B] border border-[#2A2A2E] rounded px-3 py-2 font-ui text-[13px] text-[#F2EEE8] placeholder:text-[#3A3A3E] outline-none focus:border-[#333338] resize-none leading-relaxed"
+              className="w-full bg-[#F0F0EE] border border-[#E3E3E1] rounded px-3 py-2 font-ui text-[13px] text-[#191919] placeholder:text-[#C4C4C2] outline-none focus:border-[#D5D5D3] resize-none leading-relaxed"
               autoFocus
             />
           ) : (
             <p
               onClick={() => { setDesc(goal.description ?? ""); setEditingDesc(true); }}
               className={cn(
-                "font-ui text-[13px] leading-relaxed cursor-text rounded px-1 py-1 -mx-1 hover:bg-[#18181B] transition-colors whitespace-pre-wrap",
-                goal.description ? "text-[#C4C0BA]" : "text-[#3A3A3E] italic"
+                "font-ui text-[13px] leading-relaxed cursor-text rounded px-1 py-1 -mx-1 hover:bg-[#F0F0EE] transition-colors whitespace-pre-wrap",
+                goal.description ? "text-[#6F6E69]" : "text-[#C4C4C2] italic"
               )}
             >
               {goal.description || "Add a description…"}
@@ -902,20 +902,20 @@ function GoalDetailPanel({ goal, allGoals, areas, relatedTasks, onClose, onEdit,
 
         {/* Parent goal */}
         {parent && (
-          <div className="px-4 py-3 border-b border-[#2A2A2E]">
-            <p className="font-ui text-[11px] uppercase tracking-[0.1em] text-[#3A3A3E] mb-2">Contributes to</p>
-            <div className="flex items-center gap-2 bg-[#18181B] border border-[#2A2A2E] rounded px-3 py-2">
-              <span className="font-ui text-[11px] uppercase text-[#3A3A3E] shrink-0">{parent.timeframe}</span>
-              <span className="font-ui text-[12px] text-[#C4C0BA] truncate">{parent.title}</span>
+          <div className="px-4 py-3 border-b border-[#E3E3E1]">
+            <p className="font-ui text-[11px] uppercase tracking-[0.1em] text-[#C4C4C2] mb-2">Contributes to</p>
+            <div className="flex items-center gap-2 bg-[#F0F0EE] border border-[#E3E3E1] rounded px-3 py-2">
+              <span className="font-ui text-[11px] uppercase text-[#C4C4C2] shrink-0">{parent.timeframe}</span>
+              <span className="font-ui text-[12px] text-[#6F6E69] truncate">{parent.title}</span>
             </div>
           </div>
         )}
 
         {/* Child goals */}
         {(children.length > 0 || childTf) && (
-          <div className="px-4 py-3 border-b border-[#2A2A2E]">
+          <div className="px-4 py-3 border-b border-[#E3E3E1]">
             <div className="flex items-center justify-between mb-2">
-              <p className="font-ui text-[11px] uppercase tracking-[0.1em] text-[#3A3A3E]">
+              <p className="font-ui text-[11px] uppercase tracking-[0.1em] text-[#C4C4C2]">
                 {childTf ? `${childTf.charAt(0).toUpperCase() + childTf.slice(1)} milestones` : "Sub-goals"}
               </p>
               {childTf && (
@@ -928,20 +928,20 @@ function GoalDetailPanel({ goal, allGoals, areas, relatedTasks, onClose, onEdit,
               )}
             </div>
             {children.length === 0 ? (
-              <p className="font-ui text-[12px] text-[#3A3A3E] italic">No milestones yet</p>
+              <p className="font-ui text-[12px] text-[#C4C4C2] italic">No milestones yet</p>
             ) : (
               <div className="space-y-1.5">
                 {children.map((c) => {
                   const cp    = pct(c);
                   const cpClr = progressColor(cp);
                   return (
-                    <div key={c._id} className="bg-[#18181B] border border-[#2A2A2E] rounded px-3 py-2">
+                    <div key={c._id} className="bg-[#F0F0EE] border border-[#E3E3E1] rounded px-3 py-2">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="font-ui text-[12px] text-[#C4C0BA] leading-snug flex-1 mr-2">{c.title}</span>
+                        <span className="font-ui text-[12px] text-[#6F6E69] leading-snug flex-1 mr-2">{c.title}</span>
                         <span className="font-ui text-[11px] tabular-nums shrink-0" style={{ color: cpClr }}>{cp}%</span>
                       </div>
                       {c.targetValue !== undefined && (
-                        <div className="h-1 bg-[#2A2A2E] rounded-full overflow-hidden">
+                        <div className="h-1 bg-[#E3E3E1] rounded-full overflow-hidden">
                           <div className="h-full rounded-full" style={{ width: `${cp}%`, backgroundColor: cpClr }} />
                         </div>
                       )}
@@ -954,9 +954,9 @@ function GoalDetailPanel({ goal, allGoals, areas, relatedTasks, onClose, onEdit,
         )}
 
         {/* Tasks */}
-        <div className="px-4 py-3 border-b border-[#2A2A2E]">
+        <div className="px-4 py-3 border-b border-[#E3E3E1]">
           <div className="flex items-center justify-between mb-2">
-            <p className="font-ui text-[11px] uppercase tracking-[0.1em] text-[#3A3A3E]">Tasks</p>
+            <p className="font-ui text-[11px] uppercase tracking-[0.1em] text-[#C4C4C2]">Tasks</p>
             <button
               onClick={() => { setAddingTask(true); setNewTaskTitle(""); }}
               className="flex items-center gap-1 font-ui text-[11px] text-[#4A9EE0] hover:text-[#5AAFF0] transition-colors"
@@ -977,7 +977,7 @@ function GoalDetailPanel({ goal, allGoals, areas, relatedTasks, onClose, onEdit,
                   if (e.key === "Escape") { setAddingTask(false); setNewTaskTitle(""); }
                 }}
                 placeholder="Task name…"
-                className="w-full bg-[#18181B] border border-[#4A9EE040] rounded px-3 py-1.5 font-ui text-[12px] text-[#F2EEE8] placeholder:text-[#3A3A3E] outline-none focus:border-[#4A9EE0] transition-colors"
+                className="w-full bg-[#F0F0EE] border border-[#4A9EE040] rounded px-3 py-1.5 font-ui text-[12px] text-[#191919] placeholder:text-[#C4C4C2] outline-none focus:border-[#4A9EE0] transition-colors"
               />
               <div className="flex items-center gap-2 mt-1.5">
                 <button
@@ -986,33 +986,33 @@ function GoalDetailPanel({ goal, allGoals, areas, relatedTasks, onClose, onEdit,
                 >
                   Add task
                 </button>
-                <span className="text-[#2A2A2E]">·</span>
+                <span className="text-[#E3E3E1]">·</span>
                 <button
                   onClick={() => { setAddingTask(false); setNewTaskTitle(""); }}
-                  className="font-ui text-[11px] text-[#3A3A3E] hover:text-[#6B6760] transition-colors"
+                  className="font-ui text-[11px] text-[#C4C4C2] hover:text-[#9B9A97] transition-colors"
                 >
                   Cancel
                 </button>
                 {goal.timeframe === "weekly" && (
-                  <span className="ml-auto font-ui text-[10px] text-[#3A3A3E]">due this week</span>
+                  <span className="ml-auto font-ui text-[10px] text-[#C4C4C2]">due this week</span>
                 )}
               </div>
             </div>
           )}
 
           {relatedTasks.length === 0 && !addingTask ? (
-            <p className="font-ui text-[12px] text-[#3A3A3E] italic">No tasks yet</p>
+            <p className="font-ui text-[12px] text-[#C4C4C2] italic">No tasks yet</p>
           ) : (
             <div className="space-y-1.5">
               {relatedTasks.map((t) => (
                 <div key={t._id} className="flex items-center gap-2">
                   <span className={cn(
                     "w-1.5 h-1.5 rounded-full shrink-0",
-                    t.status === "in_progress" ? "bg-[#C9A84C]" :
+                    t.status === "in_progress" ? "bg-[#2383E2]" :
                     t.status === "blocked"     ? "bg-[#E85538]" :
-                    t.status === "todo"        ? "bg-[#4A9EE0]" : "bg-[#3A3A3E]"
+                    t.status === "todo"        ? "bg-[#4A9EE0]" : "bg-[#C4C4C2]"
                   )} />
-                  <span className="font-ui text-[12px] text-[#6B6760] flex-1 leading-snug">{t.title}</span>
+                  <span className="font-ui text-[12px] text-[#9B9A97] flex-1 leading-snug">{t.title}</span>
                   {t.priority === "urgent" && (
                     <span className="font-ui text-[11px] text-[#E85538]">!</span>
                   )}
@@ -1026,7 +1026,7 @@ function GoalDetailPanel({ goal, allGoals, areas, relatedTasks, onClose, onEdit,
         <div className="px-4 py-4">
           <button
             onClick={async () => { await archiveGoal({ id: goal._id }); onClose(); }}
-            className="flex items-center gap-1.5 font-ui text-[11px] text-[#3A3A3E] hover:text-[#E85538] transition-colors"
+            className="flex items-center gap-1.5 font-ui text-[11px] text-[#C4C4C2] hover:text-[#E85538] transition-colors"
           >
             <Trash2 size={11} />
             Archive goal
@@ -1063,12 +1063,12 @@ function GoalCard({ goal, area, childCount, isSelected, isChildOfSelected, isDet
       className={cn(
         "rounded border cursor-pointer transition-all group relative overflow-hidden",
         isDetailOpen
-          ? "border-[#C9A84C] bg-[#C9A84C08]"
+          ? "border-[#2383E2] bg-[#2383E208]"
           : isSelected
             ? "border-[#4A9EE0] bg-[#4A9EE010]"
             : isChildOfSelected
-              ? "border-[#2A2A2E] bg-[#111113]"
-              : "border-[#2A2A2E] bg-[#111113] hover:border-[#333338]"
+              ? "border-[#E3E3E1] bg-[#F7F7F5]"
+              : "border-[#E3E3E1] bg-[#F7F7F5] hover:border-[#D5D5D3]"
       )}
       style={isChildOfSelected ? { borderLeftWidth: 2, borderLeftColor: area?.color ?? "#4A9EE0" } : undefined}
     >
@@ -1079,13 +1079,13 @@ function GoalCard({ goal, area, childCount, isSelected, isChildOfSelected, isDet
         <div className="flex items-start justify-between gap-2 mb-2">
           <p className={cn(
             "font-ui text-[13px] font-medium leading-snug flex-1",
-            goal.status === "achieved" ? "text-[#4CAF6B]" : "text-[#F2EEE8]"
+            goal.status === "achieved" ? "text-[#4CAF6B]" : "text-[#191919]"
           )}>
             {goal.title}
           </p>
           <button
             onClick={(e) => { e.stopPropagation(); onEdit(); }}
-            className="opacity-0 group-hover:opacity-100 shrink-0 text-[#3A3A3E] hover:text-[#6B6760] transition-all"
+            className="opacity-0 group-hover:opacity-100 shrink-0 text-[#C4C4C2] hover:text-[#9B9A97] transition-all"
           >
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
@@ -1096,16 +1096,16 @@ function GoalCard({ goal, area, childCount, isSelected, isChildOfSelected, isDet
 
         {goal.targetValue !== undefined && (
           <div className="mb-2.5">
-            <div className="h-1 bg-[#2A2A2E] rounded-full overflow-hidden mb-1">
+            <div className="h-1 bg-[#E3E3E1] rounded-full overflow-hidden mb-1">
               <div className="h-full rounded-full transition-all" style={{ width: `${p}%`, backgroundColor: pColor }} />
             </div>
             <div className="flex items-center justify-between">
-              <span className="font-ui text-[11px] text-[#6B6760]">
+              <span className="font-ui text-[11px] text-[#9B9A97]">
                 {goal.currentValue !== undefined ? fmtValue(goal.currentValue) : "0"}
                 {goal.targetMetric ? ` ${goal.targetMetric}` : ""}
               </span>
               <span className="font-ui text-[11px] font-semibold tabular-nums" style={{ color: pColor }}>{p}%</span>
-              <span className="font-ui text-[11px] text-[#3A3A3E]">
+              <span className="font-ui text-[11px] text-[#C4C4C2]">
                 {fmtValue(goal.targetValue)}
               </span>
             </div>
@@ -1123,12 +1123,12 @@ function GoalCard({ goal, area, childCount, isSelected, isChildOfSelected, isDet
           )}
           <div className="ml-auto flex items-center gap-2">
             {childCount > 0 && (
-              <span className="flex items-center gap-0.5 font-ui text-[11px] text-[#3A3A3E]">
+              <span className="flex items-center gap-0.5 font-ui text-[11px] text-[#C4C4C2]">
                 <ChevronRight size={9} />{childCount}
               </span>
             )}
             {goal.dueDate && (
-              <span className={cn("flex items-center gap-1 font-ui text-[11px]", isOver ? "text-[#E85538]" : "text-[#3A3A3E]")}>
+              <span className={cn("flex items-center gap-1 font-ui text-[11px]", isOver ? "text-[#E85538]" : "text-[#C4C4C2]")}>
                 <Calendar size={9} />
                 {format(new Date(goal.dueDate), "MMM yy")}
               </span>
@@ -1181,20 +1181,20 @@ function CascadeColumn({ timeframe, goals, allGoals, areas, selected, detailGoal
     <div className="w-[255px] shrink-0 flex flex-col h-full">
       <div className="flex items-center justify-between px-1 pb-2 shrink-0">
         <div className="flex items-center gap-2">
-          <span className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#6B6760] font-medium">{tf.label}</span>
-          <span className="font-ui text-[11px] text-[#3A3A3E] bg-[#18181B] border border-[#2A2A2E] px-1.5 py-0.5 rounded-full">
+          <span className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#9B9A97] font-medium">{tf.label}</span>
+          <span className="font-ui text-[11px] text-[#C4C4C2] bg-[#F0F0EE] border border-[#E3E3E1] px-1.5 py-0.5 rounded-full">
             {filtered.length}
           </span>
         </div>
         {selPrev && <span className="font-ui text-[11px] text-[#4A9EE040] italic">filtered</span>}
       </div>
 
-      <div className="h-px bg-[#2A2A2E] mb-3" />
+      <div className="h-px bg-[#E3E3E1] mb-3" />
 
       <div className="flex-1 overflow-y-auto space-y-2 pr-1 min-h-0">
         {filtered.length === 0 ? (
-          <div className="border border-dashed border-[#1E1E21] rounded p-4 text-center">
-            <p className="font-ui text-[11px] text-[#3A3A3E]">
+          <div className="border border-dashed border-[#E8E8E6] rounded p-4 text-center">
+            <p className="font-ui text-[11px] text-[#C4C4C2]">
               {selPrev ? `No ${tf.label.toLowerCase()} goals yet` : `No ${tf.label.toLowerCase()} goals`}
             </p>
           </div>
@@ -1218,7 +1218,7 @@ function CascadeColumn({ timeframe, goals, allGoals, areas, selected, detailGoal
 
       <button
         onClick={() => onAddGoal(timeframe, defaultParentId as Id<"goals"> | undefined)}
-        className="mt-3 flex items-center gap-1.5 px-2 py-1.5 rounded border border-dashed border-[#2A2A2E] font-ui text-[12px] text-[#3A3A3E] hover:text-[#6B6760] hover:border-[#333338] w-full transition-colors shrink-0"
+        className="mt-3 flex items-center gap-1.5 px-2 py-1.5 rounded border border-dashed border-[#E3E3E1] font-ui text-[12px] text-[#C4C4C2] hover:text-[#9B9A97] hover:border-[#D5D5D3] w-full transition-colors shrink-0"
       >
         <Plus size={11} />
         Add {tf.label.toLowerCase()} goal
@@ -1281,23 +1281,23 @@ export default function GoalsPage() {
   };
 
   return (
-    <div className="h-full flex flex-col bg-[#0A0A0B]">
+    <div className="h-full flex flex-col bg-[#FFFFFF]">
 
       {/* Header */}
-      <div className="px-7 py-5 border-b border-[#2A2A2E] shrink-0">
+      <div className="px-7 py-5 border-b border-[#E3E3E1] shrink-0">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="font-ui text-[22px] font-semibold text-[#F2EEE8] [text-wrap:balance]">Goals</h1>
+          <h1 className="font-ui text-[22px] font-semibold text-[#191919] [text-wrap:balance]">Goals</h1>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setWizard({ open: true })}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#C9A84C] rounded font-ui text-[13px] font-medium text-[#0A0A0B] hover:bg-[#D9B85C] transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#2383E2] rounded font-ui text-[13px] font-medium text-[#FFFFFF] hover:bg-[#D9B85C] transition-colors"
             >
               <Plus size={13} />
               Yearly Goal
             </button>
             <button
               onClick={() => setModal({ open: true })}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#111113] border border-[#2A2A2E] rounded font-ui text-[13px] font-medium text-[#C4C0BA] hover:text-[#F2EEE8] hover:border-[#333338] transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#F7F7F5] border border-[#E3E3E1] rounded font-ui text-[13px] font-medium text-[#6F6E69] hover:text-[#191919] hover:border-[#D5D5D3] transition-colors"
             >
               <Plus size={13} />
               New Goal
@@ -1311,7 +1311,7 @@ export default function GoalsPage() {
             onClick={() => setAreaFilter("all")}
             className={cn(
               "px-3 py-1 rounded font-ui text-[12px] transition-colors",
-              areaFilter === "all" ? "bg-[#1E1E21] text-[#F2EEE8]" : "text-[#6B6760] hover:text-[#C4C0BA] hover:bg-[#18181B]"
+              areaFilter === "all" ? "bg-[#E8E8E6] text-[#191919]" : "text-[#9B9A97] hover:text-[#6F6E69] hover:bg-[#F0F0EE]"
             )}
           >
             All areas
@@ -1322,7 +1322,7 @@ export default function GoalsPage() {
               onClick={() => setAreaFilter(a._id)}
               className={cn(
                 "flex items-center gap-1.5 px-3 py-1 rounded font-ui text-[12px] transition-colors",
-                areaFilter === a._id ? "bg-[#1E1E21] text-[#F2EEE8]" : "text-[#6B6760] hover:text-[#C4C0BA] hover:bg-[#18181B]"
+                areaFilter === a._id ? "bg-[#E8E8E6] text-[#191919]" : "text-[#9B9A97] hover:text-[#6F6E69] hover:bg-[#F0F0EE]"
               )}
             >
               {a.icon && <span className="text-[12px]">{a.icon}</span>}
@@ -1364,7 +1364,7 @@ export default function GoalsPage() {
                   />
                   {i < 3 && (
                     <div className="flex items-start pt-8 shrink-0">
-                      <ChevronRight size={14} className="text-[#2A2A2E]" />
+                      <ChevronRight size={14} className="text-[#E3E3E1]" />
                     </div>
                   )}
                 </div>
@@ -1373,13 +1373,13 @@ export default function GoalsPage() {
               {/* Flat goals appendix */}
               {flatGoals.length > 0 && (
                 <div className="flex gap-4">
-                  <div className="w-px bg-[#2A2A2E] self-stretch mx-2" />
+                  <div className="w-px bg-[#E3E3E1] self-stretch mx-2" />
                   <div className="w-[255px] shrink-0">
                     <div className="flex items-center gap-2 px-1 pb-2">
-                      <span className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#3A3A3E] font-medium">General</span>
-                      <span className="font-ui text-[11px] text-[#3A3A3E] bg-[#18181B] border border-[#2A2A2E] px-1.5 py-0.5 rounded-full">{flatGoals.length}</span>
+                      <span className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#C4C4C2] font-medium">General</span>
+                      <span className="font-ui text-[11px] text-[#C4C4C2] bg-[#F0F0EE] border border-[#E3E3E1] px-1.5 py-0.5 rounded-full">{flatGoals.length}</span>
                     </div>
-                    <div className="h-px bg-[#1E1E21] mb-3" />
+                    <div className="h-px bg-[#E8E8E6] mb-3" />
                     <div className="space-y-2">
                       {flatGoals.map((g) => (
                         <GoalCard
@@ -1405,9 +1405,9 @@ export default function GoalsPage() {
           /* ── Empty state ── */
           <div className="flex-1 overflow-auto p-6">
             <div className="max-w-lg mx-auto text-center py-12">
-              <Target size={36} className="text-[#3A3A3E] mx-auto mb-4" />
-              <p className="font-ui text-[16px] font-semibold text-[#F2EEE8] mb-2">Set your first yearly goal</p>
-              <p className="font-ui text-[13px] text-[#6B6760] mb-8 leading-relaxed">
+              <Target size={36} className="text-[#C4C4C2] mx-auto mb-4" />
+              <p className="font-ui text-[16px] font-semibold text-[#191919] mb-2">Set your first yearly goal</p>
+              <p className="font-ui text-[13px] text-[#9B9A97] mb-8 leading-relaxed">
                 Start with a big yearly goal — like hitting $500k revenue or reaching 10% body fat. Then break it down into quarterly, monthly, and weekly milestones to see how daily actions connect to your biggest ambitions.
               </p>
               <div className="flex items-center justify-center gap-3 flex-wrap">
@@ -1415,16 +1415,16 @@ export default function GoalsPage() {
                   <button
                     key={a._id}
                     onClick={() => setWizard({ open: true, defaultAreaId: a._id })}
-                    className="flex items-center gap-2 px-4 py-2.5 bg-[#111113] border border-[#2A2A2E] rounded font-ui text-[13px] text-[#C4C0BA] hover:border-[#333338] hover:text-[#F2EEE8] transition-colors"
+                    className="flex items-center gap-2 px-4 py-2.5 bg-[#F7F7F5] border border-[#E3E3E1] rounded font-ui text-[13px] text-[#6F6E69] hover:border-[#D5D5D3] hover:text-[#191919] transition-colors"
                   >
                     {a.icon && <span>{a.icon}</span>}
                     {a.name}
-                    <Plus size={12} className="text-[#3A3A3E]" />
+                    <Plus size={12} className="text-[#C4C4C2]" />
                   </button>
                 ))}
               </div>
               {flatGoals.length > 0 && (
-                <p className="font-ui text-[11px] text-[#3A3A3E] mt-8 mb-4">
+                <p className="font-ui text-[11px] text-[#C4C4C2] mt-8 mb-4">
                   Existing goals without timeframes (click edit to assign them):
                 </p>
               )}

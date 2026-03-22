@@ -40,20 +40,20 @@ export default function Sidebar({ userId }: { userId: string }) {
 
   return (
     <>
-      <aside className="w-[220px] h-full border-r border-[#2A2A2E] bg-[#0D0D0F] flex flex-col shrink-0 select-none">
+      <aside className="w-[220px] h-full border-r border-[#E3E3E1] bg-[#F7F7F5] flex flex-col shrink-0 select-none">
         {/* Logo */}
-        <div className="px-4 h-11 border-b border-[#2A2A2E] flex items-center gap-2.5 shrink-0">
-          <div className="w-5 h-5 rounded bg-[#C9A84C] flex items-center justify-center shrink-0">
-            <span className="font-ui font-medium text-[11px] text-[#0A0A0B]">LO</span>
+        <div className="px-4 h-11 border-b border-[#E3E3E1] flex items-center gap-2.5 shrink-0">
+          <div className="w-5 h-5 rounded bg-[#2383E2] flex items-center justify-center shrink-0">
+            <span className="font-ui font-medium text-[11px] text-[#FFFFFF]">LO</span>
           </div>
-          <span className="font-ui text-[13px] font-medium text-[#F2EEE8]">Life OS</span>
+          <span className="font-ui text-[13px] font-medium text-[#191919]">Life OS</span>
         </div>
 
         {/* Create button */}
-        <div className="px-3 py-2.5 border-b border-[#2A2A2E] shrink-0">
+        <div className="px-3 py-2.5 border-b border-[#E3E3E1] shrink-0">
           <button
             onClick={() => setCreateOpen(true)}
-            className="w-full flex items-center justify-center gap-2 h-7 rounded border border-[#C9A84C] text-[#C9A84C] font-ui text-[12px] hover:bg-[rgba(201,168,76,0.10)] transition-colors"
+            className="w-full flex items-center justify-center gap-2 h-7 rounded border border-[#2383E2] text-[#2383E2] font-ui text-[12px] hover:bg-[rgba(35,131,226,0.10)] transition-colors"
           >
             <Plus size={12} />
             Create
@@ -69,8 +69,8 @@ export default function Sidebar({ userId }: { userId: string }) {
               className={cn(
                 "flex items-center gap-2.5 px-2 py-1.5 rounded text-[13px] font-ui transition-colors",
                 pathname === href
-                  ? "bg-[#1E1E21] text-[#F2EEE8]"
-                  : "text-[#6B6760] hover:text-[#C4C0BA] hover:bg-[#18181B]"
+                  ? "bg-[#E8E8E6] text-[#191919]"
+                  : "text-[#9B9A97] hover:text-[#6F6E69] hover:bg-[#F0F0EE]"
               )}
             >
               <Icon size={14} strokeWidth={1.5} />
@@ -79,7 +79,7 @@ export default function Sidebar({ userId }: { userId: string }) {
           ))}
         </nav>
 
-        <div className="border-t border-[#2A2A2E] mx-3 mt-1" />
+        <div className="border-t border-[#E3E3E1] mx-3 mt-1" />
 
         {/* Areas */}
         <div className="flex-1 overflow-y-auto">
@@ -89,9 +89,9 @@ export default function Sidebar({ userId }: { userId: string }) {
           >
             <ChevronDown
               size={11}
-              className={cn("text-[#3A3A3E] transition-transform", !areasOpen && "-rotate-90")}
+              className={cn("text-[#C4C4C2] transition-transform", !areasOpen && "-rotate-90")}
             />
-            <span className="text-[#3A3A3E] text-[11px] font-ui tracking-[0.12em] uppercase font-medium">
+            <span className="text-[#C4C4C2] text-[11px] font-ui tracking-[0.12em] uppercase font-medium">
               Areas
             </span>
           </button>
@@ -108,8 +108,8 @@ export default function Sidebar({ userId }: { userId: string }) {
                     className={cn(
                       "flex items-center gap-2.5 px-2 py-1.5 rounded text-[13px] font-ui transition-colors group",
                       isActive
-                        ? "bg-[#1E1E21] text-[#F2EEE8]"
-                        : "text-[#6B6760] hover:text-[#C4C0BA] hover:bg-[#18181B]"
+                        ? "bg-[#E8E8E6] text-[#191919]"
+                        : "text-[#9B9A97] hover:text-[#6F6E69] hover:bg-[#F0F0EE]"
                     )}
                   >
                     {area.icon ? (
@@ -131,7 +131,7 @@ export default function Sidebar({ userId }: { userId: string }) {
               })}
               <button
                 onClick={() => setAreaOpen(true)}
-                className="flex items-center gap-2.5 px-2 py-1.5 rounded text-[12px] font-ui text-[#3A3A3E] hover:text-[#6B6760] w-full transition-colors"
+                className="flex items-center gap-2.5 px-2 py-1.5 rounded text-[12px] font-ui text-[#C4C4C2] hover:text-[#9B9A97] w-full transition-colors"
               >
                 <Plus size={12} />
                 Add area
@@ -141,10 +141,10 @@ export default function Sidebar({ userId }: { userId: string }) {
         </div>
 
         {/* Bottom */}
-        <div className="border-t border-[#2A2A2E] px-2 py-1.5 shrink-0">
+        <div className="border-t border-[#E3E3E1] px-2 py-1.5 shrink-0">
           <Link
             href="/settings"
-            className="flex items-center gap-2.5 px-2 py-1.5 rounded text-[13px] font-ui text-[#6B6760] hover:text-[#C4C0BA] hover:bg-[#18181B] transition-colors"
+            className="flex items-center gap-2.5 px-2 py-1.5 rounded text-[13px] font-ui text-[#9B9A97] hover:text-[#6F6E69] hover:bg-[#F0F0EE] transition-colors"
           >
             <Settings size={14} strokeWidth={1.5} />
             Settings

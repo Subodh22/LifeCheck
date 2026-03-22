@@ -17,12 +17,12 @@ import CreateAreaModal from "@/components/CreateAreaModal";
 const TEMPLATES = [
   { id: "work",          icon: "💼", name: "Work & Career",   description: "Projects and career goals",   color: "#4A9EE0" },
   { id: "health",        icon: "🏃", name: "Health & Fitness", description: "Workouts, habits, wellness", color: "#4CAF6B" },
-  { id: "creative",      icon: "🎸", name: "Creative",         description: "Music, art, writing",        color: "#C9A84C" },
+  { id: "creative",      icon: "🎸", name: "Creative",         description: "Music, art, writing",        color: "#2383E2" },
   { id: "finance",       icon: "💰", name: "Finance",          description: "Budget and investments",     color: "#E8A838" },
   { id: "learning",      icon: "📚", name: "Learning",         description: "Courses and skills",         color: "#9B59B6" },
   { id: "travel",        icon: "✈️", name: "Travel",           description: "Trips and adventures",      color: "#E85538" },
   { id: "relationships", icon: "🤝", name: "Relationships",    description: "Family and friends",         color: "#E8538A" },
-  { id: "home",          icon: "🏠", name: "Home & Life",      description: "Household and admin",        color: "#6B6760" },
+  { id: "home",          icon: "🏠", name: "Home & Life",      description: "Household and admin",        color: "#9B9A97" },
 ];
 
 function areaKey(name: string) {
@@ -78,19 +78,19 @@ export default function AreasPage() {
   };
 
   return (
-    <div className="h-full flex flex-col bg-[#0A0A0B]">
+    <div className="h-full flex flex-col bg-[#FFFFFF]">
       {/* Page header */}
-      <div className="px-7 py-5 border-b border-[#2A2A2E] shrink-0">
+      <div className="px-7 py-5 border-b border-[#E3E3E1] shrink-0">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="font-ui text-[22px] font-semibold text-[#F2EEE8]">Spaces</h1>
+          <h1 className="font-ui text-[22px] font-semibold text-[#191919]">Spaces</h1>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowTemplates((v) => !v)}
               className={cn(
                 "flex items-center gap-1.5 px-3 py-1.5 border rounded font-ui text-[13px] transition-colors",
                 showTemplates
-                  ? "border-[#C9A84C] text-[#C9A84C] bg-[#C9A84C10]"
-                  : "border-[#2A2A2E] text-[#6B6760] hover:text-[#F2EEE8] hover:border-[#333338]"
+                  ? "border-[#2383E2] text-[#2383E2] bg-[#2383E210]"
+                  : "border-[#E3E3E1] text-[#9B9A97] hover:text-[#191919] hover:border-[#D5D5D3]"
               )}
             >
               <LayoutGrid size={13} />
@@ -107,25 +107,25 @@ export default function AreasPage() {
         </div>
 
         {/* Search */}
-        <div className="flex items-center gap-2 bg-[#111113] border border-[#2A2A2E] rounded px-3 py-2 w-80 mb-3">
-          <Search size={13} className="text-[#3A3A3E] shrink-0" />
+        <div className="flex items-center gap-2 bg-[#F7F7F5] border border-[#E3E3E1] rounded px-3 py-2 w-80 mb-3">
+          <Search size={13} className="text-[#C4C4C2] shrink-0" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search spaces"
-            className="bg-transparent font-ui text-[13px] text-[#F2EEE8] placeholder:text-[#3A3A3E] outline-none w-full"
+            className="bg-transparent font-ui text-[13px] text-[#191919] placeholder:text-[#C4C4C2] outline-none w-full"
           />
         </div>
 
         {/* Filter row */}
         <div className="relative inline-block">
-          <select className="appearance-none bg-[#111113] border border-[#2A2A2E] rounded px-3 py-1.5 font-ui text-[12px] text-[#6B6760] outline-none cursor-pointer pr-7">
+          <select className="appearance-none bg-[#F7F7F5] border border-[#E3E3E1] rounded px-3 py-1.5 font-ui text-[12px] text-[#9B9A97] outline-none cursor-pointer pr-7">
             <option>Filter by category</option>
             {[...new Set(areas.map((a) => a.category).filter(Boolean))].map((cat) => (
               <option key={cat}>{cat}</option>
             ))}
           </select>
-          <ChevronDown size={11} className="absolute right-2 top-1/2 -translate-y-1/2 text-[#3A3A3E] pointer-events-none" />
+          <ChevronDown size={11} className="absolute right-2 top-1/2 -translate-y-1/2 text-[#C4C4C2] pointer-events-none" />
         </div>
       </div>
 
@@ -133,28 +133,28 @@ export default function AreasPage() {
         {/* Main content */}
         <div className="flex-1 overflow-y-auto">
           {/* Table header */}
-          <div className="grid grid-cols-[32px_1fr_80px_120px_80px_80px_80px_40px] gap-4 px-7 py-2 border-b border-[#2A2A2E] bg-[#0D0D0F] sticky top-0 z-10">
+          <div className="grid grid-cols-[32px_1fr_80px_120px_80px_80px_80px_40px] gap-4 px-7 py-2 border-b border-[#E3E3E1] bg-[#F7F7F5] sticky top-0 z-10">
             <div />
-            <button className="flex items-center gap-1 font-ui text-[11px] tracking-[0.12em] uppercase text-[#6B6760] hover:text-[#C4C0BA] transition-colors text-left">
+            <button className="flex items-center gap-1 font-ui text-[11px] tracking-[0.12em] uppercase text-[#9B9A97] hover:text-[#6F6E69] transition-colors text-left">
               Name <ChevronDown size={10} className="ml-0.5" />
             </button>
-            <span className="font-ui text-[11px] tracking-[0.12em] uppercase text-[#3A3A3E]">Key</span>
-            <span className="font-ui text-[11px] tracking-[0.12em] uppercase text-[#3A3A3E]">Category</span>
-            <span className="font-ui text-[11px] tracking-[0.12em] uppercase text-[#3A3A3E]">Health</span>
-            <span className="font-ui text-[11px] tracking-[0.12em] uppercase text-[#3A3A3E]">Tasks</span>
-            <span className="font-ui text-[11px] tracking-[0.12em] uppercase text-[#3A3A3E]">Created</span>
+            <span className="font-ui text-[11px] tracking-[0.12em] uppercase text-[#C4C4C2]">Key</span>
+            <span className="font-ui text-[11px] tracking-[0.12em] uppercase text-[#C4C4C2]">Category</span>
+            <span className="font-ui text-[11px] tracking-[0.12em] uppercase text-[#C4C4C2]">Health</span>
+            <span className="font-ui text-[11px] tracking-[0.12em] uppercase text-[#C4C4C2]">Tasks</span>
+            <span className="font-ui text-[11px] tracking-[0.12em] uppercase text-[#C4C4C2]">Created</span>
             <div />
           </div>
 
           {filtered.length === 0 && (
             <div className="px-7 py-20 text-center">
-              <LayoutGrid size={28} className="text-[#3A3A3E] mx-auto mb-4" />
-              <p className="font-ui text-[15px] text-[#6B6760] mb-1">
+              <LayoutGrid size={28} className="text-[#C4C4C2] mx-auto mb-4" />
+              <p className="font-ui text-[15px] text-[#9B9A97] mb-1">
                 {search ? "No spaces match your search." : "No spaces yet."}
               </p>
               {!search && (
                 <>
-                  <p className="font-ui text-[12px] text-[#3A3A3E] mb-6">
+                  <p className="font-ui text-[12px] text-[#C4C4C2] mb-6">
                     Create your first space or load demo data to explore the app.
                   </p>
                   <div className="flex items-center justify-center gap-3">
@@ -168,7 +168,7 @@ export default function AreasPage() {
                     <button
                       onClick={handleSeed}
                       disabled={seeding}
-                      className="flex items-center gap-2 px-4 py-2 border border-[#2A2A2E] rounded font-ui text-[13px] text-[#6B6760] hover:text-[#F2EEE8] hover:border-[#333338] disabled:opacity-40 transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 border border-[#E3E3E1] rounded font-ui text-[13px] text-[#9B9A97] hover:text-[#191919] hover:border-[#D5D5D3] disabled:opacity-40 transition-colors"
                     >
                       <Sparkles size={13} />
                       {seeding ? "Loading demo…" : "Load demo data"}
@@ -188,14 +188,14 @@ export default function AreasPage() {
             return (
               <div
                 key={area._id}
-                className="grid grid-cols-[32px_1fr_80px_120px_80px_80px_80px_40px] gap-4 px-7 py-3 border-b border-[#1E1E21] hover:bg-[#0D0D0F] transition-colors items-center group"
+                className="grid grid-cols-[32px_1fr_80px_120px_80px_80px_80px_40px] gap-4 px-7 py-3 border-b border-[#E8E8E6] hover:bg-[#F7F7F5] transition-colors items-center group"
               >
                 {/* Star */}
                 <button
                   onClick={() => toggleStar(area._id)}
                   className={cn(
                     "flex items-center justify-center transition-colors",
-                    isStarred ? "text-[#C9A84C]" : "text-[#2A2A2E] hover:text-[#3A3A3E]"
+                    isStarred ? "text-[#2383E2]" : "text-[#E3E3E1] hover:text-[#C4C4C2]"
                   )}
                 >
                   <Star size={14} fill={isStarred ? "currentColor" : "none"} />
@@ -218,28 +218,28 @@ export default function AreasPage() {
                       {area.name}
                     </p>
                     {area.description && (
-                      <p className="font-ui text-[11px] text-[#6B6760] truncate">{area.description}</p>
+                      <p className="font-ui text-[11px] text-[#9B9A97] truncate">{area.description}</p>
                     )}
                   </div>
                 </Link>
 
                 {/* Key */}
-                <span className="font-ui text-[12px] text-[#6B6760] tracking-[0.05em]">
+                <span className="font-ui text-[12px] text-[#9B9A97] tracking-[0.05em]">
                   {areaKey(area.name)}
                 </span>
 
                 {/* Category */}
                 {area.category ? (
-                  <span className="font-ui text-[11px] text-[#6B6760] bg-[#18181B] border border-[#2A2A2E] px-2 py-0.5 rounded truncate">
+                  <span className="font-ui text-[11px] text-[#9B9A97] bg-[#F0F0EE] border border-[#E3E3E1] px-2 py-0.5 rounded truncate">
                     {area.category}
                   </span>
                 ) : (
-                  <span className="font-ui text-[11px] text-[#3A3A3E]">—</span>
+                  <span className="font-ui text-[11px] text-[#C4C4C2]">—</span>
                 )}
 
                 {/* Health score */}
                 <div className="flex items-center gap-2">
-                  <div className="w-10 h-1.5 bg-[#2A2A2E] rounded-full overflow-hidden">
+                  <div className="w-10 h-1.5 bg-[#E3E3E1] rounded-full overflow-hidden">
                     <div
                       className="h-full rounded-full transition-all"
                       style={{ width: `${score}%`, backgroundColor: hColor }}
@@ -250,17 +250,17 @@ export default function AreasPage() {
 
                 {/* Task count */}
                 <div className="flex items-center gap-1.5">
-                  <CheckSquare size={12} className="text-[#3A3A3E]" />
-                  <span className="font-ui text-[12px] text-[#6B6760]">{taskCount}</span>
+                  <CheckSquare size={12} className="text-[#C4C4C2]" />
+                  <span className="font-ui text-[12px] text-[#9B9A97]">{taskCount}</span>
                 </div>
 
                 {/* Created */}
-                <span className="font-ui text-[11px] text-[#3A3A3E]">
+                <span className="font-ui text-[11px] text-[#C4C4C2]">
                   {format(new Date(area.createdAt), "d MMM yy")}
                 </span>
 
                 {/* Actions */}
-                <button className="opacity-0 group-hover:opacity-100 flex items-center justify-center text-[#6B6760] hover:text-[#F2EEE8] transition-all">
+                <button className="opacity-0 group-hover:opacity-100 flex items-center justify-center text-[#9B9A97] hover:text-[#191919] transition-all">
                   <MoreHorizontal size={14} />
                 </button>
               </div>
@@ -270,15 +270,15 @@ export default function AreasPage() {
 
         {/* Templates panel */}
         {showTemplates && (
-          <div className="w-[300px] border-l border-[#2A2A2E] bg-[#0D0D0F] flex flex-col shrink-0">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-[#2A2A2E]">
+          <div className="w-[300px] border-l border-[#E3E3E1] bg-[#F7F7F5] flex flex-col shrink-0">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-[#E3E3E1]">
               <div>
-                <p className="font-ui text-[13px] font-medium text-[#F2EEE8]">Templates</p>
-                <p className="font-ui text-[11px] text-[#6B6760] mt-0.5">Pick a template for your next space</p>
+                <p className="font-ui text-[13px] font-medium text-[#191919]">Templates</p>
+                <p className="font-ui text-[11px] text-[#9B9A97] mt-0.5">Pick a template for your next space</p>
               </div>
               <button
                 onClick={() => setShowTemplates(false)}
-                className="text-[#6B6760] hover:text-[#F2EEE8] transition-colors"
+                className="text-[#9B9A97] hover:text-[#191919] transition-colors"
               >
                 <X size={14} />
               </button>
@@ -289,7 +289,7 @@ export default function AreasPage() {
                 <button
                   key={t.id}
                   onClick={() => { setCreateOpen(true); setShowTemplates(false); }}
-                  className="w-full flex items-start gap-3 px-5 py-3 hover:bg-[#111113] transition-colors text-left"
+                  className="w-full flex items-start gap-3 px-5 py-3 hover:bg-[#F7F7F5] transition-colors text-left"
                 >
                   <div
                     className="w-8 h-8 rounded flex items-center justify-center text-[16px] shrink-0"
@@ -298,13 +298,13 @@ export default function AreasPage() {
                     {t.icon}
                   </div>
                   <div className="min-w-0">
-                    <p className="font-ui text-[13px] text-[#F2EEE8]">{t.name}</p>
-                    <p className="font-ui text-[11px] text-[#6B6760] mt-0.5">{t.description}</p>
+                    <p className="font-ui text-[13px] text-[#191919]">{t.name}</p>
+                    <p className="font-ui text-[11px] text-[#9B9A97] mt-0.5">{t.description}</p>
                   </div>
                 </button>
               ))}
 
-              <div className="px-5 pt-3 border-t border-[#2A2A2E] mt-1">
+              <div className="px-5 pt-3 border-t border-[#E3E3E1] mt-1">
                 <button
                   onClick={() => { setCreateOpen(true); setShowTemplates(false); }}
                   className="font-ui text-[12px] text-[#4A9EE0] hover:text-[#5AAFF0] transition-colors"
