@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Outfit:wght@300;400;500&display=swap');
+
+@import "tailwindcss";
+
+@theme inline {
+  --color-bg: #0A0A0B;
+  --color-s1: #111113;
+  --color-s2: #18181B;
+  --color-s3: #1E1E21;
+  --color-border: #2A2A2E;
+  --color-gold: #C9A84C;
+  --color-ink: #F2EEE8;
+  --color-mid: #6B6760;
+  --color-dim: #3A3A3E;
+  --color-background: #0A0A0B;
+  --color-foreground: #F2EEE8;
+  --font-display: 'Cormorant Garamond', serif;
+  --font-ui: 'Outfit', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background: #0A0A0B;
+  color: #F2EEE8;
+  font-family: var(--font-outfit);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: #0A0A0B; }
+::-webkit-scrollbar-thumb { background: #2A2A2E; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #3A3A3E; }
+
+/* Focus ring */
+:focus-visible {
+  outline: 1px solid #C9A84C;
+  outline-offset: 2px;
+}
