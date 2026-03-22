@@ -26,6 +26,7 @@ import {
   GripVertical,
   ExternalLink,
   Trash2,
+  ChevronDown,
 } from "lucide-react";
 
 // ── Constants ──────────────────────────────────────────────────────────────────
@@ -44,6 +45,7 @@ type Task = {
   status: string;
   priority: string;
   areaId: Id<"areas">;
+  dueDate?: number;
   scheduledStart?: number;
   scheduledEnd?: number;
   gcalEventId?: string;
@@ -259,6 +261,7 @@ export default function SchedulePage() {
   const [gcalConnected, setGcalConnected] = useState<boolean | null>(null);
   const [activeId,      setActiveId]      = useState<string | null>(null);
   const [connectingGcal, setConnectingGcal] = useState(false);
+  const [backlogOpen,    setBacklogOpen]    = useState(false);
 
   // Optimistic moves: taskId → pending {scheduledStart, scheduledEnd}
   // Applied immediately on drop so the block moves without waiting for Convex
@@ -320,10 +323,33 @@ export default function SchedulePage() {
     return result;
   }, [scheduledTasks, unscheduledTasks, pendingMoves]);
 
-  const displayUnscheduledTasks = useMemo(
-    () => unscheduledTasks.filter((t) => !pendingMoves.has(t._id)),
-    [unscheduledTasks, pendingMoves]
-  );
+  // Split unscheduled tasks into "this week" and "backlog"
+  // This week = due within the current week OR overdue OR urgent/high with no due date
+  const { thisWeekTasks, backlogTasks } = useMemo(() => {
+    const available = unscheduledTasks.filter((t) => !pendingMoves.has(t._id));
+    const thisWeek: Task[] = [];
+    const backlog:  Task[] = [];
+    for (const t of available) {
+      const dueThisWeek  = t.dueDate && t.dueDate >= weekStartMs && t.dueDate <= weekEndMs;
+      const overdue      = t.dueDate && t.dueDate < weekStartMs;
+      const urgentNoDue  = !t.dueDate && (t.priority === "urgent" || t.priority === "high");
+      if (dueThisWeek || overdue || urgentNoDue) {
+        thisWeek.push(t);
+      } else {
+        backlog.push(t);
+      }
+    }
+    // Sort this week: overdue first, then by due date, then by priority
+    thisWeek.sort((a, b) => {
+      const priorityRank = { urgent: 0, high: 1, medium: 2, low: 3 };
+      if (a.dueDate && b.dueDate) return a.dueDate - b.dueDate;
+      if (a.dueDate) return -1;
+      if (b.dueDate) return 1;
+      return (priorityRank[a.priority as keyof typeof priorityRank] ?? 3) -
+             (priorityRank[b.priority as keyof typeof priorityRank] ?? 3);
+    });
+    return { thisWeekTasks: thisWeek, backlogTasks: backlog };
+  }, [unscheduledTasks, pendingMoves, weekStartMs, weekEndMs]);
 
   // ── GCal ──
   const loadGcalEvents = useCallback(() => {
@@ -538,22 +564,60 @@ export default function SchedulePage() {
         {/* Body */}
         <div className="flex-1 flex min-h-0 overflow-hidden">
 
-          {/* Unscheduled sidebar */}
+          {/* Sidebar */}
           <div className="w-[220px] shrink-0 border-r border-[#2A2A2E] flex flex-col overflow-hidden">
+
+            {/* Header */}
             <div className="px-3 py-2.5 border-b border-[#2A2A2E] shrink-0">
-              <p className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#3A3A3E] font-medium">Unscheduled</p>
+              <p className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#3A3A3E] font-medium">This Week</p>
               <p className="font-ui text-[10px] text-[#3A3A3E] mt-0.5">Drag tasks onto the grid</p>
             </div>
-            <div className="flex-1 overflow-y-auto p-2 space-y-1.5">
-              {displayUnscheduledTasks.length === 0 ? (
-                <div className="px-2 py-6 text-center">
-                  <p className="font-ui text-[11px] text-[#3A3A3E]">All tasks scheduled</p>
+
+            <div className="flex-1 overflow-y-auto min-h-0">
+
+              {/* ── This Week ── */}
+              <div className="p-2 space-y-1.5">
+                {thisWeekTasks.length === 0 ? (
+                  <div className="px-2 py-5 text-center">
+                    <p className="font-ui text-[11px] text-[#3A3A3E]">Nothing due this week</p>
+                  </div>
+                ) : (
+                  thisWeekTasks.map((t) => (
+                    <UnscheduledChip key={t._id} task={t} areaColor={areaMap[t.areaId]?.color} />
+                  ))
+                )}
+              </div>
+
+              {/* ── Backlog (collapsible) ── */}
+              {backlogTasks.length > 0 && (
+                <div className="border-t border-[#1E1E21]">
+                  <button
+                    onClick={() => setBacklogOpen((v) => !v)}
+                    className="w-full flex items-center justify-between px-3 py-2 hover:bg-[#111113] transition-colors group"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="font-ui text-[10px] uppercase tracking-[0.12em] text-[#3A3A3E] font-medium">
+                        Backlog
+                      </span>
+                      <span className="font-ui text-[10px] text-[#3A3A3E] tabular-nums">
+                        {backlogTasks.length}
+                      </span>
+                    </div>
+                    <ChevronDown
+                      size={11}
+                      className={cn("text-[#3A3A3E] transition-transform", backlogOpen && "rotate-180")}
+                    />
+                  </button>
+                  {backlogOpen && (
+                    <div className="px-2 pb-2 space-y-1.5">
+                      {backlogTasks.map((t) => (
+                        <UnscheduledChip key={t._id} task={t} areaColor={areaMap[t.areaId]?.color} />
+                      ))}
+                    </div>
+                  )}
                 </div>
-              ) : (
-                displayUnscheduledTasks.map((t) => (
-                  <UnscheduledChip key={t._id} task={t} areaColor={areaMap[t.areaId]?.color} />
-                ))
               )}
+
             </div>
           </div>
 
