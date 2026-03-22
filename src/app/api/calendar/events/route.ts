@@ -32,38 +32,43 @@ async function getUser(clerkId: string) {
 // ── GET — list events for a week ─────────────────────────────────────────────
 
 export async function GET(request: NextRequest) {
-  const { userId } = await auth();
-  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  try {
+    const { userId } = await auth();
+    if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { searchParams } = request.nextUrl;
-  const weekStart = searchParams.get("weekStart"); // ISO datetime
-  const weekEnd   = searchParams.get("weekEnd");
+    const { searchParams } = request.nextUrl;
+    const weekStart = searchParams.get("weekStart");
+    const weekEnd   = searchParams.get("weekEnd");
 
-  const user = await getUser(userId);
-  if (!user?.gcalRefreshToken) {
+    const user = await getUser(userId);
+    if (!user?.gcalRefreshToken) {
+      return NextResponse.json({ events: [], connected: false });
+    }
+
+    const accessToken = await getAccessToken(user.gcalRefreshToken);
+    if (!accessToken) return NextResponse.json({ events: [], connected: false });
+
+    const params = new URLSearchParams({
+      timeMin:      weekStart ?? new Date().toISOString(),
+      timeMax:      weekEnd   ?? new Date(Date.now() + 7 * 864e5).toISOString(),
+      singleEvents: "true",
+      orderBy:      "startTime",
+      maxResults:   "100",
+    });
+
+    const res = await fetch(
+      `https://www.googleapis.com/calendar/v3/calendars/primary/events?${params}`,
+      { headers: { Authorization: `Bearer ${accessToken}` } }
+    );
+
+    if (!res.ok) return NextResponse.json({ events: [], connected: true });
+
+    const data = await res.json();
+    return NextResponse.json({ events: data.items ?? [], connected: true });
+  } catch (err) {
+    console.error("[calendar/events GET]", err);
     return NextResponse.json({ events: [], connected: false });
   }
-
-  const accessToken = await getAccessToken(user.gcalRefreshToken);
-  if (!accessToken) return NextResponse.json({ events: [], connected: false });
-
-  const params = new URLSearchParams({
-    timeMin:      weekStart ?? new Date().toISOString(),
-    timeMax:      weekEnd   ?? new Date(Date.now() + 7 * 864e5).toISOString(),
-    singleEvents: "true",
-    orderBy:      "startTime",
-    maxResults:   "100",
-  });
-
-  const res = await fetch(
-    `https://www.googleapis.com/calendar/v3/calendars/primary/events?${params}`,
-    { headers: { Authorization: `Bearer ${accessToken}` } }
-  );
-
-  if (!res.ok) return NextResponse.json({ events: [], connected: true });
-
-  const data = await res.json();
-  return NextResponse.json({ events: data.items ?? [], connected: true });
 }
 
 // ── POST — create / update / delete ─────────────────────────────────────────
