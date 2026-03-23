@@ -175,4 +175,12 @@ export default defineSchema({
   })
     .index("by_user", ["userId"])
     .index("by_user_week", ["userId", "weekOf"]),
+
+  notes: defineTable({
+    userId: v.string(),
+    content: v.string(),
+    pinned: v.optional(v.boolean()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  }).index("by_user", ["userId"]),
 });

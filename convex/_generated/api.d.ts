@@ -15,6 +15,7 @@ import type * as backup from "../backup.js";
 import type * as goals from "../goals.js";
 import type * as habits from "../habits.js";
 import type * as healthScores from "../healthScores.js";
+import type * as notes from "../notes.js";
 import type * as onboarding from "../onboarding.js";
 import type * as seed from "../seed.js";
 import type * as tasks from "../tasks.js";
@@ -35,6 +36,7 @@ declare const fullApi: ApiFromModules<{
   goals: typeof goals;
   habits: typeof habits;
   healthScores: typeof healthScores;
+  notes: typeof notes;
   onboarding: typeof onboarding;
   seed: typeof seed;
   tasks: typeof tasks;

@@ -5,7 +5,7 @@ import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { format } from "date-fns";
 import { useState } from "react";
-import { Settings, Flame, Menu, X, LayoutDashboard, ListTodo, Target, Grid2x2, Calendar } from "lucide-react";
+import { Settings, Flame, Menu, X, LayoutDashboard, ListTodo, Target, Grid2x2, Calendar, StickyNote } from "lucide-react";
 import CreateTaskModal from "@/components/CreateTaskModal";
 import { useIsMobile } from "@/hooks/useIsMobile";
 
@@ -15,6 +15,7 @@ const NAV_ITEMS = [
   { href: "/goals",    label: "Goals",    icon: Target },
   { href: "/areas",    label: "Areas",    icon: Grid2x2 },
   { href: "/schedule", label: "Schedule", icon: Calendar },
+  { href: "/notepad",  label: "Notepad",  icon: StickyNote },
 ];
 
 const INK       = "#0D0D0D";
