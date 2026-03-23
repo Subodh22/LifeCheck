@@ -1,16 +1,19 @@
 "use client";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { UserButton } from "@clerk/nextjs";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function SettingsPage() {
   const { user, userId } = useCurrentUser();
-  const resetUserData = useMutation(api.admin.resetUserData);
-  const seedDemoData  = useMutation(api.seed.seedDemoData);
+  const resetUserData   = useMutation(api.admin.resetUserData);
+  const seedDemoData    = useMutation(api.seed.seedDemoData);
+  const restoreUserData = useMutation(api.backup.restoreUserData);
+  const snapshot        = useQuery(api.backup.exportUserData, userId ? { userId } : "skip");
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [confirming,       setConfirming]       = useState(false);
   const [resetting,        setResetting]        = useState(false);
@@ -18,6 +21,44 @@ export default function SettingsPage() {
   const [seedingDemo,      setSeedingDemo]      = useState(false);
   const [demoConfirming,   setDemoConfirming]   = useState(false);
   const [demoDone,         setDemoDone]         = useState(false);
+  const [restoring,        setRestoring]        = useState(false);
+  const [restoreDone,      setRestoreDone]      = useState<string | null>(null);
+  const [restoreError,     setRestoreError]     = useState<string | null>(null);
+
+  function handleDownloadSnapshot() {
+    if (!snapshot) return;
+    const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: "application/json" });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement("a");
+    a.href     = url;
+    a.download = `life-os-snapshot-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  async function handleRestoreFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setRestoreError(null);
+    setRestoreDone(null);
+    try {
+      const text     = await file.text();
+      const parsed   = JSON.parse(text);
+      setRestoring(true);
+      const result   = await restoreUserData({ snapshot: parsed });
+      const r        = (result as any)?.restored;
+      setRestoreDone(
+        r
+          ? `Restored: ${r.areas} areas · ${r.tasks} tasks · ${r.goals} goals · ${r.habits} habits · ${r.projects} projects`
+          : "Restore complete."
+      );
+    } catch (err: any) {
+      setRestoreError(err?.message ?? "Failed to restore snapshot.");
+    } finally {
+      setRestoring(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  }
 
   async function handleReset() {
     if (!userId) return;
@@ -126,6 +167,61 @@ export default function SettingsPage() {
               Reload demo data
             </button>
           )}
+        </div>
+      </section>
+
+      {/* Data Snapshot */}
+      <section className="mb-8">
+        <h2 className="font-ui text-[11px] tracking-[0.2em] uppercase text-[#999990] mb-3">
+          Data Snapshot
+        </h2>
+        <div className="border border-[#CCCCBC] p-4 bg-[#FFFFFF] flex flex-col gap-6">
+
+          {/* Download */}
+          <div>
+            <p className="font-ui text-[13px] text-[#0D0D0D] mb-1">Export current data</p>
+            <p className="font-ui text-xs text-[#555550] mb-3">
+              Downloads all your areas, tasks, goals, habits, projects, completions, health scores,
+              and weekly reviews as a JSON file you can restore later.
+            </p>
+            <button
+              onClick={handleDownloadSnapshot}
+              disabled={!snapshot}
+              className="px-4 py-1.5 border border-[#0D0D0D] font-ui text-[12px] text-[#0D0D0D] hover:bg-[#0D0D0D] hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              {snapshot ? "Download snapshot" : "Loading…"}
+            </button>
+          </div>
+
+          {/* Restore */}
+          <div>
+            <p className="font-ui text-[13px] text-[#0D0D0D] mb-1">Restore from snapshot</p>
+            <p className="font-ui text-xs text-[#555550] mb-3">
+              Re-imports a previously downloaded snapshot. To get a clean slate, use{" "}
+              <span className="text-[#C41E3A]">Reset all data</span> below first, then restore.
+            </p>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".json,application/json"
+              className="hidden"
+              onChange={handleRestoreFile}
+            />
+            {restoreDone ? (
+              <p className="font-ui text-[12px] text-[#3A7D44]">{restoreDone}</p>
+            ) : restoreError ? (
+              <p className="font-ui text-[12px] text-[#C41E3A]">{restoreError}</p>
+            ) : (
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={restoring}
+                className="px-4 py-1.5 border border-[#0D0D0D] font-ui text-[12px] text-[#0D0D0D] hover:bg-[#0D0D0D] hover:text-white transition-colors disabled:opacity-50"
+              >
+                {restoring ? "Restoring…" : "Choose snapshot file"}
+              </button>
+            )}
+          </div>
+
         </div>
       </section>
 

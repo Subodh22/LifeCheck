@@ -569,17 +569,20 @@ function GoalModal({
 }: GoalModalProps) {
   const createGoal = useMutation(api.goals.create);
   const updateGoal = useMutation(api.goals.update);
+  const createTask = useMutation(api.tasks.create);
 
-  const [title,     setTitle]     = useState(goal?.title ?? "");
-  const [desc,      setDesc]      = useState(goal?.description ?? "");
-  const [areaId,    setAreaId]    = useState<Id<"areas"> | "">(goal?.areaId ?? defaultAreaId ?? areas[0]?._id ?? "");
-  const [timeframe, setTimeframe] = useState<Timeframe | "">(goal?.timeframe ?? defaultTimeframe ?? "yearly");
-  const [parentId,  setParentId]  = useState<Id<"goals"> | "">(goal?.parentGoalId ?? defaultParentId ?? "");
-  const [metric,    setMetric]    = useState(goal?.targetMetric ?? "");
-  const [current,   setCurrent]   = useState(String(goal?.currentValue ?? "0"));
-  const [target,    setTarget]    = useState(String(goal?.targetValue ?? ""));
-  const [dueDate,   setDueDate]   = useState(goal?.dueDate ? new Date(goal.dueDate).toISOString().split("T")[0] : "");
-  const [saving,    setSaving]    = useState(false);
+  const [title,        setTitle]        = useState(goal?.title ?? "");
+  const [desc,         setDesc]         = useState(goal?.description ?? "");
+  const [areaId,       setAreaId]       = useState<Id<"areas"> | "">(goal?.areaId ?? defaultAreaId ?? areas[0]?._id ?? "");
+  const [timeframe,    setTimeframe]    = useState<Timeframe | "">(goal?.timeframe ?? defaultTimeframe ?? "yearly");
+  const [parentId,     setParentId]     = useState<Id<"goals"> | "">(goal?.parentGoalId ?? defaultParentId ?? "");
+  const [metric,       setMetric]       = useState(goal?.targetMetric ?? "");
+  const [current,      setCurrent]      = useState(String(goal?.currentValue ?? "0"));
+  const [target,       setTarget]       = useState(String(goal?.targetValue ?? ""));
+  const [dueDate,      setDueDate]      = useState(goal?.dueDate ? new Date(goal.dueDate).toISOString().split("T")[0] : "");
+  const [saving,       setSaving]       = useState(false);
+  const [taskTitles,   setTaskTitles]   = useState<string[]>([]);
+  const [newTaskInput, setNewTaskInput] = useState("");
 
   const order: Timeframe[] = ["yearly", "quarterly", "monthly", "weekly"];
   const myIdx = order.indexOf(timeframe as Timeframe);
@@ -607,7 +610,28 @@ function GoalModal({
       if (goal) {
         await updateGoal({ id: goal._id, ...payload });
       } else {
-        await createGoal({ userId, ...payload });
+        const goalId = await createGoal({ userId, ...payload });
+        // Create any tasks added during weekly goal creation
+        if (timeframe === "weekly" && taskTitles.length > 0 && areaId) {
+          const endOfWeek = (() => {
+            const d = new Date();
+            d.setDate(d.getDate() + (7 - d.getDay()));
+            d.setHours(23, 59, 59, 999);
+            return d.getTime();
+          })();
+          await Promise.all(
+            taskTitles.map((t) =>
+              createTask({
+                userId,
+                areaId: areaId as Id<"areas">,
+                goalId,
+                title: t,
+                priority: "medium",
+                dueDate: endOfWeek,
+              })
+            )
+          );
+        }
       }
       onClose();
     } finally { setSaving(false); }
@@ -735,6 +759,51 @@ function GoalModal({
               className="w-full bg-[#FAFAF5] border border-[#CCCCBC] px-3 py-2 font-ui text-[12px] text-[#0D0D0D] outline-none [color-scheme:light]"
             />
           </div>
+
+          {timeframe === "weekly" && (
+            <div>
+              <label className="font-ui text-[11px] uppercase tracking-[0.12em] text-[#555550] mb-1.5 block">Tasks</label>
+              <div className="space-y-1.5">
+                {taskTitles.map((t, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <span className="flex-1 bg-[#FAFAF5] border border-[#CCCCBC] px-3 py-1.5 font-ui text-[13px] text-[#0D0D0D]">{t}</span>
+                    <button
+                      onClick={() => setTaskTitles((prev) => prev.filter((_, j) => j !== i))}
+                      className="text-[#555550] hover:text-[#C41E3A]"
+                    >
+                      <X size={12} />
+                    </button>
+                  </div>
+                ))}
+                <div className="flex items-center gap-2">
+                  <input
+                    value={newTaskInput}
+                    onChange={(e) => setNewTaskInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && newTaskInput.trim()) {
+                        e.preventDefault();
+                        setTaskTitles((prev) => [...prev, newTaskInput.trim()]);
+                        setNewTaskInput("");
+                      }
+                    }}
+                    placeholder="Add a task… (press Enter)"
+                    className="flex-1 bg-[#FAFAF5] border border-[#CCCCBC] px-3 py-1.5 font-ui text-[13px] text-[#0D0D0D] placeholder:text-[#999990] outline-none focus:border-[#999990]"
+                  />
+                  <button
+                    onClick={() => {
+                      if (newTaskInput.trim()) {
+                        setTaskTitles((prev) => [...prev, newTaskInput.trim()]);
+                        setNewTaskInput("");
+                      }
+                    }}
+                    className="text-[#555550] hover:text-[#0D0D0D]"
+                  >
+                    <Plus size={14} />
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="px-5 py-4 border-t border-[#CCCCBC] flex justify-end gap-2 shrink-0">

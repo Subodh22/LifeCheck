@@ -11,6 +11,7 @@
 import type * as admin from "../admin.js";
 import type * as aiInsights from "../aiInsights.js";
 import type * as areas from "../areas.js";
+import type * as backup from "../backup.js";
 import type * as goals from "../goals.js";
 import type * as habits from "../habits.js";
 import type * as healthScores from "../healthScores.js";
@@ -30,6 +31,7 @@ declare const fullApi: ApiFromModules<{
   admin: typeof admin;
   aiInsights: typeof aiInsights;
   areas: typeof areas;
+  backup: typeof backup;
   goals: typeof goals;
   habits: typeof habits;
   healthScores: typeof healthScores;
