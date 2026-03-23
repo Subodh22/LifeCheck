@@ -1,0 +1,645 @@
+{
+  "exportedAt": 1774224000000,
+  "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7",
+  "areas": [],
+  "habits": [],
+  "habitCompletions": [],
+  "healthScores": [],
+  "projects": [],
+  "taskCompletions": [],
+
+  "goals": [
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "j97seedgoal01000000000000000001a",
+      "areaId": "j57bv34gc1pyfavap6r75seeh183c5dr",
+      "parentGoalId": "j979m0b16zqjpqzvhx71k3260d83dp5k",
+      "createdAt": 1774224000000,
+      "currentValue": 0,
+      "description": "Why it matters: drop from 28% to ~22% body fat this quarter — first third of the Musashi journey.\n80% version: lose 2kg, gym 4x/week consistent, Sunday meal prep locked in.\nScience: 2.4g protein per kg bodyweight (240g/day at 100kg) preserves muscle during fat loss (2025 research). 500 cal deficit = 0.5kg fat/week. Spread protein across 4-5 meals for maximum muscle protein synthesis.\nBiggest constraint: junk food in the house, skipping Sunday prep, no tracking.",
+      "dueDate": 1777507200000,
+      "status": "active",
+      "targetMetric": "kg lost in April",
+      "targetValue": 2,
+      "timeframe": "monthly",
+      "title": "April cut — lose 2kg: 240g protein/day, 500 cal deficit, gym 4x/week",
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "j97seedgoal02000000000000000002b",
+      "areaId": "j57bv34gc1pyfavap6r75seeh183c5dr",
+      "parentGoalId": "j979m0b16zqjpqzvhx71k3260d83dp5k",
+      "createdAt": 1774224000000,
+      "currentValue": 0,
+      "description": "Why it matters: month 2 of the cut — building momentum and proving the system works.\n80% version: 90kg scale weight, Sunday meal prep 100% of weeks, no junk food in the house.\nScience: if losing less than 0.3kg/week reduce calories by 200. If losing more than 1kg/week add 200 calories to protect muscle. Track the trend not single readings — weight fluctuates 1-2kg daily from water.\nBiggest constraint: losing consistency after the first month.",
+      "dueDate": 1780099200000,
+      "status": "active",
+      "targetMetric": "kg lost in May",
+      "targetValue": 2,
+      "timeframe": "monthly",
+      "title": "May cut — lose 2kg: 90kg target weight, meal prep every Sunday without fail",
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "j97seedgoal03000000000000000003c",
+      "areaId": "j57bv34gc1pyfavap6r75seeh183c5dr",
+      "parentGoalId": "j979m0b16zqjpqzvhx71k3260d83dp5k",
+      "createdAt": 1774224000000,
+      "currentValue": 0,
+      "description": "Why it matters: 3 months of consistency creates the habit loop — by June gym and meal prep are automatic.\n80% version: 88kg scale weight, first visible muscle definition, habits automatic.\nIf stalling: reduce refined carbs further and add 1x30 min walk per day — burns 200 extra calories without affecting gym recovery.\nBiggest constraint: summer social eating, losing focus in month 3.",
+      "dueDate": 1782691200000,
+      "status": "active",
+      "targetMetric": "kg lost in June",
+      "targetValue": 2,
+      "timeframe": "monthly",
+      "title": "June cut — lose 2kg: 88kg target, first visible ab definition",
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "j97seedgoal04000000000000000004d",
+      "areaId": "j57f5sv3f92vwhww6v2j1xgfp983dmrp",
+      "parentGoalId": "j97dkjaa59yc0j31129s412p7d83c8z4",
+      "createdAt": 1774224000000,
+      "description": "Why it matters: your niche is already in front of you — Claude automation for property developers. You are learning both. Build the demo that proves it.\n80% version: working feasibility calculator demo, shown to 5 property developers, feedback collected.\nMarket: AI consulting grew to $11B in 2025 at 26% CAGR — property dev is underserved and has high pain.\nBiggest constraint: trying to build something perfect instead of shipping something real.",
+      "dueDate": 1777507200000,
+      "status": "active",
+      "timeframe": "monthly",
+      "title": "April Claude — build property dev feasibility calculator demo using Claude",
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "j97seedgoal05000000000000000005e",
+      "areaId": "j57f5sv3f92vwhww6v2j1xgfp983dmrp",
+      "parentGoalId": "j97dkjaa59yc0j31129s412p7d83c8z4",
+      "createdAt": 1774224000000,
+      "currentValue": 0,
+      "description": "Why it matters: first paid client changes everything psychologically — it proves the market exists.\n80% version: 1 paying client, minimum $500, payment received before work starts.\nOffer: Claude Workflow Audit — 2 hours, map their process, show 3 automations that save 5+ hours/week, deliver PDF summary. Price: $500-1000.\nRule: collect payment BEFORE delivering. Free clients don't value your time and never become real clients.\nBiggest constraint: undercharging or doing free work hoping it leads to paid.",
+      "dueDate": 1780099200000,
+      "status": "active",
+      "targetMetric": "Revenue AUD",
+      "targetValue": 500,
+      "currentValue": 0,
+      "timeframe": "monthly",
+      "title": "May Claude — land first paying client: $500 minimum, charge before delivering",
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "j97seedgoal06000000000000000006f",
+      "areaId": "j57f5sv3f92vwhww6v2j1xgfp983dmrp",
+      "parentGoalId": "j97dkjaa59yc0j31129s412p7d83c8z4",
+      "createdAt": 1774224000000,
+      "currentValue": 0,
+      "description": "Why it matters: case studies are your strongest sales asset — they convert future prospects better than any pitch.\n80% version: $2k cumulative revenue, 2 case studies published on LinkedIn.\nCase study format: Problem (what was painful) — Solution (what Claude did) — Result (time saved, money made, errors reduced).\nBiggest constraint: not documenting the work you do — every project is potential proof.",
+      "dueDate": 1782691200000,
+      "status": "active",
+      "targetMetric": "Revenue AUD",
+      "targetValue": 2000,
+      "currentValue": 0,
+      "timeframe": "monthly",
+      "title": "June Claude — reach $2k total revenue and publish 2 case studies",
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "j97seedgoal07000000000000000007g",
+      "areaId": "j57c7p79fs9m3wsf3qyeveg2bh83cery",
+      "parentGoalId": "j97aq296baf2g15p9rx55mydrd83fp72",
+      "createdAt": 1774224000000,
+      "description": "Why it matters: getting through the course is the minimum — doing the assignments forces real understanding.\n80% version: Modules 1 and 2 submitted, basic feasibility run on 1 real Melbourne site.\nFix for execution fear: set a done-enough standard. Imperfect action beats perfect inaction every time.\nBiggest constraint: watching videos but not submitting assignments — learning without output is procrastination.",
+      "dueDate": 1777507200000,
+      "status": "active",
+      "timeframe": "monthly",
+      "title": "April property — complete Modules 1+2 with all assignments submitted",
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "j97seedgoal08000000000000000008h",
+      "areaId": "j57c7p79fs9m3wsf3qyeveg2bh83cery",
+      "parentGoalId": "j97aq296baf2g15p9rx55mydrd83fp72",
+      "createdAt": 1774224000000,
+      "description": "Why it matters: running real numbers on real sites is where theory becomes skill.\n80% version: 3 real Melbourne sites analyzed in a feasibility spreadsheet with go/no-go verdict on each.\nKey: always add 15-20% construction contingency — Australian standard. Most beginners underestimate this and it kills projects.\nSources: Feasly.com.au has free feasibility templates. Sites on realcommercial.com.au and development-ready.com.au.\nBiggest constraint: analyzing imaginary sites instead of real listed ones.",
+      "dueDate": 1780099200000,
+      "status": "active",
+      "timeframe": "monthly",
+      "title": "May property — analyze 3 real Melbourne development sites with full feasibility numbers",
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "j97seedgoal09000000000000000009i",
+      "areaId": "j57c7p79fs9m3wsf3qyeveg2bh83cery",
+      "parentGoalId": "j97aq296baf2g15p9rx55mydrd83fp72",
+      "createdAt": 1774224000000,
+      "description": "Why it matters: no course teaches what a developer learns on a live project — you need to see it firsthand.\n80% version: 1 half-day with an active developer, understanding their real workflow and biggest risks.\nOffer: help them automate 1 workflow using Claude for free in exchange for showing you the project.\nAsk: What takes the most manual time? What is the biggest risk right now? What do you wish you knew before your first deal?\nBiggest constraint: not reaching out because it feels awkward.",
+      "dueDate": 1782691200000,
+      "status": "active",
+      "timeframe": "monthly",
+      "title": "June property — shadow 1 active Melbourne developer for a half day",
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "j97seedgoal10000000000000000010j",
+      "areaId": "j5763bt9v8k2fyrx8r88avgek183dv63",
+      "parentGoalId": "j9713mr8gs1r1mpfs2smex79sx83easq",
+      "createdAt": 1774224000000,
+      "currentValue": 0,
+      "description": "Why it matters: the Barefoot Investor system is the foundation — without it savings are accidental not automatic.\n80% version: ING Savings Maximiser open, $1000 deposited, automatic payday transfer set up.\nSystem: Barefoot buckets — Daily Expenses 60% + Splurge 10% + Smile 10% + Fire 20%. Pay yourself first — transfer before spending anything.\nING Savings Maximiser: currently one of Australia's highest interest rates (~5% p.a.).\nBiggest constraint: spending the savings before transferring them.",
+      "dueDate": 1777507200000,
+      "status": "active",
+      "targetMetric": "Saved AUD",
+      "targetValue": 1000,
+      "timeframe": "monthly",
+      "title": "April finance — Barefoot system live: $1k in ING Savings Maximiser on autopay",
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "j97seedgoal11000000000000000011k",
+      "areaId": "j5763bt9v8k2fyrx8r88avgek183dv63",
+      "parentGoalId": "j9713mr8gs1r1mpfs2smex79sx83easq",
+      "createdAt": 1774224000000,
+      "currentValue": 0,
+      "description": "Why it matters: investing in index funds is the wealth-building engine used by every Aussie FIRE achiever.\n80% version: Vanguard account open, first $500 invested in VAS + VGS, automatic monthly purchase set up.\nAllocation: 70% VAS (Vanguard Australian Shares ETF — ASX300) + 30% VGS (Vanguard International Shares ETF). Standard Aussie FIRE allocation.\nFIRE number: annual expenses x 25 = your target nest egg. If spending $40k/year you need $1M invested.\nBiggest constraint: waiting until there is more money to invest — even $200/month compounds significantly over 20 years.",
+      "dueDate": 1780099200000,
+      "status": "active",
+      "targetMetric": "Invested AUD",
+      "targetValue": 500,
+      "timeframe": "monthly",
+      "title": "May finance — open Vanguard Personal Investor and buy first $500 of VAS 70% + VGS 30%",
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "j97seedgoal12000000000000000012l",
+      "areaId": "j5763bt9v8k2fyrx8r88avgek183dv63",
+      "parentGoalId": "j9713mr8gs1r1mpfs2smex79sx83easq",
+      "createdAt": 1774224000000,
+      "description": "Why it matters: measuring net worth monthly is what makes financial progress real — not just theoretical.\n80% version: net worth improving month over month, FIRE number calculated, positive trend confirmed.\nFormula: total assets (savings + investments + super) minus total liabilities (all debts) = net worth.\nFIRE number check: what are your annual expenses? Multiply by 25. That is your long-term target.\nBiggest constraint: avoiding the numbers because they look bad — the only way to improve them is to see them.",
+      "dueDate": 1782691200000,
+      "status": "active",
+      "timeframe": "monthly",
+      "title": "June finance — net worth review: calculate FIRE number, confirm positive direction from April",
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "j97seedgoal13000000000000000013m",
+      "areaId": "j57e0y4r55bkprr872sfm8d8ss83dxmf",
+      "parentGoalId": "j9759f12rx2afmb7q3ete3rxp983f79m",
+      "createdAt": 1774224000000,
+      "description": "Why it matters: without a clear problem statement you will keep building things nobody asked for.\n80% version: top 3 pain points documented from real conversations, 1-sentence problem statement written and tested on 3 people.\nFormat: I help [Melbourne property developers] [automate X painful task] using Claude AI so they can [save 10 hours/week].\nRule: do NOT build anything this month. Only validate.\nBiggest constraint: wanting to build before you understand the problem well enough.",
+      "dueDate": 1777507200000,
+      "status": "active",
+      "timeframe": "monthly",
+      "title": "April business — document top 3 pain points from 20 conversations and write problem statement",
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "j97seedgoal14000000000000000014n",
+      "areaId": "j57e0y4r55bkprr872sfm8d8ss83dxmf",
+      "parentGoalId": "j9759f12rx2afmb7q3ete3rxp983f79m",
+      "createdAt": 1774224000000,
+      "currentValue": 0,
+      "description": "Why it matters: collecting payment before building is the rule that separates real businesses from side projects.\n80% version: 1 person has paid $500-1000 for your solution before you write a single line of code.\nOffer: Claude Workflow Audit — $500 for 2 hours. You map their process and show exactly where Claude saves them 5+ hours/week.\nIf nobody will pay $500: the pain is not real enough or your positioning is wrong. Go back to conversations.\nBiggest constraint: being scared to charge money before having the thing built.",
+      "dueDate": 1780099200000,
+      "status": "active",
+      "targetMetric": "Pre-sales AUD",
+      "targetValue": 1000,
+      "currentValue": 0,
+      "timeframe": "monthly",
+      "title": "May business — pre-sell 1 Claude service: collect $1000 before building anything",
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "j97seedgoal15000000000000000015o",
+      "areaId": "j57e0y4r55bkprr872sfm8d8ss83dxmf",
+      "parentGoalId": "j9759f12rx2afmb7q3ete3rxp983f79m",
+      "createdAt": 1774224000000,
+      "description": "Why it matters: a testimonial and case study are worth 100 cold messages — they do the selling for you.\n80% version: first project delivered, written testimonial collected, case study published on LinkedIn.\nTestimonial rule: ask within 24 hours of delivery. Most people forget if you wait longer.\nCase study format: Problem they had — What Claude solved — Measurable result (time saved, money made, errors removed).\nBiggest constraint: finishing the project and moving on without documenting or collecting the proof.",
+      "dueDate": 1782691200000,
+      "status": "active",
+      "timeframe": "monthly",
+      "title": "June business — deliver first project, collect testimonial, publish case study",
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    }
+
+  ],
+
+  "tasks": [
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "jx7seedtask01000000000000000001a",
+      "areaId": "j57bv34gc1pyfavap6r75seeh183c5dr",
+      "goalId": "j97f57b281fmq2hkvthb1j0wpd83dh82",
+      "createdAt": 1774224000000,
+      "priority": "high",
+      "status": "todo",
+      "title": "TODAY: Take body measurements — weight, waist, chest, hips + 3 photos front/side/back",
+      "dueDate": 1774310400000,
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "jx7seedtask02000000000000000002b",
+      "areaId": "j57bv34gc1pyfavap6r75seeh183c5dr",
+      "goalId": "j97f57b281fmq2hkvthb1j0wpd83dh82",
+      "createdAt": 1774224000000,
+      "priority": "high",
+      "status": "todo",
+      "title": "TODAY: Download MyFitnessPal and set calorie target to TDEE minus 500 (approx 2400 cal/day). Protein target: 240g",
+      "dueDate": 1774310400000,
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "jx7seedtask03000000000000000003c",
+      "areaId": "j57bv34gc1pyfavap6r75seeh183c5dr",
+      "goalId": "j97f57b281fmq2hkvthb1j0wpd83dh82",
+      "createdAt": 1774224000000,
+      "priority": "high",
+      "status": "todo",
+      "title": "TODAY: Remove all junk food from the house — bin it or give it away. Replace with: chicken, eggs, rice, broccoli, oats",
+      "dueDate": 1774310400000,
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "jx7seedtask04000000000000000004d",
+      "areaId": "j57bv34gc1pyfavap6r75seeh183c5dr",
+      "goalId": "j97f57b281fmq2hkvthb1j0wpd83dh82",
+      "createdAt": 1774224000000,
+      "priority": "high",
+      "status": "todo",
+      "title": "THIS WEEK: Buy a food scale and weigh every meal for 7 days — people underestimate portions by 40-50%",
+      "dueDate": 1774828800000,
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "jx7seedtask05000000000000000005e",
+      "areaId": "j57bv34gc1pyfavap6r75seeh183c5dr",
+      "goalId": "j978p0t24dmrmdgydkwey8e69983e9fa",
+      "createdAt": 1774224000000,
+      "priority": "high",
+      "status": "todo",
+      "title": "THIS WEEK: Block gym sessions in calendar: Push Monday, Pull Wednesday, Legs Friday, Upper Saturday",
+      "dueDate": 1774828800000,
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "jx7seedtask06000000000000000006f",
+      "areaId": "j57bv34gc1pyfavap6r75seeh183c5dr",
+      "goalId": "j977grc25tp0d4621tzt1h51qd83f0d0",
+      "createdAt": 1774224000000,
+      "priority": "high",
+      "status": "todo",
+      "title": "WEEKLY SUNDAY: Meal prep 14 portions before 6pm — chicken 180g + rice 150g + broccoli. Non-negotiable.",
+      "dueDate": 1774828800000,
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "jx7seedtask07000000000000000007g",
+      "areaId": "j57bv34gc1pyfavap6r75seeh183c5dr",
+      "goalId": "j978p0t24dmrmdgydkwey8e69983e9fa",
+      "createdAt": 1774224000000,
+      "priority": "high",
+      "status": "todo",
+      "title": "WEEKLY MONDAY: Weigh yourself before eating — log weight and compare to last week",
+      "dueDate": 1774828800000,
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "jx7seedtask08000000000000000008h",
+      "areaId": "j57bv34gc1pyfavap6r75seeh183c5dr",
+      "goalId": "j978p0t24dmrmdgydkwey8e69983e9fa",
+      "createdAt": 1774224000000,
+      "priority": "high",
+      "status": "todo",
+      "title": "PUSH SESSION: Bench press 4x6-10, OHP 3x8-12, incline DB 3x10-15, lateral raises 3x12-15, tricep pushdown 3x12-15",
+      "dueDate": 1774828800000,
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "jx7seedtask09000000000000000009i",
+      "areaId": "j57bv34gc1pyfavap6r75seeh183c5dr",
+      "goalId": "j978p0t24dmrmdgydkwey8e69983e9fa",
+      "createdAt": 1774224000000,
+      "priority": "high",
+      "status": "todo",
+      "title": "PULL SESSION: Deadlift 3x5, barbell rows 4x8-10, lat pulldown 3x10-12, face pulls 3x15-20, curls 3x10-12",
+      "dueDate": 1774828800000,
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "jx7seedtask10000000000000000010j",
+      "areaId": "j57bv34gc1pyfavap6r75seeh183c5dr",
+      "goalId": "j978p0t24dmrmdgydkwey8e69983e9fa",
+      "createdAt": 1774224000000,
+      "priority": "high",
+      "status": "todo",
+      "title": "LEGS SESSION: Squats 4x6-10, leg press 3x10-15, Romanian deadlift 3x10-12, walking lunges 3x12, calf raises 4x15-20",
+      "dueDate": 1774828800000,
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "jx7seedtask11000000000000000011k",
+      "areaId": "j57f5sv3f92vwhww6v2j1xgfp983dmrp",
+      "goalId": "j97bjg035kzkhb1a2h8rgcc0r983dyye",
+      "createdAt": 1774224000000,
+      "priority": "high",
+      "status": "todo",
+      "title": "TODAY: Commit to niche for 90 days — write this down: I automate workflows for Melbourne property developers using Claude",
+      "dueDate": 1774310400000,
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "jx7seedtask12000000000000000012l",
+      "areaId": "j57f5sv3f92vwhww6v2j1xgfp983dmrp",
+      "goalId": "j97bjg035kzkhb1a2h8rgcc0r983dyye",
+      "createdAt": 1774224000000,
+      "priority": "high",
+      "status": "todo",
+      "title": "THIS WEEK: Join Anthropic Discord + 1 property tech or AI community and introduce yourself",
+      "dueDate": 1774828800000,
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "jx7seedtask13000000000000000013m",
+      "areaId": "j57f5sv3f92vwhww6v2j1xgfp983dmrp",
+      "goalId": "j97bjg035kzkhb1a2h8rgcc0r983dyye",
+      "createdAt": 1774224000000,
+      "priority": "high",
+      "status": "todo",
+      "title": "THIS WEEK: Research the 3 most painful manual tasks for property developers — search LinkedIn, forums, Reddit",
+      "dueDate": 1774828800000,
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "jx7seedtask14000000000000000014n",
+      "areaId": "j57f5sv3f92vwhww6v2j1xgfp983dmrp",
+      "goalId": "j97bjg035kzkhb1a2h8rgcc0r983dyye",
+      "createdAt": 1774224000000,
+      "priority": "medium",
+      "status": "todo",
+      "title": "Q1 END: Post first LinkedIn content — show something you built with Claude before Q1 closes April 1",
+      "dueDate": 1774961999000,
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "jx7seedtask15000000000000000015o",
+      "areaId": "j57f5sv3f92vwhww6v2j1xgfp983dmrp",
+      "goalId": "j97dkjaa59yc0j31129s412p7d83c8z4",
+      "createdAt": 1774224000000,
+      "priority": "high",
+      "status": "todo",
+      "title": "WEEKLY: Post 1 LinkedIn piece — specific Claude workflow, specific result, specific industry. Under 300 words.",
+      "dueDate": 1774828800000,
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "jx7seedtask16000000000000000016p",
+      "areaId": "j57f5sv3f92vwhww6v2j1xgfp983dmrp",
+      "goalId": "j97dkjaa59yc0j31129s412p7d83c8z4",
+      "createdAt": 1774224000000,
+      "priority": "high",
+      "status": "todo",
+      "title": "WEEKLY: Send 10 outreach messages to property developers on LinkedIn — track sent / replied / meeting / paid",
+      "dueDate": 1774828800000,
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "jx7seedtask17000000000000000017q",
+      "areaId": "j57c7p79fs9m3wsf3qyeveg2bh83cery",
+      "goalId": "j97ay39ztt7vn0563agqab3j4583f5pg",
+      "createdAt": 1774224000000,
+      "priority": "high",
+      "status": "todo",
+      "title": "TODAY: Confirm Module 1 content and block a 3-hour slot this week to start it — not plan, actually start",
+      "dueDate": 1774310400000,
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "jx7seedtask18000000000000000018r",
+      "areaId": "j57c7p79fs9m3wsf3qyeveg2bh83cery",
+      "goalId": "j97ay39ztt7vn0563agqab3j4583f5pg",
+      "createdAt": 1774224000000,
+      "priority": "high",
+      "status": "todo",
+      "title": "Q1 DEADLINE: Complete Module 1 and submit the assignment before April 1 — 9 days left",
+      "dueDate": 1774961999000,
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "jx7seedtask19000000000000000019s",
+      "areaId": "j57c7p79fs9m3wsf3qyeveg2bh83cery",
+      "goalId": "j9795a1mz9v9r4p9nwehvzcfa183f0et",
+      "createdAt": 1774224000000,
+      "priority": "high",
+      "status": "todo",
+      "title": "THIS WEEK: Find 1 property developer on LinkedIn — offer free Claude automation help in exchange for mentorship",
+      "dueDate": 1774828800000,
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "jx7seedtask20000000000000000020t",
+      "areaId": "j57c7p79fs9m3wsf3qyeveg2bh83cery",
+      "goalId": "j97aq296baf2g15p9rx55mydrd83fp72",
+      "createdAt": 1774224000000,
+      "priority": "medium",
+      "status": "todo",
+      "title": "WEEKLY: Research 1 development site on realcommercial.com.au — check zoning and run basic feasibility numbers",
+      "dueDate": 1774828800000,
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "jx7seedtask21000000000000000021u",
+      "areaId": "j5763bt9v8k2fyrx8r88avgek183dv63",
+      "goalId": "j97b9skt6fez5tsv7def84mq1d83frhm",
+      "createdAt": 1774224000000,
+      "priority": "high",
+      "status": "todo",
+      "title": "TODAY: List every debt — credit cards, loans, HECS, car — exact balances and interest rates",
+      "dueDate": 1774310400000,
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "jx7seedtask22000000000000000022v",
+      "areaId": "j5763bt9v8k2fyrx8r88avgek183dv63",
+      "goalId": "j97b9skt6fez5tsv7def84mq1d83frhm",
+      "createdAt": 1774224000000,
+      "priority": "high",
+      "status": "todo",
+      "title": "TODAY: List all monthly income and all monthly expenses — every dollar in and every dollar out",
+      "dueDate": 1774310400000,
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "jx7seedtask23000000000000000023w",
+      "areaId": "j5763bt9v8k2fyrx8r88avgek183dv63",
+      "goalId": "j97b9skt6fez5tsv7def84mq1d83frhm",
+      "createdAt": 1774224000000,
+      "priority": "high",
+      "status": "todo",
+      "title": "THIS WEEK: Open bank statement and cancel every unused subscription — go line by line tonight",
+      "dueDate": 1774828800000,
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "jx7seedtask24000000000000000024x",
+      "areaId": "j5763bt9v8k2fyrx8r88avgek183dv63",
+      "goalId": "j972cpsh64v6rwqe6xbr6vvrjh83fp0s",
+      "createdAt": 1774224000000,
+      "priority": "high",
+      "status": "todo",
+      "title": "THIS WEEK: Order Barefoot Investor by Scott Pape — Australian FIRE bible. Read 1 chapter per day until done.",
+      "dueDate": 1774828800000,
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "jx7seedtask25000000000000000025y",
+      "areaId": "j5763bt9v8k2fyrx8r88avgek183dv63",
+      "goalId": "j9713mr8gs1r1mpfs2smex79sx83easq",
+      "createdAt": 1774224000000,
+      "priority": "medium",
+      "status": "todo",
+      "title": "WEEKLY SUNDAY: 5-minute spending review — open banking app and categorize this week's expenses before watching TV",
+      "dueDate": 1774828800000,
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "jx7seedtask26000000000000000026z",
+      "areaId": "j57e0y4r55bkprr872sfm8d8ss83dxmf",
+      "goalId": "j97dhprf4mjcwer7vayaaef4f183emjf",
+      "createdAt": 1774224000000,
+      "priority": "high",
+      "status": "todo",
+      "title": "TODAY: Message 5 property developers on LinkedIn — ask only about their biggest time wasters. No pitch.",
+      "dueDate": 1774310400000,
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "jx7seedtask27000000000000000027a",
+      "areaId": "j57e0y4r55bkprr872sfm8d8ss83dxmf",
+      "goalId": "j97dhprf4mjcwer7vayaaef4f183emjf",
+      "createdAt": 1774224000000,
+      "priority": "high",
+      "status": "todo",
+      "title": "THIS WEEK: Have 3 conversations with property developers — log their pain points verbatim in a spreadsheet",
+      "dueDate": 1774828800000,
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "jx7seedtask28000000000000000028b",
+      "areaId": "j57e0y4r55bkprr872sfm8d8ss83dxmf",
+      "goalId": "j97dhprf4mjcwer7vayaaef4f183emjf",
+      "createdAt": 1774224000000,
+      "priority": "high",
+      "status": "todo",
+      "title": "Q1 RULE: Do NOT build anything until someone verbally commits to pay $500 for your solution",
+      "dueDate": 1774961999000,
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "jx7seedtask29000000000000000029c",
+      "areaId": "j57e0y4r55bkprr872sfm8d8ss83dxmf",
+      "goalId": "j9759f12rx2afmb7q3ete3rxp983f79m",
+      "createdAt": 1774224000000,
+      "priority": "high",
+      "status": "todo",
+      "title": "WEEKLY: Send 10 cold outreach messages to property developers — track sent/replied/meeting/paid in spreadsheet",
+      "dueDate": 1774828800000,
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    },
+
+    {
+      "_creationTime": 1774224000000.0,
+      "_id": "jx7seedtask30000000000000000030d",
+      "areaId": "j57e0y4r55bkprr872sfm8d8ss83dxmf",
+      "goalId": "j97seedgoal13000000000000000013m",
+      "createdAt": 1774224000000,
+      "priority": "medium",
+      "status": "todo",
+      "title": "APRIL: Write your 1-sentence problem statement and put it on your LinkedIn bio, email signature, and Notion",
+      "dueDate": 1777507200000,
+      "userId": "user_3BHGK9aWZSTV3B0ivEpS8Dv1Xf7"
+    }
+
+  ]
+}

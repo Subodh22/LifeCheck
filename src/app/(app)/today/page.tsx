@@ -34,6 +34,10 @@ export default function TodayPage() {
   const healthScores = useQuery(api.healthScores.getByUser,   userId ? { userId } : "skip") ?? {};
   const updateStatus = useMutation(api.tasks.updateStatus);
 
+  const deferTask   = useMutation(api.tasks.deferTask);
+  const moveToToday = useMutation(api.tasks.moveToToday);
+  const missed      = useQuery(api.tasks.listMissedScheduled, userId ? { userId } : "skip") ?? [];
+
   const [completing, setCompleting] = useState<string | null>(null);
 
   const weekStartDate = startOfWeek(new Date(), { weekStartsOn: 1 });
@@ -128,6 +132,79 @@ export default function TodayPage() {
         </div>
       </div>
 
+      {/* ── Carry Forward Banner ── */}
+      {missed.length > 0 && (
+        <div style={{
+          border: `1px solid ${RED}`,
+          padding: "16px 20px",
+          marginBottom: "32px",
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
+            <span style={{
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: "9px", fontWeight: 700, letterSpacing: "3px", textTransform: "uppercase",
+              color: WHITE, background: RED, padding: "3px 8px",
+            }}>
+              Carry Forward
+            </span>
+            <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "11px", color: INK_LIGHT }}>
+              {missed.length} time-boxed {missed.length === 1 ? "task" : "tasks"} from a past slot — what do you want to do?
+            </span>
+          </div>
+          {missed.map(task => {
+            const area = areaMap[task.areaId];
+            return (
+              <div key={task._id} style={{
+                display: "flex", alignItems: "center", gap: "12px",
+                padding: "10px 0", borderTop: `1px solid ${RULE_L}`,
+                flexWrap: "wrap",
+              }}>
+                <CheckCircle done={false} urgent onClick={() => handleComplete(task._id, false)} />
+                <div style={{ flex: 1, minWidth: "120px" }}>
+                  <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "14px", fontWeight: 700, color: INK, lineHeight: 1.2 }}>
+                    {task.title}
+                  </span>
+                  {area && (
+                    <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "9px", color: INK_FAINT, marginLeft: "8px", textTransform: "uppercase", letterSpacing: "1px" }}>
+                      {area.name}
+                    </span>
+                  )}
+                  {task.scheduledEnd && (
+                    <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: "9px", color: RED, marginLeft: "8px" }}>
+                      Was {format(new Date(task.scheduledEnd), "EEE d MMM, h:mmaaa")}
+                    </span>
+                  )}
+                </div>
+                <div style={{ display: "flex", gap: "8px", flexShrink: 0 }}>
+                  <button
+                    onClick={() => moveToToday({ id: task._id })}
+                    style={{
+                      fontFamily: "'Inter', system-ui, sans-serif",
+                      fontSize: "10px", fontWeight: 600, letterSpacing: "0.5px",
+                      padding: "4px 10px", background: INK, color: WHITE,
+                      border: "none", cursor: "pointer",
+                    }}
+                  >
+                    Move to Today
+                  </button>
+                  <button
+                    onClick={() => deferTask({ id: task._id, days: 1 })}
+                    style={{
+                      fontFamily: "'Inter', system-ui, sans-serif",
+                      fontSize: "10px", fontWeight: 600, letterSpacing: "0.5px",
+                      padding: "4px 10px", background: "transparent", color: INK_LIGHT,
+                      border: `1px solid ${RULE_L}`, cursor: "pointer",
+                    }}
+                  >
+                    Defer +1 day
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
       {/* ── Grid ── */}
       <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "5fr 4fr 3fr", gap: 0 }}>
 
@@ -152,6 +229,7 @@ export default function TodayPage() {
                     isLead={isLead}
                     completing={completing}
                     onComplete={handleComplete}
+                    onDefer={(id) => deferTask({ id, days: 1 })}
                   />
                 );
               })}
@@ -459,13 +537,14 @@ function CheckCircle({ done, urgent, onClick, style }: {
   );
 }
 
-function TaskArticle({ task, area, isDone, isLead, completing, onComplete }: {
+function TaskArticle({ task, area, isDone, isLead, completing, onComplete, onDefer }: {
   task: { _id: Id<"tasks">; title: string; priority: string; dueDate?: number; status: string };
   area?: { name: string; color: string };
   isDone: boolean;
   isLead: boolean;
   completing: string | null;
   onComplete: (id: Id<"tasks">, isDone: boolean) => void;
+  onDefer?: (id: Id<"tasks">) => void;
 }) {
   const isUrgent  = task.priority === "urgent";
   const isOverdue = task.dueDate && task.dueDate < Date.now() && !isDone;
@@ -524,20 +603,28 @@ function TaskArticle({ task, area, isDone, isLead, completing, onComplete }: {
       {/* Actions */}
       {!isDone && (
         <div style={{ display: "flex", gap: "12px", paddingLeft: "21px" }}>
-          <span style={{
-            fontFamily: "'Inter', system-ui, sans-serif",
-            fontSize: "10px", fontWeight: 600, letterSpacing: "0.3px",
-            color: INK, borderBottom: `1px solid ${INK}`, cursor: "pointer",
-          }}>
+          <span
+            onClick={() => completing !== task._id && onComplete(task._id, false)}
+            style={{
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: "10px", fontWeight: 600, letterSpacing: "0.3px",
+              color: INK, borderBottom: `1px solid ${INK}`, cursor: "pointer",
+            }}
+          >
             Complete
           </span>
-          <span style={{
-            fontFamily: "'Inter', system-ui, sans-serif",
-            fontSize: "10px", fontWeight: 600, letterSpacing: "0.3px",
-            color: INK_FAINT, cursor: "pointer", borderBottom: "1px solid transparent",
-          }}>
-            Defer
-          </span>
+          {onDefer && (
+            <span
+              onClick={() => onDefer(task._id)}
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: "10px", fontWeight: 600, letterSpacing: "0.3px",
+                color: INK_FAINT, cursor: "pointer", borderBottom: `1px solid ${INK_FAINT}`,
+              }}
+            >
+              Defer +1d
+            </span>
+          )}
         </div>
       )}
     </div>

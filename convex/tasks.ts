@@ -270,6 +270,59 @@ export const getStreak = query({
   },
 });
 
+// Tasks whose scheduled slot has passed but are still not done (missed time boxes)
+export const listMissedScheduled = query({
+  args: { userId: v.string() },
+  handler: async (ctx, { userId }) => {
+    const now = Date.now();
+    return ctx.db
+      .query("tasks")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("archivedAt"), undefined),
+          q.neq(q.field("scheduledEnd"), undefined),
+          q.lt(q.field("scheduledEnd"), now),
+          q.neq(q.field("status"), "done")
+        )
+      )
+      .collect();
+  },
+});
+
+// Push a task's due date forward by N days and clear its scheduled slot
+export const deferTask = mutation({
+  args: { id: v.id("tasks"), days: v.optional(v.number()) },
+  handler: async (ctx, { id, days = 1 }) => {
+    const task = await ctx.db.get(id);
+    if (!task) return;
+    const base = task.dueDate && task.dueDate > Date.now() ? task.dueDate : Date.now();
+    const next = new Date(base + days * 24 * 60 * 60 * 1000);
+    next.setHours(23, 59, 59, 999);
+    await ctx.db.patch(id, {
+      dueDate: next.getTime(),
+      scheduledStart: undefined,
+      scheduledEnd: undefined,
+      gcalEventId: undefined,
+    });
+  },
+});
+
+// Move a task to today: set due date to end-of-today and clear schedule slot
+export const moveToToday = mutation({
+  args: { id: v.id("tasks") },
+  handler: async (ctx, { id }) => {
+    const eod = new Date();
+    eod.setHours(23, 59, 59, 999);
+    await ctx.db.patch(id, {
+      dueDate: eod.getTime(),
+      scheduledStart: undefined,
+      scheduledEnd: undefined,
+      gcalEventId: undefined,
+    });
+  },
+});
+
 // Won this week — tasks completed since Monday
 export const wonThisWeek = query({
   args: { userId: v.string(), weekStart: v.number() },

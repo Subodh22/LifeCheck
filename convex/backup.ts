@@ -115,7 +115,7 @@ export const restoreUserData = mutation({
     for (const g of snapshot.goals ?? []) {
       const id = await ctx.db.insert("goals", {
         userId,
-        areaId: areaMap.get(g.areaId)!,
+        areaId: (areaMap.get(g.areaId) ?? g.areaId) as Id<"areas">,
         title: g.title,
         timeframe: g.timeframe,
         description: g.description,
@@ -133,7 +133,7 @@ export const restoreUserData = mutation({
     for (const g of snapshot.goals ?? []) {
       if (g.parentGoalId) {
         const mapped = goalMap.get(g._id);
-        const parent = goalMap.get(g.parentGoalId);
+        const parent = (goalMap.get(g.parentGoalId) ?? g.parentGoalId) as Id<"goals">;
         if (mapped && parent) await ctx.db.patch(mapped, { parentGoalId: parent });
       }
     }
@@ -159,9 +159,9 @@ export const restoreUserData = mutation({
     for (const t of snapshot.tasks ?? []) {
       const id = await ctx.db.insert("tasks", {
         userId,
-        areaId: areaMap.get(t.areaId)!,
+        areaId: (areaMap.get(t.areaId) ?? t.areaId) as Id<"areas">,
         projectId: t.projectId ? projectMap.get(t.projectId) : undefined,
-        goalId: t.goalId ? goalMap.get(t.goalId) : undefined,
+        goalId: t.goalId ? ((goalMap.get(t.goalId) ?? t.goalId) as Id<"goals">) : undefined,
         title: t.title,
         description: t.description,
         status: t.status,
@@ -193,7 +193,7 @@ export const restoreUserData = mutation({
     for (const h of snapshot.habits ?? []) {
       const id = await ctx.db.insert("habits", {
         userId,
-        areaId: areaMap.get(h.areaId)!,
+        areaId: (areaMap.get(h.areaId) ?? h.areaId) as Id<"areas">,
         title: h.title,
         frequency: h.frequency,
         targetDaysPerWeek: h.targetDaysPerWeek,
