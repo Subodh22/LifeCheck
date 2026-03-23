@@ -52,3 +52,64 @@ body {
   outline: 2px solid #C41E3A;
   outline-offset: 2px;
 }
+
+/* ── Responsive layout ──────────────────────────────────────────────────── */
+.masthead-desktop { display: block; }
+.masthead-mobile  { display: none;  }
+.bottom-nav       { display: none;  }
+
+@media (max-width: 768px) {
+  .masthead-desktop { display: none !important;  }
+  .masthead-mobile  { display: block !important; }
+  .bottom-nav       { display: flex !important;  }
+
+  /* Page containers — tight padding on mobile */
+  .page-container {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    padding-bottom: 80px !important; /* clear bottom nav */
+  }
+
+  /* Hero headline — smaller on mobile */
+  .hero-headline { font-size: 44px !important; }
+
+  /* Sub-row stats — wrap on mobile */
+  .hero-stats { flex-wrap: wrap; gap: 12px !important; }
+
+  /* Columns stack vertically */
+  .col-grid {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  .col-grid > * {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    border-left: none !important;
+    border-top: 1px solid #CCCCBC !important;
+    padding-top: 28px !important;
+    margin-bottom: 0 !important;
+  }
+  .col-grid > *:first-child {
+    border-top: none !important;
+    padding-top: 0 !important;
+  }
+
+  /* Filter chips — wrap */
+  .filter-row {
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+  }
+
+  /* Table rows — card style */
+  .task-table-row {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+    padding: 14px 0 !important;
+  }
+  .task-table-cell-status,
+  .task-table-cell-priority,
+  .task-table-cell-area,
+  .task-table-cell-due { display: none !important; }
+  .task-table-head { display: none !important; }
+}

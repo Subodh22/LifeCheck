@@ -43,13 +43,15 @@ export default function AreasPage() {
   const allTasks     = useQuery(api.tasks.listByUser,        userId ? { userId } : "skip") ?? [];
   const healthScores = useQuery(api.healthScores.getByUser,  userId ? { userId } : "skip") ?? {};
 
-  const seedDemo  = useMutation(api.seed.seedDemoData);
+  const seedDemo   = useMutation(api.seed.seedDemoData);
+  const archiveArea = useMutation(api.areas.archive);
 
   const [search,        setSearch]        = useState("");
   const [showTemplates, setShowTemplates] = useState(false);
   const [createOpen,    setCreateOpen]    = useState(false);
   const [starredSet,    setStarredSet]    = useState<Set<string>>(new Set());
   const [seeding,       setSeeding]       = useState(false);
+  const [menuOpenId,    setMenuOpenId]    = useState<string | null>(null);
 
   useEffect(() => {
     if (areas !== undefined && areas.length === 0 && userId) {
@@ -59,6 +61,13 @@ export default function AreasPage() {
       }
     }
   }, [areas, userId, router]);
+
+  useEffect(() => {
+    if (!menuOpenId) return;
+    const close = () => setMenuOpenId(null);
+    document.addEventListener("click", close);
+    return () => document.removeEventListener("click", close);
+  }, [menuOpenId]);
 
   const handleSeed = async () => {
     if (!userId || seeding) return;
@@ -360,9 +369,43 @@ export default function AreasPage() {
                 </span>
 
                 {/* Actions */}
-                <button style={{ background: "none", border: "none", cursor: "pointer", color: INK_FAINT, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <MoreHorizontal size={14} />
-                </button>
+                <div style={{ position: "relative" }}>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); setMenuOpenId(menuOpenId === area._id ? null : area._id); }}
+                    style={{ background: "none", border: "none", cursor: "pointer", color: INK_FAINT, display: "flex", alignItems: "center", justifyContent: "center" }}
+                  >
+                    <MoreHorizontal size={14} />
+                  </button>
+                  {menuOpenId === area._id && (
+                    <div
+                      style={{
+                        position: "absolute", right: 0, top: "100%", zIndex: 50,
+                        background: WHITE, border: `1px solid ${RULE_L}`,
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                        minWidth: "130px",
+                      }}
+                    >
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          archiveArea({ id: area._id });
+                          setMenuOpenId(null);
+                        }}
+                        style={{
+                          width: "100%", display: "flex", alignItems: "center", gap: "8px",
+                          padding: "8px 14px", background: "none", border: "none",
+                          cursor: "pointer", color: RED, textAlign: "left",
+                          fontFamily: "'Inter', system-ui, sans-serif",
+                          fontSize: "11px", fontWeight: 600,
+                        }}
+                        onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = `${RED}11`}
+                        onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = "none"}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             );
           })}
