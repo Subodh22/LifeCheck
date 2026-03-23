@@ -5,7 +5,7 @@ import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { format } from "date-fns";
 import { StickyNote, Pin, Trash2, Plus, Check, X } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 
 const INK       = "#0D0D0D";
 const INK_LIGHT = "#555550";
@@ -19,17 +19,25 @@ type Note = {
   _id: Id<"notes">;
   content: string;
   pinned?: boolean;
+  taskId?: Id<"tasks">;
   createdAt: number;
   updatedAt: number;
 };
 
+type Task = {
+  _id: Id<"tasks">;
+  title: string;
+};
+
 function NoteCard({
   note,
+  taskTitle,
   onUpdate,
   onDelete,
   onTogglePin,
 }: {
   note: Note;
+  taskTitle?: string;
   onUpdate: (id: Id<"notes">, content: string) => void;
   onDelete: (id: Id<"notes">) => void;
   onTogglePin: (id: Id<"notes">) => void;
@@ -88,6 +96,17 @@ function NoteCard({
           {format(new Date(note.updatedAt), "MMM d, yyyy · h:mm a")}
           {note.pinned && (
             <span style={{ color: GOLD, marginLeft: "6px" }}>· pinned</span>
+          )}
+          {taskTitle && (
+            <span style={{
+              display: "inline-flex", alignItems: "center", gap: "3px",
+              marginLeft: "8px", padding: "1px 6px",
+              background: "rgba(13,13,13,0.06)", border: "1px solid #CCCCBC",
+              borderRadius: "2px", color: INK_LIGHT, fontSize: "9px",
+              letterSpacing: "0.3px",
+            }}>
+              ◈ {taskTitle}
+            </span>
           )}
         </span>
         <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
@@ -168,6 +187,11 @@ function NoteCard({
 export default function NotepadPage() {
   const { userId } = useCurrentUser();
   const notes = (useQuery(api.notes.listByUser, userId ? { userId } : "skip") ?? []) as Note[];
+  const tasks = (useQuery(api.tasks.listByUser, userId ? { userId } : "skip") ?? []) as Task[];
+  const taskMap = useMemo(
+    () => Object.fromEntries(tasks.map((t) => [t._id, t])),
+    [tasks]
+  );
   const createNote  = useMutation(api.notes.create);
   const updateNote  = useMutation(api.notes.update);
   const deleteNote  = useMutation(api.notes.remove);
@@ -307,6 +331,7 @@ export default function NotepadPage() {
             <NoteCard
               key={note._id}
               note={note}
+              taskTitle={note.taskId ? taskMap[note.taskId]?.title : undefined}
               onUpdate={(id, content) => updateNote({ id, content })}
               onDelete={(id) => deleteNote({ id })}
               onTogglePin={(id) => togglePin({ id })}

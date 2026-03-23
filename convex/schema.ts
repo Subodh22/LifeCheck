@@ -180,7 +180,10 @@ export default defineSchema({
     userId: v.string(),
     content: v.string(),
     pinned: v.optional(v.boolean()),
+    taskId: v.optional(v.id("tasks")), // linked task
     createdAt: v.number(),
     updatedAt: v.number(),
-  }).index("by_user", ["userId"]),
+  })
+    .index("by_user", ["userId"])
+    .index("by_task", ["taskId"]),
 });

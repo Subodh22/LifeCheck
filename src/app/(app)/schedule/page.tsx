@@ -30,7 +30,10 @@ import {
   Check,
   X,
   Clock,
+  StickyNote,
+  Plus,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
@@ -357,15 +360,22 @@ function TaskEditPanel({
   onUpdate: (id: Id<"tasks">, fields: { title?: string; priority?: string; description?: string }) => void;
   onDelete: (id: Id<"tasks">) => void;
 }) {
+  const { userId } = useCurrentUser();
+  const router = useRouter();
+  const linkedNotes = useQuery(api.notes.listByTask, { taskId: task._id }) ?? [];
+  const createNote  = useMutation(api.notes.create);
+
   const isScheduled = !!task.scheduledStart && !!task.scheduledEnd;
   const start = task.scheduledStart ?? 0;
   const end   = task.scheduledEnd ?? 0;
 
-  const [title,       setTitle]       = useState(task.title);
-  const [startStr,    setStartStr]    = useState(isScheduled ? tsToTimeStr(start) : "");
-  const [endStr,      setEndStr]      = useState(isScheduled ? tsToTimeStr(end) : "");
-  const [priority,    setPriority]    = useState(task.priority);
-  const [description, setDescription] = useState((task as Task & { description?: string }).description ?? "");
+  const [title,        setTitle]        = useState(task.title);
+  const [startStr,     setStartStr]     = useState(isScheduled ? tsToTimeStr(start) : "");
+  const [endStr,       setEndStr]       = useState(isScheduled ? tsToTimeStr(end) : "");
+  const [priority,     setPriority]     = useState(task.priority);
+  const [description,  setDescription]  = useState((task as Task & { description?: string }).description ?? "");
+  const [addingNote,   setAddingNote]   = useState(false);
+  const [noteContent,  setNoteContent]  = useState("");
 
   // Keep local state in sync if task prop changes (e.g. optimistic update settles)
   useEffect(() => {
@@ -530,6 +540,87 @@ function TaskEditPanel({
             placeholder="Add notes…"
             className="w-full bg-[#FAFAF5] border border-[#CCCCBC] px-3 py-2 font-ui text-[12px] text-[#0D0D0D] placeholder-[#999990] focus:outline-none focus:border-[#0D0D0D] transition-colors resize-none"
           />
+        </div>
+
+        {/* Linked Notepad Notes */}
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between">
+            <label className="font-ui text-[10px] uppercase tracking-[0.12em] text-[#999990] flex items-center gap-1">
+              <StickyNote size={10} />
+              Notepad
+            </label>
+            <button
+              onClick={() => router.push("/notepad")}
+              className="font-ui text-[10px] text-[#555550] hover:text-[#C41E3A] transition-colors"
+            >
+              Open Notepad →
+            </button>
+          </div>
+
+          {linkedNotes.length > 0 && (
+            <div className="border border-[#CCCCBC] divide-y divide-[#CCCCBC]">
+              {linkedNotes.map((note) => (
+                <div key={note._id} className="px-3 py-2">
+                  <p className="font-ui text-[11px] text-[#0D0D0D] leading-snug line-clamp-2 whitespace-pre-wrap">
+                    {note.content}
+                  </p>
+                  <p className="font-ui text-[10px] text-[#999990] mt-0.5">
+                    {format(new Date(note.updatedAt), "MMM d, h:mm a")}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {addingNote ? (
+            <div className="space-y-1.5">
+              <textarea
+                autoFocus
+                value={noteContent}
+                onChange={(e) => setNoteContent(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+                    if (userId && noteContent.trim()) {
+                      createNote({ userId, content: noteContent.trim(), taskId: task._id })
+                        .then(() => { setNoteContent(""); setAddingNote(false); });
+                    }
+                  }
+                  if (e.key === "Escape") { setNoteContent(""); setAddingNote(false); }
+                }}
+                rows={3}
+                placeholder="Type note… (⌘Enter to save)"
+                className="w-full bg-[#FAFAF5] border border-[#CCCCBC] px-2 py-1.5 font-ui text-[11px] text-[#0D0D0D] placeholder-[#999990] focus:outline-none focus:border-[#0D0D0D] transition-colors resize-none"
+              />
+              <div className="flex gap-1.5 justify-end">
+                <button
+                  onClick={() => { setNoteContent(""); setAddingNote(false); }}
+                  className="px-2.5 py-1 border border-[#CCCCBC] font-ui text-[10px] text-[#999990] hover:text-[#555550] transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  disabled={!noteContent.trim()}
+                  onClick={async () => {
+                    if (!userId || !noteContent.trim()) return;
+                    await createNote({ userId, content: noteContent.trim(), taskId: task._id });
+                    setNoteContent("");
+                    setAddingNote(false);
+                  }}
+                  className="px-2.5 py-1 bg-[#0D0D0D] font-ui text-[10px] text-white transition-colors disabled:opacity-40"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={() => setAddingNote(true)}
+              className="w-full py-1.5 border border-dashed border-[#CCCCBC] font-ui text-[11px] text-[#999990] hover:text-[#555550] hover:border-[#999990] transition-colors flex items-center justify-center gap-1"
+            >
+              <Plus size={10} />
+              Add note to Notepad
+            </button>
+          )}
         </div>
       </div>
 

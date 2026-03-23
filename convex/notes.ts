@@ -16,15 +16,28 @@ export const create = mutation({
   args: {
     userId: v.string(),
     content: v.string(),
+    taskId: v.optional(v.id("tasks")),
   },
   handler: async (ctx, args) => {
     return ctx.db.insert("notes", {
       userId: args.userId,
       content: args.content,
+      taskId: args.taskId,
       pinned: false,
       createdAt: Date.now(),
       updatedAt: Date.now(),
     });
+  },
+});
+
+export const listByTask = query({
+  args: { taskId: v.id("tasks") },
+  handler: async (ctx, args) => {
+    return ctx.db
+      .query("notes")
+      .withIndex("by_task", (q) => q.eq("taskId", args.taskId))
+      .order("desc")
+      .collect();
   },
 });
 
