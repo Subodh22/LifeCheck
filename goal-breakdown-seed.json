@@ -1,0 +1,535 @@
+{
+  "_meta": {
+    "createdAt": "2026-03-23",
+    "purpose": "Actionable task breakdown for all active goals. Add these tasks via the Life OS UI or seed script.",
+    "note": "areaId and goalId values match your existing Convex data. Remove _id fields before inserting."
+  },
+
+  "analysis": {
+    "summary": "You have 5 active yearly goals. Q1 ends in 9 days (April 1). Most goals are at 0% with strong constraints identified. The biggest pattern: you know what to do but struggle with execution. This breakdown focuses on DAILY ACTIONS over strategy.",
+    "biggestRisk": "All 5 goals are interdependent and ambitious. Risk of doing nothing because everything feels too big. Solution: focus on ONE action per area per week.",
+    "queueOrder": ["Physical first (highest ROI for energy/focus)", "Finance second (foundation for everything else)", "Claude third (your clearest path to revenue)", "Business fourth (emerges from Claude + Property overlap)", "Property fifth (long game, execute 1 thing per week)"],
+    "criticalInsight": "Your business idea is already right in front of you: Claude automation for property developers. You are learning both. This is your niche."
+  },
+
+  "goalBreakdowns": [
+    {
+      "goalId": "j97e77vkgwh4hdvrsfa6byh5wx83d1d9",
+      "title": "I am Musashi",
+      "area": "Physical",
+      "currentState": "28% body fat. Eats junk. Not tracking. Not going gym consistently.",
+      "targetState": "15% body fat at 100kg by Dec 2026.",
+      "rootCause": "No systems. Willpower alone fails. Need environment control + tracking.",
+      "quarterlyTargets": {
+        "Q1 (ending April 1)": "Establish baseline: measurements taken, tracking app installed, junk food removed, gym schedule set.",
+        "Q2 (ending July 1)": "Down to ~22% body fat. Gym 4x/week consistent. Meal prep weekly. Calories tracked 80% of days.",
+        "Q3 (ending Oct 1)": "Down to ~18% body fat. Visible change. Habits are automatic.",
+        "Q4 (ending Dec 31)": "15% body fat at 100kg. Musashi achieved."
+      },
+      "weeklyNonNegotiables": [
+        "4x gym sessions (specific days: Mon/Wed/Fri/Sat)",
+        "Sunday meal prep: 14 portions (2 meals x 7 days)",
+        "Log every meal in tracking app",
+        "Weekly weight check every Monday morning"
+      ],
+      "dietPlan": "Calculate TDEE (~2800-3200 cal). Eat at 500 cal deficit = 2300-2700 cal/day. Protein: 180g minimum. No junk food in house — zero tolerance on entry.",
+      "gymProgram": "PPL (Push/Pull/Legs): Push Mon, Pull Wed, Legs Fri, Upper Sat. Progressive overload: add 2.5kg when you hit top rep range for 2 sessions straight."
+    },
+    {
+      "goalId": "j972xcs64fx4q9eg4z3v9yxdes83c2gh",
+      "title": "Get Claude fully — become Claude's own engineer",
+      "area": "Claude Learning",
+      "currentState": "$0 revenue. Not in communities. Chasing multiple directions.",
+      "targetState": "$100k revenue from Claude/AI expertise by Dec 2026.",
+      "rootCause": "No niche. No audience. No portfolio. Chasing shiny objects instead of depth.",
+      "quarterlyTargets": {
+        "Q1 (ending April 1)": "Pick 1 niche. Join 3 communities. Build 1 demo project.",
+        "Q2 (ending July 1)": "First $1000. 2 paying clients. 10 LinkedIn posts with real engagement. 1 hackathon entered.",
+        "Q3 (ending Oct 1)": "First $10k month. Speaking at 1 meetup. 100 LinkedIn followers in AI space.",
+        "Q4 (ending Dec 31)": "$100k revenue. Melbourne's go-to Claude consultant for your niche."
+      },
+      "niche": "Claude automation for property developers and real estate professionals (Melbourne focus). This connects directly to your Property Development goals.",
+      "revenueModel": "1) Done-for-you Claude workflows: $2k-5k per client. 2) Training workshops: $500-1500 per session. 3) Consulting retainer: $3k-5k/month.",
+      "weeklyNonNegotiables": [
+        "Post 1 piece of content on LinkedIn about Claude (what you built, what you learned)",
+        "Talk to 2 potential clients or industry contacts",
+        "Spend 5+ hours actually building with Claude Code",
+        "Join 1 new conversation in AI communities (Twitter/X, Discord)"
+      ]
+    },
+    {
+      "goalId": "j978dvwe89g5zp4xgmrv3s5wzx83fsjr",
+      "title": "Run a full property deal end to end",
+      "area": "Property Development",
+      "currentState": "Learning but not executing. Scared to execute.",
+      "targetState": "Have completed analysis + planning of a full property development deal.",
+      "rootCause": "Analysis paralysis. Keeps learning without doing. Fear of making the wrong move.",
+      "quarterlyTargets": {
+        "Q1 (ending April 1)": "Complete Module 1 + Assignment. Identify 1 mentor willing to trade Claude services.",
+        "Q2 (ending July 1)": "Complete all 4 modules. Analyze 3 real deals (numbers only). Meet 1 developer doing live projects.",
+        "Q3 (ending Oct 1)": "Shadow 1 live deal from DA to completion. Build a Claude tool for property feasibility.",
+        "Q4 (ending Dec 31)": "Complete analysis of 1 real deal you could execute. Have borrowing capacity understood."
+      },
+      "executionFix": "Every week you MUST produce 1 tangible output: a completed assignment, a deal analysis spreadsheet, a contact made, a site visited. Learning without output is procrastination.",
+      "mentorOffer": "Find property developers struggling with admin/spreadsheets. Offer 10 hours of Claude automation help in exchange for shadowing their process."
+    },
+    {
+      "goalId": "j976qreweyeb3m7nxd7n2hp4mx83en5d",
+      "title": "100k in bank account",
+      "area": "Financially Free",
+      "currentState": "-$10,000. Unclear on what will actually create financial freedom.",
+      "targetState": "$100,000 net by Dec 2026.",
+      "rootCause": "No clear budget. No savings automation. Revenue unclear.",
+      "quarterlyTargets": {
+        "Q1 (ending April 1)": "Know exact numbers: all income, all expenses, all debt. Budget set. Barefoot Investor read.",
+        "Q2 (ending July 1)": "Break even to +$5k. Every dollar tracked. $500+/month automated savings.",
+        "Q3 (ending Oct 1)": "+$25k. Revenue from Claude/Business starting to flow in.",
+        "Q4 (ending Dec 31)": "+$100k through combination of saved income + business revenue."
+      },
+      "australianFIRE": "Read The Barefoot Investor (Scott Pape) — the Australian money bible. Key system: Splurge/Smile/Fire accounts. ING high-interest savings. Automate everything.",
+      "immediateActions": [
+        "List all debts with exact amounts and interest rates",
+        "List all monthly income (exact)",
+        "List all monthly expenses (exact)",
+        "Find and eliminate 3 subscriptions you don't use",
+        "Open ING Savings Maximiser (currently ~5% interest rate in AU)"
+      ]
+    },
+    {
+      "goalId": "j9767td93p4fvg9agkv2td5enh83e7p2",
+      "title": "Start Business",
+      "area": "Business",
+      "currentState": "-$10,000. Keeps starting tarpit ideas. No validation.",
+      "targetState": "$500k revenue by Dec 2026.",
+      "rootCause": "Starts ideas without validating demand first. Builds before selling.",
+      "quarterlyTargets": {
+        "Q1 (ending April 1)": "Talk to 20 people in target market. Identify the most painful problem. Do NOT build anything.",
+        "Q2 (ending July 1)": "First $5k revenue. Pre-sell a service or solution to 2-3 customers before building.",
+        "Q3 (ending Oct 1)": "First $50k revenue. Repeatable process. 1 case study published.",
+        "Q4 (ending Dec 31)": "$200k+ revenue (be realistic — $500k is Year 1+, but aim for foundation)."
+      },
+      "idea": "Claude AI automation consultancy for property developers. Niche: help them with feasibility analysis, due diligence, council submission documents, and client reporting using Claude.",
+      "validationRule": "NEVER build before getting paid. First customer pays before you write 1 line of code. Charge $500 minimum for your first project even if it's manual work.",
+      "weeklyNonNegotiables": [
+        "Talk to 5 people in target market (property developers, agents, project managers)",
+        "Write down the top 3 pain points you hear repeatedly",
+        "Send 10 cold outreach messages per week (LinkedIn/email)"
+      ]
+    }
+  ],
+
+  "tasks": {
+
+    "_note": "Tasks are grouped by timeframe. Use areaId + goalId to link when creating in the app.",
+
+    "thisWeek_March23_30": [
+
+      {
+        "title": "Take body measurements — weight, waist, hips + photos (baseline)",
+        "areaId": "j57bv34gc1pyfavap6r75seeh183c5dr",
+        "goalId": "j97f57b281fmq2hkvthb1j0wpd83dh82",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1774828800000,
+        "_why": "You cannot track progress without a baseline. Do this today."
+      },
+      {
+        "title": "Download MyFitnessPal, log every meal for 7 days straight — start today",
+        "areaId": "j57bv34gc1pyfavap6r75seeh183c5dr",
+        "goalId": "j97f57b281fmq2hkvthb1j0wpd83dh82",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1774828800000,
+        "_why": "Diet is 80% of body transformation. Tracking beats willpower every time."
+      },
+      {
+        "title": "Remove all junk food from the house — throw it out or give it away",
+        "areaId": "j57bv34gc1pyfavap6r75seeh183c5dr",
+        "goalId": "j97f57b281fmq2hkvthb1j0wpd83dh82",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1774828800000,
+        "_why": "You can't out-willpower convenience. Control your environment."
+      },
+      {
+        "title": "Calculate your TDEE and set a daily calorie target (use TDEE calculator online)",
+        "areaId": "j57bv34gc1pyfavap6r75seeh183c5dr",
+        "goalId": "j97f57b281fmq2hkvthb1j0wpd83dh82",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1774828800000,
+        "_why": "You need a number to hit. Target: TDEE minus 400-500 calories."
+      },
+      {
+        "title": "Set gym schedule for this week: Push Mon, Pull Wed, Legs Fri, Upper Sat — block it in calendar",
+        "areaId": "j57bv34gc1pyfavap6r75seeh183c5dr",
+        "goalId": "j978p0t24dmrmdgydkwey8e69983e9fa",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1774828800000,
+        "_why": "Decide when you go before the week starts. No decision = no gym."
+      },
+      {
+        "title": "List ALL debts: credit card, loans, HECS — exact dollar amounts and interest rates",
+        "areaId": "j5763bt9v8k2fyrx8r88avgek183dv63",
+        "goalId": "j97b9skt6fez5tsv7def84mq1d83frhm",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1774828800000,
+        "_why": "You can't fix what you can't see. The -$10k needs a breakdown."
+      },
+      {
+        "title": "List all monthly income (job, side income) and all monthly expenses — exact amounts",
+        "areaId": "j5763bt9v8k2fyrx8r88avgek183dv63",
+        "goalId": "j97b9skt6fez5tsv7def84mq1d83frhm",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1774828800000,
+        "_why": "Foundation of financial control. Write it down, not in your head."
+      },
+      {
+        "title": "Pick ONE niche for Claude consulting (decision: property developer automation in Melbourne)",
+        "areaId": "j57f5sv3f92vwhww6v2j1xgfp983dmrp",
+        "goalId": "j97bjg035kzkhb1a2h8rgcc0r983dyye",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1774828800000,
+        "_why": "No niche = no clients. You can always change it. Just pick and commit for 90 days."
+      },
+      {
+        "title": "Join Anthropic Discord and 1 Claude/AI community — introduce yourself",
+        "areaId": "j57f5sv3f92vwhww6v2j1xgfp983dmrp",
+        "goalId": "j97bjg035kzkhb1a2h8rgcc0r983dyye",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1774828800000,
+        "_why": "Network is how you get clients. Community is how you stay sharp."
+      },
+      {
+        "title": "Have 3 conversations with property developers or real estate people about their biggest workflow pain points",
+        "areaId": "j57e0y4r55bkprr872sfm8d8ss83dxmf",
+        "goalId": "j97dhprf4mjcwer7vayaaef4f183emjf",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1774828800000,
+        "_why": "VALIDATE before building. Their words = your product copy. Listen more than talk."
+      },
+      {
+        "title": "Write down the #1 most painful manual task in property development that you heard this week",
+        "areaId": "j57e0y4r55bkprr872sfm8d8ss83dxmf",
+        "goalId": "j97dhprf4mjcwer7vayaaef4f183emjf",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1774828800000,
+        "_why": "Your niche = their pain point. One sentence: 'I help [who] do [what] faster using Claude.'"
+      },
+      {
+        "title": "Contact your property course provider and confirm which 4 modules to complete this quarter",
+        "areaId": "j57c7p79fs9m3wsf3qyeveg2bh83cery",
+        "goalId": "j97ay39ztt7vn0563agqab3j4583f5pg",
+        "priority": "medium",
+        "status": "todo",
+        "dueDate": 1774828800000,
+        "_why": "You need clarity on what Module 1 actually is before you can complete it."
+      }
+    ],
+
+    "q1_remaining_before_April1": [
+      {
+        "title": "Complete Module 1 of property course + submit assignment",
+        "areaId": "j57c7p79fs9m3wsf3qyeveg2bh83cery",
+        "goalId": "j975tedvx07spwva8n5kenxhnh83f8g1",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1774961999000,
+        "_why": "Q1 milestone. If not done, Q2 starts behind."
+      },
+      {
+        "title": "Find 1 property developer on LinkedIn willing to chat — offer free Claude workflow demo",
+        "areaId": "j57c7p79fs9m3wsf3qyeveg2bh83cery",
+        "goalId": "j9795a1mz9v9r4p9nwehvzcfa183f0et",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1774961999000,
+        "_why": "Trade value: your Claude skills for their industry knowledge. Win-win."
+      },
+      {
+        "title": "Cancel all unused subscriptions (audit bank statement right now)",
+        "areaId": "j5763bt9v8k2fyrx8r88avgek183dv63",
+        "goalId": "j97b9skt6fez5tsv7def84mq1d83frhm",
+        "priority": "medium",
+        "status": "todo",
+        "dueDate": 1774961999000,
+        "_why": "Quick win. Every cancelled sub = recurring savings."
+      },
+      {
+        "title": "Order or download Barefoot Investor by Scott Pape — start reading",
+        "areaId": "j5763bt9v8k2fyrx8r88avgek183dv63",
+        "goalId": "j972cpsh64v6rwqe6xbr6vvrjh83fp0s",
+        "priority": "medium",
+        "status": "todo",
+        "dueDate": 1774961999000,
+        "_why": "Best Australian money book. Read 1 chapter per day. Done in 2 weeks."
+      },
+      {
+        "title": "Post your first LinkedIn content about Claude — show something you built (even this app counts)",
+        "areaId": "j57f5sv3f92vwhww6v2j1xgfp983dmrp",
+        "goalId": "j97bjg035kzkhb1a2h8rgcc0r983dyye",
+        "priority": "medium",
+        "status": "todo",
+        "dueDate": 1774961999000,
+        "_why": "Your audience doesn't know you exist. First post is the hardest. Just ship it."
+      },
+      {
+        "title": "Sunday meal prep: cook 14 portions of protein + rice/potato + veggies for the week",
+        "areaId": "j57bv34gc1pyfavap6r75seeh183c5dr",
+        "goalId": "j977grc25tp0d4621tzt1h51qd83f0d0",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1774961999000,
+        "_why": "No meal prep = junk food. Prep is the system that beats willpower."
+      }
+    ],
+
+    "q2_april_monthly": [
+
+      {
+        "title": "[WEEKLY HABIT] Gym Push session — chest, shoulders, triceps",
+        "areaId": "j57bv34gc1pyfavap6r75seeh183c5dr",
+        "goalId": "j978p0t24dmrmdgydkwey8e69983e9fa",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1777507200000,
+        "_why": "Non-negotiable. Log it every single week."
+      },
+      {
+        "title": "[WEEKLY HABIT] Sunday meal prep — batch cook for the full week",
+        "areaId": "j57bv34gc1pyfavap6r75seeh183c5dr",
+        "goalId": "j977grc25tp0d4621tzt1h51qd83f0d0",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1777507200000,
+        "_why": "Without this, you will eat junk. This is the most important physical habit."
+      },
+      {
+        "title": "Monthly body check-in: weight + body fat % + photos — adjust calories if needed",
+        "areaId": "j57bv34gc1pyfavap6r75seeh183c5dr",
+        "goalId": "j97f57b281fmq2hkvthb1j0wpd83dh82",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1777507200000,
+        "_why": "If not losing 0.5-1kg/week, reduce calories by 200. If losing too fast, add 200."
+      },
+      {
+        "title": "Complete Module 2 of property course + submit assignment",
+        "areaId": "j57c7p79fs9m3wsf3qyeveg2bh83cery",
+        "goalId": "j975tedvx07spwva8n5kenxhnh83f8g1",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1777507200000,
+        "_why": "1 module per month = 4 modules done by Q2 end."
+      },
+      {
+        "title": "Analyze 1 real property deal: find a listed development site, run the basic feasibility numbers",
+        "areaId": "j57c7p79fs9m3wsf3qyeveg2bh83cery",
+        "goalId": "j9795a1mz9v9r4p9nwehvzcfa183f0et",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1777507200000,
+        "_why": "This is execution. Not theory — look up an actual site on realcommercial.com.au and run the numbers."
+      },
+      {
+        "title": "Finish reading Barefoot Investor + set up the bucket system (Splurge/Smile/Fire accounts)",
+        "areaId": "j5763bt9v8k2fyrx8r88avgek183dv63",
+        "goalId": "j972cpsh64v6rwqe6xbr6vvrjh83fp0s",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1777507200000,
+        "_why": "The book means nothing unless you set up the system. Set it up by end of April."
+      },
+      {
+        "title": "Open ING Savings Maximiser (or UBANK) and transfer $500 minimum — automate future transfers",
+        "areaId": "j5763bt9v8k2fyrx8r88avgek183dv63",
+        "goalId": "j97b9skt6fez5tsv7def84mq1d83frhm",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1777507200000,
+        "_why": "Automated savings are the only savings that actually happen. Set it and forget it."
+      },
+      {
+        "title": "Build 1 Claude demo specifically for property developers — feasibility calculator or document generator",
+        "areaId": "j57f5sv3f92vwhww6v2j1xgfp983dmrp",
+        "goalId": "j97a8mep90m5c62vwmx4x353sd83fmmm",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1777507200000,
+        "_why": "This is your portfolio piece AND your sales tool. Show it to 5 people for feedback."
+      },
+      {
+        "title": "Get 1 paying client for Claude consulting — even $500 for a 2hr session counts",
+        "areaId": "j57f5sv3f92vwhww6v2j1xgfp983dmrp",
+        "goalId": "j97bjg035kzkhb1a2h8rgcc0r983dyye",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1777507200000,
+        "_why": "First $1 changes everything psychologically. Charge something. Free clients waste your time."
+      },
+      {
+        "title": "Talk to 20 property developers or agents this month — log pain points in a spreadsheet",
+        "areaId": "j57e0y4r55bkprr872sfm8d8ss83dxmf",
+        "goalId": "j97dhprf4mjcwer7vayaaef4f183emjf",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1777507200000,
+        "_why": "Validation. Look for the pain point 3+ people mention. That's your product."
+      },
+      {
+        "title": "Write 1 case study or before/after story from a customer conversation or demo — post it publicly",
+        "areaId": "j57e0y4r55bkprr872sfm8d8ss83dxmf",
+        "goalId": "j9725tfpejjbhva5q5435h5nss83fs5d",
+        "priority": "medium",
+        "status": "todo",
+        "dueDate": 1777507200000,
+        "_why": "Social proof before you have clients. Document the process, share the insight."
+      }
+    ],
+
+    "q2_may_monthly": [
+      {
+        "title": "Monthly body check-in May: weight + body fat % + photos",
+        "areaId": "j57bv34gc1pyfavap6r75seeh183c5dr",
+        "goalId": "j97f57b281fmq2hkvthb1j0wpd83dh82",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1780099200000
+      },
+      {
+        "title": "Complete Module 3 of property course + submit assignment",
+        "areaId": "j57c7p79fs9m3wsf3qyeveg2bh83cery",
+        "goalId": "j975tedvx07spwva8n5kenxhnh83f8g1",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1780099200000
+      },
+      {
+        "title": "Analyze 1 real property deal: contact a real estate agent and ask questions as if you're a developer",
+        "areaId": "j57c7p79fs9m3wsf3qyeveg2bh83cery",
+        "goalId": "j9795a1mz9v9r4p9nwehvzcfa183f0et",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1780099200000
+      },
+      {
+        "title": "2 LinkedIn posts in May about Claude — specific workflow, specific result, specific industry",
+        "areaId": "j57f5sv3f92vwhww6v2j1xgfp983dmrp",
+        "goalId": "j97bjg035kzkhb1a2h8rgcc0r983dyye",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1780099200000
+      },
+      {
+        "title": "Reach $2,000 in Claude consulting revenue — track it",
+        "areaId": "j57f5sv3f92vwhww6v2j1xgfp983dmrp",
+        "goalId": "j97bjg035kzkhb1a2h8rgcc0r983dyye",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1780099200000
+      },
+      {
+        "title": "Net worth check: total assets minus total liabilities — is the number improving?",
+        "areaId": "j5763bt9v8k2fyrx8r88avgek183dv63",
+        "goalId": "j97b9skt6fez5tsv7def84mq1d83frhm",
+        "priority": "medium",
+        "status": "todo",
+        "dueDate": 1780099200000
+      },
+      {
+        "title": "Decide on business offering: write 1 paragraph — who you serve, what you do, what it costs",
+        "areaId": "j57e0y4r55bkprr872sfm8d8ss83dxmf",
+        "goalId": "j97dhprf4mjcwer7vayaaef4f183emjf",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1780099200000
+      }
+    ],
+
+    "q2_june_monthly": [
+      {
+        "title": "Monthly body check-in June: weight + body fat % + photos",
+        "areaId": "j57bv34gc1pyfavap6r75seeh183c5dr",
+        "goalId": "j97f57b281fmq2hkvthb1j0wpd83dh82",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1782691200000
+      },
+      {
+        "title": "Complete Module 4 of property course + submit final assignment — finish Q2 milestone",
+        "areaId": "j57c7p79fs9m3wsf3qyeveg2bh83cery",
+        "goalId": "j975tedvx07spwva8n5kenxhnh83f8g1",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1782691200000
+      },
+      {
+        "title": "Meet face-to-face with 1 active property developer — shadow their process for half a day",
+        "areaId": "j57c7p79fs9m3wsf3qyeveg2bh83cery",
+        "goalId": "j9795a1mz9v9r4p9nwehvzcfa183f0et",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1782691200000
+      },
+      {
+        "title": "Q2 Claude revenue review: have I hit $5k yet? If not, what's blocking it? Write down 3 specific changes.",
+        "areaId": "j57f5sv3f92vwhww6v2j1xgfp983dmrp",
+        "goalId": "j97bjg035kzkhb1a2h8rgcc0r983dyye",
+        "priority": "high",
+        "status": "todo",
+        "dueDate": 1782691200000
+      },
+      {
+        "title": "Enter or submit for 1 Claude/AI hackathon or competition by end of Q2",
+        "areaId": "j57f5sv3f92vwhww6v2j1xgfp983dmrp",
+        "goalId": "j97dy0mfvsw0aj1v74wpw9ys0x83f72g",
+        "priority": "medium",
+        "status": "todo",
+        "dueDate": 1782691200000
+      },
+      {
+        "title": "Business: create a simple Linktree or landing page — name, what you do, how to contact you",
+        "areaId": "j57e0y4r55bkprr872sfm8d8ss83dxmf",
+        "goalId": "j97dhprf4mjcwer7vayaaef4f183emjf",
+        "priority": "medium",
+        "status": "todo",
+        "dueDate": 1782691200000
+      },
+      {
+        "title": "Finance Q2 review: total saved so far, total debt remaining, net worth improvement",
+        "areaId": "j5763bt9v8k2fyrx8r88avgek183dv63",
+        "goalId": "j97b9skt6fez5tsv7def84mq1d83frhm",
+        "priority": "medium",
+        "status": "todo",
+        "dueDate": 1782691200000
+      }
+    ]
+  },
+
+  "weeklyRhythm": {
+    "_description": "This is what a winning week looks like across all goals. Print this and put it somewhere visible.",
+    "monday": ["Gym (Push)", "Log all meals", "Send 2 outreach messages (property dev contacts)", "Update goal progress in Life OS"],
+    "tuesday": ["Deep work block: Claude coding / property course", "Log all meals"],
+    "wednesday": ["Gym (Pull)", "Log all meals", "1 LinkedIn post or comment"],
+    "thursday": ["Deep work block: business development calls / client work", "Log all meals"],
+    "friday": ["Gym (Legs)", "Log all meals", "Weekly review: what got done, what didn't, why"],
+    "saturday": ["Gym (Upper)", "Log all meals", "Optional: property site visits or networking events"],
+    "sunday": ["MEAL PREP (non-negotiable)", "Plan next week's tasks in Life OS", "Review finances: spending for the week"]
+  },
+
+  "doNotDo": [
+    "Do NOT start a new goal or side project until one of these is at 50%+ progress",
+    "Do NOT spend more than 2 hours 'researching' without producing a tangible output",
+    "Do NOT skip Sunday meal prep — this directly causes junk food eating all week",
+    "Do NOT build a product before talking to 10 potential customers",
+    "Do NOT miss a gym session without rescheduling it within the same week",
+    "Do NOT add more goals to this quarter — the 5 you have are enough"
+  ]
+}

@@ -48,6 +48,7 @@ type Task = {
   status: string;
   priority: string;
   areaId: Id<"areas">;
+  goalId?: Id<"goals">;
   description?: string;
   dueDate?: number;
   scheduledStart?: number;
@@ -100,8 +101,8 @@ function tsToOffset(ts: number): number {
 // ── Sub-components (memo'd to prevent unnecessary re-renders) ─────────────────
 
 const UnscheduledChip = memo(function UnscheduledChip({
-  task, areaColor, onDelete,
-}: { task: Task; areaColor?: string; onDelete: (id: Id<"tasks">) => void }) {
+  task, areaColor, onDelete, onSelect,
+}: { task: Task; areaColor?: string; onDelete: (id: Id<"tasks">) => void; onSelect: (task: Task) => void }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: `unscheduled-${task._id}`,
     data: { taskId: task._id, type: "unscheduled" },
@@ -112,6 +113,7 @@ const UnscheduledChip = memo(function UnscheduledChip({
       ref={setNodeRef}
       {...listeners}
       {...attributes}
+      onClick={() => { if (!isDragging) onSelect(task); }}
       style={{ transform: CSS.Translate.toString(transform), opacity: isDragging ? 0.4 : 1 }}
       className="flex items-center gap-2 px-3 py-2 bg-[#FAFAF5] border border-[#CCCCBC] cursor-grab hover:border-[#999990] transition-colors group"
     >
@@ -340,31 +342,36 @@ function tsToTimeStr(ts: number) {
 
 function TaskEditPanel({
   task,
+  area,
+  goal,
   onClose,
   onSchedule,
   onUpdate,
   onDelete,
 }: {
   task: Task;
+  area?: { name: string; color?: string };
+  goal?: { title: string };
   onClose: () => void;
   onSchedule: (id: Id<"tasks">, start: number, end: number) => void;
   onUpdate: (id: Id<"tasks">, fields: { title?: string; priority?: string; description?: string }) => void;
   onDelete: (id: Id<"tasks">) => void;
 }) {
-  const start = task.scheduledStart!;
-  const end   = task.scheduledEnd!;
+  const isScheduled = !!task.scheduledStart && !!task.scheduledEnd;
+  const start = task.scheduledStart ?? 0;
+  const end   = task.scheduledEnd ?? 0;
 
   const [title,       setTitle]       = useState(task.title);
-  const [startStr,    setStartStr]    = useState(tsToTimeStr(start));
-  const [endStr,      setEndStr]      = useState(tsToTimeStr(end));
+  const [startStr,    setStartStr]    = useState(isScheduled ? tsToTimeStr(start) : "");
+  const [endStr,      setEndStr]      = useState(isScheduled ? tsToTimeStr(end) : "");
   const [priority,    setPriority]    = useState(task.priority);
   const [description, setDescription] = useState((task as Task & { description?: string }).description ?? "");
 
   // Keep local state in sync if task prop changes (e.g. optimistic update settles)
   useEffect(() => {
     setTitle(task.title);
-    setStartStr(tsToTimeStr(task.scheduledStart!));
-    setEndStr(tsToTimeStr(task.scheduledEnd!));
+    setStartStr(task.scheduledStart ? tsToTimeStr(task.scheduledStart) : "");
+    setEndStr(task.scheduledEnd ? tsToTimeStr(task.scheduledEnd) : "");
     setPriority(task.priority);
     setDescription((task as Task & { description?: string }).description ?? "");
   }, [task._id]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -389,7 +396,7 @@ function TaskEditPanel({
   }
 
   function save() {
-    applyTime(startStr, endStr);
+    if (isScheduled) applyTime(startStr, endStr);
     onUpdate(task._id, { title, priority, description });
     onClose();
   }
@@ -421,7 +428,33 @@ function TaskEditPanel({
           />
         </div>
 
-        {/* Time */}
+        {/* Contributes to */}
+        {(area || goal) && (
+          <div className="space-y-1.5">
+            <label className="font-ui text-[10px] uppercase tracking-[0.12em] text-[#999990]">Contributes to</label>
+            <div className="border border-[#CCCCBC] divide-y divide-[#CCCCBC]">
+              {area && (
+                <div className="flex items-center gap-2 px-3 py-2">
+                  {area.color && (
+                    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: area.color }} />
+                  )}
+                  <span className="font-ui text-[12px] text-[#0D0D0D] flex-1">{area.name}</span>
+                  <span className="font-ui text-[10px] text-[#999990]">area</span>
+                </div>
+              )}
+              {goal && (
+                <div className="flex items-center gap-2 px-3 py-2">
+                  <span className="w-2 h-2 shrink-0 border border-[#999990] rotate-45" />
+                  <span className="font-ui text-[12px] text-[#0D0D0D] flex-1">{goal.title}</span>
+                  <span className="font-ui text-[10px] text-[#999990]">goal</span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Time — only for scheduled tasks */}
+        {isScheduled && (
         <div className="space-y-1.5">
           <label className="font-ui text-[10px] uppercase tracking-[0.12em] text-[#999990]">Time</label>
           <div className="flex items-center gap-2">
@@ -442,8 +475,10 @@ function TaskEditPanel({
             />
           </div>
         </div>
+        )}
 
-        {/* Duration presets */}
+        {/* Duration presets — only for scheduled tasks */}
+        {isScheduled && (
         <div className="space-y-1.5">
           <label className="font-ui text-[10px] uppercase tracking-[0.12em] text-[#999990]">Duration</label>
           <div className="flex flex-wrap gap-1.5">
@@ -463,6 +498,7 @@ function TaskEditPanel({
             ))}
           </div>
         </div>
+        )}
 
         {/* Priority */}
         <div className="space-y-1.5">
@@ -521,6 +557,7 @@ function TaskEditPanel({
 export default function SchedulePage() {
   const { userId } = useCurrentUser();
   const areas = useQuery(api.areas.list, userId ? { userId } : "skip") ?? [];
+  const goals = useQuery(api.goals.listByUser, userId ? { userId } : "skip") ?? [];
 
   const [weekDate,      setWeekDate]      = useState(() => new Date());
   const [gcalEvents,    setGcalEvents]    = useState<GCalEvent[]>([]);
@@ -567,6 +604,11 @@ export default function SchedulePage() {
   const areaMap = useMemo(
     () => Object.fromEntries(areas.map((a) => [a._id, a])),
     [areas]
+  );
+
+  const goalMap = useMemo(
+    () => Object.fromEntries(goals.map((g) => [g._id, g])),
+    [goals]
   );
 
   // Clear pending moves once Convex confirms them
@@ -909,7 +951,7 @@ export default function SchedulePage() {
                   </div>
                 ) : (
                   thisWeekTasks.map((t) => (
-                    <UnscheduledChip key={t._id} task={t} areaColor={areaMap[t.areaId]?.color} onDelete={handleDeleteTask} />
+                    <UnscheduledChip key={t._id} task={t} areaColor={areaMap[t.areaId]?.color} onDelete={handleDeleteTask} onSelect={handleSelectTask} />
                   ))
                 )}
               </div>
@@ -937,7 +979,7 @@ export default function SchedulePage() {
                   {backlogOpen && (
                     <div className="px-2 pb-2 space-y-1.5">
                       {backlogTasks.map((t) => (
-                        <UnscheduledChip key={t._id} task={t} areaColor={areaMap[t.areaId]?.color} onDelete={handleDeleteTask} />
+                        <UnscheduledChip key={t._id} task={t} areaColor={areaMap[t.areaId]?.color} onDelete={handleDeleteTask} onSelect={handleSelectTask} />
                       ))}
                     </div>
                   )}
@@ -1087,6 +1129,8 @@ export default function SchedulePage() {
           {selectedTask && (
             <TaskEditPanel
               task={selectedTask}
+              area={areaMap[selectedTask.areaId]}
+              goal={selectedTask.goalId ? goalMap[selectedTask.goalId] : undefined}
               onClose={() => setSelectedTask(null)}
               onSchedule={handlePanelSchedule}
               onUpdate={handlePanelUpdate}
