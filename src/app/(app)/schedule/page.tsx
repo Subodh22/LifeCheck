@@ -118,7 +118,7 @@ const UnscheduledChip = memo(function UnscheduledChip({
       <GripVertical size={11} className="text-[#999990] shrink-0" />
       <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: priorityColor(task.priority) }} />
       {areaColor && <span className="w-1.5 h-1.5 shrink-0" style={{ backgroundColor: areaColor }} />}
-      <span className="font-ui text-[12px] text-[#2A2A2A] leading-snug flex-1 min-w-0 truncate">
+      <span className="font-ui text-[12px] text-[#2A2A2A] leading-snug flex-1 min-w-0 break-words">
         {task.title}
       </span>
       <button
